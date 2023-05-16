@@ -29,6 +29,44 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // jwt 를 위한 dependency 추가
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    implementation 'com.auth0:java-jwt:3.18.3'
+    implementation 'com.auth0:auth0-spring-security-api:1.5.2'
+
+    // mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    // implementation 'com.sun.mail:jakarta.mail:2.1.0'
+
+    // itextpdf -> for downloading & generating the PDF file
+    implementation 'com.itextpdf:itextpdf:5.0.6'
+
+    // pdfbox -
+    implementation 'org.apache.pdfbox:pdfbox:2.0.1'
+
+    // guava -> validation of string, check the null, not empty etc
+    // guava 라이브러리 ->  Strings.isNullOrEmpty() or objects.isNull() 이런거 사용 가능하게 해줌
+    implementation 'com.google.guava:guava:16.0.1'
+
+    // gson -> from json to model class
+    implementation 'com.google.code.gson:gson:2.9.0'
+
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+
+    // org.json
+    implementation 'org.json:json:20211205'
+
+    // java -> jasypt , node -> .env
+    implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3"
+
+    // api 파싱을 위한 의존성
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // Dto validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {
