@@ -14,8 +14,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/health_genie
-    username :root
-    password :jh485200@@
+    username :
+    password :
   jpa:
     open-in-view: true
     hibernate:
