@@ -1,6 +1,7 @@
 package com.example.healthgenie.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import java.sql.Blob;
 @Getter
 @NoArgsConstructor
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "user_pt_review_tb")
 public class UserPtReview {
 
@@ -43,8 +46,8 @@ public class UserPtReview {
     @Lob
     private Blob pic3;
 
-    @Column(name ="stat_score")
-    private Long statScore;
+    @Column(name ="star_score")
+    private int starScore;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id")
@@ -53,4 +56,8 @@ public class UserPtReview {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="trainer_id")
     private User trainer;
+
+    @OneToOne
+    @JoinColumn(name = "trainer_pt_application_id")
+    private TrainerPtApplication matching;
 }
