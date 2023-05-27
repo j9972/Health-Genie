@@ -1,12 +1,16 @@
 package com.example.healthgenie.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name ="trainer_pt_application")
 public class TrainerPtApplication {
 
