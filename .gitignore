@@ -35,6 +35,11 @@ out/
 
 ### VS Code ###
 .vscode/
+constants.java
+application.yml
+application.yml
+
+=======
 
 **/src/main/java/com/example/healthgenie/global/constants
 
