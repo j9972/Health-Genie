@@ -3,7 +3,7 @@ package com.example.healthgenie.service;
 import com.example.healthgenie.Email.EmailValidator;
 import com.example.healthgenie.dto.userRegisterDto;
 import com.example.healthgenie.entity.User;
-import com.example.healthgenie.global.constants.constants;
+import com.example.healthgenie.global.constants.constant;
 import com.example.healthgenie.global.utils.basicUtils;
 import com.example.healthgenie.repository.userRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class userService {
 
             if (!isValidEmail) {
                 log.info("email not valid");
-                return basicUtils.getResponseEntity(constants.INVALID_DATA, HttpStatus.BAD_REQUEST);
+                return basicUtils.getResponseEntity(constant.INVALID_DATA, HttpStatus.BAD_REQUEST);
             }
 
             // 유저 중복 체크
@@ -40,7 +40,7 @@ public class userService {
 
             if (userExists) {
                 log.info("이메일 중복 : " + request.getEmail());
-                return basicUtils.getResponseEntity(constants.DUPLICATE_DATA, HttpStatus.BAD_REQUEST);
+                return basicUtils.getResponseEntity(constant.DUPLICATE_DATA, HttpStatus.BAD_REQUEST);
             }
 
             //return
@@ -48,7 +48,7 @@ public class userService {
             e.printStackTrace();
         }
 
-        return basicUtils.getResponseEntity(constants.OK_GOOD, HttpStatus.INTERNAL_SERVER_ERROR);
+        return basicUtils.getResponseEntity(constant.OK_GOOD, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public Optional<User> findOne(String email){
