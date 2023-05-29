@@ -37,8 +37,6 @@ public class User {
     @Column(name = "refresh_token_id")
     private String refreshTokenId;
 
-    @Column(name = "name")
-    private String name;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "role")
