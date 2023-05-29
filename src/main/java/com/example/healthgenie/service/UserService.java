@@ -5,7 +5,7 @@ import com.example.healthgenie.dto.userRegisterDto;
 import com.example.healthgenie.entity.User;
 import com.example.healthgenie.global.constants.constant;
 import com.example.healthgenie.global.utils.basicUtils;
-import com.example.healthgenie.repository.userRepository;
+import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,10 +18,9 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class userService {
-
+public class UserService {
     private final EmailValidator emailValidator;
-    private final userRepository userRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public ResponseEntity<String> signUp(userRegisterDto request) {
@@ -54,5 +53,5 @@ public class userService {
     public Optional<User> findOne(String email){
         return userRepository.findByEmail(email);
     }
-}
 
+}
