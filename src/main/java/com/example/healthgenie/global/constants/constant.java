@@ -3,6 +3,8 @@ package com.example.healthgenie.global.constants;
 public class constant {
     public static final String OK_GOOD = "OK_GOOD";
 
+    public static final String BAD = "Bad";
+
     public static final String DUPLICATE_DATA = "Duplicate Data";
 
     public static final String SOMETHING_WENT_WRONG = "Something went wrong";
