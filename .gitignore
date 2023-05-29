@@ -17,6 +17,8 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+**/src/main/java/com/example/healthgenie/global/constants
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -38,12 +40,3 @@ out/
 constants.java
 application.yml
 application.yml
-
-=======
-
-**/src/main/java/com/example/healthgenie/global/constants
-
-**/src/main/resources
-
-
-**/src/test/resources

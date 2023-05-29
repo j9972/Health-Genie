@@ -14,12 +14,12 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/health_genie
-    username : root
-    password : vvxc9874
+    username : ENC(8rsJeUzUEnYytlzd4e9c7A==)
+    password : ENC(9RfffEhjEM8flHeVPdB2VIipFCRqFJ4z)
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -31,9 +31,9 @@ spring:
     # stmp.gmail.com -> 587 port number
     host: smtp.gmail.com
     port: 587
-    username:
+    username: ENC(yAxXxq+AnPZom7Le2ZNy6w==)
     # spring.mail.password= password -> myaccount.google.com
-    password:
+    password: ENC(V1M88wgKrc/QmifXuG5UWfzdEmsOelkIQbqhbNXEE6Y=)
     properties:
       mail:
         default-encoding : utf-8
