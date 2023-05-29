@@ -17,7 +17,7 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-**/src/main/java/com/example/healthgenie/global/constants/constants
+**/src/main/java/com/example/healthgenie/global/constants
 
 ### IntelliJ IDEA ###
 .idea
