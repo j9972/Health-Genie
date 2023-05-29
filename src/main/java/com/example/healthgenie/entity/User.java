@@ -28,14 +28,15 @@ public class User {
     @Column(name = "uniname")
     private String uniName;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "password")
     private String password;
 
     @Column(name = "refresh_token_id")
     private String refreshTokenId;
 
-    @Column(name = "name")
-    private String name;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "role")
