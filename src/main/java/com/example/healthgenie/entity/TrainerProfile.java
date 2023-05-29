@@ -1,15 +1,16 @@
 package com.example.healthgenie.entity;
 
+import com.example.healthgenie.dto.TrainerProfileModifyRequestDto;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Blob;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "trainer_profile_tb")
 public class TrainerProfile {
 
@@ -45,6 +46,14 @@ public class TrainerProfile {
     private User trainer;
 
 
-
-
+    public void setAvgSarScore(Long avgSarScore) {
+        this.avgSarScore = avgSarScore;
+    }
+    public TrainerProfile ModifiedProfile(TrainerProfileModifyRequestDto dto){
+        this.description = dto.getDescription();
+        this.certification = dto.getCertification();
+        this.prize = dto.getPrize();
+        this.pics = dto.getPics();
+        return this;
+    }
 }
