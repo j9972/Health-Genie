@@ -1,5 +1,7 @@
 package com.example.healthgenie.global.exception;
 
+import com.example.healthgenie.exception.CommunityPostErrorResult;
+import com.example.healthgenie.exception.CommunityPostException;
 import com.example.healthgenie.exception.PtReviewErrorResult;
 import com.example.healthgenie.exception.PtReviewException;
 import lombok.Getter;
@@ -46,10 +48,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({PtReviewException.class})
     public ResponseEntity<ErrorResponse> handleRestApiException(final PtReviewException exception) {
-        log.warn("MembershipException occur: ", exception);
+        log.warn("PtReviewException occur: ", exception);
         return this.makeErrorResponseEntity(exception.getPtReviewErrorResult());
     }
 
+    @ExceptionHandler({CommunityPostException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final CommunityPostException exception) {
+        log.warn("CommunityException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getCommunityPostErrorResult());
+    }
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorResponse> handleException(final Exception exception) {
         log.warn("Exception occur: ", exception);
@@ -60,6 +67,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final CommunityPostErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
 
     @Getter
     @RequiredArgsConstructor

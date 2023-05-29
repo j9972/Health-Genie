@@ -1,5 +1,6 @@
 package com.example.healthgenie.entity;
 
+import com.example.healthgenie.dto.CommunityPostRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "community_post_tb")
 public class CommunityPost {
 
@@ -35,4 +38,8 @@ public class CommunityPost {
     @OneToMany
     @JoinColumn(name = "community_comment_id")
     private List<CommunityComment> commentList;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

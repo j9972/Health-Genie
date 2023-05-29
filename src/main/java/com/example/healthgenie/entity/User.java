@@ -48,6 +48,8 @@ public class User {
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<PtProcess> ptProcesses;
 
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<CommunityPost> communityPosts;
     public void addUser(PtProcess pt){
         this.ptProcesses.add(pt);
     }
