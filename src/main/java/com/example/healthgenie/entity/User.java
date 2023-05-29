@@ -43,7 +43,7 @@ public class User {
 
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<PtProcess> ptProcesses = new ArrayList<>();
+    private List<PtProcess> ptProcesses;
 
     public void addUser(PtProcess pt){
         this.ptProcesses.add(pt);
