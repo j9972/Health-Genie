@@ -1,6 +1,7 @@
 package com.example.healthgenie.entity;
 
 
+import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.sql.Blob;
 @Getter
 @NoArgsConstructor
 @Table(name = "uni_verify_tb")
-public class UniVerify {
+public class UniVerify extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "uni_verify_id")

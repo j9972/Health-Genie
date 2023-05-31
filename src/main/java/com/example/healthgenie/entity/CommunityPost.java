@@ -1,6 +1,7 @@
 package com.example.healthgenie.entity;
 
 import com.example.healthgenie.dto.CommunityPostRequestDto;
+import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Table(name = "community_post_tb")
-public class CommunityPost {
+public class CommunityPost extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +33,8 @@ public class CommunityPost {
     @Column(name = "like_count")
     private Long likeCount;
 
+    @Column(name = "create_date")
+    private String date;
     @Lob
     private Blob pics;
 

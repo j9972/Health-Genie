@@ -1,6 +1,7 @@
 package com.example.healthgenie.entity;
 
 
+import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name = "register_condition_history_tb")
-public class RegisterConditionHistory {
+public class RegisterConditionHistory extends BaseEntity {
 
 
     @Id
