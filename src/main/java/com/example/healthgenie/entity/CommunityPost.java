@@ -33,8 +33,6 @@ public class CommunityPost extends BaseEntity {
     @Column(name = "like_count")
     private Long likeCount;
 
-    @Column(name = "create_date")
-    private String date;
     @Lob
     private Blob pics;
 
