@@ -1,18 +1,61 @@
 # Health-Genie
-❤️ 헬스 지니 - 설계부터 배포까지 실제 사용을 위한 큰 프로젝트 ( By Spring )
+❤️ 헬스 지니 - 설계부터 배포까지 실제 사용을 위한 큰 프로젝트 ( By Spring ) <br>
+학교 헬스장에서 생기는 학생들에게 불편한 점들을 개선하며, 대학생들 사이에 1:1 PT 매칭을 해주는 프로젝트입니다. <br>
+
 
 
 ## ERD 설계
-https://techj9972.tistory.com/
+https://techj9972.tistory.com/205
+
+## Package Explain
+### Controller
+define the path the end point of this api
+
+### Dto
+change data type for using in controller
+
+### Email
+duplicate and validate of email,  
+
+### Entity
+DB model 
+
+### Exception
+checking Exception
+
+### Global
+config, constants, exception, utils <br>
+
+### Repository
+installing service of program/package
+
+### Service
+business logic 
+
 
 ## End Point
+### 커뮤니티에 게시글 작성
+Post /community/post/add
 
+ex) http://localhost:1234/community/post/add
 
-## 어노테이션 및 여러 공부한거 정리
-1. @CreationTimestamp
-- 타임스탬프 값을 수동으로 설정할 필요 없이 애플리케이션에서 객체 생성 시간을 추적하는 데 유용합니다
-- 다양한 데이터베이스 작업에서 타임스탬프 값의 일관성과 정확성을 보장하는 데 도움이 됩니다.
+### 커뮤니티에 게시글 조회
+Get /community/post/get
 
-2. @NonNull vs @NotNull
-- @NonNull : java 에서 주로 사용, null 값 전달시 컴파일러 에러
-- @NotNull : Kotlin 에서 주로 사용, null 값 전달시 컴파일러 에러
+ex) http://localhost:1234/community/post/get
+
+### 프로필 작성
+Post /profile/add
+
+ex) http://localhost:1234/profile/add
+
+### 프로필 수정
+Post /profile/modify
+
+ex) http://localhost:1234/profile/modify
+
+### pt 후기 작성
+Post /User/Pt/review
+
+ex) http://localhost:1234/User/Pt/review
+
