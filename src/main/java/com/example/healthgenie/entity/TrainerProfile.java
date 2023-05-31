@@ -1,6 +1,7 @@
 package com.example.healthgenie.entity;
 
 import com.example.healthgenie.dto.TrainerProfileModifyRequestDto;
+import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.sql.Blob;
 @Builder
 @AllArgsConstructor
 @Table(name = "trainer_profile_tb")
-public class TrainerProfile {
+public class TrainerProfile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

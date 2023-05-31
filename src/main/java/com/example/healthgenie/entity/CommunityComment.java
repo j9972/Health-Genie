@@ -1,6 +1,7 @@
 package com.example.healthgenie.entity;
 
 
+import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "community_comment_tb")
-public class CommunityComment {
+public class CommunityComment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

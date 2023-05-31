@@ -1,5 +1,6 @@
 package com.example.healthgenie.entity;
 
+import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "trainer_pt_possible_time_tb")
-public class TrainerPtPossibleTime {
+public class TrainerPtPossibleTime extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package com.example.healthgenie.entity;
 
+import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.sql.Blob;
 @Builder
 @AllArgsConstructor
 @Table(name = "user_pt_review_tb")
-public class UserPtReview {
+public class UserPtReview extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

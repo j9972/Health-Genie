@@ -1,5 +1,6 @@
 package com.example.healthgenie.entity;
 
+import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name ="application_time_tb")
-public class ApplicationTime {
+public class ApplicationTime extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="application_time_id")
