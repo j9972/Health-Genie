@@ -60,7 +60,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
 
     // org.json
-    implementation 'org.json:json:20211205'
+    // implementation 'org.json:json:20211205'
 
     // java -> jasypt , node -> .env
     implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3"

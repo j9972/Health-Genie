@@ -34,10 +34,10 @@ public class UserPtSchedule extends BaseEntity {
     private User member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trainer_id")
+    @JoinColumn(name = "trainer_id", unique=true)
     private User trainer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schdule_time_id")
-    private SchduleTime schduleTime;
+    @JoinColumn(name = "schedule_time_id")
+    private ScheduleTime scheduleTime;
 }

@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "schdule_time_tb")
-public class SchduleTime extends BaseEntity {
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "schedule_time_tb", columnNames = {"schedule_time_id"})
+})
+public class ScheduleTime extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "schdule_time_id")
+    @Column(name = "schedule_time_id", unique=true)
     private Long id;
 
     @Column(name = "day")

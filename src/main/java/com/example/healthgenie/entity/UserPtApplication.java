@@ -31,7 +31,7 @@ public class UserPtApplication extends BaseEntity {
     private User member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="trainer_id")
+    @JoinColumn(name ="trainer_id", unique=true)
     private User trainer;
 
 
