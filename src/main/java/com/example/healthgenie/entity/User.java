@@ -2,25 +2,28 @@ package com.example.healthgenie.entity;
 
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-@Getter
+@Data
 @Entity
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Table(name = "User_tb")
-public class User extends BaseEntity {
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "User_tb", columnNames = {"user_id"})
+})
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "user_id", unique=true)
     private Long id;
 
     @Column(name = "email")
@@ -51,5 +54,42 @@ public class User extends BaseEntity {
     private List<CommunityPost> communityPosts;
     public void addUser(PtProcess pt){
         this.ptProcesses.add(pt);
+    }
+
+    private Boolean enabled = false;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
