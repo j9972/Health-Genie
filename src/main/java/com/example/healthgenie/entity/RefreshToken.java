@@ -2,14 +2,12 @@ package com.example.healthgenie.entity;
 
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
 @NoArgsConstructor
 @Entity
+@Setter
+@Getter
 @Table(name = "refresh_token")
 public class RefreshToken extends BaseEntity {
 

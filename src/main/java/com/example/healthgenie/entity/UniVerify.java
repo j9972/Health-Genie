@@ -30,5 +30,5 @@ public class UniVerify extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User memeber;
+    private User member;
 }

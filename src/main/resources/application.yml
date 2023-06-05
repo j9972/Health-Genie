@@ -1,4 +1,3 @@
-
 server:
   port: 1234
   error:
@@ -11,6 +10,8 @@ devtools:
     enabled: true
 
 spring:
+  profiles:
+    active: ${profile}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/health_genie
@@ -31,9 +32,9 @@ spring:
     # stmp.gmail.com -> 587 port number
     host: smtp.gmail.com
     port: 587
-    username: ENC(nAsqvWCx8AVbIHeRZ7uY3w==)
+    username: ENC(NqNmjGbZOQfimoMI2BXagz+zMKbxZiP1)
     # spring.mail.password= password -> myaccount.google.com
-    password: ENC(X6yOW3LOAfPFIVLZcrqTXIfdaPAD41wTLM2kltseVa8=)
+    password: ENC(etHNO+7HUizMoFYexGWYKcuYYXGfkR1dRIock26/oS8=)
     properties:
       mail:
         default-encoding : utf-8
@@ -57,3 +58,5 @@ logging:
     org:
       springframework:
         security: DEBUG
+
+

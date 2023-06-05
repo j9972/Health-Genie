@@ -1,12 +1,11 @@
 package com.example.healthgenie.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class userRegisterDto {
     private String email;
     private String password;
