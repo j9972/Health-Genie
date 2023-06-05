@@ -105,6 +105,26 @@ public class CommunityPostControllerTest {
 
     }
 
+    @Test
+    public void 게시물리스트조회성공() throws Exception {
+
+        //given
+        String url = "/communtiy/post";
+        int pageNo = 1;
+
+        //when
+
+        final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(url)
+                .param("pageNO",String.valueOf(pageNo))
+                .contentType(MediaType.APPLICATION_JSON));
+
+
+        //then
+        resultActions.andExpect(status().isOk());
+
+
+
+    }
 
 
 }
