@@ -16,10 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class UserServiceTest {
 
-    @Mock
     private UserRepository userRepository;
 
-    @Mock
     private UserService userService;
 
 
