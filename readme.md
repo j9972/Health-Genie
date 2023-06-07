@@ -7,30 +7,11 @@
 ## ERD 설계
 https://techj9972.tistory.com/205
 
-## Package Explain
-### Controller
-define the path the end point of this api
 
-### Dto
-change data type for using in controller
+## 기술 스택 
 
-### Email
-duplicate and validate of email,  
 
-### Entity
-DB model 
-
-### Exception
-checking Exception
-
-### Global
-config, constants, exception, utils <br>
-
-### Repository
-installing service of program/package
-
-### Service
-business logic 
+## 디자인
 
 
 ## End Point
@@ -59,3 +40,7 @@ Post /User/Pt/review
 
 ex) http://localhost:1234/User/Pt/review
 
+
+## 배운점
+1. 스프링 시큐리티에서는 기본적으로 CSRF 기능이 활성화 되어 있다.<br>
+-> CSRF Token 정보를 Header 정보에 포함하여 요청을 하게 되는데 테스트 할 때도 CSRF 토큰값을 같이 넘겨줘야 한다.

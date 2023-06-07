@@ -2,6 +2,7 @@ package com.example.healthgenie.controller;
 
 import com.example.healthgenie.dto.CommunitiyPostResponseDto;
 import com.example.healthgenie.dto.CommunityPostGetResponseDto;
+import com.example.healthgenie.dto.CommunityPostListResponseDto;
 import com.example.healthgenie.dto.CommunityPostRequestDto;
 import com.example.healthgenie.entity.CommunityPost;
 import com.example.healthgenie.service.CommunityPostService;
@@ -31,6 +32,12 @@ public class CommunityPostController {
         CommunityPostGetResponseDto result = postService.getPost(postId);
 
         return new ResponseEntity(result,HttpStatus.OK);
+    }
 
+    @GetMapping("/communtiy/post")
+    public ResponseEntity getPostList(@RequestParam int pageNo){
+        CommunityPostListResponseDto result = postService.getPostList(pageNo);
+
+        return new ResponseEntity(result,HttpStatus.OK);
     }
 }

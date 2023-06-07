@@ -16,7 +16,7 @@ public class CommunityLiked extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "coummunity_liked_id")
+    @Column(name = "community_liked_id")
     private Long id;
 
 

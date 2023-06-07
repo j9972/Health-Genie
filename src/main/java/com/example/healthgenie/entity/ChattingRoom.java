@@ -20,7 +20,7 @@ public class ChattingRoom extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User memeber;
+    private User member;
 
     @OneToOne
     @JoinColumn(name = "trainer_id")
