@@ -1,5 +1,6 @@
 package com.example.healthgenie.dto;
 
+import com.example.healthgenie.entity.Role;
 import lombok.*;
 
 @Data
@@ -11,4 +12,5 @@ public class userRegisterDto {
     private String password;
     private String name;
     private String uniName;
+    private Role role;
 }

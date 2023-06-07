@@ -7,6 +7,10 @@ import com.example.healthgenie.dto.userRegisterDto;
 import com.example.healthgenie.entity.RefreshToken;
 import com.example.healthgenie.entity.Role;
 import com.example.healthgenie.entity.User;
+import com.example.healthgenie.exception.PtReviewErrorResult;
+import com.example.healthgenie.exception.PtReviewException;
+import com.example.healthgenie.exception.UserEmailErrorResult;
+import com.example.healthgenie.exception.UserEmailException;
 import com.example.healthgenie.global.config.CustomerUsersDetailsService;
 import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.global.constants.constant;
@@ -47,7 +51,7 @@ public class UserService {
 
             if (!isValidEmail) {
                 log.info("email not valid");
-                return basicUtils.getResponseEntity(constant.INVALID_DATA, HttpStatus.BAD_REQUEST);
+                throw new UserEmailException(UserEmailErrorResult.INVALID_EMAIL);
             }
 
             // 유저 중복 체크
@@ -55,7 +59,7 @@ public class UserService {
 
             if (userExists) {
                 log.info("이메일 중복 : " + request.getEmail());
-                return basicUtils.getResponseEntity(constant.DUPLICATE_DATA, HttpStatus.BAD_REQUEST);
+                throw new UserEmailException(UserEmailErrorResult.DUPLICATED_EMAIL);
             }
 
             String hashPWD = passwordEncoder.encode(request.getPassword());
@@ -65,14 +69,14 @@ public class UserService {
 
             log.info("authCode {} ", authCode);
 
-            emailService.sendSimpleMessage(request.getEmail(), "This is AuthCode", "This confirm Number : "+authCode);
+            emailService.sendSimpleMessage(request.getEmail(), "This is AuthCode", "This confirm Number : "+ authCode);
 
             User user = User.builder()
                     .name(request.getName())
                     .password(hashPWD)
                     .email(request.getEmail())
                     .uniName(request.getUniName())
-                    .role(Role.USER)
+                    .role(request.getRole())
                     .build();
 
             userRepository.save(user);
@@ -83,7 +87,7 @@ public class UserService {
             e.printStackTrace();
         }
 
-        return basicUtils.getResponseEntity(constant.OK_GOOD, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new UserEmailException(UserEmailErrorResult.UNkNOWN_EXCEPTION);
     }
 
 
@@ -101,7 +105,7 @@ public class UserService {
             log.info("user : {}", user);
 
             if(!passwordEncoder.matches(request.getPassword(), user.get().getPassword())){
-                return basicUtils.getResponseEntity("email is not valid", HttpStatus.UNAUTHORIZED);
+                throw new UserEmailException(UserEmailErrorResult.INVALID_EMAIL);
             }
 
             Authentication auth = authenticationManager.authenticate(
@@ -135,15 +139,13 @@ public class UserService {
 
             } else {
                 log.info("auth 인증 안됨");
-                return new ResponseEntity<String>("{\"message\":\""+"Wait for admin approval ."+"\"}",
-                        HttpStatus.BAD_REQUEST);
+                throw new UserEmailException(UserEmailErrorResult.UNAUTHORIZED);
             }
 
         } catch (Exception e) {
             log.error("{}", e);
         }
-        return new ResponseEntity<String>("{\"message\":\""+"Bad Credentials."+"\"}",
-                HttpStatus.BAD_REQUEST);
+        throw new UserEmailException(UserEmailErrorResult.BAD_CREDENTIALS);
     }
 
 }

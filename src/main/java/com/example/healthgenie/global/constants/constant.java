@@ -8,7 +8,7 @@ public class constant {
     public static final String SECRET_KEY = "4D635166546A576E5A7234753778214125442A462D4A614E645267556B587032";
     public static final String DUPLICATE_DATA = "Duplicate Data";
 
-    public static final String SOMETHING_WENT_WRONG = "Something went wrong";
+    public static final String SOMETHING_WENT_WRONG = "Something went wrong"; // Exception -> handleException
 
     public static final String INVALID_DATA = "Invalid Data";
 
