@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 public enum CommunityPostErrorResult {
 
     POST_EMPTY(HttpStatus.BAD_REQUEST,"post is empty Request"),
-    UNkNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"unknown_Exception");
+    UNkNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"unknown_Exception"),
+    PAGE_EMPTY(HttpStatus.BAD_REQUEST,"post is empty Request");
 
 
     private final HttpStatus httpStatus;

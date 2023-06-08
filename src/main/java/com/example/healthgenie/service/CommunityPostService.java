@@ -52,23 +52,18 @@ public class CommunityPostService {
     }
 
     //게시물 리스트 조회
-
-    public CommunityPostListResponseDto getPostList(int page){
-
-
-        Page<CommunityPost> list = postRepository.findAll(PageRequest.of(page,POST_COUNT, Sort.by(Sort.Direction.DESC,"createdDate")));
-
-        CommunityPostListResponseDto dto = new CommunityPostListResponseDto();
-        List<CommunityPostIdTitleDto> itemList = new ArrayList<>();
-        dto.setPageable(list.getPageable());
-        dto.setTotalCnt(list.getTotalElements());
-        dto.setTotalPages(list.getTotalPages());
-
-        for(CommunityPost i : list){
-            itemList.add(new CommunityPostIdTitleDto(i.getId(),i.getTitle()));
+    public Page<CommunityPost> getPostsByPage(int page,int size) {
+        if(page<0){
+            throw new CommunityPostException(CommunityPostErrorResult.PAGE_EMPTY);
         }
-        dto.setPostList(itemList);
-        return dto;
+        Sort sort = Sort.by("createdDate").descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<CommunityPost> result = postRepository.findAll(pageable);
+
+        if(result.getContent().isEmpty()){
+            throw new CommunityPostException(CommunityPostErrorResult.POST_EMPTY);
+        }
+        return result;
     }
 
 

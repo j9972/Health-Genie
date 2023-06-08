@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,6 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -110,14 +113,12 @@ public class CommunityPostControllerTest {
 
         //given
         String url = "/communtiy/post";
-        int pageNo = 1;
-
+        int page = 1;
         //when
 
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(url)
-                .param("pageNO",String.valueOf(pageNo))
+                .param("page",String.valueOf(page),"size",String.valueOf(20))
                 .contentType(MediaType.APPLICATION_JSON));
-
 
         //then
         resultActions.andExpect(status().isOk());
