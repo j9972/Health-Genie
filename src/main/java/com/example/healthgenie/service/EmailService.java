@@ -1,5 +1,7 @@
 package com.example.healthgenie.service;
 
+import com.example.healthgenie.dto.userMailAuthDto;
+import com.example.healthgenie.dto.userRegisterDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.Random;
 public class EmailService {
     private String authNum; //랜덤 인증 코드
     private final JavaMailSender emailSender;
+    private final EmailService emailService;
 
     //랜덤 인증 코드 생성
     public String createCode() {

@@ -3,6 +3,7 @@ package com.example.healthgenie.service;
 import com.example.healthgenie.Email.EmailValidator;
 import com.example.healthgenie.dto.userLoginDto;
 import com.example.healthgenie.dto.userLoginResponseDto;
+import com.example.healthgenie.dto.userMailAuthDto;
 import com.example.healthgenie.dto.userRegisterDto;
 import com.example.healthgenie.entity.RefreshToken;
 import com.example.healthgenie.entity.Role;
@@ -43,14 +44,14 @@ public class UserService {
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
-    public ResponseEntity<String> signUp(userRegisterDto request) {
+    public ResponseEntity<String> signUp(userRegisterDto request, userMailAuthDto requestData) {
         log.info("Inside  signUp {}", request.getEmail());
         try {
             // 이메일 유효성 검사
             boolean isValidEmail = emailValidator.test(request.getEmail());
 
             if (!isValidEmail) {
-                log.info("email not valid");
+                log.info("email is not valid");
                 throw new UserEmailException(UserEmailErrorResult.INVALID_EMAIL);
             }
 
@@ -64,12 +65,12 @@ public class UserService {
 
             String hashPWD = passwordEncoder.encode(request.getPassword());
 
-            // 난수 만들어서 이메일 인증을 위함
-            String authCode = emailService.createCode();
+            String[] isAuthMail = authMail(request.getEmail(), requestData);
 
-            log.info("authCode {} ", authCode);
-
-            emailService.sendSimpleMessage(request.getEmail(), "This is AuthCode", "This confirm Number : "+ authCode);
+            if (isAuthMail[0] == "false") {
+                log.info("email is not authenticate");
+                throw new UserEmailException(UserEmailErrorResult.UNAUTHORIZED);
+            }
 
             User user = User.builder()
                     .name(request.getName())
@@ -81,13 +82,27 @@ public class UserService {
 
             userRepository.save(user);
 
-            return basicUtils.getResponseEntity("{\"authCode\":\"" + authCode +"\"}", HttpStatus.OK);
+            return basicUtils.getResponseEntity("[\"authCode\":\"" + isAuthMail[1] +"\"]", HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         throw new UserEmailException(UserEmailErrorResult.UNkNOWN_EXCEPTION);
+    }
+
+    public String[] authMail(String email, userMailAuthDto request) {
+        // 난수 만들어서 이메일 인증을 위함
+        String authCode = emailService.createCode();
+        log.info("authCode {} ", authCode);
+
+        emailService.sendSimpleMessage(email, "This is AuthCode", "This confirm Number : "+ authCode);
+
+        if (request.getAuthCode() != authCode) {
+            return new String[] {"false", authCode};
+        }
+
+        return new String[] {"true", authCode};
     }
 
 
