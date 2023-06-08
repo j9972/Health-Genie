@@ -1,12 +1,13 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.dto.CommunitiyPostResponseDto;
-import com.example.healthgenie.dto.CommunityPostGetResponseDto;
-import com.example.healthgenie.dto.CommunityPostListResponseDto;
-import com.example.healthgenie.dto.CommunityPostRequestDto;
+import com.example.healthgenie.dto.*;
 import com.example.healthgenie.entity.CommunityPost;
 import com.example.healthgenie.service.CommunityPostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +36,11 @@ public class CommunityPostController {
     }
 
     @GetMapping("/communtiy/post")
-    public ResponseEntity getPostList(@RequestParam int pageNo){
-        CommunityPostListResponseDto result = postService.getPostList(pageNo);
+    public ResponseEntity<Page<CommunityPostIdTitleDto>> getPostsByPage(@RequestParam(defaultValue = "0") int page,
+                                                                        @RequestParam(defaultValue = "20") int size) {
 
-        return new ResponseEntity(result,HttpStatus.OK);
+        Page<CommunityPost> posts = postService.getPostsByPage(page,size);
+        Page<CommunityPostIdTitleDto> postDtos = posts.map(post -> new CommunityPostIdTitleDto(post.getId(), post.getTitle()));
+        return new ResponseEntity(postDtos,HttpStatus.OK);
     }
 }

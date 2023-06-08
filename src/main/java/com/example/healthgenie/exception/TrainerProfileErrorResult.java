@@ -3,13 +3,13 @@ package com.example.healthgenie.exception;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+
 @Getter
 @RequiredArgsConstructor
-public enum CommunityPostErrorResult {
+public enum TrainerProfileErrorResult {
 
-    POST_EMPTY(HttpStatus.BAD_REQUEST,"post is empty Request"),
-    UNkNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"unknown_Exception"),
-    PAGE_EMPTY(HttpStatus.BAD_REQUEST,"post is empty Request");
+    PROFILE_EMPTY(HttpStatus.BAD_REQUEST,"profile is empty Request"),
+    UNkNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"unknown_Exception");
 
 
     private final HttpStatus httpStatus;
