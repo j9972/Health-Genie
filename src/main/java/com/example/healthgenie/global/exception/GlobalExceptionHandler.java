@@ -1,9 +1,6 @@
 package com.example.healthgenie.global.exception;
 
-import com.example.healthgenie.exception.CommunityPostErrorResult;
-import com.example.healthgenie.exception.CommunityPostException;
-import com.example.healthgenie.exception.PtReviewErrorResult;
-import com.example.healthgenie.exception.PtReviewException;
+import com.example.healthgenie.exception.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -57,10 +54,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("CommunityException occur: ", exception);
         return this.makeErrorResponseEntity(exception.getCommunityPostErrorResult());
     }
+
+    @ExceptionHandler({TrainerProfileException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final TrainerProfileException exception) {
+        log.warn("TrainerProfileException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getTrainerProfileErrorResult());
+    }
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorResponse> handleException(final Exception exception) {
         log.warn("Exception occur: ", exception);
         return this.makeErrorResponseEntity(PtReviewErrorResult.UNkNOWN_EXCEPTION);
+    }
+
+    @ExceptionHandler({UserEmailException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final UserEmailException exception) {
+        log.warn("UserEmailException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getUserEmailErrorResult());
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final UserEmailErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final PtReviewErrorResult errorResult) {
@@ -69,6 +83,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final CommunityPostErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final TrainerProfileErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }

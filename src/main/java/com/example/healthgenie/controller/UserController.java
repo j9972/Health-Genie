@@ -1,8 +1,10 @@
 package com.example.healthgenie.controller;
 
 import com.example.healthgenie.dto.userLoginDto;
+import com.example.healthgenie.dto.userMailAuthDto;
 import com.example.healthgenie.dto.userRegisterDto;
-import com.example.healthgenie.global.constants.constant;
+import com.example.healthgenie.exception.UserEmailErrorResult;
+import com.example.healthgenie.exception.UserEmailException;
 import com.example.healthgenie.global.utils.basicUtils;
 import com.example.healthgenie.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,36 +22,20 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/User/signup") // http://localhost:1234/User/signup
-    public ResponseEntity<String> signUp(@RequestBody userRegisterDto request) {
-        try{
-            return userService.signUp(request);
-        } catch (Exception ex) {
-            log.error("{}", ex.getMessage());
-            ex.printStackTrace();
-        }
-        return basicUtils.getResponseEntity(constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<String> signUp(@RequestBody userRegisterDto request, @RequestBody userMailAuthDto requestData) {
+        return userService.signUp(request, requestData);
     }
 
+    // 이메일 인증
+    @PostMapping("/User/authMail") // http://localhost:1234/User/authMail
+    public String[] authMail(@RequestBody String email, @RequestBody userMailAuthDto requestData) {
+        return userService.authMail(email, requestData);
+    }
+
+    // 로그인
     @PostMapping("/User/login") // http://localhost:1234/User/login
     public ResponseEntity<String> login(@RequestBody userLoginDto request) {
-        try {
-            return userService.login(request);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return basicUtils.getResponseEntity(constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return userService.login(request);
     }
-
-    // 트레이너 회원가입
-//    @PostMapping("/User/signup/trainer") // http://localhost:1234/User/signup/trainer
-//    public ResponseEntity<String> trainerSignUp(@RequestBody userRegisterDto request) {
-//        try{
-//            return userService.trainerSignUp(request);
-//        } catch (Exception ex) {
-//            log.error("{}", ex.getMessage());
-//            ex.printStackTrace();
-//        }
-//        return basicUtils.getResponseEntity(constant.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
 
 }

@@ -1,10 +1,13 @@
 package com.example.healthgenie.repository;
 
 import com.example.healthgenie.entity.TrainerProfile;
+import com.example.healthgenie.entity.UserPtReview;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,6 +78,20 @@ public class TrainerProfileRepositoryTest {
         assertThat(result.getCertification()).isEqualTo("약력/수정증명서");
         assertThat(result.getName()).isEqualTo("trainer");
         assertThat(result.getId()).isEqualTo(saveProfile.getId());
+    }
+
+    @Test
+    public void profileGet(){
+
+        //given
+        final TrainerProfile profile = TrainerProfile.builder()
+                .build();
+        final TrainerProfile saveProfile = repository.save(profile);
+        //when
+        final Optional<TrainerProfile> findProfile = repository.findById(saveProfile.getId());
+
+        //then
+        assertThat(findProfile.get().getId()).isEqualTo(saveProfile.getId());
     }
 
 }

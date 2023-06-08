@@ -11,15 +11,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.ArgumentMatchers.any;
@@ -96,22 +95,30 @@ public class CommunityPostServiceTest {
 
 
     @Test
-    public void 게시물리스트조회성공(){
-        //given
-        List<CommunityPost> postList = new ArrayList<>();
-        for(int i=1;i<50;i++){
-            CommunityPost savePost = CommunityPost.builder().title("인덱스는"+i).build();
-            postList.add(savePost);
-        }
-        repository.saveAll(postList);
+    void 게시물리스트조회실패_페이지번호오류() {
+        // Set up the mock behavior for the repository
+        int page = -1;
+        int size = 20;
+        final CommunityPostException result = assertThrows(CommunityPostException.class, () -> target.getPostsByPage(page,size));
 
-        Page<CommunityPost> page = Page.empty();
-        Pageable pageable = PageRequest.of(1,20);
-        doReturn(pageable).when(repository).findAll(any(PageRequest.class));
-        //when
-        CommunityPostListResponseDto dto = target.getPostList(0);
-        //then
-        assertThat(dto).isNotNull();
+        // Perform the test
+        assertThat(result.getCommunityPostErrorResult()).isEqualTo(CommunityPostErrorResult.PAGE_EMPTY);
+
+    }
+    @Test
+    public void 게시물리스트조회성공(){
+        // Given
+        List<CommunityPost> dummyData = createDummyPosts(40);  // 40 dummy data 생성
+        Sort sort = Sort.by("createdDate").descending();
+        Pageable pageable = PageRequest.of(0, 20,sort); // 첫 번째 페이지, 페이지당 20개 아이템, sort는 날짜 최신순
+        Page<CommunityPost> dummyPage = new PageImpl<>(dummyData, pageable, 60); //더미페이지 생성
+        when(repository.findAll(pageable)).thenReturn(dummyPage);  // findAll 메서드가 dummyPage 반환하도록 설정
+        // When
+        Page<CommunityPost> result = target.getPostsByPage(0,20);
+        // Then
+        assertEquals(3, result.getTotalPages());  // 전체 페이지 수는 2여야 함
+        assertEquals(60, result.getTotalElements());  // 전체 게시물 수는 40개여야 함
+        assertThat(result.getSize()).isEqualTo(20); //현재 페이지 게시물은 20개 여야함
 
     }
 
@@ -125,6 +132,17 @@ public class CommunityPostServiceTest {
                 .title(dto.getTitle())
                 .user(User.builder().id(userId).build())
                 .build();
+    }
+    private List<CommunityPost> createDummyPosts(int count) {
+        List<CommunityPost> dummyPosts = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            CommunityPost post = CommunityPost.builder()
+                    .id(Long.valueOf(i))
+                    .title("title"+i)
+                    .build();
+            dummyPosts.add(post);
+        }
+        return dummyPosts;
     }
 
 }
