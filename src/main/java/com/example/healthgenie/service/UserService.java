@@ -13,7 +13,6 @@ import com.example.healthgenie.exception.UserEmailErrorResult;
 import com.example.healthgenie.exception.UserEmailException;
 import com.example.healthgenie.global.config.CustomerUsersDetailsService;
 import com.example.healthgenie.global.config.JwtUtil;
-import com.example.healthgenie.global.constants.constant;
 import com.example.healthgenie.global.utils.basicUtils;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

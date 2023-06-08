@@ -4,7 +4,6 @@ import com.example.healthgenie.dto.userLoginDto;
 import com.example.healthgenie.dto.userRegisterDto;
 import com.example.healthgenie.exception.UserEmailErrorResult;
 import com.example.healthgenie.exception.UserEmailException;
-import com.example.healthgenie.global.constants.constant;
 import com.example.healthgenie.global.utils.basicUtils;
 import com.example.healthgenie.service.UserService;
 import lombok.RequiredArgsConstructor;
