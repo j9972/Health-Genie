@@ -1,15 +1,11 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.dto.TrainerProfileModifiyResponseDto;
-import com.example.healthgenie.dto.TrainerProfileModifyRequestDto;
-import com.example.healthgenie.dto.TrainerProfileRequestDto;
-import com.example.healthgenie.dto.TrainerProfileResponseDto;
+import com.example.healthgenie.dto.*;
 import com.example.healthgenie.service.TrainerProfileServie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,7 +16,7 @@ public class TrainerProfileController {
 
 
     @PostMapping("/profile/add")
-    public ResponseEntity profileAdd(TrainerProfileRequestDto dto){
+    public ResponseEntity profileAdd(@RequestBody TrainerProfileRequestDto dto){
 
         Long userId =1L;//회원기능 구현 시 userAdapter에서 Id받는 것으로 대체
 
@@ -29,11 +25,19 @@ public class TrainerProfileController {
     }
 
     @PostMapping("/profile/modify")
-    public ResponseEntity profileModifiy(TrainerProfileModifyRequestDto dto){
+    public ResponseEntity profileModifiy(@RequestBody TrainerProfileModifyRequestDto dto){
 
         Long userId = 1L;//회원기능 구현 시 userAdapter에서 Id받는 것으로 대체
 
         TrainerProfileModifiyResponseDto result = profileServie.profileModify(dto,userId);
+
+        return new ResponseEntity(result,HttpStatus.OK);
+    }
+
+    @GetMapping("/profile/{id}")
+    public ResponseEntity profileGet(@PathVariable("id") Long id){
+
+        TrainerProfileGetResponseDto result =profileServie.profileGet(id);
 
         return new ResponseEntity(result,HttpStatus.OK);
     }

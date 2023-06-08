@@ -1,20 +1,22 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.dto.TrainerProfileModifiyResponseDto;
-import com.example.healthgenie.dto.TrainerProfileModifyRequestDto;
-import com.example.healthgenie.dto.TrainerProfileRequestDto;
-import com.example.healthgenie.dto.TrainerProfileResponseDto;
+import com.example.healthgenie.dto.*;
 import com.example.healthgenie.entity.TrainerProfile;
+import com.example.healthgenie.exception.CommunityPostException;
+import com.example.healthgenie.exception.TrainerProfileErrorResult;
+import com.example.healthgenie.exception.TrainerProfileException;
 import com.example.healthgenie.repository.TrainerProfileRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
@@ -82,6 +84,36 @@ public class TrainerProfileServieTest {
 
         //then
         assertThat(result.getProfileId()).isNotNull();
+
+    }
+
+    @Test
+    public void 약력조회실패(){
+
+        //given
+        Optional<TrainerProfile> profile = Optional.empty();
+        doReturn(profile).when(repository).findById(any(Long.class));
+        //when
+        final TrainerProfileException result = assertThrows(TrainerProfileException.class, () -> target.profileGet(1L));
+        //then
+        assertThat(result).isNotNull();
+        assertThat(result.getTrainerProfileErrorResult()).isEqualTo(TrainerProfileErrorResult.PROFILE_EMPTY);
+    }
+
+    @Test
+    public void 약력조회성공(){
+        //given
+
+        Optional<TrainerProfile> profile = Optional.ofNullable(TrainerProfile.builder().name("test").id(1L).build());
+        doReturn(profile).when(repository).findById(any(Long.class));
+        //when
+
+        TrainerProfileGetResponseDto result = target.profileGet(profile.get().getId());
+        //then
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getName()).isEqualTo("test");
 
     }
 }

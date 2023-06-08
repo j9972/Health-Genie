@@ -1,5 +1,7 @@
 package com.example.healthgenie.controller;
 
+import com.example.healthgenie.dto.TrainerProfileGetRequestDto;
+import com.example.healthgenie.dto.TrainerProfileGetResponseDto;
 import com.example.healthgenie.dto.TrainerProfileModifyRequestDto;
 import com.example.healthgenie.dto.TrainerProfileRequestDto;
 import com.example.healthgenie.entity.TrainerProfile;
@@ -96,6 +98,25 @@ public class TrainerProfileControllerTest {
         //예상 실패경로 없음
     }
 
+    @Test
+    public void 약력조회실패_존재하지않음(){
+
+    }
+
+    @Test
+    public void 약력조회성공() throws Exception {
+        //given
+        String url = "/profile/{id}";
+        TrainerProfileGetRequestDto dto = TrainerProfileGetRequestDto.builder().id(1L).build();
+        doReturn(TrainerProfileGetResponseDto.builder().id(1L).build()).when(servie).profileGet(1L);
+        //when
+        final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+                .get("/profile/{id}",dto.getId())
+                .contentType(MediaType.APPLICATION_JSON));
+        //then
+        resultActions.andExpect(status().isOk());
+
+    }
     public TrainerProfileRequestDto TrainerProfileRequestDto(){
         return TrainerProfileRequestDto.builder()
                 .certification("test").build();

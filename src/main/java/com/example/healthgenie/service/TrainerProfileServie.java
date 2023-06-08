@@ -1,11 +1,10 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.dto.TrainerProfileModifiyResponseDto;
-import com.example.healthgenie.dto.TrainerProfileModifyRequestDto;
-import com.example.healthgenie.dto.TrainerProfileRequestDto;
-import com.example.healthgenie.dto.TrainerProfileResponseDto;
+import com.example.healthgenie.dto.*;
 import com.example.healthgenie.entity.TrainerProfile;
 import com.example.healthgenie.entity.User;
+import com.example.healthgenie.exception.TrainerProfileErrorResult;
+import com.example.healthgenie.exception.TrainerProfileException;
 import com.example.healthgenie.repository.TrainerProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -59,5 +58,30 @@ public class TrainerProfileServie {
 
         TrainerProfile resultProfile = trainerProfileRepository.save(saveProfile);
         return TrainerProfileModifiyResponseDto.builder().profileId(resultProfile.getId()).build();
+    }
+
+    //약력 조회
+    public TrainerProfileGetResponseDto profileGet(Long id){
+
+        Optional<TrainerProfile> optFindProfile = trainerProfileRepository.findById(id);
+
+        if(!optFindProfile.isPresent()){
+            throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY);
+        }
+        TrainerProfile findProfile = optFindProfile.get();
+
+        TrainerProfileGetResponseDto resultDto = TrainerProfileGetResponseDto.builder()
+                .id(findProfile.getId())
+                .avgSarScore(findProfile.getAvgSarScore())
+                .certification(findProfile.getCertification())
+                .description(findProfile.getDescription())
+                .matchingTimes(findProfile.getMatchingTimes())
+                .name(findProfile.getName())
+                .pics(findProfile.getPics())
+                .trainer(findProfile.getTrainer())
+                .prize(findProfile.getPrize())
+                .build();
+
+        return resultDto;
     }
 }
