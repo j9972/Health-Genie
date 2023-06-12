@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/community/post")
 public class CommunityPostController {
 
 
 
     private final CommunityPostService postService;
 
-    @PostMapping("/community/post/add")
+    @PostMapping("/add")
     public ResponseEntity addPost(@RequestBody CommunityPostRequestDto dto){
 
         Long userId =1L; //로그인기능 완성전 임시 변수
@@ -28,14 +29,14 @@ public class CommunityPostController {
         return new ResponseEntity(result,HttpStatus.OK);
     }
 
-    @GetMapping("/community/post/get")
+    @GetMapping("/get")
     public ResponseEntity getPost(@RequestParam Long postId){
         CommunityPostGetResponseDto result = postService.getPost(postId);
 
         return new ResponseEntity(result,HttpStatus.OK);
     }
 
-    @GetMapping("/communtiy/post")
+    @GetMapping("/")
     public ResponseEntity<Page<CommunityPostIdTitleDto>> getPostsByPage(@RequestParam(defaultValue = "0") int page,
                                                                         @RequestParam(defaultValue = "20") int size) {
 

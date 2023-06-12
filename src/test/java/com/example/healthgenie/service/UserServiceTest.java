@@ -1,45 +1,80 @@
 package com.example.healthgenie.service;
 
+import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
-// @SpringBootTest
-@ExtendWith(MockitoExtension.class)
+@Slf4j
+//@SpringBootTest
+@Service
+@ExtendWith(SpringExtension.class)
 class UserServiceTest {
 
-    @Mock
+
+    @Autowired
     private UserRepository userRepository;
 
-    @Mock
+    @Autowired
     private UserService userService;
 
 
     @DisplayName("회원 가입")
     @Test
-    void signUp() {
+    @Transactional
+    public void signUp() {
+        log.info("test - signUp");
         // Given -> 테스트에서 사용되는 변수, 입력 값들을 정의 or Mock 객체 정의
-//        ResponseEntity<String> user = userService.signUp(userRegisterDto.builder()
-//                .email("test@email.com")
-//                .name("testName")
-//                .password("testPwd")
-//                .uniName("kyung")
-//                .role(Role.USER)
-//                .build()
-//        );
+        User user = User.builder()
+                .email("email@naver.com")
+                .password("1234")
+                .uniName("knu")
+                .name("test")
+                .role(Role.ADMIN)
+                .build();
 
         // When -> action 을 하는 테스트 실행 -> 하나의 메서드만 & 가장 중요하지만 짧다
-        User result = userRepository.findByEmail("test@email.com").get();
+         Long saveId = userRepository.save(user).getId();
+        // User saveUser = userRepository.save(user);
 
         // Then -> 실행 결과 검증 , 예상 값과 실제 값 비교, assertThat 사용하기
-//        assertThat(user).isEqualTo(result);
+        User findMember = userRepository.findById(saveId).get();
+        // User findMember = userRepository.findByEmail(saveUser.getEmail()).get();
+        assertThat(user.getName()).isEqualTo(findMember.getName());
+
+    }
+
+    @Test
+    @DisplayName("회원 이름으로 조회 테스트")
+    @Transactional
+    public void findUserByEmail() {
+
+        // given
+        User insertUser = userRepository.save(User.builder()
+                .password("javascript")
+                .email("test@naver.com")
+                .name("RexSeo")
+                .uniName("knu")
+                .role(Role.USER)
+                .build());
+
+        // when
+        Optional<User> findUser = userRepository.findByEmail("test@naver.com");
+
+        // then
+        assertThat(insertUser).isEqualTo(findUser);
     }
 }
