@@ -13,7 +13,6 @@ public class RefreshToken extends BaseEntity {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "refresh_token_id")
     private Long id;
 
@@ -23,4 +22,9 @@ public class RefreshToken extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User member;
+
+    public void changeToken(String token) {
+        this.token = token;
+    }
+
 }
