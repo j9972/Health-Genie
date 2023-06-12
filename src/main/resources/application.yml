@@ -11,13 +11,11 @@ devtools:
 
 spring:
   profiles:
-    default: dev # 기본 환경을 dev 로
+    default: dev # 기본 환경을 dev 로 고정
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/health_genie
-#    username : root
-#    password : vvxc9874
     username : ENC(nAsqvWCx8AVbIHeRZ7uY3w==)
     password : ENC(YO1qfrCAV02aYQYHJupxJAePvy8bzqkE)
 
@@ -37,11 +35,9 @@ spring:
     # stmp.gmail.com -> 587 port number
     host: smtp.gmail.com
     port: 587
-    username : jeaun8061@gmail.com
-    password : vvxc9874
-#    username: ENC(NqNmjGbZOQfimoMI2BXagz+zMKbxZiP1)
-    # spring.mail.password= password -> myaccount.google.com
-#    password: ENC(etHNO+7HUizMoFYexGWYKcuYYXGfkR1dRIock26/oS8=)
+    username: ENC(NqNmjGbZOQfimoMI2BXagz+zMKbxZiP1)
+     #spring.mail.password= password -> myaccount.google.com
+    password: ENC(etHNO+7HUizMoFYexGWYKcuYYXGfkR1dRIock26/oS8=)
     properties:
       mail:
         default-encoding : utf-8
@@ -68,7 +64,8 @@ logging:
 
 social:
   kakao:
-    client-id: c8d5676bf2406c1c8d922ff01e72f0c9
+    #client-id: c8d5676bf2406c1c8d922ff01e72f0c9
+    client-id: ENC(mUalysmOr7h6Wn5IPIMV717WrJog+ZkSIGNSNVFiJy5Sio24KVTwWDrM0tP2tjPw)
     redirect: /auth/kakao/redirect
     url:
       login: https://kauth.kakao.com/oauth/authorize
