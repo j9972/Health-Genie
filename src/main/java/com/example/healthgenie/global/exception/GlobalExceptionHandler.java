@@ -61,9 +61,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.makeErrorResponseEntity(exception.getTrainerProfileErrorResult());
     }
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<ErrorResponse> handleException(final Exception exception) {
+    public ResponseEntity<Object> handleException(final Exception exception) {
         log.warn("Exception occur: ", exception);
-        return this.makeErrorResponseEntity(PtReviewErrorResult.UNkNOWN_EXCEPTION);
+        return this.makeErrorResponseEntity(exception.getMessage().toString());
+    }
+
+    @ExceptionHandler({CommonException.class})
+    public ResponseEntity<ErrorResponse> handleException(final CommonException exception) {
+        log.warn("Exception occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getCommonErrorResult());
     }
 
     @ExceptionHandler({UserEmailException.class})
@@ -77,6 +83,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
 
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final CommonErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final PtReviewErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));

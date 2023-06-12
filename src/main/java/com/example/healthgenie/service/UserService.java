@@ -1,20 +1,11 @@
 package com.example.healthgenie.service;
 
 import com.example.healthgenie.Email.EmailValidator;
-import com.example.healthgenie.dto.userLoginDto;
-import com.example.healthgenie.dto.userLoginResponseDto;
-import com.example.healthgenie.dto.userMailAuthDto;
-import com.example.healthgenie.dto.userRegisterDto;
+import com.example.healthgenie.dto.*;
 import com.example.healthgenie.entity.RefreshToken;
-import com.example.healthgenie.entity.Role;
 import com.example.healthgenie.entity.User;
-import com.example.healthgenie.exception.PtReviewErrorResult;
-import com.example.healthgenie.exception.PtReviewException;
-import com.example.healthgenie.exception.UserEmailErrorResult;
-import com.example.healthgenie.exception.UserEmailException;
-import com.example.healthgenie.global.config.CustomerUsersDetailsService;
+import com.example.healthgenie.exception.*;
 import com.example.healthgenie.global.config.JwtUtil;
-import com.example.healthgenie.global.utils.basicUtils;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,21 +29,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
-    private final CustomerUsersDetailsService customerUsersDetailsService;
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
-    public ResponseEntity<String> signUp(userRegisterDto request, userMailAuthDto requestData) {
+    public Long signUp(userRegisterDto request) {
         log.info("Inside  signUp {}", request.getEmail());
         try {
-            // 이메일 유효성 검사
-            boolean isValidEmail = emailValidator.test(request.getEmail());
-
-            if (!isValidEmail) {
-                log.info("email is not valid");
-                throw new UserEmailException(UserEmailErrorResult.INVALID_EMAIL);
-            }
 
             // 유저 중복 체크
             boolean userExists = userRepository.findByEmail(request.getEmail()).isPresent();
@@ -62,27 +45,18 @@ public class UserService {
                 throw new UserEmailException(UserEmailErrorResult.DUPLICATED_EMAIL);
             }
 
-            String hashPWD = passwordEncoder.encode(request.getPassword());
+//            String hashPWD = passwordEncoder.encode(request.getPassword());
 
-            String[] isAuthMail = authMail(request.getEmail(), requestData);
+//            User user = User.builder()
+//                    .name(request.getName())
+//                    .password(hashPWD)
+//                    .email(request.getEmail())
+//                    .uniName(request.getUniName())
+//                    .role(request.getRole())
+//                    .build();
 
-            if (isAuthMail[0] == "false") {
-                log.info("email is not authenticate");
-                throw new UserEmailException(UserEmailErrorResult.UNAUTHORIZED);
-            }
-
-            User user = User.builder()
-                    .name(request.getName())
-                    .password(hashPWD)
-                    .email(request.getEmail())
-                    .uniName(request.getUniName())
-                    .role(request.getRole())
-                    .build();
-
-            userRepository.save(user);
-
-            return basicUtils.getResponseEntity("[\"authCode\":\"" + isAuthMail[1] +"\"]", HttpStatus.OK);
-
+            User user = request.toEntity(passwordEncoder);
+            return userRepository.save(user).getId();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,24 +64,26 @@ public class UserService {
         throw new UserEmailException(UserEmailErrorResult.UNkNOWN_EXCEPTION);
     }
 
-    public String[] authMail(String email, userMailAuthDto request) {
-        // 난수 만들어서 이메일 인증을 위함
-        String authCode = emailService.createCode();
-        log.info("authCode {} ", authCode);
-
-        emailService.sendSimpleMessage(email, "This is AuthCode", "This confirm Number : "+ authCode);
-
-        if (request.getAuthCode() != authCode) {
-            return new String[] {"false", authCode};
+    public String authMail(String email) {
+        //유효성검사
+        boolean isValidEmail = emailValidator.test(email);
+        if (!isValidEmail) {
+            log.info("email is not valid");
+            throw new UserEmailException(UserEmailErrorResult.INVALID_EMAIL);
         }
 
-        return new String[] {"true", authCode};
+        // 난수 생성
+        String authCode = emailService.createCode();
+
+        //생성한 난수 저장
+        emailService.saveCode(authCode);
+        log.info("authCode {} ", authCode);
+
+        //난수코드 전송
+        emailService.sendSimpleMessage(email, "This is AuthCode", "This confirm Number : "+ authCode);
+        return authCode;
     }
 
-
-    public Optional<User> findOne(String email){
-        return userRepository.findByEmail(email);
-    }
 
     public ResponseEntity<String> login(userLoginDto request) {
         log.info("Inside login check");
@@ -116,6 +92,9 @@ public class UserService {
             // email이 없을 경우 Exception이 발생한다. Global Exception에 대한 처리가 필요하다.
             Optional<User> user = userRepository.findByEmail(request.getEmail());
 
+            if(user.isEmpty()){
+                throw new CommonException(CommonErrorResult.UNAUTHORIZED);
+            }
             log.info("user : {}", user);
 
             if(!passwordEncoder.matches(request.getPassword(), user.get().getPassword())){
@@ -128,9 +107,6 @@ public class UserService {
 
 
             if(auth.isAuthenticated()) {
-                log.info("auth 인증 됨");
-                log.info("customerUsersDetailsService.getUserDetail() : {} ", customerUsersDetailsService.getUserDetail().get());
-
 
                 String accessToken = jwtUtil.createAccessToken(user.get().getEmail(), user.get().getRole().toString());
                 String refreshToken = jwtUtil.createRefreshToken(user.get().getEmail(), user.get().getRole().toString());
@@ -161,5 +137,42 @@ public class UserService {
         }
         throw new UserEmailException(UserEmailErrorResult.BAD_CREDENTIALS);
     }
+
+
+    @Transactional
+    public Long socialSignup(userRegisterDto userSignupRequestDto) {
+        if (userRepository
+                .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
+                .isPresent()
+        ) throw new CommonException(CommonErrorResult.ITEM_EMPTY);
+        return userRepository.save(userSignupRequestDto.toEntity()).getId();
+    }
+
+    @Transactional
+    public ResponseEntity socialLogin(KakaoProfile kakaoProfile){
+        Optional<User> user  = userRepository.findByEmailAndProvider(kakaoProfile.getKakao_account().getEmail(), "kakao");
+        if(user.isEmpty()){
+            throw new CommonException(CommonErrorResult.ITEM_EMPTY);
+        }
+
+        String accessToken = jwtUtil.createAccessToken(user.get().getEmail(), user.get().getRole().toString());
+        String refreshToken = jwtUtil.createRefreshToken(user.get().getEmail(), user.get().getRole().toString());
+
+        RefreshToken refreshTokenEntity = new RefreshToken();
+        refreshTokenEntity.setToken(refreshToken);
+        refreshTokenEntity.setId(user.get().getId());
+        refreshTokenService.addRefreshToken(refreshTokenEntity);
+
+        userLoginResponseDto loginResponse = userLoginResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .user_id(user.get().getId())
+                .email(user.get().getEmail())
+                .build();
+
+        //TODO : builder()를 데이터로 뽑는 방법이다
+        return new ResponseEntity(loginResponse, HttpStatus.OK);
+    }
+
 
 }
