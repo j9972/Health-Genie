@@ -1,6 +1,6 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.entity.RefreshToken;
+import com.example.healthgenie.domain.user.entity.RefreshToken;
 import com.example.healthgenie.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

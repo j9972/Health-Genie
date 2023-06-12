@@ -1,6 +1,6 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.dto.RetKakaoOAuth;
+import com.example.healthgenie.domain.user.dto.RetKakaoOAuth;
 import com.example.healthgenie.service.KakaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

@@ -1,7 +1,10 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.dto.*;
-import com.example.healthgenie.entity.Role;
+import com.example.healthgenie.domain.user.dto.KakaoProfile;
+import com.example.healthgenie.domain.user.dto.SocialSignupRequestDto;
+import com.example.healthgenie.domain.user.dto.userLoginDto;
+import com.example.healthgenie.domain.user.dto.userRegisterDto;
+import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.exception.CommonErrorResult;
 import com.example.healthgenie.exception.CommonException;
 import com.example.healthgenie.service.EmailService;

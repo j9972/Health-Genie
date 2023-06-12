@@ -1,8 +1,8 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.dto.*;
-import com.example.healthgenie.entity.TrainerProfile;
-import com.example.healthgenie.entity.User;
+import com.example.healthgenie.domain.trainer.dto.*;
+import com.example.healthgenie.domain.trainer.entity.TrainerProfile;
+import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.TrainerProfileErrorResult;
 import com.example.healthgenie.exception.TrainerProfileException;
 import com.example.healthgenie.repository.TrainerProfileRepository;

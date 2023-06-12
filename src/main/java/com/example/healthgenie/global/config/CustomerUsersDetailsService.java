@@ -1,6 +1,6 @@
 package com.example.healthgenie.global.config;
 
-import com.example.healthgenie.entity.User;
+import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

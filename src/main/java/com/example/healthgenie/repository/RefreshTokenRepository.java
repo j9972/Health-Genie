@@ -1,6 +1,6 @@
 package com.example.healthgenie.repository;
 
-import com.example.healthgenie.entity.RefreshToken;
+import com.example.healthgenie.domain.user.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
