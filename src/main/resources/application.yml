@@ -11,16 +11,18 @@ devtools:
 
 spring:
   profiles:
-    active: ${profile}
+    default: dev # 기본 환경을 dev 로
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/health_genie
     username : ENC(nAsqvWCx8AVbIHeRZ7uY3w==)
-    password : ENC(YO1qfrCAV02aYQYHJupxJAePvy8bzqkE)
+    password : ENC(D5G0qihPgGwozO3druLeAyHadqtRtpnk)
+
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -28,6 +30,7 @@ spring:
           apply_to_ddl : false
         format_sql: true
     database: mysql
+
   mail:
     # stmp.gmail.com -> 587 port number
     host: smtp.gmail.com
