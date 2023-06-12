@@ -1,8 +1,10 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.dto.*;
-import com.example.healthgenie.entity.CommunityPost;
-import com.example.healthgenie.entity.User;
+import com.example.healthgenie.domain.community.dto.CommunitiyPostResponseDto;
+import com.example.healthgenie.domain.community.dto.CommunityPostGetResponseDto;
+import com.example.healthgenie.domain.community.dto.CommunityPostRequestDto;
+import com.example.healthgenie.domain.community.entity.CommunityPost;
+import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.CommunityPostErrorResult;
 import com.example.healthgenie.exception.CommunityPostException;
 import com.example.healthgenie.repository.CommunityPostRepository;

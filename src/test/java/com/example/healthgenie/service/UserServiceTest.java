@@ -1,16 +1,12 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.dto.userRegisterDto;
-import com.example.healthgenie.entity.Role;
-import com.example.healthgenie.entity.User;
+import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;

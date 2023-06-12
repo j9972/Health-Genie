@@ -1,10 +1,8 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.dto.CommunityPostRequestDto;
+import com.example.healthgenie.domain.community.dto.CommunityPostRequestDto;
 import com.example.healthgenie.exception.CommunityPostErrorResult;
 import com.example.healthgenie.exception.CommunityPostException;
-import com.example.healthgenie.exception.PtReviewErrorResult;
-import com.example.healthgenie.exception.PtReviewException;
 import com.example.healthgenie.global.exception.GlobalExceptionHandler;
 import com.example.healthgenie.service.CommunityPostService;
 import com.google.gson.Gson;
@@ -14,9 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;

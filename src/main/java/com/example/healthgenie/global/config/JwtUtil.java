@@ -1,7 +1,7 @@
 package com.example.healthgenie.global.config;
 
-import com.example.healthgenie.entity.RefreshToken;
-import com.example.healthgenie.entity.Role;
+import com.example.healthgenie.domain.user.entity.RefreshToken;
+import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

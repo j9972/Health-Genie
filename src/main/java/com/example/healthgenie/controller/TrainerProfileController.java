@@ -1,6 +1,6 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.dto.*;
+import com.example.healthgenie.domain.trainer.dto.*;
 import com.example.healthgenie.service.TrainerProfileServie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

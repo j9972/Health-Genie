@@ -1,7 +1,10 @@
 package com.example.healthgenie.repository;
 
 
-import com.example.healthgenie.entity.*;
+import com.example.healthgenie.domain.matching.entity.MatchingState;
+import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
+import com.example.healthgenie.domain.trainer.entity.TrainerPtApplication;
+import com.example.healthgenie.domain.user.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

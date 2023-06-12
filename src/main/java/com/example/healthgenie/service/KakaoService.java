@@ -1,7 +1,7 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.dto.KakaoProfile;
-import com.example.healthgenie.dto.RetKakaoOAuth;
+import com.example.healthgenie.domain.user.dto.KakaoProfile;
+import com.example.healthgenie.domain.user.dto.RetKakaoOAuth;
 import com.example.healthgenie.exception.CommonErrorResult;
 import com.example.healthgenie.exception.CommonException;
 import com.google.gson.Gson;

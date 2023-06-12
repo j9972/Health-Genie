@@ -1,6 +1,6 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.dto.PtReviewRequestDto;
+import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.exception.PtReviewErrorResult;
 import com.example.healthgenie.exception.PtReviewException;
 import com.example.healthgenie.global.exception.GlobalExceptionHandler;
@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;

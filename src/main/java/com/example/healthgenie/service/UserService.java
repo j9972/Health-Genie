@@ -1,9 +1,12 @@
 package com.example.healthgenie.service;
 
 import com.example.healthgenie.Email.EmailValidator;
-import com.example.healthgenie.dto.*;
-import com.example.healthgenie.entity.RefreshToken;
-import com.example.healthgenie.entity.User;
+import com.example.healthgenie.domain.user.dto.KakaoProfile;
+import com.example.healthgenie.domain.user.dto.userLoginDto;
+import com.example.healthgenie.domain.user.dto.userLoginResponseDto;
+import com.example.healthgenie.domain.user.dto.userRegisterDto;
+import com.example.healthgenie.domain.user.entity.RefreshToken;
+import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.*;
 import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.repository.UserRepository;
