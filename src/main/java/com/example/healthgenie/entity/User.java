@@ -7,12 +7,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Data
 @Entity
+@Getter
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
@@ -41,6 +40,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "refresh_token_id")
     private String refreshTokenId;
 
+    @Column(name = "provider")
+    private String provider;
+
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "role")
@@ -52,15 +54,13 @@ public class User extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<CommunityPost> communityPosts;
-    public void addUser(PtProcess pt){
-        this.ptProcesses.add(pt);
-    }
 
-    private Boolean enabled = false;
+
+    private final Boolean enabled = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(role.getCode()));
     }
 
     @Override
