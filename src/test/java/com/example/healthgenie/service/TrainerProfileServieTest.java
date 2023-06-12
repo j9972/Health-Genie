@@ -1,8 +1,7 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.dto.*;
-import com.example.healthgenie.entity.TrainerProfile;
-import com.example.healthgenie.exception.CommunityPostException;
+import com.example.healthgenie.domain.trainer.dto.*;
+import com.example.healthgenie.domain.trainer.entity.TrainerProfile;
 import com.example.healthgenie.exception.TrainerProfileErrorResult;
 import com.example.healthgenie.exception.TrainerProfileException;
 import com.example.healthgenie.repository.TrainerProfileRepository;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Optional;
 

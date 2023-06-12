@@ -1,6 +1,6 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.entity.EmailAuthCode;
+import com.example.healthgenie.domain.user.entity.EmailAuthCode;
 import com.example.healthgenie.exception.CommonErrorResult;
 import com.example.healthgenie.exception.CommonException;
 import com.example.healthgenie.repository.EmailAuthCodeRepository;

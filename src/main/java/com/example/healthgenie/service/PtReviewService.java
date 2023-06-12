@@ -1,17 +1,15 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.dto.PtReviewRequestDto;
-import com.example.healthgenie.dto.PtReviewResponseDto;
-import com.example.healthgenie.entity.Role;
-import com.example.healthgenie.entity.TrainerPtApplication;
-import com.example.healthgenie.entity.User;
-import com.example.healthgenie.entity.UserPtReview;
+import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
+import com.example.healthgenie.domain.ptreview.dto.PtReviewResponseDto;
+import com.example.healthgenie.domain.trainer.entity.TrainerPtApplication;
+import com.example.healthgenie.domain.user.entity.User;
+import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
 import com.example.healthgenie.exception.PtReviewErrorResult;
 import com.example.healthgenie.exception.PtReviewException;
 import com.example.healthgenie.repository.UserPtReviewRepository;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 

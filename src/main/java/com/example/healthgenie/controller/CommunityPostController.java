@@ -1,13 +1,13 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.dto.*;
-import com.example.healthgenie.entity.CommunityPost;
+import com.example.healthgenie.domain.community.dto.CommunitiyPostResponseDto;
+import com.example.healthgenie.domain.community.dto.CommunityPostGetResponseDto;
+import com.example.healthgenie.domain.community.dto.CommunityPostIdTitleDto;
+import com.example.healthgenie.domain.community.dto.CommunityPostRequestDto;
+import com.example.healthgenie.domain.community.entity.CommunityPost;
 import com.example.healthgenie.service.CommunityPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,7 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.dto.PtReviewRequestDto;
-import com.example.healthgenie.dto.PtReviewResponseDto;
+import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
+import com.example.healthgenie.domain.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.service.PtReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,10 +1,9 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.dto.TrainerProfileGetRequestDto;
-import com.example.healthgenie.dto.TrainerProfileGetResponseDto;
-import com.example.healthgenie.dto.TrainerProfileModifyRequestDto;
-import com.example.healthgenie.dto.TrainerProfileRequestDto;
-import com.example.healthgenie.entity.TrainerProfile;
+import com.example.healthgenie.domain.trainer.dto.TrainerProfileGetRequestDto;
+import com.example.healthgenie.domain.trainer.dto.TrainerProfileGetResponseDto;
+import com.example.healthgenie.domain.trainer.dto.TrainerProfileModifyRequestDto;
+import com.example.healthgenie.domain.trainer.dto.TrainerProfileRequestDto;
 import com.example.healthgenie.global.exception.GlobalExceptionHandler;
 import com.example.healthgenie.service.TrainerProfileServie;
 import com.google.gson.Gson;

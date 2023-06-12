@@ -1,6 +1,6 @@
 package com.example.healthgenie.repository;
 
-import com.example.healthgenie.entity.CommunityPost;
+import com.example.healthgenie.domain.community.entity.CommunityPost;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
