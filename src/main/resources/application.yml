@@ -16,8 +16,10 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/health_genie
+#    username : root
+#    password : vvxc9874
     username : ENC(nAsqvWCx8AVbIHeRZ7uY3w==)
-    password : ENC(D5G0qihPgGwozO3druLeAyHadqtRtpnk)
+    password : ENC(YO1qfrCAV02aYQYHJupxJAePvy8bzqkE)
 
   jpa:
     open-in-view: true
@@ -35,9 +37,11 @@ spring:
     # stmp.gmail.com -> 587 port number
     host: smtp.gmail.com
     port: 587
-    username: ENC(NqNmjGbZOQfimoMI2BXagz+zMKbxZiP1)
+    username : jeaun8061@gmail.com
+    password : vvxc9874
+#    username: ENC(NqNmjGbZOQfimoMI2BXagz+zMKbxZiP1)
     # spring.mail.password= password -> myaccount.google.com
-    password: ENC(etHNO+7HUizMoFYexGWYKcuYYXGfkR1dRIock26/oS8=)
+#    password: ENC(etHNO+7HUizMoFYexGWYKcuYYXGfkR1dRIock26/oS8=)
     properties:
       mail:
         default-encoding : utf-8
@@ -62,4 +66,13 @@ logging:
       springframework:
         security: DEBUG
 
-
+social:
+  kakao:
+    client-id: c8d5676bf2406c1c8d922ff01e72f0c9
+    redirect: /auth/kakao/redirect
+    url:
+      login: https://kauth.kakao.com/oauth/authorize
+      token: https://kauth.kakao.com/oauth/token
+      profile: https://kapi.kakao.com/v2/user/me
+      unlink: https://kapi.kakao.com/v1/user/unlink
+      base: http://localhost:1234
