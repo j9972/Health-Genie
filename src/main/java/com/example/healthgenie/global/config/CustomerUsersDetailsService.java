@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -26,9 +25,21 @@ public class CustomerUsersDetailsService implements UserDetailsService {
         log.info("Inside loadUserByUsername {}", email);
 
         userDetail = userRepository.findByEmail(email); // email 대신 username 을 쓴것
-        if(!Objects.isNull(userDetail)) {
+        if(userDetail.isPresent()) {
             log.info("userDetail {} ", userDetail.get().getEmail());
             return userDetail.get();
+        } else {
+            throw new UsernameNotFoundException("User not found.");
+        }
+    }
+
+    public String loadUserByRole(String email) throws  UsernameNotFoundException {
+        log.info("Inside loadUserByUsername {}", email);
+
+        userDetail = userRepository.findByEmail(email); // email 대신 username 을 쓴것
+        if(userDetail.isPresent()) {
+            log.info("userDetail {} ", userDetail.get().getEmail());
+            return userDetail.get().getRole().getCode();
         } else {
             throw new UsernameNotFoundException("User not found.");
         }
