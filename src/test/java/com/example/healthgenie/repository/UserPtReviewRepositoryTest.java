@@ -3,14 +3,21 @@ package com.example.healthgenie.repository;
 
 import com.example.healthgenie.domain.matching.entity.MatchingState;
 import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
+import com.example.healthgenie.domain.trainer.entity.TrainerProfile;
 import com.example.healthgenie.domain.trainer.entity.TrainerPtApplication;
+import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 
 
 @DataJpaTest
@@ -19,6 +26,8 @@ public class UserPtReviewRepositoryTest {
 
     @Autowired
     private UserPtReviewRepository userPtReviewRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
     //후기 작성하는지 확인
@@ -77,5 +86,52 @@ public class UserPtReviewRepositoryTest {
         assertThat(findReview.getId()).isEqualTo(resultReview.getId());
     }
 
+    @Test
+    public void getAllByTrainer(){
+        //given
+        final User trianer = User.builder().name("trainer").role(Role.GUEST).build();
+        final User user = User.builder().name("user").role(Role.USER).build();
+        final User relsutUser = userRepository.save(trianer);
+        final User rUser = userRepository.save(user);
+
+        final UserPtReview review1 = UserPtReview.builder().trainer(trianer).member(user).build();
+        final UserPtReview review2 = UserPtReview.builder().trainer(trianer).member(user).build();
+
+        final UserPtReview result = userPtReviewRepository.save(review1);
+        final UserPtReview result2 = userPtReviewRepository.save(review2);
+
+        //when
+        final List<UserPtReview> reviewList = userPtReviewRepository.getAllByTrainer(relsutUser);
+        //then
+
+        assertThat(reviewList.size()).isEqualTo(2);
+    }
+
+
+    @Test
+    public void getAllByUser(){
+
+        //given
+
+        final User trainer = User.builder().name("trainer").role(Role.GUEST).build();
+        final User user = User.builder().name("user").role(Role.USER).build();
+        final User relsutUser = userRepository.save(user);
+        final User resultTrainer = userRepository.save(trainer);
+
+
+        final UserPtReview review1 = UserPtReview.builder().trainer(trainer).member(user).build();
+        final UserPtReview review2 = UserPtReview.builder().trainer(trainer).member(user).build();
+
+        final UserPtReview result = userPtReviewRepository.save(review1);
+        final UserPtReview result2 = userPtReviewRepository.save(review2);
+
+        //when
+        final List<UserPtReview> reviewList = userPtReviewRepository.getAllByMember(relsutUser);
+
+        //then
+
+        assertThat(reviewList.size()).isEqualTo(2);
+
+    }
 
 }

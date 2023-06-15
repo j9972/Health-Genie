@@ -50,7 +50,7 @@ public class UserPtReviewControllerTest {
 
 
         //given
-        final String url = "/User/Pt/review";
+        final String url = "api/v1/pt/review";
 
         //when
 
@@ -68,7 +68,7 @@ public class UserPtReviewControllerTest {
     public void 후기작성실패_트레이너_존재하지않음() throws Exception {
 
         //given
-        final String url = "/User/Pt/review";
+        final String url = "/api/v1/pt/review";
         final Long userId=1L;
         doThrow(new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY)).when(ptReviewService).addPtReview(ptReviewRequestDto(),userId);
 
@@ -90,7 +90,7 @@ public class UserPtReviewControllerTest {
 
 
         //given
-        final String url = "/User/Pt/review";
+        final String url = "/api/v1/pt/review";
         final Long userId=1L;
         doThrow(new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW)).when(ptReviewService).addPtReview(ptReviewRequestDto(),userId);
 
@@ -107,6 +107,57 @@ public class UserPtReviewControllerTest {
         resultActions.andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void 트레이너별_후기목록조회() throws Exception {
+
+        //given
+        String url = "/api/v1/pt/review/list/trainer";
+
+        //when
+
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get(url)
+                        .param("trainerId","1")
+                        .contentType(MediaType.APPLICATION_JSON));
+        //then
+
+        resultActions.andExpect(status().isOk());
+    }
+    @Test
+    public void 본인_후기목록조회() throws Exception {
+
+        //given
+        String url = "/api/v1/pt/review/list/my";
+
+        //when
+
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get(url)
+                        .param("userId","1")
+                        .contentType(MediaType.APPLICATION_JSON));
+        //then
+
+        resultActions.andExpect(status().isOk());
+    }
+    @Test
+    public void 후기상세조회() throws Exception {
+        //given
+        String url = "/api/v1/pt/review/detail";
+        //when
+
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("reviewId","1")
+                );
+        //thne
+        resultActions.andExpect(status().isOk());
+
+
+    }
     public PtReviewRequestDto ptReviewRequestDto(){
 
         return PtReviewRequestDto.builder()
