@@ -58,7 +58,7 @@ public class CommunityPostControllerTest {
 
         //given
         CommunityPostRequestDto dto = CommunityPostRequestDto.builder().build();
-        String url = "/community/post/add";
+        String url = "/api/v1/community/post/add";
 
         //when
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post(url)
@@ -72,7 +72,7 @@ public class CommunityPostControllerTest {
     public void 게시물조회성공() throws Exception {
 
         //given
-        String url = "/community/post/get";
+        String url = "/api/v1/community/post/get";
         Long postId = 1L;
 
         //when
@@ -88,7 +88,7 @@ public class CommunityPostControllerTest {
     @Test
     public void 게시물조회실패_게시물없음() throws Exception {
         //given
-        String url = "/community/post/get";
+        String url = "/api/v1/community/post/get";
         Long postId = 1L;
         doThrow(new CommunityPostException(CommunityPostErrorResult.POST_EMPTY)).when(service).getPost(postId);
 
@@ -107,7 +107,7 @@ public class CommunityPostControllerTest {
     public void 게시물리스트조회성공() throws Exception {
 
         //given
-        String url = "/communtiy/post";
+        String url = "/api/v1/communtiy/post";
         int page = 1;
         //when
 
