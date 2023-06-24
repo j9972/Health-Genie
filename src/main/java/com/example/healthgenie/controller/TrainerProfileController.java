@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/profile")
+@RequestMapping("apiv1/profile")
 public class TrainerProfileController {
 
 

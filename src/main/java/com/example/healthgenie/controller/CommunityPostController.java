@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/community/post")
+@RequestMapping("api/v1/community/post")
 public class CommunityPostController {
 
 
