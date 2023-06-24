@@ -21,7 +21,7 @@ public class CommunityPostController {
 
     private final CommunityPostService postService;
 
-    @PostMapping("/add")
+    @PostMapping("/add")  // http://localhost:1234/community/post/add
     public ResponseEntity addPost(@RequestBody CommunityPostRequestDto dto){
 
         Long userId =1L; //로그인기능 완성전 임시 변수
@@ -29,14 +29,14 @@ public class CommunityPostController {
         return new ResponseEntity(result,HttpStatus.OK);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/get") // http://localhost:1234/community/post/get
     public ResponseEntity getPost(@RequestParam Long postId){
         CommunityPostGetResponseDto result = postService.getPost(postId);
 
         return new ResponseEntity(result,HttpStatus.OK);
     }
 
-    @GetMapping("/")
+    @GetMapping("/") // http://localhost:1234/community/post/
     public ResponseEntity<Page<CommunityPostIdTitleDto>> getPostsByPage(@RequestParam(defaultValue = "0") int page,
                                                                         @RequestParam(defaultValue = "20") int size) {
 

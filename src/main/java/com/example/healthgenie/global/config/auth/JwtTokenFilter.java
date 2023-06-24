@@ -68,7 +68,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
         }
         else {
-            log.info("no valid JWT token found, uri: {}, authi :{}", request.getRequestURI(),SecurityContextHolder.getContext().getAuthentication());
+            log.info("no valid JWT token found, uri: {}, auth :{}", request.getRequestURI(),SecurityContextHolder.getContext().getAuthentication());
         }
 
         filterChain.doFilter(request, response);

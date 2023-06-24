@@ -60,6 +60,7 @@ public class UserService {
 
             User user = request.toEntity(passwordEncoder);
             return userRepository.save(user).getId();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,6 +79,7 @@ public class UserService {
 
         //난수코드 전송
         emailService.sendSimpleMessage(email, "This is AuthCode", "This confirm Number : "+ authCode);
+
         return authCode;
     }
 

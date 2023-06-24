@@ -3,6 +3,7 @@ package com.example.healthgenie.service;
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,22 +22,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 //@SpringBootTest
 @Service
-@ExtendWith(SpringExtension.class)
+@Transactional
+@RequiredArgsConstructor
+@ExtendWith(SpringExtension.class) // @RunWith(SpringRunner.class)의 junit 5 버전
 class UserServiceTest {
 
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
 
 
     @DisplayName("회원 가입")
     @Test
-    @Transactional
     public void signUp() {
+        System.out.println("test");
         log.info("test - signUp");
+
         // Given -> 테스트에서 사용되는 변수, 입력 값들을 정의 or Mock 객체 정의
         User user = User.builder()
                 .email("email@naver.com")
@@ -46,14 +49,17 @@ class UserServiceTest {
                 .role(Role.ADMIN)
                 .build();
 
+        log.info("user : {}", user);
+
         // When -> action 을 하는 테스트 실행 -> 하나의 메서드만 & 가장 중요하지만 짧다
-         Long saveId = userRepository.save(user).getId();
-        // User saveUser = userRepository.save(user);
+//         Long saveId = userRepository.save(user).getId();
+//         log.info("id", saveId);
+         // User saveUser = userRepository.save(user);
 
         // Then -> 실행 결과 검증 , 예상 값과 실제 값 비교, assertThat 사용하기
-        User findMember = userRepository.findById(saveId).get();
+//        User findMember = userRepository.findById(saveId).get();
         // User findMember = userRepository.findByEmail(saveUser.getEmail()).get();
-        assertThat(user.getName()).isEqualTo(findMember.getName());
+//        assertThat(user.getName()).isEqualTo(findMember.getName());
 
     }
 

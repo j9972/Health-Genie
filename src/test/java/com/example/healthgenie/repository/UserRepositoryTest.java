@@ -32,6 +32,4 @@ class UserRepositoryTest {
 
         assertThat(usr.getId()).isEqualTo(1L);
     }
-//    @Test
-
 }
