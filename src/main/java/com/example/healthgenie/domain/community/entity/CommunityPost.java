@@ -40,7 +40,7 @@ public class CommunityPost extends BaseEntity {
     @JoinColumn(name = "community_comment_id")
     private List<CommunityComment> commentList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private User user;
 }

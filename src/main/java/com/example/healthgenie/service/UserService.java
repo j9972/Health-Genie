@@ -68,12 +68,6 @@ public class UserService {
     }
 
     public String authMail(String email) {
-        //유효성검사
-        boolean isValidEmail = emailValidator.test(email);
-        if (!isValidEmail) {
-            log.info("email is not valid");
-            throw new UserEmailException(UserEmailErrorResult.INVALID_EMAIL);
-        }
 
         // 난수 생성
         String authCode = emailService.createCode();
