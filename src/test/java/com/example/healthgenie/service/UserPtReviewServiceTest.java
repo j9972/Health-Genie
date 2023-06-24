@@ -1,5 +1,7 @@
 package com.example.healthgenie.service;
 
+import com.example.healthgenie.domain.ptreview.dto.PtReviewDetailResponseDto;
+import com.example.healthgenie.domain.ptreview.dto.PtReviewListResponseDto;
 import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.domain.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
@@ -15,6 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -102,6 +107,61 @@ public class UserPtReviewServiceTest {
 //        assertThat(result.getMatching().getId()).isEqualTo(dto.getMatchingId());
 
     }
+
+    @Test
+    public void 트레이너별_pt후기목록_조회성공(){
+
+        //given
+
+        List<UserPtReview> ptList = new ArrayList<>();
+
+        ptList.add(UserPtReview.builder().build());
+        ptList.add(UserPtReview.builder().build());
+
+        doReturn(ptList).when(userPtReviewRepository).getAllByTrainer(any(User.class));
+        //when
+        final List<PtReviewListResponseDto> resultList = target.getReviewListByTrainer(trainerId);
+        //then
+
+        assertThat(resultList.size()).isEqualTo(2);
+    }
+
+    public void 트레이너별_pt후기목록_조회실패(){
+
+    }
+
+    @Test
+    public void 유저본인pt후기목록_조회성공(){
+
+        //given
+
+        List<UserPtReview> ptList = new ArrayList<>();
+
+        ptList.add(UserPtReview.builder().build());
+        ptList.add(UserPtReview.builder().build());
+
+        doReturn(ptList).when(userPtReviewRepository).getAllByMember(any(User.class));
+        //when
+        final List<PtReviewListResponseDto> resultList = target.getReviewListByUser(Id);
+        //then
+
+        assertThat(resultList.size()).isEqualTo(2);
+    }
+    @Test
+    public void 후기단건상세조회(){
+
+        //given
+
+
+        doReturn(UserPtReview.builder().id(1L).trainer(User.builder().id(1L).build()).reviewContent("hi").build()).when(userPtReviewRepository).findsById(1L);
+
+        //when
+        final PtReviewDetailResponseDto ptReview = target.getReviewDetail(1L);
+        //then
+        assertThat(ptReview).isNotNull();
+        assertThat(ptReview.getId()).isEqualTo(1L);
+    }
+
     public UserPtReview UserPtReview(){
         return UserPtReview.builder().id(-1L)
                 .matching(TrainerPtApplication.builder().id(dto.getMatchingId()).build())
