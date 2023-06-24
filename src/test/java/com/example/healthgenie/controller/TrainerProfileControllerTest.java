@@ -57,7 +57,7 @@ public class TrainerProfileControllerTest {
 
         //given
         Long userId = 1L;
-        String url = "/profile/add";
+        String url = "/api/v1/profile/add";
 
         //when
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
@@ -74,7 +74,7 @@ public class TrainerProfileControllerTest {
 
 
         //given
-        String url = "/profile/modify";
+        String url = "/api/v1/profile/modify";
         Long userId = 1L;
         TrainerProfileModifyRequestDto dto = TrainerProfileModifyRequestDto.builder()
                 .certification("testCERT")
@@ -105,7 +105,7 @@ public class TrainerProfileControllerTest {
     @Test
     public void 약력조회성공() throws Exception {
         //given
-        String url = "/profile/{id}";
+        String url = "/api/v1/profile/{id}";
         TrainerProfileGetRequestDto dto = TrainerProfileGetRequestDto.builder().id(1L).build();
         doReturn(TrainerProfileGetResponseDto.builder().id(1L).build()).when(servie).profileGet(1L);
         //when
