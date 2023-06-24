@@ -28,7 +28,7 @@ public class UserController {
     private final KakaoService kakaoService;
 
     // 회원가입
-    @PostMapping("/signup") // http://localhost:1234/User/signup
+    @PostMapping("/signup") // http://localhost:1234/auth/signup
     public ResponseEntity signUp(@RequestBody userRegisterDto request) {
         Long resultId = userService.signUp(request);
         return new ResponseEntity(resultId,HttpStatus.OK);
@@ -36,26 +36,26 @@ public class UserController {
 
 
     // 이메일 코드전송,이메일유효성검사
-    @PostMapping("/mail/send") // http://localhost:1234/User/authMail
+    @PostMapping("/mail/send") // http://localhost:1234/auth/mail/send
     public String authMail(@RequestBody String email) {
         return userService.authMail(email);
     }
 
     //이메일 코드검증
-    @PostMapping("/mail/verify")
+    @PostMapping("/mail/verify") // http://localhost:1234/auth/mail/verify
     public ResponseEntity validMailCode(@RequestBody String code){
         String result = emailService.valiedCode(code);
         return new ResponseEntity(result,HttpStatus.OK);
     }
 
     // 로그인
-    @PostMapping("/login") // http://localhost:1234/User/login
+    @PostMapping("/login") // http://localhost:1234/auth/login
     public ResponseEntity<String> login(@RequestBody userLoginDto request) {
         return userService.login(request);
     }
 
     //소셜 로그인 카카오
-    @PostMapping("/login/kakao")
+    @PostMapping("/login/kakao") // http://localhost:1234/auth/login/kakao
     public ResponseEntity signupByKakao(@RequestBody SocialSignupRequestDto socialSignupRequestDto) {
         KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(socialSignupRequestDto.getAccessToken());
         if (kakaoProfile == null) throw new CommonException(CommonErrorResult.ITEM_EMPTY);
@@ -63,7 +63,7 @@ public class UserController {
     }
 
     //소셜 회원가입 카카오
-    @PostMapping("/signup/kakao")
+    @PostMapping("/signup/kakao") // http://localhost:1234/auth/signup/kakao
     public ResponseEntity signupBySocial(@RequestBody SocialSignupRequestDto socialSignupRequestDto) {
 
         KakaoProfile kakaoProfile =

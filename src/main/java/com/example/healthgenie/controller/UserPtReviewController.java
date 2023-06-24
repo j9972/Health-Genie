@@ -18,7 +18,7 @@ public class UserPtReviewController {
 
     private final PtReviewService reviewService;
 
-    @PostMapping("/User/Pt/review")
+    @PostMapping("/User/Pt/review") // http://localhost:1234/User/Pt/review
     public ResponseEntity test(@RequestBody PtReviewRequestDto dto){
 
         Long UserId = 1L; //임시 -> 회원 기능 후 useradapter에서 받기

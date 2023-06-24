@@ -24,7 +24,7 @@ public class KakaoController {
 
     @Value("${social.kakao.url.base}")
     private String baseUrl;
-    @GetMapping("/login")
+    @GetMapping("/login") // http://localhost:1234/auth/kakao/login
     public String socialLogin() {
 
         StringBuilder loginUri = new StringBuilder()
@@ -36,7 +36,7 @@ public class KakaoController {
         return loginUri.toString();
     }
 
-    @GetMapping(value = "/redirect")
+    @GetMapping(value = "/redirect") // http://localhost:1234/auth/kakao/redirect
     public RetKakaoOAuth redirectKakao(@RequestParam String code) {
         return kakaoService.getKakaoTokenInfo(code);
     }
