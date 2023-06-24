@@ -21,7 +21,7 @@ public class TrainerProfileRequestDto {
 
     private String certification;
 
-    private Blob pics;
+    private byte[] pics;
 
     private Long matchingTimes;
 
