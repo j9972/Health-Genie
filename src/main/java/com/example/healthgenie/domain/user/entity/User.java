@@ -2,6 +2,7 @@ package com.example.healthgenie.domain.user.entity;
 
 import com.example.healthgenie.domain.community.entity.CommunityPost;
 import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
+import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Table(uniqueConstraints = {
+@Table(name = "user_tb",uniqueConstraints = {
         @UniqueConstraint(name = "User_tb", columnNames = {"user_id"})
 })
 public class User extends BaseEntity implements UserDetails {
@@ -56,6 +57,9 @@ public class User extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<CommunityPost> communityPosts;
+
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<UserPtReview> userPtReviews;
 
 
     private final Boolean enabled = false;

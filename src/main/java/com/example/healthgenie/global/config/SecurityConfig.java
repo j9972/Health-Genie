@@ -25,9 +25,8 @@ public class SecurityConfig {
         http.csrf().disable();
         http.httpBasic().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/community/**").hasRole("USER")
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/api/v1/**").hasAnyRole("ADMIN","USER")
                 .anyRequest().authenticated();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

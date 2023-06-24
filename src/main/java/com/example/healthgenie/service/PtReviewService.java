@@ -1,5 +1,7 @@
 package com.example.healthgenie.service;
 
+import com.example.healthgenie.domain.ptreview.dto.PtReviewDetailResponseDto;
+import com.example.healthgenie.domain.ptreview.dto.PtReviewListResponseDto;
 import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.domain.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.domain.trainer.entity.TrainerPtApplication;
@@ -11,6 +13,10 @@ import com.example.healthgenie.repository.UserPtReviewRepository;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -51,5 +57,54 @@ public class PtReviewService {
 
         return PtReviewResponseDto.builder()
                 .reviewId(review.getId()).build();
+    }
+
+    public List<PtReviewListResponseDto> getReviewListByTrainer(Long trainerId){
+
+
+        List<UserPtReview> getReviewList = userPtReviewRepository.getAllByTrainer(User.builder().id(trainerId).build());
+        List<PtReviewListResponseDto> resultList = new ArrayList<>();
+        if(getReviewList.isEmpty()){
+            return resultList;
+        }
+        return getReviewList.stream()
+                .map(m -> new PtReviewListResponseDto(m.getId(), m.getTitle(), m.getStartDate(), m.getEndDate(),
+                        m.getReviewContent(), m.getPic1(), m.getPic2(), m.getPic3(), m.getStarScore()))
+                .collect(Collectors.toList());
+    }
+
+    public List<PtReviewListResponseDto> getReviewListByUser(Long userId){
+
+        List<UserPtReview> getReviewList = userPtReviewRepository.getAllByMember(User.builder().id(userId).build());
+        List<PtReviewListResponseDto> resultList = new ArrayList<>();
+        if(getReviewList.isEmpty()){
+            return resultList;
+        }
+        return getReviewList.stream()
+                .map(m -> new PtReviewListResponseDto(m.getId(), m.getTitle(), m.getStartDate(), m.getEndDate(),
+                        m.getReviewContent(), m.getPic1(), m.getPic2(), m.getPic3(), m.getStarScore()))
+                .collect(Collectors.toList());
+    }
+
+    public PtReviewDetailResponseDto getReviewDetail(Long reviewId){
+
+        UserPtReview result = userPtReviewRepository.findsById(reviewId);
+        return toDetailResponse(result);
+    }
+
+    public PtReviewDetailResponseDto toDetailResponse(UserPtReview review){
+        return PtReviewDetailResponseDto.builder()
+                .id(review.getId())
+                .startDate(review.getStartDate())
+                .endDate(review.getEndDate())
+                .title(review.getTitle())
+                .reviewContent(review.getReviewContent())
+                .starScore(review.getStarScore())
+                .trainerId(review.getTrainer().getId())
+                .trainerName(review.getTrainerName())
+                .pic1(review.getPic1())
+                .pic2(review.getPic2())
+                .pic3(review.getPic3())
+                .build();
     }
 }
