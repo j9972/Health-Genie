@@ -1,6 +1,6 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.community.dto.CommunitiyPostResponseDto;
+import com.example.healthgenie.domain.community.dto.CommunityPostResponseDto;
 import com.example.healthgenie.domain.community.dto.CommunityPostGetResponseDto;
 import com.example.healthgenie.domain.community.dto.CommunityPostRequestDto;
 import com.example.healthgenie.domain.community.entity.CommunityPost;
@@ -47,7 +47,7 @@ public class CommunityPostServiceTest {
         doReturn(saveResult).when(repository).save(any(CommunityPost.class));
 
         //when
-        final CommunitiyPostResponseDto result = target.addPost(savedto,userId);
+        final CommunityPostResponseDto result = target.addPost(savedto,userId);
 
         //then
         assertThat(result.getPostId()).isNotNull();

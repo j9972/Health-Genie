@@ -65,9 +65,12 @@ public class TrainerProfileServie {
 
         Optional<TrainerProfile> optFindProfile = trainerProfileRepository.findById(id);
 
+        // profile 이 없는 경우는 throw 처리
         if(!optFindProfile.isPresent()){
             throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY);
         }
+
+        // optional 은 get() 방식으로 데이터 받기
         TrainerProfile findProfile = optFindProfile.get();
 
         TrainerProfileGetResponseDto resultDto = TrainerProfileGetResponseDto.builder()

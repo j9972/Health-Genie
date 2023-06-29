@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("apiv1/profile")
+@RequestMapping("api/v1/profile")
 public class TrainerProfileController {
 
 
     private final TrainerProfileServie profileServie;
 
 
-    @PostMapping("/add") // http://localhost:1234/profile/add
+    @PostMapping("/add") // http://localhost:1234/api/v1/profile/add
     public ResponseEntity profileAdd(@RequestBody TrainerProfileRequestDto dto){
 
         Long userId =1L;//회원기능 구현 시 userAdapter에서 Id받는 것으로 대체
@@ -25,7 +25,7 @@ public class TrainerProfileController {
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
-    @PostMapping("/modify") // http://localhost:1234/profile/modify
+    @PostMapping("/modify") // http://localhost:1234/api/v1/profile/modify
     public ResponseEntity profileModifiy(@RequestBody TrainerProfileModifyRequestDto dto){
 
         Long userId = 1L;//회원기능 구현 시 userAdapter에서 Id받는 것으로 대체
@@ -35,10 +35,10 @@ public class TrainerProfileController {
         return new ResponseEntity(result,HttpStatus.OK);
     }
 
-    @GetMapping("/{id}") // http://localhost:1234/profile/{id}
+    @GetMapping("/{id}") // http://localhost:1234/api/v1/profile/{id}
     public ResponseEntity profileGet(@PathVariable("id") Long id){
 
-        TrainerProfileGetResponseDto result =profileServie.profileGet(id);
+        TrainerProfileGetResponseDto result = profileServie.profileGet(id);
 
         return new ResponseEntity(result,HttpStatus.OK);
     }

@@ -2,6 +2,7 @@ package com.example.healthgenie.global.config;
 
 import com.example.healthgenie.domain.user.entity.RefreshToken;
 import com.example.healthgenie.domain.user.entity.Role;
+import com.example.healthgenie.global.constant.constants;
 import com.example.healthgenie.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -87,7 +88,7 @@ public class JwtUtil implements InitializingBean {
 
     // signWith(key,SignatureAlgorithm) 에서 key는 string 이 아니라 byte 형태로 받아야 한다
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode("4D635166546A576E5A7234753778214125442A462D4A614E645267556B5870324D635166546A576E5A7234753778214125442A462D4A614E645267556B587032");
+        byte[] keyBytes = Decoders.BASE64.decode(constants.SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -172,9 +173,12 @@ public class JwtUtil implements InitializingBean {
     public String reissueRefreshToken(String refreshToken,String role,String email) throws RuntimeException{
         // refresh token을 디비의 그것과 비교해보기
         Authentication authentication = getAuthentication(refreshToken);
+
         log.info("getname "+authentication.getName());
+
         RefreshToken findRefreshToken = refreshTokenRepository.findByToken(refreshToken)
                 .orElseThrow(() -> new UsernameNotFoundException("userId : " + authentication.getName() + " was not found"));
+
         if(findRefreshToken.getToken().equals(refreshToken)){
             // 새로운거 생성
             String newRefreshToken = createRefreshToken(email,role);

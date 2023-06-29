@@ -33,7 +33,7 @@ public class TrainerProfileControllerTest {
     private Gson gson;
 
     @Mock
-    TrainerProfileServie servie;
+    TrainerProfileServie service;
 
 
 
@@ -107,7 +107,7 @@ public class TrainerProfileControllerTest {
         //given
         String url = "/api/v1/profile/{id}";
         TrainerProfileGetRequestDto dto = TrainerProfileGetRequestDto.builder().id(1L).build();
-        doReturn(TrainerProfileGetResponseDto.builder().id(1L).build()).when(servie).profileGet(1L);
+        doReturn(TrainerProfileGetResponseDto.builder().id(1L).build()).when(service).profileGet(1L);
         //when
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
                 .get("/profile/{id}",dto.getId())

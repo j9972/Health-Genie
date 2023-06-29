@@ -1,9 +1,6 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.user.dto.KakaoProfile;
-import com.example.healthgenie.domain.user.dto.SocialSignupRequestDto;
-import com.example.healthgenie.domain.user.dto.userLoginDto;
-import com.example.healthgenie.domain.user.dto.userRegisterDto;
+import com.example.healthgenie.domain.user.dto.*;
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.exception.CommonErrorResult;
 import com.example.healthgenie.exception.CommonException;
@@ -28,7 +25,7 @@ public class UserController {
     private final KakaoService kakaoService;
 
     // 회원가입
-    @PostMapping("/signup") // http://localhost:1234/auth/signup
+    @PostMapping("/signup") // http://localhost:1234/api/v1/auth/signup
     public ResponseEntity signUp(@RequestBody userRegisterDto request) {
         Long resultId = userService.signUp(request);
         return new ResponseEntity(resultId,HttpStatus.OK);
@@ -36,26 +33,27 @@ public class UserController {
 
 
     // 이메일 코드전송,이메일유효성검사
-    @PostMapping("/mail/send") // http://localhost:1234/auth/mail/send
-    public String authMail(@RequestBody String email) {
-        return userService.authMail(email);
+    @PostMapping("/mail/send") // http://localhost:1234/api/v1/auth/mail/send
+    public String authMail(@RequestBody emailRequestDto request) {
+        return userService.authMail(request.getEmail());
     }
 
+
     //이메일 코드검증
-    @PostMapping("/mail/verify") // http://localhost:1234/auth/mail/verify
-    public ResponseEntity validMailCode(@RequestBody String code){
-        String result = emailService.valiedCode(code);
+    @PostMapping("/mail/verify") // http://localhost:1234/api/v1/auth/mail/verify
+    public ResponseEntity validMailCode(@RequestBody emailRequestDto request){
+        String result = emailService.valiedCode(request.getCode());
         return new ResponseEntity(result,HttpStatus.OK);
     }
 
     // 로그인
-    @PostMapping("/login") // http://localhost:1234/auth/login
+    @PostMapping("/login") // http://localhost:1234/api/v1/auth/login
     public ResponseEntity<String> login(@RequestBody userLoginDto request) {
         return userService.login(request);
     }
 
     //소셜 로그인 카카오
-    @PostMapping("/login/kakao") // http://localhost:1234/auth/login/kakao
+    @PostMapping("/login/kakao") // http://localhost:1234/api/v1/auth/login/kakao
     public ResponseEntity signupByKakao(@RequestBody SocialSignupRequestDto socialSignupRequestDto) {
         KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(socialSignupRequestDto.getAccessToken());
         if (kakaoProfile == null) throw new CommonException(CommonErrorResult.ITEM_EMPTY);
@@ -63,19 +61,22 @@ public class UserController {
     }
 
     //소셜 회원가입 카카오
-    @PostMapping("/signup/kakao") // http://localhost:1234/auth/signup/kakao
+    @PostMapping("/signup/kakao") // http://localhost:1234/api/v1/auth/signup/kakao
     public ResponseEntity signupBySocial(@RequestBody SocialSignupRequestDto socialSignupRequestDto) {
 
         KakaoProfile kakaoProfile =
                 kakaoService.getKakaoProfile(socialSignupRequestDto.getAccessToken());
+
         if (kakaoProfile == null) throw new CommonException(CommonErrorResult.ITEM_EMPTY);
+
         if (kakaoProfile.getKakao_account().getEmail() == null) {
             kakaoService.kakaoUnlink(socialSignupRequestDto.getAccessToken());
             throw new CommonException(CommonErrorResult.ITEM_EMPTY);
         }
 
         Long userId = userService.socialSignup(userRegisterDto.builder()
-                .email(kakaoProfile.getKakao_account().getEmail()).role(Role.USER)
+                .email(kakaoProfile.getKakao_account().getEmail())
+                .role(Role.USER)
                 .name(kakaoProfile.getProperties().getNickname())
                 .uniName(kakaoProfile.getProperties().getNickname())
                 .provider("kakao")
