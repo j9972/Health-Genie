@@ -10,6 +10,8 @@ import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.*;
 import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,19 +23,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
-    private final EmailValidator emailValidator;
+    //private final EmailValidator emailValidator;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
+
 
     @Transactional
     public Long signUp(userRegisterDto request) {
@@ -172,6 +176,15 @@ public class UserService {
         //TODO : builder()를 데이터로 뽑는 방법이다
         return new ResponseEntity(loginResponse, HttpStatus.OK);
     }
+
+    public List<User> findMembers() {
+        return userRepository.findAll();
+    }
+
+    public Optional<User> findOne(Long userId) {
+        return userRepository.findById(userId);
+    }
+
 
 
 }

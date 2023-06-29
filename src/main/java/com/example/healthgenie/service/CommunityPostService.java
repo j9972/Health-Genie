@@ -1,8 +1,8 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.community.dto.CommunitiyPostResponseDto;
 import com.example.healthgenie.domain.community.dto.CommunityPostGetResponseDto;
 import com.example.healthgenie.domain.community.dto.CommunityPostRequestDto;
+import com.example.healthgenie.domain.community.dto.CommunityPostResponseDto;
 import com.example.healthgenie.domain.community.entity.CommunityPost;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.CommunityPostErrorResult;
@@ -25,16 +25,20 @@ public class CommunityPostService {
     private final CommunityPostRepository postRepository;
 
     //게시물작성
-    public CommunitiyPostResponseDto addPost(CommunityPostRequestDto dto, Long userId){
+    public CommunityPostResponseDto addPost(CommunityPostRequestDto dto, Long userId){
         userId =1L;
 
         CommunityPost saveResult = postRepository.save(buildPost(dto,userId));
-        return new CommunitiyPostResponseDto(saveResult.getId());
+
+        // getId()를 건네주는 이유는 CommunityPostResponseDto 에 user_id뿐 이기 때문이다
+        return new CommunityPostResponseDto(saveResult.getId());
     }
 
-    //게시물1개 조회
+    //게시물 1개 조회
     public CommunityPostGetResponseDto getPost(Long postId){
         Optional<CommunityPost> optionalResult = postRepository.findById(postId);
+
+        // 찾은 게시물이 없을 수 있는 경우의 수들을 throw 처리
         if(optionalResult.isEmpty() || !optionalResult.isPresent() || optionalResult==null){
             throw new CommunityPostException(CommunityPostErrorResult.POST_EMPTY);
         }

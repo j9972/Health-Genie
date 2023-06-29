@@ -53,11 +53,15 @@ public class EmailService {
 
     //코드 검증
     public String valiedCode(String code){
-        //코드검증
+
         Optional<EmailAuthCode> findAuthCode = emailAuthCodeRepository.findByCode(code);
+
+        log.info("findAuthCode {}", findAuthCode.get());
+
         if(findAuthCode.isEmpty()){
             throw new CommonException(CommonErrorResult.VALID_OUT);
         }
+
         //검증된 코드 삭제
         emailAuthCodeRepository.deleteById(findAuthCode.get().getId());
         return "true";

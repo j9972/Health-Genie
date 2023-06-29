@@ -65,7 +65,12 @@ public class KakaoService {
         params.add("code", code);
 
         String requestUri = env.getProperty("social.kakao.url.token");
-        if(requestUri==null){throw new CommonException(CommonErrorResult.VALID_OUT);}
+
+        // kakao login 되지 않는 경우 [ token 이 없는 경우 ]
+        if(requestUri==null){
+            throw new CommonException(CommonErrorResult.VALID_OUT);
+        }
+
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(requestUri, request, String.class);
 

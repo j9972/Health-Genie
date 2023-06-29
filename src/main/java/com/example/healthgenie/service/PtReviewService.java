@@ -32,10 +32,12 @@ public class PtReviewService {
         if(result!= null){
             throw new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
         }
+
         User trainer =userRepository.findByRoleAndId(dto.getRole(),dto.getTrainerId());
         if(trainer == null){
             throw new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY);
         }
+
         //dto가 필요하네
         //무슨 정보를넣을지
         UserPtReview ptReview = UserPtReview.builder()
@@ -64,9 +66,11 @@ public class PtReviewService {
 
         List<UserPtReview> getReviewList = userPtReviewRepository.getAllByTrainer(User.builder().id(trainerId).build());
         List<PtReviewListResponseDto> resultList = new ArrayList<>();
+
         if(getReviewList.isEmpty()){
             return resultList;
         }
+
         return getReviewList.stream()
                 .map(m -> new PtReviewListResponseDto(m.getId(), m.getTitle(), m.getStartDate(), m.getEndDate(),
                         m.getReviewContent(), m.getPic1(), m.getPic2(), m.getPic3(), m.getStarScore()))

@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Setter
-public class CommunitiyPostResponseDto {
+public class CommunityPostResponseDto {
 
     private Long postId;
 }

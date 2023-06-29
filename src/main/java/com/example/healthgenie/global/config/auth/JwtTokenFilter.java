@@ -56,12 +56,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
                     // access token 생성
                     Authentication authentication = jwtTokenProvider.getAuthentication(refresh);
+
                     //email,role 알아야됨
                     response.setHeader(AUTHORIZATION_HEADER, jwtTokenProvider.createAccessToken(email,role));
+
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+
                     List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
+
                     Authentication token = new AnonymousAuthenticationToken("key","anonymousUser",authorities);
                     log.info(token.getAuthorities()+" "+token.getName());
+
                     SecurityContextHolder.getContext().setAuthentication(token);
                     log.info("reissue refresh Token & access Token");
                 }
