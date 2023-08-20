@@ -71,7 +71,7 @@ public class JwtUtil implements InitializingBean {
         Map<String,Object> claims = new HashMap<>();
         claims.put("role", role);
 //        return createToken(claims, email, constant.ACCESS_TOKEN_EXPIRE_COUNT);
-        return createToken(claims, email, 1 * 60 * 1000L);
+        return createToken(claims, email, 100 * 60 * 1000L);
 
     }
 

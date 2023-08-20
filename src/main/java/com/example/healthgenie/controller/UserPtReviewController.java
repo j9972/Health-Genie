@@ -22,7 +22,7 @@ public class UserPtReviewController {
     private final PtReviewService reviewService;
 
 
-    @PostMapping("/")// http://localhost:1234/api/v1/pt/review
+    @PostMapping("/add")// http://localhost:1234/api/v1/pt/review/add
     public ResponseEntity test(@RequestBody PtReviewRequestDto dto){
 
         Long UserId = 1L; // 임시 -> 회원 기능 후 useradapter에서 받기
@@ -41,7 +41,7 @@ public class UserPtReviewController {
 
     @GetMapping("/list/my") // http://localhost:1234/api/v1/pt/review/list/my
     public ResponseEntity getReviewListByUser(@RequestParam Long userId){
-        List<PtReviewListResponseDto> result = reviewService.getReviewListByTrainer(userId);
+        List<PtReviewListResponseDto> result = reviewService.getReviewListByUser(userId);
         return new ResponseEntity(result,HttpStatus.OK);
 
     }

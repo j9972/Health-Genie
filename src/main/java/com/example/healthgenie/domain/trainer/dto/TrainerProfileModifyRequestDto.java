@@ -19,7 +19,7 @@ public class TrainerProfileModifyRequestDto {
 
     private String certification;
 
-    private Blob pics;
+    private String pics;
 
 
 }
