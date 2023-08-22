@@ -22,7 +22,7 @@ public class TrainerProfileServie {
     //트레이너 정보를 보내는 과정에서 트레이너 id가 틀릴 경우가 검증되어있음 그냥 save하면 된다.
 
     //약력 작성
-    public TrainerProfileResponseDto profileAdd(TrainerProfileRequestDto profileRequestDto, Long Id){
+    public TrainerProfileResponseDto profileAdd(TrainerProfileRequestDto profileRequestDto, Long Id,String filePath){
 
         TrainerProfile saveProfile = TrainerProfile.builder()
                 .avgSarScore(profileRequestDto.getAvgSarScore())
@@ -30,7 +30,7 @@ public class TrainerProfileServie {
                 .description(profileRequestDto.getDescription())
                 .certification(profileRequestDto.getCertification())
                 .matchingTimes(profileRequestDto.getMatchingTimes())
-                .pics(profileRequestDto.getPics())
+                .pics(filePath)
                 .prize(profileRequestDto.getPrize())
                 .trainer(User.builder().id(Id).build())
                 .build();

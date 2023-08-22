@@ -39,9 +39,9 @@ public class TrainerProfileServieTest {
         //given
         TrainerProfile givenProfile = TrainerProfile.builder().avgSarScore(5L).name("jingwon").build();
         doReturn(TrainerProfile.builder().avgSarScore(5L).name("jingwon").id(1L).build()).when(repository).save(any(TrainerProfile.class));
-
+        String filePath = "/Users/gimjingwon/Documents/health_genie/Image/profile\\009a66ae.jpg";
         //when
-        final TrainerProfileResponseDto result = target.profileAdd(TrainerProfileRequestDto.builder().build(),1L);
+        final TrainerProfileResponseDto result = target.profileAdd(TrainerProfileRequestDto.builder().build(),1L,filePath);
 
 
         //then

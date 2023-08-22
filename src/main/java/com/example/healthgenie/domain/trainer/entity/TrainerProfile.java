@@ -33,8 +33,8 @@ public class TrainerProfile extends BaseEntity {
     @Column(name = "certification")
     private String certification;
 
-    @Lob
-    private Blob pics;
+    @Column(name = "pics")
+    private String pics;
 
 
     @Column(name = "matching_times")

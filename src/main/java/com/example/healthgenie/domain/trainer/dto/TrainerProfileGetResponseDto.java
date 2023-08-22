@@ -22,7 +22,7 @@ public class TrainerProfileGetResponseDto {
 
     private String certification;
 
-    private Blob pics;
+    private String pics;
 
     private Long matchingTimes;
 
