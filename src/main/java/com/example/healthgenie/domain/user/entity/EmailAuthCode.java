@@ -2,6 +2,7 @@ package com.example.healthgenie.domain.user.entity;
 
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class EmailAuthCode extends BaseEntity {
     @Column(name ="community_post_id")
     private Long id;
 
+    @NotNull
     @Column(name = "auth_code")
     private String code;
 }

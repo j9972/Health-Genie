@@ -3,6 +3,7 @@ package com.example.healthgenie.domain.ptrecord.entity;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,9 +18,11 @@ public class PtProcess extends BaseEntity {
     @Column(name = "pt_process_id")
     private Long id;
 
+    @NotNull
     @Column(name = "date")
     private String date;
 
+    @NotNull
     @Column(name = "pt_times")
     private Long ptTimes;
 
@@ -41,6 +44,7 @@ public class PtProcess extends BaseEntity {
     @Column(name = "pt_start_date")
     private String ptStartDate;
 
+    @NotNull
     @Column(name = "pt_left_times")
     private String ptLeftTimes;
 

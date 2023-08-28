@@ -4,6 +4,7 @@ import com.example.healthgenie.domain.trainer.entity.TrainerPtApplication;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class UserPtReview extends BaseEntity {
     @Column(name ="user_pt_review_id")
     private Long id;
 
+    @NotNull
     @Column(name = "title")
     private String title;
 
@@ -33,6 +35,7 @@ public class UserPtReview extends BaseEntity {
     @Column(name = "end_date")
     private String endDate;
 
+    @NotNull
     @Column(name = "trainer_name")
     private String trainerName;
 
@@ -50,7 +53,7 @@ public class UserPtReview extends BaseEntity {
     private Blob pic3;
 
     @Column(name ="star_score")
-    private int starScore;
+    private Integer starScore;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id")

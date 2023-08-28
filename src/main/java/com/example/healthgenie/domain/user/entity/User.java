@@ -5,6 +5,7 @@ import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
 import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,15 +29,18 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "user_id", unique=true)
     private Long id;
 
+    @NotNull
     @Column(name = "email")
     private String email;
 
     @Column(name = "uniname")
     private String uniName;
 
+    @NotNull
     @Column(name = "name")
     private String name;
 
+    @NotNull
     @Column(name = "password")
     private String password;
 

@@ -4,6 +4,7 @@ import com.example.healthgenie.domain.trainer.dto.TrainerProfileModifyRequestDto
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.sql.Blob;
@@ -21,9 +22,11 @@ public class TrainerProfile extends BaseEntity {
     @Column(name = "trainer_profile_id")
     private Long id;
 
+    @NotNull
     @Column(name = "name")
     private String name;
 
+    @NotNull
     @Column(name = "description")
     private String description;
 
@@ -41,7 +44,7 @@ public class TrainerProfile extends BaseEntity {
     private Long matchingTimes;
 
     @Column(name = "avg_star_score")
-    private Long avgSarScore;
+    private Long avgStarScore;
 
     @OneToOne
     @JoinColumn(name = "trainer_id")
@@ -49,7 +52,7 @@ public class TrainerProfile extends BaseEntity {
 
 
     public void setAvgSarScore(Long avgSarScore) {
-        this.avgSarScore = avgSarScore;
+        this.avgStarScore = avgStarScore;
     }
     public TrainerProfile ModifiedProfile(TrainerProfileModifyRequestDto dto){
         this.description = dto.getDescription();
