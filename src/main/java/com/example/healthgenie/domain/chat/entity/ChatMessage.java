@@ -3,6 +3,7 @@ package com.example.healthgenie.domain.chat.entity;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,9 +23,11 @@ public class ChatMessage extends BaseEntity {
     @Column(name = "message_content")
     private String messageContent;
 
+    @NotNull
     @Column(name = "reading")
     private boolean reading;
 
+    // 전송 상태 체크
     @Column(name = "status")
     private Integer status;
 

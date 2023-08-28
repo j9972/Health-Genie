@@ -3,6 +3,7 @@ package com.example.healthgenie.domain.community.entity;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,9 +25,11 @@ public class CommunityPost extends BaseEntity {
     @Column(name ="community_post_id")
     private Long id;
 
+    @NotNull
     @Column(name = "title")
     private String title;
 
+    @NotNull
     @Column(name ="body")
     private String body;
 
