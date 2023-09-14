@@ -68,6 +68,8 @@ public class User extends BaseEntity implements UserDetails {
 
     private final Boolean enabled = false;
 
+    public void setPassword(String pwd){ this.password = pwd; }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getCode()));

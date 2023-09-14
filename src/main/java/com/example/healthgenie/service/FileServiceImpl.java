@@ -8,12 +8,14 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import org.apache.commons.fileupload.*;
 
 @Log4j2
 @Service
-public class FileService {
+public class FileServiceImpl implements fileService{
+
 
     public String trainerProfileAdd(MultipartFile file) {
 
@@ -56,5 +58,15 @@ public class FileService {
             e.printStackTrace();
         }
         return saveFile.getAbsolutePath();
+    }
+
+    @Override
+    public void saveImage(List<MultipartFile> imagefile) {
+        
+    }
+
+    @Override
+    public void displayImage(Long Id) {
+
     }
 }
