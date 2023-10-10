@@ -83,4 +83,12 @@ public class EmailService {
         emailSender.send(message);
 
     }
+    public void pwdSend(String email,String pwd){
+        //send
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("This is Pwd");
+        message.setText("pwd : "+ pwd);
+        emailSender.send(message);
+    }
 }
