@@ -44,7 +44,7 @@ public class UserServiceTest {
     private RefreshTokenService refreshTokenService;
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
 
     private final Long userId = 1L;
 
@@ -54,7 +54,7 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserService(userRepository, passwordEncoder, authenticationManager,
+        userService = new UserServiceImpl(userRepository, passwordEncoder, authenticationManager,
                 emailService, jwtUtil, refreshTokenService);
     }
 

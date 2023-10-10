@@ -1,13 +1,11 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.trainer.dto.TrainerProfileModifyRequestDto;
 import com.example.healthgenie.domain.user.dto.userRegisterDto;
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.exception.GlobalExceptionHandler;
 import com.example.healthgenie.repository.UserRepository;
-import com.example.healthgenie.service.TrainerProfileServie;
-import com.example.healthgenie.service.UserService;
+import com.example.healthgenie.service.UserServiceImpl;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,10 +21,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
@@ -39,7 +35,7 @@ class UserControllerTest {
     private Gson gson;
 
     @Mock
-    UserService service;
+    UserServiceImpl service;
 
     @Mock
     UserRepository repository;

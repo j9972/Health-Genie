@@ -34,8 +34,7 @@ public class CommunityCommentService {
     public CommunityComment buildComment(CommunityCommentRequestDto dto, Long postId, Long userId){
         return CommunityComment.builder()
                 .commentBody(dto.getCommentBody())
-                .likeCount(dto.getLikeCount())
-                .post(CommunityPost.builder().id(postId).build())
+                .communityPost(CommunityPost.builder().id(postId).build())
                 .member(User.builder().id(userId).build())
                 .build();
     }
@@ -53,7 +52,6 @@ public class CommunityCommentService {
         CommunityCommentGetResponseDto result = CommunityCommentGetResponseDto.builder()
                 .id(comment.getId())
                 .commentBody(comment.getCommentBody())
-                .likeCount(comment.getLikeCount())
                 .build();
         return result;
     }

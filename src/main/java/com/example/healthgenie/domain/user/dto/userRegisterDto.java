@@ -20,17 +20,17 @@ public class userRegisterDto {
     private String provider;
 
 
-    public User toEntity(PasswordEncoder passwordEncoder) {
+    public User toEntity() {
         return User.builder()
                 .email(email)
-                .password(passwordEncoder.encode(password))
+                .password(password)
                 .uniName(uniName)
                 .name(name)
                 .role(role)
                 .build();
     }
 
-    public User toEntity() {
+    public User tosocialEntity() {
         return User.builder()
                 .email(email)
                 .uniName(uniName)

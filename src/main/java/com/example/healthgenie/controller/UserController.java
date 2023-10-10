@@ -7,6 +7,7 @@ import com.example.healthgenie.exception.CommonException;
 import com.example.healthgenie.service.EmailService;
 import com.example.healthgenie.service.KakaoService;
 import com.example.healthgenie.service.UserService;
+import com.example.healthgenie.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -83,4 +84,26 @@ public class UserController {
                 .build());
         return new ResponseEntity(userId,HttpStatus.OK);
     }
+
+    //비밀번호 찾기
+
+    //이메일, 이름 넣어서 존재하면
+    //임시비번 만듬
+    //임시비번 이메일 전송
+    //임시비번 db에 저장
+    @PostMapping("/pwd")
+    public ResponseEntity getPassword(@RequestBody pwdFindRequestDto dto){
+        log.info(dto.getEmail());
+        String result = userService.getPassword(dto.getName(),dto.getEmail());
+        return new ResponseEntity(result,HttpStatus.OK);
+    }
+
+    //비밀번호 변경
+
+    @PostMapping("/pwd/1")
+    public ResponseEntity ModifiedPassword(@RequestBody pwdModifiedRequestDto dto){
+        String result = userService.ModifiedPassword(dto.getEmail(),dto.getPwd());
+        return new ResponseEntity(result,HttpStatus.OK);
+    }
+
 }
