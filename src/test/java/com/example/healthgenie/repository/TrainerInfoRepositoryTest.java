@@ -1,6 +1,6 @@
 package com.example.healthgenie.repository;
 
-import com.example.healthgenie.domain.trainer.entity.TrainerProfile;
+import com.example.healthgenie.domain.trainer.entity.TrainerInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -10,7 +10,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class TrainerProfileRepositoryTest {
+public class TrainerInfoRepositoryTest {
 
 
     @Autowired
@@ -21,7 +21,7 @@ public class TrainerProfileRepositoryTest {
     public void ProfileAdd(){
 
         //given
-        TrainerProfile trainerProfile = TrainerProfile.builder()
+        TrainerInfo trainerInfo = TrainerInfo.builder()
                 .avgSarScore(0L)
                 .certification("약력/증명서")
                 .description("열심히 할게요")
@@ -31,7 +31,7 @@ public class TrainerProfileRepositoryTest {
                 .build();
 
         //when
-        TrainerProfile result = repository.save(trainerProfile);
+        TrainerInfo result = repository.save(trainerInfo);
 
         //then
 
@@ -44,7 +44,7 @@ public class TrainerProfileRepositoryTest {
     @Test
     public void profileModified(){
         //given
-        TrainerProfile trainerProfile = TrainerProfile.builder()
+        TrainerInfo trainerInfo = TrainerInfo.builder()
                 .avgSarScore(0L)
                 .certification("약력/증명서")
                 .description("열심히 할게요")
@@ -52,12 +52,12 @@ public class TrainerProfileRepositoryTest {
                 .matchingTimes(0L)
                 .prize("tntkd")
                 .build();
-        TrainerProfile saveProfile = repository.save(trainerProfile);
+        TrainerInfo saveProfile = repository.save(trainerInfo);
         assertThat(saveProfile.getDescription()).isEqualTo("열심히 할게요");
 
         //when
-        TrainerProfile modifiedProfile = repository.findById(saveProfile.getId()).get();
-        modifiedProfile = TrainerProfile.builder()
+        TrainerInfo modifiedProfile = repository.findById(saveProfile.getId()).get();
+        modifiedProfile = TrainerInfo.builder()
                 .id(saveProfile.getId())
                 .avgSarScore(0L)
                 .certification("약력/수정증명서")
@@ -69,7 +69,7 @@ public class TrainerProfileRepositoryTest {
         //saveProfile과 modifedProfile은 같은 객체 이다. 얕은복사) -> findById로 saveProfile의 데이터를 가져온순간부터 modifiedProfile = savProfile은 공유된다. 1개의값을 변경하면 같이 변경됨
         //약력의 경우 트레이너와 onetoone임으로 객체 공유되도 크게 상관없지만 다른경우 dto를 사용하자 set을 쓰지않고
 
-        TrainerProfile result = repository.save(modifiedProfile);
+        TrainerInfo result = repository.save(modifiedProfile);
 
         //then
         assertThat(result.getDescription()).isEqualTo("열심히 수정할게요");
@@ -82,11 +82,11 @@ public class TrainerProfileRepositoryTest {
     public void profileGet(){
 
         //given
-        final TrainerProfile profile = TrainerProfile.builder()
+        final TrainerInfo profile = TrainerInfo.builder()
                 .build();
-        final TrainerProfile saveProfile = repository.save(profile);
+        final TrainerInfo saveProfile = repository.save(profile);
         //when
-        final Optional<TrainerProfile> findProfile = repository.findById(saveProfile.getId());
+        final Optional<TrainerInfo> findProfile = repository.findById(saveProfile.getId());
 
         //then
         assertThat(findProfile.get().getId()).isEqualTo(saveProfile.getId());

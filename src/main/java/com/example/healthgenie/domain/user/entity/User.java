@@ -1,8 +1,15 @@
 package com.example.healthgenie.domain.user.entity;
 
+import com.example.healthgenie.domain.chat.entity.ChatMessage;
+import com.example.healthgenie.domain.community.entity.CommunityComment;
 import com.example.healthgenie.domain.community.entity.CommunityPost;
+import com.example.healthgenie.domain.matching.entity.matching;
 import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
+import com.example.healthgenie.domain.ptreview.entity.PtReivew;
 import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
+import com.example.healthgenie.domain.routine.entity.ownRoutine;
+import com.example.healthgenie.domain.todo.entity.todo;
+import com.example.healthgenie.domain.trainer.entity.trainerPhoto;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +36,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "user_id", unique=true)
     private Long id;
 
-    @NotNull
     @Column(name = "email")
     private String email;
 
@@ -40,35 +46,65 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "name")
     private String name;
 
-    @NotNull
-    @Column(name = "password")
-    private String password;
-
     @Column(name = "refresh_token_id")
     private String refreshTokenId;
 
     @Column(name = "provider")
     private String provider;
 
-
-    @Enumerated(value = EnumType.STRING)
     @Column(name = "role")
-    private Role role;
+    private String role;
+
+    @Column(name = "profile_phoho")
+    private String profilePhoho;
+
+    @Column(name = "email_verify")
+    private boolean emailVerify;
+
+    // 다른 메서드나 로직에서 추가적인 초기화 필요 없기에 아래 OneToMany 코드들을 초기화 하지 않음
+    // trainerInfo, RefreshToken, userProfile 부분 oneToOne 매핑 스킵 -> 한쪽에서만 참조하기에!
+    // user 2번 참조한 데이터 ( chatMessage, mathcing, PT_PROCESS_TB, PtReivew )
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<ChatMessage> chatMessages_member;
+
+    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<ChatMessage> chatMessages_trainer;
+
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<matching> match_user;
+
+    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<matching> match_trainer;
+
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<PtProcess> process_user;
+
+    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<PtProcess> process_trainer;
+
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<PtReivew> reivew_user;
+
+    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<PtReivew> reivew_trainer;
+
+
 
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<PtProcess> ptProcesses;
+    private List<todo> todo;
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<trainerPhoto> trainerPhotoList;
+
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<CommunityPost> communityPosts;
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<UserPtReview> userPtReviews;
+    private List<CommunityComment> communityComments;
 
-
-    private final Boolean enabled = false;
-
-    public void setPassword(String pwd){ this.password = pwd; }
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<ownRoutine> own_routine;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -77,8 +113,9 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return null;
     }
+
 
     @Override
     public String getUsername() {
@@ -105,3 +142,5 @@ public class User extends BaseEntity implements UserDetails {
         return true;
     }
 }
+
+

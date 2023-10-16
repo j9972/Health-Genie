@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "Pt_process_tb")
+@Table(name = "PT_PROCESS_TB")
 public class PtProcess extends BaseEntity {
 
     @Id
@@ -18,59 +18,25 @@ public class PtProcess extends BaseEntity {
     @Column(name = "pt_process_id")
     private Long id;
 
-    @NotNull
-    @Column(name = "date")
+    @Column(name = "pt_process_date")
     private String date;
 
-    @NotNull
-    @Column(name = "pt_times")
-    private Long ptTimes;
+    @Column(name ="process_content")
+    private String content;
 
-    @Column(name = "body_state")
-    private String bodyState;
+    @Column(name = "process_title")
+    private String title;
 
-    @Column(name ="bmi")
-    private String bmi;
-
-    @Column(name = "weakness")
-    private String weakness;
-
-    @Column(name = "strength")
-    private String strength;
-
-    @Column(name ="pt_comment")
-    private String ptComment;
-
-    @Column(name = "pt_start_date")
-    private String ptStartDate;
-
-    @NotNull
-    @Column(name = "pt_left_times")
-    private String ptLeftTimes;
+    @Column(name = "pt_process_photo")
+    private String photo;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private User member;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "trainer_id")
     private User trainer;
-
-
-
-
-
-
-//    @Builder(builderMethodName = "hi")
-//    public hihi(User user,String bmi){
-//        setUser(user);
-//
-//    }
-//
-//    private void setUser(User user){
-//        this.user = user;
-//        user.addUser(this);
-//    }
 
 }

@@ -8,11 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "chat_maessage_tb")
+@Table(name = "CHAT_MESSAGE_TB")
 public class ChatMessage extends BaseEntity {
 
     @Id
@@ -20,29 +21,30 @@ public class ChatMessage extends BaseEntity {
     @Column(name = "chat_message_id")
     private Long id;
 
+    @NotNull
     @Column(name = "message_content")
     private String messageContent;
 
-    @NotNull
+    @Column(name = "send_at")
+    private Date sendAt;
+
     @Column(name = "reading")
     private boolean reading;
 
-    // 전송 상태 체크
-    @Column(name = "status")
-    private Integer status;
-
-    @Column(name = "chatting_time")
-    private Date chattingTime;
-
+    // FK -> user[1] : chatMessage[N], trainer[1] : chatMessage[N] , chattingRoom[1] : chatMessage[N]
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id")
     private User member;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="trainer_id")
+    private User trainer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="room_id")
     private ChattingRoom chattingRoom;
 
-
-
+    @OneToMany(mappedBy = "chatMessage",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<ChatMessagePhoto> chatMessagePhotoList;
 
 }

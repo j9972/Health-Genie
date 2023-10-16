@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name ="community_liked_tb")
+@Table(name ="COMMUNITY_LIKED_TB")
 public class CommunityLiked extends BaseEntity {
 
     @Id
@@ -27,4 +27,3 @@ public class CommunityLiked extends BaseEntity {
     @JoinColumn(name = "community_post_id")
     private CommunityPost post;
 }
-

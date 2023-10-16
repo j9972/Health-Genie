@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @Builder
 @AllArgsConstructor
-@Table(name = "community_post_tb")
+@Table(name = "COMMUNITY_POST_TB")
 public class CommunityPost extends BaseEntity {
 
     @Id
@@ -30,20 +30,17 @@ public class CommunityPost extends BaseEntity {
     private String title;
 
     @NotNull
-    @Column(name ="body")
-    private String body;
+    @Column(name ="post_content")
+    private String content;
 
-    @Column(name = "like_count")
-    private Long likeCount;
-
-    @Lob
-    private Blob pics;
-
-    @OneToMany
+    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "community_comment_id")
     private List<CommunityComment> commentList;
 
+    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<CommunityPostPhoto> communityPostPhotos;
+
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User member;
 }
