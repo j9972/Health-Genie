@@ -1,6 +1,5 @@
 package com.example.healthgenie.domain.trainer.entity;
 
-import com.example.healthgenie.domain.trainer.dto.TrainerProfileModifyRequestDto;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;

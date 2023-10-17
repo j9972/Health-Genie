@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -35,10 +36,10 @@ public class CommunityPost extends BaseEntity {
 
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "community_comment_id")
-    private List<CommunityComment> commentList;
+    private List<CommunityComment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<CommunityPostPhoto> communityPostPhotos;
+    private List<CommunityPostPhoto> communityPostPhotos = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")

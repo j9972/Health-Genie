@@ -18,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -63,48 +64,48 @@ public class User extends BaseEntity implements UserDetails {
 
     // 다른 메서드나 로직에서 추가적인 초기화 필요 없기에 아래 OneToMany 코드들을 초기화 하지 않음
     // trainerInfo, RefreshToken, userProfile 부분 oneToOne 매핑 스킵 -> 한쪽에서만 참조하기에!
-    // user 2번 참조한 데이터 ( chatMessage, mathcing, PT_PROCESS_TB, PtReivew )
+    // user 2번 참조한 데이터 ( chatMessage, mathcing, PT_PROCESS_TB, PtReivew ) -> 한번만 하면 된다
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ChatMessage> chatMessages_member = new ArrayList<>(); // NullPointerException을 방지하기 위해서 초기화 해놓음
+
+//    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+//    private List<ChatMessage> chatMessages_trainer;
+
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<ChatMessage> chatMessages_member;
+    private List<matching> match_user= new ArrayList<>();
+
+//    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+//    private List<matching> match_trainer;
+
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<PtProcess> process_user = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+//    private List<PtProcess> process_trainer;
+
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<PtReivew> reivew_user = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+//    private List<PtReivew> reivew_trainer;
+
+
+
+
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<todo> todo = new ArrayList<>();
 
     @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<ChatMessage> chatMessages_trainer;
+    private List<trainerPhoto> trainerPhotoList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<matching> match_user;
-
-    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<matching> match_trainer;
+    private List<CommunityPost> communityPosts = new ArrayList<>();
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<PtProcess> process_user;
-
-    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<PtProcess> process_trainer;
+    private List<CommunityComment> communityComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<PtReivew> reivew_user;
-
-    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<PtReivew> reivew_trainer;
-
-
-
-
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<todo> todo;
-
-    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<trainerPhoto> trainerPhotoList;
-
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<CommunityPost> communityPosts;
-
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<CommunityComment> communityComments;
-
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<ownRoutine> own_routine;
+    private List<ownRoutine> own_routine = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
