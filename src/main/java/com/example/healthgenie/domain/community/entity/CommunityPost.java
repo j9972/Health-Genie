@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Blob;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,9 @@ public class CommunityPost extends BaseEntity {
     @NotNull
     @Column(name ="post_content")
     private String content;
+
+    @Column(name ="create_at")
+    private LocalDateTime createAt;
 
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "community_comment_id")

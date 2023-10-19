@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -31,12 +32,15 @@ public class PtReivew extends BaseEntity {
     @Column(name = "pt_review_date")
     private Date ptReviewDate;
 
+    @Column(name ="create_at")
+    private LocalDateTime createAt;
+
     @NotNull
     @Column(name = "stop_reason")
     private String stopReason;
 
     @Column(name = "review_score")
-    private float reviewScore;
+    private Double reviewScore;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id")

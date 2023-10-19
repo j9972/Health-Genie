@@ -6,7 +6,6 @@ import com.example.healthgenie.domain.community.entity.CommunityPost;
 import com.example.healthgenie.domain.matching.entity.matching;
 import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
 import com.example.healthgenie.domain.ptreview.entity.PtReivew;
-import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
 import com.example.healthgenie.domain.routine.entity.ownRoutine;
 import com.example.healthgenie.domain.todo.entity.todo;
 import com.example.healthgenie.domain.trainer.entity.trainerPhoto;

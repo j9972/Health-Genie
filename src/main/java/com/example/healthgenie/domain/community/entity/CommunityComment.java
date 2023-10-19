@@ -6,6 +6,8 @@ import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -22,6 +24,9 @@ public class CommunityComment extends BaseEntity {
     @NonNull
     @Column(name ="comment_body")
     private String commentBody;
+
+    @Column(name ="create_at")
+    private LocalDateTime createAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")

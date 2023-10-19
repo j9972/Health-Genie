@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -28,7 +30,7 @@ public class matching extends BaseEntity {
     private String ptPlace;
 
     @Column(name = "pt_matching_date")
-    private Date date;
+    private LocalDateTime date;
 
     @Column(name = "pt_accept")
     private boolean ptAccept;

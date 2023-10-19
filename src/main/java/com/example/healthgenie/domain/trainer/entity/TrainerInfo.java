@@ -55,7 +55,7 @@ public class TrainerInfo extends BaseEntity {
     private int contactTime;
 
     @Column(name = "review_avg")
-    private float reviewAvg;
+    private Double reviewAvg;
 
     @OneToOne
     @JoinColumn(name = "user_id")

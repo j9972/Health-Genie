@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @NoArgsConstructor
@@ -20,6 +22,9 @@ public class PtProcess extends BaseEntity {
 
     @Column(name = "pt_process_date")
     private String date;
+
+    @Column(name ="create_at")
+    private LocalDateTime createAt;
 
     @Column(name ="process_content")
     private String content;

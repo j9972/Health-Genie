@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ChatMessage extends BaseEntity {
     private String messageContent;
 
     @Column(name = "send_at")
-    private Date sendAt;
+    private LocalDateTime sendAt;
 
     @Column(name = "reading")
     private boolean reading;

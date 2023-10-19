@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ChattingRoom extends BaseEntity {
     private String chatRoomName;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "chattingRoom",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages = new ArrayList<>();
