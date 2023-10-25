@@ -6,24 +6,22 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name ="COMMUNITY_LIKED_TB")
-public class CommunityLiked extends BaseEntity {
+@Table(name ="COMMUNITY_POST_PHOTO_TB")
+public class CommunityPostPhoto extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "community_liked_id")
+    @Column(name = "community_post_photo_id")
     private Long id;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="user_id")
-    private User member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")
     private CommunityPost post;
+
+    // 각 사진을 url로 저장하는 방식
+    @Column(name ="post_photo")
+    private String postPhoto;
 }

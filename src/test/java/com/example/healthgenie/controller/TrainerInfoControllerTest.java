@@ -23,7 +23,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class TrainerProfileControllerTest {
+public class TrainerInfoControllerTest {
 
     @InjectMocks
     private TrainerProfileController target;

@@ -4,17 +4,17 @@ package com.example.healthgenie.domain.community.entity;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @Entity
 @Builder
 @AllArgsConstructor
-@Table(name = "community_comment_tb")
+@Table(name = "COMMUNITY_COMMENT_TB")
 public class CommunityComment extends BaseEntity {
 
     @Id
@@ -22,12 +22,17 @@ public class CommunityComment extends BaseEntity {
     @Column(name = "community_comment_id")
     private Long id;
 
+    @NonNull
     @Column(name ="comment_body")
     private String commentBody;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @CreationTimestamp // 댓글 작성 시간을 자동으로 기록
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")
-    private CommunityPost communityPost;
+    private CommunityPost post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

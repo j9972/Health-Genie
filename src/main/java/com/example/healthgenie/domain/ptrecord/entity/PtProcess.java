@@ -7,10 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "Pt_process_tb")
+@Table(name = "PT_PROCESS_TB")
 public class PtProcess extends BaseEntity {
 
     @Id
@@ -18,59 +20,26 @@ public class PtProcess extends BaseEntity {
     @Column(name = "pt_process_id")
     private Long id;
 
-    @NotNull
-    @Column(name = "date")
+    // 자동으로 시간을 저장 안하는 이유는 일지 작성 날짜를 내가 설정할 수 있게 해야하기 때문
+    @Column(name = "pt_process_date")
     private String date;
 
-    @NotNull
-    @Column(name = "pt_times")
-    private Long ptTimes;
+    @Column(name ="process_content")
+    private String content;
 
-    @Column(name = "body_state")
-    private String bodyState;
+    @Column(name = "process_title")
+    private String title;
 
-    @Column(name ="bmi")
-    private String bmi;
-
-    @Column(name = "weakness")
-    private String weakness;
-
-    @Column(name = "strength")
-    private String strength;
-
-    @Column(name ="pt_comment")
-    private String ptComment;
-
-    @Column(name = "pt_start_date")
-    private String ptStartDate;
-
-    @NotNull
-    @Column(name = "pt_left_times")
-    private String ptLeftTimes;
+    @Column(name = "pt_process_photo")
+    private String photo;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private User member;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "trainer_id")
     private User trainer;
-
-
-
-
-
-
-//    @Builder(builderMethodName = "hi")
-//    public hihi(User user,String bmi){
-//        setUser(user);
-//
-//    }
-//
-//    private void setUser(User user){
-//        this.user = user;
-//        user.addUser(this);
-//    }
 
 }

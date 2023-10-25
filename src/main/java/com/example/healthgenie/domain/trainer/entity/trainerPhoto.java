@@ -3,30 +3,29 @@ package com.example.healthgenie.domain.trainer.entity;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "trainer_pt_possible_time_tb")
-public class TrainerPtPossibleTime extends BaseEntity {
+@Builder
+@AllArgsConstructor
+@Table(name = "TRAINER_PHOTO_TB")
+public class trainerPhoto extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "trainer_pt_possible_time_id")
+    @Column(name ="todo_id")
     private Long id;
 
-    @Column(name = "day")
-    private String day;
-
-    @Column(name ="start_time")
-    private String startTime;
-
-    @Column(name = "end_time")
-    private String endTime;
+    @Column(name = "filename")
+    private String filename;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trainer_id")
+    @JoinColumn(name ="trainer_id")
     private User trainer;
 }

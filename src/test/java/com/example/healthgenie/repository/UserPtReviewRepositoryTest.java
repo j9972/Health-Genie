@@ -3,8 +3,6 @@ package com.example.healthgenie.repository;
 
 import com.example.healthgenie.domain.matching.entity.MatchingState;
 import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
-import com.example.healthgenie.domain.trainer.entity.TrainerProfile;
-import com.example.healthgenie.domain.trainer.entity.TrainerPtApplication;
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
