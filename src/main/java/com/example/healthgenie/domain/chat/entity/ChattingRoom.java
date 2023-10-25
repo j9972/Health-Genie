@@ -30,9 +30,6 @@ public class ChattingRoom extends BaseEntity {
     @Column(name = "chat_room_name")
     private String chatRoomName;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
     @OneToMany(mappedBy = "chattingRoom",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages = new ArrayList<>();
 }

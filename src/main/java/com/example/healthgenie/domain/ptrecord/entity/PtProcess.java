@@ -20,11 +20,9 @@ public class PtProcess extends BaseEntity {
     @Column(name = "pt_process_id")
     private Long id;
 
+    // 자동으로 시간을 저장 안하는 이유는 일지 작성 날짜를 내가 설정할 수 있게 해야하기 때문
     @Column(name = "pt_process_date")
     private String date;
-
-    @Column(name ="create_at")
-    private LocalDateTime createAt;
 
     @Column(name ="process_content")
     private String content;

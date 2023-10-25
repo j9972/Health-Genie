@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -29,8 +30,9 @@ public class matching extends BaseEntity {
     @Column(name = "pt_place")
     private String ptPlace;
 
+    @CreationTimestamp // 매칭 시간을 자동으로 기록
     @Column(name = "pt_matching_date")
-    private LocalDateTime date;
+    private LocalDateTime createdAt;
 
     @Column(name = "pt_accept")
     private boolean ptAccept;

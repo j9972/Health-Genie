@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class ChatMessage extends BaseEntity {
     @Column(name = "message_content")
     private String messageContent;
 
+    @CreationTimestamp
     @Column(name = "send_at")
     private LocalDateTime sendAt;
 

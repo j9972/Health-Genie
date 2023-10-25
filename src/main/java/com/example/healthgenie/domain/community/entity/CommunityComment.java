@@ -5,6 +5,7 @@ import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -25,8 +26,9 @@ public class CommunityComment extends BaseEntity {
     @Column(name ="comment_body")
     private String commentBody;
 
-    @Column(name ="create_at")
-    private LocalDateTime createAt;
+    @CreationTimestamp // 댓글 작성 시간을 자동으로 기록
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")

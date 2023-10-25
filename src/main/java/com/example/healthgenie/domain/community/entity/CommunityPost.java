@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Blob;
 import java.time.LocalDateTime;
@@ -35,8 +36,9 @@ public class CommunityPost extends BaseEntity {
     @Column(name ="post_content")
     private String content;
 
-    @Column(name ="create_at")
-    private LocalDateTime createAt;
+    @CreationTimestamp // 글 작성 시간을 자동으로 기록
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "community_comment_id")
