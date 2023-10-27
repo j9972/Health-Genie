@@ -40,7 +40,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "name")
     private String name;
 
-    @NotNull
     @Column(name = "password")
     private String password;
 

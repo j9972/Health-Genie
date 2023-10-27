@@ -1,7 +1,5 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.Email.EmailValidator;
-import com.example.healthgenie.domain.user.dto.KakaoProfile;
 import com.example.healthgenie.domain.user.dto.userLoginDto;
 import com.example.healthgenie.domain.user.dto.userLoginResponseDto;
 import com.example.healthgenie.domain.user.dto.userRegisterDto;
@@ -10,8 +8,6 @@ import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.*;
 import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.repository.UserRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -135,7 +130,7 @@ public class UserServiceImpl implements UserService{
             }
 
         } catch (Exception e) {
-            log.error("{}", e);
+            log.error(String.valueOf(e));
         }
         throw new UserEmailException(UserEmailErrorResult.BAD_CREDENTIALS);
     }
@@ -143,39 +138,57 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public Long socialSignup(userRegisterDto userSignupRequestDto) {
+    public userLoginResponseDto socialSignup(userRegisterDto userSignupRequestDto) {
+        log.info(userSignupRequestDto.toString());
+        userLoginResponseDto result = null;
         if (userRepository
                 .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
                 .isPresent()
-        ) throw new CommonException(CommonErrorResult.ITEM_EMPTY);//아이디가 이미 존재합니다.
-        return userRepository.save(userSignupRequestDto.tosocialEntity()).getId();
+        ) {
+            //기존회원이 존재한다면 소셜로그인으로 넘어간다.
+            result = socialLogin(userSignupRequestDto.getEmail());
+        }
+        else{
+            Long id = userRepository.save(userSignupRequestDto.tosocialEntity()).getId();
+            if(id !=null){
+                result = RefreshAccessIssue(userSignupRequestDto.getEmail(),userSignupRequestDto.getRole().toString(),id);
+            }
+            else{
+                log.info("error_신규 회원가입실패");
+            }
+        }
+        return result;
     }
 
-    @Transactional
-    @Override
-    public ResponseEntity socialLogin(KakaoProfile kakaoProfile){
-        Optional<User> user  = userRepository.findByEmailAndProvider(kakaoProfile.getKakao_account().getEmail(), "kakao");
-        if(user.isEmpty()){
-            throw new CommonException(CommonErrorResult.ITEM_EMPTY);
-        }
-
-        String accessToken = jwtUtil.createAccessToken(user.get().getEmail(), user.get().getRole().toString());
-        String refreshToken = jwtUtil.createRefreshToken(user.get().getEmail(), user.get().getRole().toString());
-
+    public userLoginResponseDto RefreshAccessIssue(String email,String role,Long Id){
+        String accessToken = jwtUtil.createAccessToken(email,role);
+        String refreshToken = jwtUtil.createRefreshToken(email,role);
         RefreshToken refreshTokenEntity = new RefreshToken();
         refreshTokenEntity.setToken(refreshToken);
-        refreshTokenEntity.setId(user.get().getId());
+        refreshTokenEntity.setId(Id);
         refreshTokenService.addRefreshToken(refreshTokenEntity);
 
         userLoginResponseDto loginResponse = userLoginResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .user_id(user.get().getId())
-                .email(user.get().getEmail())
+                .user_id(Id)
+                .email(email)
                 .build();
-
+        return loginResponse;
+    }
+    @Transactional
+    @Override
+    public userLoginResponseDto socialLogin(String Email){
+        Optional<User> user  = userRepository.findByEmailAndProvider(Email, "kakao");
+        if(user.isEmpty()){
+            throw new CommonException(CommonErrorResult.ITEM_EMPTY);
+        }
+        userLoginResponseDto loginResponse = RefreshAccessIssue(user.get().getEmail(), user.get().getRole().toString(),user.get().getId());
+        if(loginResponse ==null){
+            log.info("error_기존 로그인_토큰재발급 불가");
+        }
         //TODO : builder()를 데이터로 뽑는 방법이다
-        return new ResponseEntity(loginResponse, HttpStatus.OK);
+        return loginResponse;
     }
 
     @Override
@@ -222,7 +235,7 @@ public class UserServiceImpl implements UserService{
     public String encodedPwd(String pwd){
         return passwordEncoder.encode(pwd);
     }
-
+    /*
     public List<User> findMembers() {
         return userRepository.findAll();
     }
@@ -230,6 +243,7 @@ public class UserServiceImpl implements UserService{
     public Optional<User> findOne(Long userId) {
         return userRepository.findById(userId);
     }
+     */
 
 
 
