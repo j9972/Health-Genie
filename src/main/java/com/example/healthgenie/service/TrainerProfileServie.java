@@ -1,15 +1,9 @@
 package com.example.healthgenie.service;
 
 import com.example.healthgenie.domain.trainer.dto.*;
-import com.example.healthgenie.domain.trainer.entity.TrainerProfile;
-import com.example.healthgenie.domain.user.entity.User;
-import com.example.healthgenie.exception.TrainerProfileErrorResult;
-import com.example.healthgenie.exception.TrainerProfileException;
 import com.example.healthgenie.repository.TrainerProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

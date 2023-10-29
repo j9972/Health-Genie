@@ -8,8 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Blob;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,7 +20,7 @@ import java.util.List;
 @Entity
 @Builder
 @AllArgsConstructor
-@Table(name = "community_post_tb")
+@Table(name = "COMMUNITY_POST_TB")
 public class CommunityPost extends BaseEntity {
 
     @Id
@@ -30,20 +33,21 @@ public class CommunityPost extends BaseEntity {
     private String title;
 
     @NotNull
-    @Column(name ="body")
-    private String body;
+    @Column(name ="post_content")
+    private String content;
 
-    @Column(name = "like_count")
-    private Long likeCount;
+    @CreationTimestamp // 글 작성 시간을 자동으로 기록
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @Lob
-    private Blob pics;
-
-    @OneToMany
+    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "community_comment_id")
-    private List<CommunityComment> commentList;
+    private List<CommunityComment> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<CommunityPostPhoto> communityPostPhotos = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User member;
 }

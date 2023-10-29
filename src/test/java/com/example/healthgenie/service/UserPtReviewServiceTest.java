@@ -5,7 +5,6 @@ import com.example.healthgenie.domain.ptreview.dto.PtReviewListResponseDto;
 import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.domain.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
-import com.example.healthgenie.domain.trainer.entity.TrainerPtApplication;
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.PtReviewErrorResult;

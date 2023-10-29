@@ -4,7 +4,7 @@ import com.example.healthgenie.domain.ptreview.dto.PtReviewDetailResponseDto;
 import com.example.healthgenie.domain.ptreview.dto.PtReviewListResponseDto;
 import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.domain.ptreview.dto.PtReviewResponseDto;
-import com.example.healthgenie.domain.trainer.entity.TrainerPtApplication;
+import com.example.healthgenie.domain.ptreview.entity.PtReivew;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
 import com.example.healthgenie.exception.PtReviewErrorResult;
@@ -28,7 +28,7 @@ public class PtReviewService {
 
     public PtReviewResponseDto addPtReview(PtReviewRequestDto dto, Long userId){
 
-        UserPtReview result = userPtReviewRepository.findByMatchingId(dto.getMatchingId());
+        PtReivew result = userPtReviewRepository.findByMatchingId(dto.getMatchingId());
         if(result!= null){
             throw new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
         }
@@ -40,7 +40,7 @@ public class PtReviewService {
 
         //dto가 필요하네
         //무슨 정보를넣을지
-        UserPtReview ptReview = UserPtReview.builder()
+        PtReivew ptReview = PtReivew.builder()
                 .member(User.builder().id(userId).build())
                 .trainer(User.builder().id(dto.getTrainerId()).build())
                 .title(dto.getTitle())
@@ -55,7 +55,7 @@ public class PtReviewService {
                 .pic2(dto.getPic2())
                 .pic3(dto.getPic3())
                 .build();
-        UserPtReview review = userPtReviewRepository.save(ptReview);
+        PtReivew review = userPtReviewRepository.save(ptReview);
 
         return PtReviewResponseDto.builder()
                 .reviewId(review.getId()).build();
@@ -64,7 +64,7 @@ public class PtReviewService {
     public List<PtReviewListResponseDto> getReviewListByTrainer(Long trainerId){
 
 
-        List<UserPtReview> getReviewList = userPtReviewRepository.getAllByTrainer(User.builder().id(trainerId).build());
+        List<PtReivew> getReviewList = userPtReviewRepository.getAllByTrainer(User.builder().id(trainerId).build());
         List<PtReviewListResponseDto> resultList = new ArrayList<>();
 
         if(getReviewList.isEmpty()){
@@ -79,7 +79,7 @@ public class PtReviewService {
 
     public List<PtReviewListResponseDto> getReviewListByUser(Long userId){
 
-        List<UserPtReview> getReviewList = userPtReviewRepository.getAllByMember(User.builder().id(userId).build());
+        List<PtReivew> getReviewList = userPtReviewRepository.getAllByMember(User.builder().id(userId).build());
         List<PtReviewListResponseDto> resultList = new ArrayList<>();
         if(getReviewList.isEmpty()){
             return resultList;
@@ -92,11 +92,11 @@ public class PtReviewService {
 
     public PtReviewDetailResponseDto getReviewDetail(Long reviewId){
 
-        UserPtReview result = userPtReviewRepository.findsById(reviewId);
+        PtReivew result = userPtReviewRepository.findsById(reviewId);
         return toDetailResponse(result);
     }
 
-    public PtReviewDetailResponseDto toDetailResponse(UserPtReview review){
+    public PtReviewDetailResponseDto toDetailResponse(PtReivew review){
         return PtReviewDetailResponseDto.builder()
                 .id(review.getId())
                 .startDate(review.getStartDate())

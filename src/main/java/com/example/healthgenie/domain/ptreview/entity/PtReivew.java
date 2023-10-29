@@ -1,6 +1,5 @@
 package com.example.healthgenie.domain.ptreview.entity;
 
-import com.example.healthgenie.domain.trainer.entity.TrainerPtApplication;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -10,15 +9,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.sql.Blob;
+import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @Entity
 @Builder
 @AllArgsConstructor
-@Table(name = "user_pt_review_tb")
-public class UserPtReview extends BaseEntity {
+@Table(name = "PT_REVIEW_TB")
+public class PtReivew extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,34 +26,19 @@ public class UserPtReview extends BaseEntity {
     private Long id;
 
     @NotNull
-    @Column(name = "title")
-    private String title;
+    @Column(name = "review_content")
+    private String content;
 
-    @Column(name = "start_date")
-    private String startDate;
-
-    @Column(name = "end_date")
-    private String endDate;
+    // 자동으로 시간을 저장 안하는 이유는 후기 작성 날짜를 내가 설정할 수 있게 해야하기 때문
+    @Column(name = "pt_review_date")
+    private Date ptReviewDate;
 
     @NotNull
-    @Column(name = "trainer_name")
-    private String trainerName;
+    @Column(name = "stop_reason")
+    private String stopReason;
 
-    @Column(name = "review_content")
-    private String reviewContent;
-
-
-    @Lob
-    private Blob pic1;
-
-    @Lob
-    private Blob pic2;
-
-    @Lob
-    private Blob pic3;
-
-    @Column(name ="star_score")
-    private Integer starScore;
+    @Column(name = "review_score")
+    private Double reviewScore;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id")
@@ -62,8 +47,4 @@ public class UserPtReview extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="trainer_id")
     private User trainer;
-
-    @OneToOne
-    @JoinColumn(name = "trainer_pt_application_id")
-    private TrainerPtApplication matching;
 }
