@@ -27,6 +27,8 @@ public class UserServiceImpl implements UserService{
     private final EmailService emailService;
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
+/*
+
     @Transactional
     @Override
     public Long signUp(userRegisterDto request) {
