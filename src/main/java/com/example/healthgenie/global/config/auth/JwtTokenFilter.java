@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -62,9 +63,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
+                    List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("USER"));
 
-                    Authentication token = new AnonymousAuthenticationToken("key","anonymousUser",authorities);
+                    Authentication token = new UsernamePasswordAuthenticationToken(email,null,authorities);
                     log.info(token.getAuthorities()+" "+token.getName());
 
                     SecurityContextHolder.getContext().setAuthentication(token);

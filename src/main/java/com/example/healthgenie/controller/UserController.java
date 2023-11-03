@@ -18,50 +18,50 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor // 생성자 DI
 @RequestMapping("/auth")
+
 public class UserController {
 
     private final UserService userService;
-    private final EmailService emailService;
+    //private final EmailService emailService;
     private final KakaoService kakaoService;
 /*
     // 회원가입
+    /*
     @PostMapping("/signup") // http://localhost:1234/api/v1/auth/signup
     public ResponseEntity signUp(@RequestBody userRegisterDto request) {
         Long resultId = userService.signUp(request);
         return new ResponseEntity(resultId,HttpStatus.OK);
     }
-
+     */
 
     // 이메일 코드전송,이메일유효성검사
+    /*
     @PostMapping("/mail/send") // http://localhost:1234/api/v1/auth/mail/send
     public String authMail(@RequestBody emailRequestDto request) {
         return userService.authMail(request.getEmail());
     }
-
+*/
 
     //이메일 코드검증
+    /*
     @PostMapping("/mail/verify") // http://localhost:1234/api/v1/auth/mail/verify
     public ResponseEntity validMailCode(@RequestBody emailRequestDto request){
         String result = emailService.valiedCode(request.getCode());
         return new ResponseEntity(result,HttpStatus.OK);
     }
-
+*/
     // 로그인
+    /*
     @PostMapping("/login") // http://localhost:1234/api/v1/auth/login
     public ResponseEntity<String> login(@RequestBody userLoginDto request) {
         return userService.login(request);
     }
 
-    //소셜 로그인 카카오
-    @PostMapping("/login/kakao") // http://localhost:1234/api/v1/auth/login/kakao
-    public ResponseEntity signupByKakao(@RequestBody SocialSignupRequestDto socialSignupRequestDto) {
-        KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(socialSignupRequestDto.getAccessToken());
-        if (kakaoProfile == null) throw new CommonException(CommonErrorResult.ITEM_EMPTY);
-        return userService.socialLogin(kakaoProfile);
-    }
+     */
 
-    //소셜 회원가입 카카오
-    @PostMapping("/signup/kakao") // http://localhost:1234/api/v1/auth/signup/kakao
+    //소셜 회원가입 카카오 //여기서 변경해야할 것 회원가입시 기존 유저가 있을 시 로그인으로, 없을시 회원가입으로 그리고 둘다 리프레쉬,엑세스토큰을 리턴
+    /*
+    @PostMapping("/kakao/signup") // http://localhost:1234/api/v1/auth/signup/kakao
     public ResponseEntity signupBySocial(@RequestBody SocialSignupRequestDto socialSignupRequestDto) {
 
         KakaoProfile kakaoProfile =
@@ -74,15 +74,17 @@ public class UserController {
             throw new CommonException(CommonErrorResult.ITEM_EMPTY);
         }
 
-        Long userId = userService.socialSignup(userRegisterDto.builder()
+        userLoginResponseDto result = userService.socialSignup(userRegisterDto.builder()
                 .email(kakaoProfile.getKakao_account().getEmail())
                 .role(Role.USER)
                 .name(kakaoProfile.getProperties().getNickname())
                 .uniName(kakaoProfile.getProperties().getNickname())
                 .provider("kakao")
                 .build());
-        return new ResponseEntity(userId,HttpStatus.OK);
+        return new ResponseEntity(result,HttpStatus.OK);
     }
+
+     */
 
     //비밀번호 찾기
 
@@ -90,6 +92,7 @@ public class UserController {
     //임시비번 만듬
     //임시비번 이메일 전송
     //임시비번 db에 저장
+    /*
     @PostMapping("/pwd")
     public ResponseEntity getPassword(@RequestBody pwdFindRequestDto dto){
         log.info(dto.getEmail());
@@ -97,8 +100,10 @@ public class UserController {
         return new ResponseEntity(result,HttpStatus.OK);
     }
 
-    //비밀번호 변경
+     */
 
+    //비밀번호 변경
+/*
     @PostMapping("/pwd/1")
     public ResponseEntity ModifiedPassword(@RequestBody pwdModifiedRequestDto dto){
         String result = userService.ModifiedPassword(dto.getEmail(),dto.getPwd());
@@ -106,5 +111,4 @@ public class UserController {
     }
 
  */
-
 }
