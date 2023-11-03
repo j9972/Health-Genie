@@ -1,6 +1,9 @@
 package com.example.healthgenie.controller;
 
-
+import com.example.healthgenie.domain.ptrecord.dto.PtProcessDetailResponseDto;
+import com.example.healthgenie.domain.ptrecord.dto.PtProcessListResponseDto;
+import com.example.healthgenie.domain.ptrecord.dto.PtProcessRequestDto;
+import com.example.healthgenie.domain.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
 import com.example.healthgenie.service.PtProcessService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/pt/process")
+@RequestMapping("api/v1/pt/process")
 public class UserPtProcessController {
     private final PtProcessService processService;
 

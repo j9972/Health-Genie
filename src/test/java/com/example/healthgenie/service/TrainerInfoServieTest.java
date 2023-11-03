@@ -1,11 +1,17 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.repository.TrainerInfoRepository;
+import com.example.healthgenie.domain.trainer.dto.*;
+import com.example.healthgenie.domain.trainer.entity.TrainerInfo;
+import com.example.healthgenie.exception.TrainerProfileErrorResult;
+import com.example.healthgenie.exception.TrainerProfileException;
+import com.example.healthgenie.repository.TrainerProfileRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,10 +22,10 @@ import static org.mockito.Mockito.doReturn;
 public class TrainerInfoServieTest {
 
     @InjectMocks
-    TrainerProfileServiceImpl target;
+    TrainerProfileServie target;
 
     @Mock
-    TrainerInfoRepository repository;
+    TrainerProfileRepository repository;
 
     @Test
     public void 약력작성실패_없음(){
@@ -27,7 +33,7 @@ public class TrainerInfoServieTest {
 
 //        repository.save()
     }
-    /*@Test
+    @Test
     public void 약력작성성공(){
 
         //given
@@ -40,14 +46,14 @@ public class TrainerInfoServieTest {
 
         //then
         assertThat(result.getProfileId()).isNotNull();
-    }*/
+    }
 
 
     @Test
     public void 약력수정실패(){
 
     }
-/*
+
     @Test
     public void 약력수정성공(){
 
@@ -107,7 +113,7 @@ public class TrainerInfoServieTest {
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getName()).isEqualTo("test");
 
-    }*/
+    }
 }
 
 
