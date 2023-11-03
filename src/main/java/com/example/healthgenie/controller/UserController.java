@@ -84,8 +84,6 @@ public class UserController {
     }
          */
 
-     */
-
     //비밀번호 찾기
 
     //이메일, 이름 넣어서 존재하면
