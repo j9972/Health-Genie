@@ -22,9 +22,6 @@ public class UserController {
     private final UserService userService;
     //private final EmailService emailService;
     private final KakaoService kakaoService;
-
-    /*
-
 /*
     // 회원가입
     /*
