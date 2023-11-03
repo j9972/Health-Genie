@@ -4,10 +4,8 @@ package com.example.healthgenie.controller;
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.exception.CommonErrorResult;
 import com.example.healthgenie.exception.CommonException;
-import com.example.healthgenie.service.EmailService;
 import com.example.healthgenie.service.KakaoService;
 import com.example.healthgenie.service.UserService;
-import com.example.healthgenie.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,7 +31,6 @@ public class UserController {
         return new ResponseEntity(resultId,HttpStatus.OK);
     }
      */
-
     // 이메일 코드전송,이메일유효성검사
     /*
     @PostMapping("/mail/send") // http://localhost:1234/api/v1/auth/mail/send
@@ -41,7 +38,6 @@ public class UserController {
         return userService.authMail(request.getEmail());
     }
 */
-
     //이메일 코드검증
     /*
     @PostMapping("/mail/verify") // http://localhost:1234/api/v1/auth/mail/verify
@@ -50,14 +46,6 @@ public class UserController {
         return new ResponseEntity(result,HttpStatus.OK);
     }
 */
-    // 로그인
-    /*
-    @PostMapping("/login") // http://localhost:1234/api/v1/auth/login
-    public ResponseEntity<String> login(@RequestBody userLoginDto request) {
-        return userService.login(request);
-    }
-
-     */
 
     //소셜 회원가입 카카오 //여기서 변경해야할 것 회원가입시 기존 유저가 있을 시 로그인으로, 없을시 회원가입으로 그리고 둘다 리프레쉬,엑세스토큰을 리턴
     /*
@@ -83,6 +71,18 @@ public class UserController {
                 .build());
         return new ResponseEntity(result,HttpStatus.OK);
     }
+    @PostMapping("/add/dummy/user")
+    public void addDummyUser(@RequestBody DummyUserDto dto){
+
+        userService.addDummyUser(userRegisterDto.builder()
+                .email(dto.getEmail())
+                .role(Role.USER)
+                .name(dto.getName())
+                .uniName("test")
+                .provider("kakao")
+                .build());
+    }
+         */
 
      */
 
