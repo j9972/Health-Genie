@@ -4,6 +4,7 @@ import com.example.healthgenie.domain.user.dto.KakaoProfile;
 import com.example.healthgenie.domain.user.dto.userLoginResponseDto;
 import com.example.healthgenie.domain.user.dto.userRegisterDto;
 
+
 //import com.example.healthgenie.domain.user.dto.KakaoProfile;
 //import com.example.healthgenie.domain.user.dto.userLoginDto;
 //import com.example.healthgenie.domain.user.dto.userLoginResponseDto;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 public interface UserService {
 
     //Long signUp(userRegisterDto request);
+
 
 
 
