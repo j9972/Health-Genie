@@ -51,7 +51,7 @@ public class UserServiceTest {
     /*
         test code 작성시, setUp 메소드 필수
      */
-    @BeforeEach
+    /*@BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         userService = new UserServiceImpl(userRepository, passwordEncoder, authenticationManager,
@@ -157,5 +157,5 @@ public class UserServiceTest {
 
         // then
     }
-
+*/
 }

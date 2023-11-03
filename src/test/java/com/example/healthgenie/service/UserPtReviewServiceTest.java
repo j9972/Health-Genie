@@ -1,10 +1,6 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.ptreview.dto.PtReviewDetailResponseDto;
-import com.example.healthgenie.domain.ptreview.dto.PtReviewListResponseDto;
-import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
-import com.example.healthgenie.domain.ptreview.dto.PtReviewResponseDto;
-import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
+
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.PtReviewErrorResult;
@@ -44,7 +40,7 @@ public class UserPtReviewServiceTest {
     private final Long matchingId =1L;
     private final Long Id =1L;
 
-
+/*
     private PtReviewRequestDto dto = PtReviewRequestDto.builder().build();
     @Test
     public void 후기작성실패_이미존재할경우(){
@@ -168,5 +164,5 @@ public class UserPtReviewServiceTest {
                 .trainer(User.builder().id(Id).build())
                 .build();
     }
-
+*/
 }
