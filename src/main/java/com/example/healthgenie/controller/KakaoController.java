@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Log4j2
-@RequestMapping("api/v1/auth/kakao")
+@RequestMapping("/auth/kakao")
 public class KakaoController {
 
     private final Environment env;

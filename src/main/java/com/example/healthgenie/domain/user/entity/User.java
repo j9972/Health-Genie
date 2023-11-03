@@ -8,7 +8,7 @@ import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
 import com.example.healthgenie.domain.ptreview.entity.PtReivew;
 import com.example.healthgenie.domain.routine.entity.ownRoutine;
 import com.example.healthgenie.domain.todo.entity.todo;
-import com.example.healthgenie.domain.trainer.entity.trainerPhoto;
+import com.example.healthgenie.domain.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -53,7 +53,7 @@ public class User extends BaseEntity implements UserDetails {
     private String provider;
 
     @Column(name = "role")
-    private String role;
+    private Role role;
 
     @Column(name = "profile_phoho")
     private String profilePhoho;
@@ -95,7 +95,7 @@ public class User extends BaseEntity implements UserDetails {
     private List<todo> todo = new ArrayList<>();
 
     @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<trainerPhoto> trainerPhotoList = new ArrayList<>();
+    private List<TrainerPhoto> trainerPhotoList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<CommunityPost> communityPosts = new ArrayList<>();
@@ -108,7 +108,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
+        return List.of(new SimpleGrantedAuthority(role.getCode()));
     }
 
     @Override
