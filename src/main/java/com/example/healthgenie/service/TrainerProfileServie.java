@@ -1,6 +1,5 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.trainer.dto.*;
 import com.example.healthgenie.repository.TrainerProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

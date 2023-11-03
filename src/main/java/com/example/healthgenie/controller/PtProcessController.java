@@ -1,22 +1,14 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.ptrecord.dto.PtProcessDetailResponseDto;
-import com.example.healthgenie.domain.ptrecord.dto.PtProcessListResponseDto;
-import com.example.healthgenie.domain.ptrecord.dto.PtProcessRequestDto;
-import com.example.healthgenie.domain.ptrecord.dto.PtProcessResponseDto;
-import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
+
 import com.example.healthgenie.service.PtProcessService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/pt/process")
-public class UserPtProcessController {
+@RequestMapping("/pt/process")
+public class PtProcessController {
     private final PtProcessService processService;
 
     // TODO : 트레이너 입장에서 pt record 수정 및 삭제

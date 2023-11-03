@@ -1,6 +1,6 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.user.dto.*;
+
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.exception.CommonErrorResult;
 import com.example.healthgenie.exception.CommonException;
@@ -24,7 +24,7 @@ public class UserController {
     private final UserService userService;
     //private final EmailService emailService;
     private final KakaoService kakaoService;
-
+/*
     // 회원가입
     /*
     @PostMapping("/signup") // http://localhost:1234/api/v1/auth/signup
@@ -60,6 +60,7 @@ public class UserController {
      */
 
     //소셜 회원가입 카카오 //여기서 변경해야할 것 회원가입시 기존 유저가 있을 시 로그인으로, 없을시 회원가입으로 그리고 둘다 리프레쉬,엑세스토큰을 리턴
+    /*
     @PostMapping("/kakao/signup") // http://localhost:1234/api/v1/auth/signup/kakao
     public ResponseEntity signupBySocial(@RequestBody SocialSignupRequestDto socialSignupRequestDto) {
 
@@ -82,6 +83,8 @@ public class UserController {
                 .build());
         return new ResponseEntity(result,HttpStatus.OK);
     }
+
+     */
 
     //비밀번호 찾기
 
@@ -106,5 +109,6 @@ public class UserController {
         String result = userService.ModifiedPassword(dto.getEmail(),dto.getPwd());
         return new ResponseEntity(result,HttpStatus.OK);
     }
-*/
+
+ */
 }

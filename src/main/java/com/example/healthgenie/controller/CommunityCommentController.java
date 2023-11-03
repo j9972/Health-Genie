@@ -1,8 +1,5 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.community.dto.CommunityCommentGetResponseDto;
-import com.example.healthgenie.domain.community.dto.CommunityCommentRequestDto;
-import com.example.healthgenie.domain.community.dto.CommunityCommentResponseDto;
 import com.example.healthgenie.service.CommunityCommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +9,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/community/comment")
+@RequestMapping("/community/comment")
 @Slf4j
 public class CommunityCommentController {
 
     private final CommunityCommentService commentService;
 
+    /*
     @PostMapping("/add")  // http://localhost:1234/api/v1/community/comment/add
     public ResponseEntity addComment(@RequestBody CommunityCommentRequestDto dto){
 
@@ -36,4 +34,6 @@ public class CommunityCommentController {
 
         return new ResponseEntity(result,HttpStatus.OK);
     }
+
+     */
 }

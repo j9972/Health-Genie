@@ -26,13 +26,11 @@ public class matching extends BaseEntity {
     @Column(name ="user_pt_review_id")
     private Long id;
 
+    @Column(name = "pt_date")
+    private Date ptDate;
 
     @Column(name = "pt_place")
     private String ptPlace;
-
-    @CreationTimestamp // 매칭 시간을 자동으로 기록
-    @Column(name = "pt_matching_date")
-    private LocalDateTime createdAt;
 
     @Column(name = "pt_accept")
     private boolean ptAccept;

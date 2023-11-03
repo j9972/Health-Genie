@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserPtProcessRepository extends JpaRepository<PtProcess, Long> {
+public interface PtProcessRepository extends JpaRepository<PtProcess, Long> {
 
     @Query("select R from PtProcess R where R.id =:Id")
     public PtProcess findsById(Long Id);

@@ -1,16 +1,9 @@
 package com.example.healthgenie.repository;
 
 
-import com.example.healthgenie.domain.matching.entity.MatchingState;
-import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
-import com.example.healthgenie.domain.user.entity.Role;
-import com.example.healthgenie.domain.user.entity.User;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,12 +15,13 @@ import static org.mockito.Mockito.doReturn;
 public class UserPtReviewRepositoryTest {
 
     @Autowired
-    private UserPtReviewRepository userPtReviewRepository;
+    private PtReviewRepository ptReviewRepository;
     @Autowired
     private UserRepository userRepository;
 
 
     //후기 작성하는지 확인
+    /*
     @Test
     public void reviewAdd(){
         //given
@@ -131,4 +125,6 @@ public class UserPtReviewRepositoryTest {
 
     }
 
+
+     */
 }

@@ -1,29 +1,14 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.ptrecord.dto.PtProcessDetailResponseDto;
-import com.example.healthgenie.domain.ptrecord.dto.PtProcessListResponseDto;
-import com.example.healthgenie.domain.ptrecord.dto.PtProcessRequestDto;
-import com.example.healthgenie.domain.ptrecord.dto.PtProcessResponseDto;
-import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
-import com.example.healthgenie.domain.ptreview.dto.PtReviewDetailResponseDto;
-import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
-import com.example.healthgenie.domain.user.entity.User;
-import com.example.healthgenie.exception.PtProcessErrorResult;
-import com.example.healthgenie.exception.PtProcessException;
-import com.example.healthgenie.repository.UserPtProcessRepository;
+import com.example.healthgenie.repository.PtProcessRepository;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class PtProcessService {
-    private final UserPtProcessRepository userPtProcessRepository;
+    private final PtProcessRepository ptProcessRepository;
     private final UserRepository userRepository;
 
 //    /*

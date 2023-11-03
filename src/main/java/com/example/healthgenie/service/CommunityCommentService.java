@@ -1,6 +1,5 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.community.dto.*;
 import com.example.healthgenie.domain.community.entity.CommunityComment;
 import com.example.healthgenie.domain.community.entity.CommunityPost;
 import com.example.healthgenie.domain.user.entity.User;
@@ -18,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CommunityCommentService {
 
+    /*
     private final CommunityCommentRepository commentRepository;
     public CommunityCommentResponseDto addComment(CommunityCommentRequestDto dto, Long postId, Long userId) {
         postId = 1L;
@@ -55,4 +55,6 @@ public class CommunityCommentService {
                 .build();
         return result;
     }
+
+     */
 }
