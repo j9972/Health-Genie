@@ -13,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 //import com.example.healthgenie.domain.user.dto.userRegisterDto;
 
 public interface UserService {
-
-
     /*
     Long signUp(userRegisterDto request);
     String authMail(String email);
