@@ -23,6 +23,15 @@ public class UserController {
     //private final EmailService emailService;
     private final KakaoService kakaoService;
 
+    /*
+    // 회원가입
+    /*
+    @PostMapping("/signup") // http://localhost:1234/api/v1/auth/signup
+    public ResponseEntity signUp(@RequestBody userRegisterDto request) {
+        Long resultId = userService.signUp(request);
+        return new ResponseEntity(resultId,HttpStatus.OK);
+    }
+     */
     // 이메일 코드전송,이메일유효성검사
     /*
     @PostMapping("/mail/send") // http://localhost:1234/api/v1/auth/mail/send
@@ -73,4 +82,31 @@ public class UserController {
                 .provider("kakao")
                 .build());
     }
+         */
+
+    //비밀번호 찾기
+
+    //이메일, 이름 넣어서 존재하면
+    //임시비번 만듬
+    //임시비번 이메일 전송
+    //임시비번 db에 저장
+    /*
+    @PostMapping("/pwd")
+    public ResponseEntity getPassword(@RequestBody pwdFindRequestDto dto){
+        log.info(dto.getEmail());
+        String result = userService.getPassword(dto.getName(),dto.getEmail());
+        return new ResponseEntity(result,HttpStatus.OK);
+    }
+
+     */
+
+    //비밀번호 변경
+/*
+    @PostMapping("/pwd/1")
+    public ResponseEntity ModifiedPassword(@RequestBody pwdModifiedRequestDto dto){
+        String result = userService.ModifiedPassword(dto.getEmail(),dto.getPwd());
+        return new ResponseEntity(result,HttpStatus.OK);
+    }
+
+ */
 }

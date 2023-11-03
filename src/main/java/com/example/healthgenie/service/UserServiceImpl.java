@@ -2,6 +2,10 @@ package com.example.healthgenie.service;
 
 import com.example.healthgenie.domain.user.dto.userLoginResponseDto;
 import com.example.healthgenie.domain.user.dto.userRegisterDto;
+import com.example.healthgenie.Email.EmailValidator;
+//import com.example.healthgenie.domain.user.dto.userLoginDto;
+//import com.example.healthgenie.domain.user.dto.userLoginResponseDto;
+//import com.example.healthgenie.domain.user.dto.userRegisterDto;
 import com.example.healthgenie.domain.user.entity.RefreshToken;
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
@@ -26,6 +30,32 @@ public class UserServiceImpl implements UserService{
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
 
+    /*
+
+    @Transactional
+    @Override
+    public Long signUp(userRegisterDto request) {
+        log.info("Inside  signUp {}", request.getEmail());
+        try {
+
+            // 유저 중복 체크
+            boolean userExists = userRepository.findByEmail(request.getEmail()).isPresent();
+
+            if (userExists) {
+                log.info("이메일 중복 : " + request.getEmail());
+                throw new UserEmailException(UserEmailErrorResult.DUPLICATED_EMAIL);
+            }
+
+            request.setPassword(encodedPwd((request.getPassword())));
+            User user = request.toEntity();
+            return userRepository.save(user).getId();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        throw new UserEmailException(UserEmailErrorResult.UNkNOWN_EXCEPTION);
+    }
     @Override
     public String authMail(String email) {
         log.info(email);
