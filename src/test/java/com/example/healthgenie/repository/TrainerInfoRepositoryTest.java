@@ -14,7 +14,7 @@ public class TrainerInfoRepositoryTest {
 
 
     @Autowired
-    private TrainerProfileRepository repository;
+    private TrainerInfoRepository repository;
 
     //약력 추가
     @Test

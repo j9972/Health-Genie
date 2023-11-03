@@ -5,7 +5,7 @@ import com.example.healthgenie.domain.trainer.dto.TrainerProfileGetResponseDto;
 import com.example.healthgenie.domain.trainer.dto.TrainerProfileModifyRequestDto;
 import com.example.healthgenie.domain.trainer.dto.TrainerProfileRequestDto;
 import com.example.healthgenie.global.exception.GlobalExceptionHandler;
-import com.example.healthgenie.service.TrainerProfileServie;
+import com.example.healthgenie.service.TrainerProfileServiceImpl;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ public class TrainerInfoControllerTest {
     private Gson gson;
 
     @Mock
-    TrainerProfileServie service;
+    TrainerProfileServiceImpl service;
 
 
 
