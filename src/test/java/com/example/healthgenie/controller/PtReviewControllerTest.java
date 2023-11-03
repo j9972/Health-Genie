@@ -23,11 +23,11 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class UserPtReviewControllerTest {
+public class PtReviewControllerTest {
 
 
     @InjectMocks
-    private UserPtReviewController target;
+    private PtReviewController target;
 
     private MockMvc mockMvc;
 

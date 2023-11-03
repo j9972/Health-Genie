@@ -41,7 +41,6 @@ public class CommunityPost extends BaseEntity {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "community_comment_id")
     private List<CommunityComment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)

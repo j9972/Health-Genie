@@ -33,6 +33,7 @@ public class CustomerUsersDetailsService implements UserDetailsService {
         }
     }
 
+    /*
     public String loadUserByRole(String email) throws  UsernameNotFoundException {
         log.info("Inside loadUserByUsername {}", email);
 
@@ -44,6 +45,9 @@ public class CustomerUsersDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found.");
         }
     }
+
+     */
+
     public Optional<User> getUserDetail() {
         return userDetail;
     }

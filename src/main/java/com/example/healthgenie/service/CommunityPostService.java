@@ -1,8 +1,6 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.community.dto.CommunityPostGetResponseDto;
-import com.example.healthgenie.domain.community.dto.CommunityPostRequestDto;
-import com.example.healthgenie.domain.community.dto.CommunityPostResponseDto;
+
 import com.example.healthgenie.domain.community.entity.CommunityPost;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.CommunityPostErrorResult;
@@ -25,6 +23,7 @@ public class CommunityPostService {
     private final CommunityPostRepository postRepository;
 
     //게시물작성
+    /*
     public CommunityPostResponseDto addPost(CommunityPostRequestDto dto, Long userId){
         userId =1L;
 
@@ -81,5 +80,7 @@ public class CommunityPostService {
                 .user(User.builder().id(userId).build())
                 .build();
     }
+
+     */
 
 }

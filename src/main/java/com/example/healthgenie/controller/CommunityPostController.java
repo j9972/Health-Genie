@@ -1,10 +1,5 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.community.dto.CommunityPostResponseDto;
-import com.example.healthgenie.domain.community.dto.CommunityPostGetResponseDto;
-import com.example.healthgenie.domain.community.dto.CommunityPostIdTitleDto;
-import com.example.healthgenie.domain.community.dto.CommunityPostRequestDto;
-import com.example.healthgenie.domain.community.dto.CommunityPostResponseDto;
 import com.example.healthgenie.domain.community.entity.CommunityPost;
 import com.example.healthgenie.service.CommunityPostService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/community/post")
+@RequestMapping("/community/post")
 public class CommunityPostController {
 
     private final CommunityPostService postService;
-
+/*
     @PostMapping("/add")  // http://localhost:1234/api/v1/community/post/add
     public ResponseEntity addPost(@RequestBody CommunityPostRequestDto dto){
 
@@ -43,4 +38,6 @@ public class CommunityPostController {
         Page<CommunityPostIdTitleDto> postDtos = posts.map(post -> new CommunityPostIdTitleDto(post.getId(), post.getTitle()));
         return new ResponseEntity(postDtos,HttpStatus.OK);
     }
+
+ */
 }

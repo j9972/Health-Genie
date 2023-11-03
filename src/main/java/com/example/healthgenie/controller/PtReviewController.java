@@ -1,9 +1,6 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.ptreview.dto.PtReviewDetailResponseDto;
 import com.example.healthgenie.domain.ptreview.dto.PtReviewListResponseDto;
-import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
-import com.example.healthgenie.domain.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.service.PtReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,14 +11,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/pt/review")
-public class UserPtReviewController {
-
-
+@RequestMapping("/pt/review")
+public class PtReviewController {
 
     private final PtReviewService reviewService;
 
-
+/*
     @PostMapping("/add")// http://localhost:1234/api/v1/pt/review/add
     public ResponseEntity test(@RequestBody PtReviewRequestDto dto){
 
@@ -32,24 +27,19 @@ public class UserPtReviewController {
         return new ResponseEntity(responseDto,HttpStatus.OK);
     }
 
-    @GetMapping("/list/trainer") // http://localhost:1234/api/v1/pt/review/list/trainer
+ */
+
+    @GetMapping("/list/trainer") // http://localhost:1234/pt/review/list/trainer
     public ResponseEntity getReviewListByTrainer(@RequestParam Long trainerId){
         List<PtReviewListResponseDto> result = reviewService.getReviewListByTrainer(trainerId);
         return new ResponseEntity(result,HttpStatus.OK);
 
     }
 
-    @GetMapping("/list/my") // http://localhost:1234/api/v1/pt/review/list/my
+
+    @GetMapping("/list/my") // http://localhost:1234/pt/review/list/my
     public ResponseEntity getReviewListByUser(@RequestParam Long userId){
         List<PtReviewListResponseDto> result = reviewService.getReviewListByUser(userId);
-        return new ResponseEntity(result,HttpStatus.OK);
-
-    }
-
-    @GetMapping("/detail")       // http://localhost:1234/api/v1/pt/review/detail
-    public ResponseEntity getReviewDetail(@RequestParam Long reviewId){
-        PtReviewDetailResponseDto result = reviewService.getReviewDetail(reviewId);
-
         return new ResponseEntity(result,HttpStatus.OK);
     }
 }

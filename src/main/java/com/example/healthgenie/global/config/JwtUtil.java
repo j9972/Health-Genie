@@ -139,6 +139,7 @@ public class JwtUtil implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
+    /*
     public Role getRole(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
@@ -155,6 +156,8 @@ public class JwtUtil implements InitializingBean {
         }
         return role;
     }
+
+     */
 
 
     public Map<String,String> getEmailAndRole(String token) {

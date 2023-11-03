@@ -1,6 +1,6 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.user.dto.RetKakaoOAuth;
+
 import com.example.healthgenie.service.KakaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -35,9 +35,11 @@ public class KakaoController {
         log.info(loginUri);
         return loginUri.toString();
     }
-
+/*
     @GetMapping( "/redirect") // http://localhost:1234/api/v1/auth/kakao/redirect
     public RetKakaoOAuth redirectKakao(@RequestParam String code) {
         return kakaoService.getKakaoTokenInfo(code);
     }
+
+ */
 }

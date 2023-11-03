@@ -108,7 +108,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getCode()));
+        return List.of(new SimpleGrantedAuthority(role));
     }
 
     @Override

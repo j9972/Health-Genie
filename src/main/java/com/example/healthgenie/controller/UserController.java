@@ -1,6 +1,6 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.user.dto.*;
+
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.exception.CommonErrorResult;
 import com.example.healthgenie.exception.CommonException;
@@ -18,13 +18,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor // 생성자 DI
 @RequestMapping("api/v1/auth")
-
 public class UserController {
 
     private final UserService userService;
     private final EmailService emailService;
     private final KakaoService kakaoService;
-
+/*
     // 회원가입
     @PostMapping("/signup") // http://localhost:1234/api/v1/auth/signup
     public ResponseEntity signUp(@RequestBody userRegisterDto request) {
@@ -105,5 +104,7 @@ public class UserController {
         String result = userService.ModifiedPassword(dto.getEmail(),dto.getPwd());
         return new ResponseEntity(result,HttpStatus.OK);
     }
+
+ */
 
 }

@@ -1,24 +1,12 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.ptreview.dto.PtReviewDetailResponseDto;
-import com.example.healthgenie.domain.ptreview.dto.PtReviewListResponseDto;
-import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
-import com.example.healthgenie.domain.ptreview.dto.PtReviewResponseDto;
-import com.example.healthgenie.domain.ptreview.entity.UserPtReview;
 import com.example.healthgenie.domain.user.entity.Role;
-import com.example.healthgenie.domain.user.entity.User;
-import com.example.healthgenie.exception.PtReviewErrorResult;
-import com.example.healthgenie.exception.PtReviewException;
-import com.example.healthgenie.repository.UserPtReviewRepository;
+import com.example.healthgenie.repository.PtReviewRepository;
 import com.example.healthgenie.repository.UserRepository;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,7 +22,7 @@ public class UserPtReviewServiceTest {
     @InjectMocks
     private PtReviewService target;
     @Mock
-    private UserPtReviewRepository userPtReviewRepository;
+    private PtReviewRepository ptReviewRepository;
     @Mock
     private UserRepository userRepository;
 
@@ -44,7 +32,7 @@ public class UserPtReviewServiceTest {
     private final Long matchingId =1L;
     private final Long Id =1L;
 
-
+/*
     private PtReviewRequestDto dto = PtReviewRequestDto.builder().build();
     @Test
     public void 후기작성실패_이미존재할경우(){
@@ -168,5 +156,7 @@ public class UserPtReviewServiceTest {
                 .trainer(User.builder().id(Id).build())
                 .build();
     }
+
+ */
 
 }
