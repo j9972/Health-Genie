@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @AllArgsConstructor
-@Table(name = "WORKOUT_ROUTINE_GENIE_TB")
-public class genieRoutine extends BaseEntity {
+@Table(name = "WORKOUT_ROUTINE_OWN_TB")
+public class OwnRoutine extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="genie_routine_id")
+    @Column(name ="own_routine_id")
     private Long id;
 
     @NotNull
@@ -34,14 +34,13 @@ public class genieRoutine extends BaseEntity {
     @Column(name = "workout_day")
     private String workoutDay;
 
-    @NotNull
-    @Column(name = "level")
-    private String level;
-
     @Column(name = "workout_sets")
     private int workoutSets;
 
     @Column(name = "workout_reps")
     private int workoutReps;
-}
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="user_id")
+    private User member;
+}

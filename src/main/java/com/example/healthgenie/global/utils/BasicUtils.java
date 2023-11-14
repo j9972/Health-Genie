@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Slf4j
-public class basicUtils {
+public class BasicUtils {
 
-    private basicUtils() {
+    private BasicUtils() {
 
     }
 

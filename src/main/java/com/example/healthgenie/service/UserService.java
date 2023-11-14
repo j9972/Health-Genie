@@ -1,14 +1,14 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.user.dto.userLoginResponseDto;
-import com.example.healthgenie.domain.user.dto.userRegisterDto;
+import com.example.healthgenie.domain.user.dto.UserLoginResponseDto;
+import com.example.healthgenie.domain.user.dto.UserRegisterDto;
 
 public interface UserService {
 
 
-    userLoginResponseDto socialSignup(userRegisterDto userSignupRequestDto);
-    userLoginResponseDto socialLogin(String Email);
-    userLoginResponseDto addDummyUser(userRegisterDto dto);
+    UserLoginResponseDto socialSignup(UserRegisterDto userSignupRequestDto);
+    UserLoginResponseDto socialLogin(String Email);
+    UserLoginResponseDto addDummyUser(UserRegisterDto dto);
 
 
 
