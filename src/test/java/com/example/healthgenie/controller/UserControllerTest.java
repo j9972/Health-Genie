@@ -1,6 +1,6 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.user.dto.userRegisterDto;
+import com.example.healthgenie.domain.user.dto.UserRegisterDto;
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.exception.GlobalExceptionHandler;
@@ -61,7 +61,7 @@ class UserControllerTest {
         //given
         String url = "/api/v1/auth/signup";
 
-        userRegisterDto dto = userRegisterDto.builder()
+        UserRegisterDto dto = UserRegisterDto.builder()
                 .email("notEmail")
                 .password("1234")
                 .name("test")
@@ -84,7 +84,7 @@ class UserControllerTest {
         //given
         String url = "/api/v1/auth/signup";
 
-        userRegisterDto dto = userRegisterDto.builder()
+        UserRegisterDto dto = UserRegisterDto.builder()
                 .email(null)
                 .password("1234")
                 .name("test")
@@ -107,7 +107,7 @@ class UserControllerTest {
         //given
         String url = "/api/v1/auth/signup";
 
-        userRegisterDto dto = userRegisterDto.builder()
+        UserRegisterDto dto = UserRegisterDto.builder()
                 .email("test@naver.com")
                 .password("1234")
                 .name(null)
@@ -130,7 +130,7 @@ class UserControllerTest {
         // given
         String url = "/api/v1/auth/signup";
 
-        userRegisterDto dto = userRegisterDto.builder()
+        UserRegisterDto dto = UserRegisterDto.builder()
                 .email("test@naver.com")
                 .password(null)
                 .name("test")
@@ -154,7 +154,7 @@ class UserControllerTest {
         //given
         String url = "/api/v1/auth/signup";
 
-        userRegisterDto dto = userRegisterDto.builder()
+        UserRegisterDto dto = UserRegisterDto.builder()
                 .email("test@naver.com")
                 .password("1234")
                 .name("test")

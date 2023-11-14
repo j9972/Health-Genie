@@ -1,20 +1,12 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.user.dto.userRegisterDto;
-import com.example.healthgenie.domain.user.entity.Role;
-import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;

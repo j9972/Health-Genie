@@ -3,11 +3,11 @@ package com.example.healthgenie.domain.user.entity;
 import com.example.healthgenie.domain.chat.entity.ChatMessage;
 import com.example.healthgenie.domain.community.entity.CommunityComment;
 import com.example.healthgenie.domain.community.entity.CommunityPost;
-import com.example.healthgenie.domain.matching.entity.matching;
+import com.example.healthgenie.domain.matching.entity.Matching;
 import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
 import com.example.healthgenie.domain.ptreview.entity.PtReivew;
-import com.example.healthgenie.domain.routine.entity.ownRoutine;
-import com.example.healthgenie.domain.todo.entity.todo;
+import com.example.healthgenie.domain.routine.entity.OwnRoutine;
+import com.example.healthgenie.domain.todo.entity.Todo;
 import com.example.healthgenie.domain.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -71,7 +71,7 @@ public class User extends BaseEntity implements UserDetails {
 //    private List<ChatMessage> chatMessages_trainer;
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<matching> match_user= new ArrayList<>();
+    private List<Matching> match_user= new ArrayList<>();
 
 //    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 //    private List<matching> match_trainer;
@@ -92,7 +92,7 @@ public class User extends BaseEntity implements UserDetails {
 
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<todo> todo = new ArrayList<>();
+    private List<Todo> todo = new ArrayList<>();
 
     @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<TrainerPhoto> trainerPhotoList = new ArrayList<>();
@@ -104,7 +104,7 @@ public class User extends BaseEntity implements UserDetails {
     private List<CommunityComment> communityComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<ownRoutine> own_routine = new ArrayList<>();
+    private List<OwnRoutine> own_routine = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

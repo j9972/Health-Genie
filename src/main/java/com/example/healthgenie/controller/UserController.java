@@ -61,7 +61,7 @@ public class UserController {
             throw new CommonException(CommonErrorResult.ITEM_EMPTY);
         }
 
-        userLoginResponseDto result = userService.socialSignup(userRegisterDto.builder()
+        UserLoginResponseDto result = userService.socialSignup(UserRegisterDto.builder()
                 .email(kakaoProfile.getKakao_account().getEmail())
                 .role(Role.USER)
                 .name(kakaoProfile.getProperties().getNickname())
@@ -73,7 +73,7 @@ public class UserController {
     @PostMapping("/add/dummy/user")
     public void addDummyUser(@RequestBody DummyUserDto dto){
 
-        userService.addDummyUser(userRegisterDto.builder()
+        userService.addDummyUser(UserRegisterDto.builder()
                 .email(dto.getEmail())
                 .role(Role.USER)
                 .name(dto.getName())

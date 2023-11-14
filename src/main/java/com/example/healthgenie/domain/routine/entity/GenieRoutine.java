@@ -1,6 +1,5 @@
 package com.example.healthgenie.domain.routine.entity;
 
-import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -14,12 +13,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @AllArgsConstructor
-@Table(name = "WORKOUT_ROUTINE_OWN_TB")
-public class ownRoutine extends BaseEntity {
+@Table(name = "WORKOUT_ROUTINE_GENIE_TB")
+public class GenieRoutine extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="own_routine_id")
+    @Column(name ="genie_routine_id")
     private Long id;
 
     @NotNull
@@ -34,13 +33,14 @@ public class ownRoutine extends BaseEntity {
     @Column(name = "workout_day")
     private String workoutDay;
 
+    @NotNull
+    @Column(name = "level")
+    private String level;
+
     @Column(name = "workout_sets")
     private int workoutSets;
 
     @Column(name = "workout_reps")
     private int workoutReps;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="user_id")
-    private User member;
 }
+

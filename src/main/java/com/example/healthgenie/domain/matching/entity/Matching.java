@@ -3,15 +3,12 @@ package com.example.healthgenie.domain.matching.entity;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Date;
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -19,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @Table(name = "MATCHING_TB")
-public class matching extends BaseEntity {
+public class Matching extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
