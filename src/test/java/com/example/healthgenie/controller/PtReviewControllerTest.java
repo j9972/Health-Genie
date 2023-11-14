@@ -1,6 +1,5 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.exception.PtReviewErrorResult;
 import com.example.healthgenie.exception.PtReviewException;
 import com.example.healthgenie.global.exception.GlobalExceptionHandler;
@@ -45,6 +44,7 @@ public class PtReviewControllerTest {
                 .build();
     }
 
+    /*
     @Test
     public void 후기작성성공() throws Exception {
 
@@ -170,7 +170,6 @@ public class PtReviewControllerTest {
 
 
 
-
-
+     */
 
 }

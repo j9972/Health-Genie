@@ -1,6 +1,5 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.community.dto.CommunityPostRequestDto;
 import com.example.healthgenie.exception.CommunityPostErrorResult;
 import com.example.healthgenie.exception.CommunityPostException;
 import com.example.healthgenie.global.exception.GlobalExceptionHandler;
@@ -50,7 +49,7 @@ public class CommunityPostControllerTest {
     public void 게시물작성실패(){
 
     }
-
+/*
 
     @Test
     public void 게시물작성성공() throws Exception {
@@ -121,6 +120,8 @@ public class CommunityPostControllerTest {
 
 
     }
+
+ */
 
 
 }

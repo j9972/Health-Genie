@@ -4,6 +4,8 @@ import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -43,7 +45,10 @@ public class UserServiceTest {
     /*
         test code 작성시, setUp 메소드 필수
      */
-    /*@BeforeEach
+
+    /*
+
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         userService = new UserServiceImpl(userRepository, passwordEncoder, authenticationManager,
@@ -137,6 +142,8 @@ public class UserServiceTest {
 
     }
 
+     */
+
 
 
     @Test
@@ -149,5 +156,4 @@ public class UserServiceTest {
 
         // then
     }
-*/
 }

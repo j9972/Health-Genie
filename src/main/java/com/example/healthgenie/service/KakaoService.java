@@ -27,11 +27,11 @@ public class KakaoService {
     @Value("${social.kakao.url.base}")
     private String baseUrl;
 
-    @Value("${social.kakao.client-id}")
-    private String kakaoClientId;
-
-    @Value("${social.kakao.redirect}")
-    private String kakaoRedirectUri;
+//    @Value("${social.kakao.client-id}")
+//    private String kakaoClientId;
+//
+//    @Value("${social.kakao.redirect}")
+//    private String kakaoRedirectUri;
 
     public KakaoProfile getKakaoProfile(String kakaoAccessToken) {
         HttpHeaders headers = new HttpHeaders();

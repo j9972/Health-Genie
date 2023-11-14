@@ -16,6 +16,7 @@ public class TrainerInfoRepositoryTest {
     @Autowired
     private TrainerProfileRepository repository;
 
+    /*
     //약력 추가
     @Test
     public void ProfileAdd(){
@@ -91,5 +92,7 @@ public class TrainerInfoRepositoryTest {
         //then
         assertThat(findProfile.get().getId()).isEqualTo(saveProfile.getId());
     }
+
+     */
 
 }

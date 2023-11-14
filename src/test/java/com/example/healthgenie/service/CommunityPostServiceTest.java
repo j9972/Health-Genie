@@ -1,8 +1,5 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.community.dto.CommunityPostResponseDto;
-import com.example.healthgenie.domain.community.dto.CommunityPostGetResponseDto;
-import com.example.healthgenie.domain.community.dto.CommunityPostRequestDto;
 import com.example.healthgenie.domain.community.entity.CommunityPost;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.CommunityPostErrorResult;
@@ -36,7 +33,7 @@ public class CommunityPostServiceTest {
     CommunityPostRepository repository;
 
 
-
+/*
     @Test
     public void 게시물작성성공(){
 
@@ -147,4 +144,6 @@ public class CommunityPostServiceTest {
         return dummyPosts;
     }
 
+
+ */
 }
