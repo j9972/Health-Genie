@@ -20,6 +20,12 @@ import java.time.LocalDateTime;
 @Table(name = "PT_REVIEW_TB")
 public class PtReivew extends BaseEntity {
 
+    // TODO : [트레이너 입장 전체 조회]
+    //  -> trainer 이름, 회원 이름, 별점, 작성 날짜, content, [ 후기 전체 카운트, 후기 평균 평점[소수점 첫번째 자리]] return
+
+    // TODO : [회원 입장 ]
+    //        -> 본인이 작성한 후기들 전체 조회, 후기 작성, 후기 수정 [ 수정시 평점 및 내용만 수정 가능 ]
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="user_pt_review_id")

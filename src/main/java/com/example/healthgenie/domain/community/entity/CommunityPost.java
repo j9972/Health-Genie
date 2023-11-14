@@ -18,7 +18,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-@Builder
 @AllArgsConstructor
 @Table(name = "COMMUNITY_POST_TB")
 public class CommunityPost extends BaseEntity {

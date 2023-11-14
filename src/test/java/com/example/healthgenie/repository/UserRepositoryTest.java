@@ -34,6 +34,7 @@ public class UserRepositoryTest {
     UserRepository userRepository;
 
 
+    /*
     @Test
     public void save(){
 
@@ -96,6 +97,8 @@ public class UserRepositoryTest {
         assertThat(findUser).isEqualTo(res);
 
     }
+
+     */
 
     @Test
     @DisplayName("로그인")

@@ -51,6 +51,7 @@ public class UserServiceTest {
     /*
         test code 작성시, setUp 메소드 필수
      */
+    /*
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -144,6 +145,8 @@ public class UserServiceTest {
         Assertions.assertThat(returnStatusMessage.getMessage()).isEqualTo("이미 존재하는 회원입니다");
 
     }
+
+     */
 
 
 

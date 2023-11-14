@@ -19,6 +19,8 @@ public class userRegisterDto {
     private String uniName;
     private Role role;
     private String provider;
+
+    /*
     public User toEntity(PasswordEncoder passwordEncoder) {
         return User.builder()
                 .email(email)
@@ -36,4 +38,6 @@ public class userRegisterDto {
                 .role(role)
                 .build();
     }
+
+     */
 }
