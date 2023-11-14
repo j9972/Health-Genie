@@ -1,5 +1,7 @@
 package com.example.healthgenie.service;
 
+import com.example.healthgenie.domain.user.dto.KakaoProfile;
+import com.example.healthgenie.domain.user.dto.RetKakaoOAuth;
 import com.example.healthgenie.exception.CommonErrorResult;
 import com.example.healthgenie.exception.CommonException;
 import com.google.gson.Gson;
@@ -30,8 +32,6 @@ public class KakaoService {
 //
 //    @Value("${social.kakao.redirect}")
 //    private String kakaoRedirectUri;
-
-    /*
 
     public KakaoProfile getKakaoProfile(String kakaoAccessToken) {
         HttpHeaders headers = new HttpHeaders();
@@ -95,6 +95,4 @@ public class KakaoService {
         if (response.getStatusCode() == HttpStatus.OK) return;
         throw new CommonException(CommonErrorResult.ITEM_EMPTY);
     }
-
-     */
 }

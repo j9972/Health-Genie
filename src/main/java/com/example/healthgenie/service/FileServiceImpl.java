@@ -6,15 +6,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import org.apache.commons.fileupload.*;
 
 @Log4j2
 @Service
-public class FileServiceImpl implements fileService{
+public class FileServiceImpl implements FileService {
 
 
     public String trainerProfileAdd(MultipartFile file) {

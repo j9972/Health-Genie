@@ -1,19 +1,14 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.Email.EmailValidator;
-//import com.example.healthgenie.domain.user.dto.userLoginDto;
-//import com.example.healthgenie.domain.user.dto.userLoginResponseDto;
-//import com.example.healthgenie.domain.user.dto.userRegisterDto;
+import com.example.healthgenie.domain.user.dto.UserLoginResponseDto;
+import com.example.healthgenie.domain.user.dto.UserRegisterDto;
 import com.example.healthgenie.domain.user.entity.RefreshToken;
-import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.*;
 import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +22,8 @@ public class UserServiceImpl implements UserService{
     private final EmailService emailService;
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
-/*
 
+/*
     @Transactional
     @Override
     public Long signUp(userRegisterDto request) {
@@ -69,11 +64,13 @@ public class UserServiceImpl implements UserService{
 
         return authCode;
     }
+
+ */
     @Transactional
     @Override
-    public userLoginResponseDto socialSignup(userRegisterDto userSignupRequestDto) {
+    public UserLoginResponseDto socialSignup(UserRegisterDto userSignupRequestDto) {
         log.info(userSignupRequestDto.toString());
-        userLoginResponseDto result = null;
+        UserLoginResponseDto result = null;
         if (userRepository
                 .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
                 .isPresent()
@@ -93,7 +90,7 @@ public class UserServiceImpl implements UserService{
         return result;
     }
 
-    public userLoginResponseDto RefreshAccessIssue(String email,String role,Long Id){
+    public UserLoginResponseDto RefreshAccessIssue(String email, String role, Long Id){
         String accessToken = jwtUtil.createAccessToken(email,role);
         String refreshToken = jwtUtil.createRefreshToken(email,role);
         RefreshToken refreshTokenEntity = new RefreshToken();
@@ -101,7 +98,7 @@ public class UserServiceImpl implements UserService{
         refreshTokenEntity.setId(Id);
         refreshTokenService.addRefreshToken(refreshTokenEntity);
 
-        userLoginResponseDto loginResponse = userLoginResponseDto.builder()
+        UserLoginResponseDto loginResponse = UserLoginResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .user_id(Id)
@@ -111,12 +108,12 @@ public class UserServiceImpl implements UserService{
     }
     @Transactional
     @Override
-    public userLoginResponseDto socialLogin(String Email){
+    public UserLoginResponseDto socialLogin(String Email){
         Optional<User> user  = userRepository.findByEmailAndProvider(Email, "kakao");
         if(user.isEmpty()){
             throw new CommonException(CommonErrorResult.ITEM_EMPTY);
         }
-        userLoginResponseDto loginResponse = RefreshAccessIssue(user.get().getEmail(), user.get().getRole().toString(),user.get().getId());
+        UserLoginResponseDto loginResponse = RefreshAccessIssue(user.get().getEmail(), user.get().getRole().toString(),user.get().getId());
         if(loginResponse ==null){
             log.info("error_기존 로그인_토큰재발급 불가");
         }
@@ -125,8 +122,8 @@ public class UserServiceImpl implements UserService{
     }
 
 
-    public userLoginResponseDto addDummyUser(userRegisterDto userSignupRequestDto){
-        userLoginResponseDto result = null;
+    public UserLoginResponseDto addDummyUser(UserRegisterDto userSignupRequestDto){
+        UserLoginResponseDto result = null;
 
         if (userRepository
                 .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
