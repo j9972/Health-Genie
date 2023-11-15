@@ -1,12 +1,10 @@
 package com.example.healthgenie.global.config.auth;
 
 // import com.example.fakeshopapi.security.jwt.util.IfLoginArgumentResolver;
+
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -18,17 +16,10 @@ public class WebConfig implements WebMvcConfigurer {
     // http://localhost:3000 ---> 8080 api를 호출할 수 있도록 설정.
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedOrigins("http://localhost:1234")
-//                .allowedMethods("GET", "POST", "PATCH", "PUT", "OPTIONS", "DELETE");
-//                .allowCredentials(true);
-
         registry.addMapping("/**")
-                .allowedOrigins("/*")
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(3600);
+                .allowedOrigins("http://localhost:1234")
+                .allowedMethods("GET", "POST", "PATCH", "PUT", "OPTIONS", "DELETE");
+//                .allowCredentials(true);
     }
 
     // IfLoginArgumentResolver 로그인된 유저를 한해서 post 작성 등 가능하게 하려함
