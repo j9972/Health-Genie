@@ -35,15 +35,19 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = resolveToken(request, AUTHORIZATION_HEADER);
+
         if (jwt != null && jwtTokenProvider.validateToken(jwt) == JwtUtil.JwtCode.ACCESS) {
             Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.info("set Authentication to security context for '{}', uri: {}", authentication.getName(), request.getRequestURI());
         }
+
         else if( jwt != null && jwtTokenProvider.validateToken(jwt) == JwtUtil.JwtCode.EXPIRED){
             String refresh = resolveToken(request, REFRESH_HEADER);
+
             // refresh token을 확인해서 재발급해준다
             if(refresh != null && jwtTokenProvider.validateToken(refresh) == JwtUtil.JwtCode.ACCESS){
+
                 //기존 refresh토큰의 role을 얻어온다 함수작성
                 Map<String,String> map = jwtTokenProvider.getEmailAndRole(refresh);
 
@@ -55,10 +59,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 if(newRefresh != null){
                     response.setHeader(REFRESH_HEADER, newRefresh);
 
-                    // access token 생성
+                    // access token 생성을 위해 authentication 얻기
                     Authentication authentication = jwtTokenProvider.getAuthentication(refresh);
 
-                    //email,role 알아야됨
+                    // access token 생성을 위해 email,role 알아야됨
                     response.setHeader(AUTHORIZATION_HEADER, jwtTokenProvider.createAccessToken(email,role));
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
