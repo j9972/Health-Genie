@@ -33,6 +33,11 @@ public class JwtUtil implements InitializingBean {
     private final CustomerUsersDetailsService customerUsersDetailsService;
     private Key key;
 
+    public static enum JwtCode{
+        DENIED,
+        ACCESS,
+        EXPIRED
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -49,7 +54,6 @@ public class JwtUtil implements InitializingBean {
     }
 
     public Claims extractAllClaims(String token) {
-        // Jwts.parser().setSigningKey(secret) 대신 Jwts.parserBuilder().setSigningKey(secret).build()
         return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
     }
 
@@ -70,8 +74,7 @@ public class JwtUtil implements InitializingBean {
     public String createAccessToken(String email, String role) {
         Map<String,Object> claims = new HashMap<>();
         claims.put("role", role);
-//        return createToken(claims, email, constant.ACCESS_TOKEN_EXPIRE_COUNT);
-        return createToken(claims, email, 100 * 60 * 1000L);
+        return createToken(claims, email, constants.ACCESS_TOKEN_EXPIRE_COUNT);  // 30 mins
 
     }
 
@@ -81,8 +84,7 @@ public class JwtUtil implements InitializingBean {
     public String createRefreshToken(String email, String role) {
         Map<String,Object> claims = new ConcurrentHashMap<>();
         claims.put("role", role);
-        return createToken(claims, email, 7 * 24 * 60 * 60 * 1000L);
-//        return createToken(claims, email, constant.REFRESH_TOKEN_EXPIRE_COUNT);
+        return createToken(claims, email, constants.REFRESH_TOKEN_EXPIRE_COUNT); // 7 days
 
     }
 
@@ -92,20 +94,20 @@ public class JwtUtil implements InitializingBean {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // (role 을 적용해서) token 을 생성하려고 함
+    // (role 을 적용해서) token 을 생성하려고 함 -> 이 메소드 사용하는 generateToken에 role을 넣어준다
     private String createToken(Map<String,Object> claims, String subject) {
         return Jwts.builder()
                 .setHeaderParam("typ","JWT")
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10시간
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     // (role 을 적용해서) token 을 생성하려고 함
-    private String createToken(Map<String,Object> claims, String subject,Long expire) {
+    private String createToken(Map<String,Object> claims, String subject, Long expire) {
         return Jwts.builder()
                 .setHeaderParam("typ","JWT")
                 .setClaims(claims)
@@ -129,6 +131,7 @@ public class JwtUtil implements InitializingBean {
         }
         return JwtCode.DENIED;
     }
+
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
@@ -140,6 +143,7 @@ public class JwtUtil implements InitializingBean {
     }
 
     /*
+
     public Role getRole(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
@@ -194,12 +198,6 @@ public class JwtUtil implements InitializingBean {
             log.info("refresh 토큰이 일치하지 않습니다. ");
             return null;
         }
-    }
-
-    public static enum JwtCode{
-        DENIED,
-        ACCESS,
-        EXPIRED
     }
 }
 
