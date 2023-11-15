@@ -18,10 +18,17 @@ public class WebConfig implements WebMvcConfigurer {
     // http://localhost:3000 ---> 8080 api를 호출할 수 있도록 설정.
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:1234")
-                .allowedMethods("GET", "POST", "PATCH", "PUT", "OPTIONS", "DELETE");
+//        registry.addMapping("/**")
+//                .allowedOrigins("http://localhost:1234")
+//                .allowedMethods("GET", "POST", "PATCH", "PUT", "OPTIONS", "DELETE");
 //                .allowCredentials(true);
+
+        registry.addMapping("/**")
+                .allowedOrigins("/*")
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
     }
 
     // IfLoginArgumentResolver 로그인된 유저를 한해서 post 작성 등 가능하게 하려함
