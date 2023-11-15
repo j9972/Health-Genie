@@ -17,7 +17,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final JwtUtil jwtUtil;
@@ -69,25 +69,26 @@ public class UserServiceImpl implements UserService{
     @Transactional
     @Override
     public UserLoginResponseDto socialSignup(UserRegisterDto userSignupRequestDto) {
-        log.info(userSignupRequestDto.toString());
-        UserLoginResponseDto result = null;
-        if (userRepository
-                .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
-                .isPresent()
-        ) {
-            //기존회원이 존재한다면 소셜로그인으로 넘어간다.
-            result = socialLogin(userSignupRequestDto.getEmail());
-        }
-        else{
-            Long id = userRepository.save(userSignupRequestDto.tosocialEntity()).getId();
-            if(id !=null){
-                result = RefreshAccessIssue(userSignupRequestDto.getEmail(),userSignupRequestDto.getRole().toString(),id);
-            }
-            else{
-                log.info("error_신규 회원가입실패");
-            }
-        }
-        return result;
+//        log.info(userSignupRequestDto.toString());
+//        UserLoginResponseDto result = null;
+//        if (userRepository
+//                .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
+//                .isPresent()
+//        ) {
+//            //기존회원이 존재한다면 소셜로그인으로 넘어간다.
+//            result = socialLogin(userSignupRequestDto.getEmail());
+//        }
+//        else{
+//            Long id = userRepository.save(userSignupRequestDto.tosocialEntity()).getId();
+//            if(id !=null){
+//                result = RefreshAccessIssue(userSignupRequestDto.getEmail(),userSignupRequestDto.getRole().toString(),id);
+//            }
+//            else{
+//                log.info("error_신규 회원가입실패");
+//            }
+//        }
+//        return result;
+        return null;
     }
 
     public UserLoginResponseDto RefreshAccessIssue(String email, String role, Long Id){
@@ -123,25 +124,25 @@ public class UserServiceImpl implements UserService{
 
 
     public UserLoginResponseDto addDummyUser(UserRegisterDto userSignupRequestDto){
-        UserLoginResponseDto result = null;
-
-        if (userRepository
-                .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
-                .isPresent()
-        ) {
-            //기존회원이 존재한다면 소셜로그인으로 넘어간다.
-            result = socialLogin(userSignupRequestDto.getEmail());
-        }
-        else{
-            Long id = userRepository.save(userSignupRequestDto.tosocialEntity()).getId();
-            if(id !=null){
-                result = RefreshAccessIssue(userSignupRequestDto.getEmail(),userSignupRequestDto.getRole().toString(),id);
-            }
-            else{
-                log.info("error_신규 회원가입실패");
-            }
-        }
-        return result;
+//        UserLoginResponseDto result = null;
+//
+//        if (userRepository
+//                .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
+//                .isPresent()
+//        ) {
+//            //기존회원이 존재한다면 소셜로그인으로 넘어간다.
+//            result = socialLogin(userSignupRequestDto.getEmail());
+//        }
+//        else{
+//            Long id = userRepository.save(userSignupRequestDto.tosocialEntity()).getId();
+//            if(id !=null){
+//                result = RefreshAccessIssue(userSignupRequestDto.getEmail(),userSignupRequestDto.getRole().toString(),id);
+//            }
+//            else{
+//                log.info("error_신규 회원가입실패");
+//            }
+//        }
+//        return result;
+        return null;
     }
-*/
 }

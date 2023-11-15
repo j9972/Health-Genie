@@ -20,11 +20,11 @@ public class KakaoController {
 //    @Value("${social.kakao.client-id}")
 //    private String kakaoClientId;
 
-    @Value("${social.kakao.redirect}")
-    private String kakaoRedirectUri;
-
-    @Value("${social.kakao.url.base}")
-    private String baseUrl;
+//    @Value("${social.kakao.redirect}")
+//    private String kakaoRedirectUri;
+//
+//    @Value("${social.kakao.url.base}")
+//    private String baseUrl;
     /*
     @GetMapping("/login") // http://localhost:1234/api/v1/auth/kakao/login
     public String socialLogin() {

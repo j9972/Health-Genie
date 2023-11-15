@@ -24,8 +24,8 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoService {
     private final Environment env;
     private final Gson gson;
-    @Value("${social.kakao.url.base}")
-    private String baseUrl;
+//    @Value("${social.kakao.url.base}")
+//    private String baseUrl;
 
 //    @Value("${social.kakao.client-id}")
 //    private String kakaoClientId;
@@ -60,8 +60,8 @@ public class KakaoService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         params.add("grant_type", "authorization_code");
-        params.add("client_id", kakaoClientId);
-        params.add("redirect_uri", baseUrl + kakaoRedirectUri);
+//        params.add("client_id", kakaoClientId);
+//        params.add("redirect_uri", baseUrl + kakaoRedirectUri);
         params.add("code", code);
 
         String requestUri = env.getProperty("social.kakao.url.token");
