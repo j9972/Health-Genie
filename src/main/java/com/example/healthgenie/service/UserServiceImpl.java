@@ -1,10 +1,13 @@
 package com.example.healthgenie.service;
 
+import com.example.healthgenie.domain.user.dto.SignUpRequest;
 import com.example.healthgenie.domain.user.dto.UserLoginResponseDto;
 import com.example.healthgenie.domain.user.dto.UserRegisterDto;
 import com.example.healthgenie.domain.user.entity.RefreshToken;
+import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
-import com.example.healthgenie.exception.*;
+import com.example.healthgenie.exception.CommonErrorResult;
+import com.example.healthgenie.exception.CommonException;
 import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static com.example.healthgenie.domain.user.entity.AuthProvider.KAKAO;
 
 @Service
 @Slf4j
@@ -68,7 +73,7 @@ public class UserServiceImpl implements UserService {
  */
     @Transactional
     @Override
-    public UserLoginResponseDto socialSignup(UserRegisterDto userSignupRequestDto) {
+    public User socialSignUp(UserRegisterDto dto) {
 //        log.info(userSignupRequestDto.toString());
 //        UserLoginResponseDto result = null;
 //        if (userRepository
@@ -88,7 +93,15 @@ public class UserServiceImpl implements UserService {
 //            }
 //        }
 //        return result;
-        return null;
+        User user = User.builder()
+                .email(dto.getEmail())
+                .name(dto.getName())
+                .authProvider(dto.getAuthProvider())
+                .uniName(dto.getUniName())
+                .role(dto.getRole())
+                .build();
+
+        return userRepository.save(user);
     }
 
     public UserLoginResponseDto RefreshAccessIssue(String email, String role, Long Id){
@@ -105,12 +118,14 @@ public class UserServiceImpl implements UserService {
                 .user_id(Id)
                 .email(email)
                 .build();
+
         return loginResponse;
     }
+
     @Transactional
     @Override
-    public UserLoginResponseDto socialLogin(String Email){
-        Optional<User> user  = userRepository.findByEmailAndProvider(Email, "kakao");
+    public UserLoginResponseDto socialLogin(String email){
+        Optional<User> user  = userRepository.findByEmailAndAuthProvider(email, KAKAO);
         if(user.isEmpty()){
             throw new CommonException(CommonErrorResult.ITEM_EMPTY);
         }
@@ -144,5 +159,21 @@ public class UserServiceImpl implements UserService {
 //        }
 //        return result;
         return null;
+    }
+
+    @Transactional
+    public Long createUser(SignUpRequest signUpRequest){
+        if(userRepository.existsByEmailAndAuthProvider(signUpRequest.getEmail(), signUpRequest.getAuthProvider())){
+            throw new CommonException(CommonErrorResult.BAD_REQUEST);
+        }
+
+        return userRepository.save(
+                User.builder()
+                        .name(signUpRequest.getNickname())
+                        .email(signUpRequest.getEmail())
+                        .role(Role.USER)
+                        .authProvider(signUpRequest.getAuthProvider())
+                        .build()
+        ).getId();
     }
 }

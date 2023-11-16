@@ -1,16 +1,20 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.user.dto.*;
+import com.example.healthgenie.domain.user.dto.DummyUserDto;
+import com.example.healthgenie.domain.user.dto.SignUpRequest;
+import com.example.healthgenie.domain.user.dto.SocialSignupRequestDto;
+import com.example.healthgenie.domain.user.dto.UserRegisterDto;
 import com.example.healthgenie.domain.user.entity.Role;
-import com.example.healthgenie.exception.CommonErrorResult;
-import com.example.healthgenie.exception.CommonException;
+import com.example.healthgenie.service.GoogleRequestService;
 import com.example.healthgenie.service.KakaoService;
 import com.example.healthgenie.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -22,6 +26,7 @@ public class UserController {
     private final UserService userService;
     //private final EmailService emailService;
     private final KakaoService kakaoService;
+    private final GoogleRequestService googleRequestService;
 /*
     // 회원가입
     /*
@@ -47,29 +52,38 @@ public class UserController {
     }
 */
 
+
     //소셜 회원가입 카카오 //여기서 변경해야할 것 회원가입시 기존 유저가 있을 시 로그인으로, 없을시 회원가입으로 그리고 둘다 리프레쉬,엑세스토큰을 리턴
+    @PostMapping("/user")
+    public ResponseEntity<Long> createUser(@RequestBody SignUpRequest signUpRequest){
+//        return ResponseEntity.ok(userService.createUser(signUpRequest));
+//        googleRequestService.getToken();
+        return null;
+    }
     @PostMapping("/kakao/signup") // http://localhost:1234/api/v1/auth/signup/kakao
     public ResponseEntity signupBySocial(@RequestBody SocialSignupRequestDto socialSignupRequestDto) {
 
-        KakaoProfile kakaoProfile =
-                kakaoService.getKakaoProfile(socialSignupRequestDto.getAccessToken());
-
-        if (kakaoProfile == null) throw new CommonException(CommonErrorResult.ITEM_EMPTY);
-
-        if (kakaoProfile.getKakao_account().getEmail() == null) {
-            kakaoService.kakaoUnlink(socialSignupRequestDto.getAccessToken());
-            throw new CommonException(CommonErrorResult.ITEM_EMPTY);
-        }
-
-        UserLoginResponseDto result = userService.socialSignup(UserRegisterDto.builder()
-                .email(kakaoProfile.getKakao_account().getEmail())
-                .role(Role.USER)
-                .name(kakaoProfile.getProperties().getNickname())
-                .uniName(kakaoProfile.getProperties().getNickname())
-                .provider("kakao")
-                .build());
-        return new ResponseEntity(result,HttpStatus.OK);
+//        KakaoProfile kakaoProfile =
+//                kakaoService.getKakaoProfile(socialSignupRequestDto.getAccessToken());
+//
+//        if (kakaoProfile == null) throw new CommonException(CommonErrorResult.ITEM_EMPTY);
+//
+//        if (kakaoProfile.getKakao_account().getEmail() == null) {
+//            kakaoService.kakaoUnlink(socialSignupRequestDto.getAccessToken());
+//            throw new CommonException(CommonErrorResult.ITEM_EMPTY);
+//        }
+//
+//        UserLoginResponseDto result = userService.socialSignUp(UserRegisterDto.builder()
+//                .email(kakaoProfile.getKakao_account().getEmail())
+//                .role(Role.USER)
+//                .name(kakaoProfile.getProperties().getNickname())
+//                .uniName(kakaoProfile.getProperties().getNickname())
+////                .provider("kakao")
+//                .build());
+//        return new ResponseEntity(result,HttpStatus.OK);
+        return null;
     }
+
     @PostMapping("/add/dummy/user")
     public void addDummyUser(@RequestBody DummyUserDto dto){
 
@@ -78,17 +92,17 @@ public class UserController {
                 .role(Role.USER)
                 .name(dto.getName())
                 .uniName("test")
-                .provider("kakao")
+//                .provider("kakao")
                 .build());
     }
 
 
     //비밀번호 찾기
-
     //이메일, 이름 넣어서 존재하면
     //임시비번 만듬
     //임시비번 이메일 전송
     //임시비번 db에 저장
+
     /*
     @PostMapping("/pwd")
     public ResponseEntity getPassword(@RequestBody pwdFindRequestDto dto){
@@ -98,7 +112,6 @@ public class UserController {
     }
 
      */
-
     //비밀번호 변경
 /*
     @PostMapping("/pwd/1")

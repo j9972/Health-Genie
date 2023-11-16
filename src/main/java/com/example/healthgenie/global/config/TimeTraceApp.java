@@ -3,9 +3,8 @@ package com.example.healthgenie.global.config;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 @Aspect
 public class TimeTraceApp {
 

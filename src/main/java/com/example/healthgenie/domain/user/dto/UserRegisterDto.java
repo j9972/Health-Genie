@@ -1,10 +1,9 @@
 package com.example.healthgenie.domain.user.dto;
 
 
+import com.example.healthgenie.domain.user.entity.AuthProvider;
 import com.example.healthgenie.domain.user.entity.Role;
-import com.example.healthgenie.domain.user.entity.User;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Data
 @Getter
@@ -14,11 +13,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Builder
 public class UserRegisterDto {
     private String email;
-    private String password;
     private String name;
     private String uniName;
     private Role role;
-    private String provider;
+    private AuthProvider authProvider;
 
     /*
     public User toEntity(PasswordEncoder passwordEncoder) {
