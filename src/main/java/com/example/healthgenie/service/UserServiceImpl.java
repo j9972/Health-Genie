@@ -1,10 +1,10 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.user.dto.SignUpRequest;
+import com.example.healthgenie.domain.user.dto.TestSignUpRequest;
+import com.example.healthgenie.domain.user.dto.TestSignUpResponse;
 import com.example.healthgenie.domain.user.dto.UserLoginResponseDto;
 import com.example.healthgenie.domain.user.dto.UserRegisterDto;
 import com.example.healthgenie.domain.user.entity.RefreshToken;
-import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.CommonErrorResult;
 import com.example.healthgenie.exception.CommonException;
@@ -162,18 +162,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public Long createUser(SignUpRequest signUpRequest){
+    public TestSignUpResponse createUser(TestSignUpRequest signUpRequest){
         if(userRepository.existsByEmailAndAuthProvider(signUpRequest.getEmail(), signUpRequest.getAuthProvider())){
             throw new CommonException(CommonErrorResult.BAD_REQUEST);
         }
 
-        return userRepository.save(
+        User savedUser = userRepository.save(
                 User.builder()
                         .name(signUpRequest.getNickname())
                         .email(signUpRequest.getEmail())
-                        .role(Role.USER)
+                        .role(signUpRequest.getRole())
                         .authProvider(signUpRequest.getAuthProvider())
                         .build()
-        ).getId();
+        );
+
+        return TestSignUpResponse.builder()
+                .id(savedUser.getId())
+                .authProvider(savedUser.getAuthProvider())
+                .createdDate(savedUser.getCreatedDate())
+                .nickname(savedUser.getName())
+                .email(savedUser.getEmail())
+                .role(savedUser.getRole())
+                .build();
     }
 }

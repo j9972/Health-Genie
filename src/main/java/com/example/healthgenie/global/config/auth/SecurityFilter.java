@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -42,7 +44,11 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 token = authorizationHeader.substring(7);
 
+                // 더미 데이터용
+                // testaccesstoken_[테스트 계정 이메일]
                 if(token.startsWith("testaccesstoken_")) {
+                    Authentication dummy = securityUtils.createDummy(token.substring(16));
+                    SecurityContextHolder.getContext().setAuthentication(dummy);
                     filterChain.doFilter(request, response);
                 }
 
@@ -56,6 +62,9 @@ public class SecurityFilter extends OncePerRequestFilter {
                 if(!userRepository.existsByEmailAndAuthProvider(email, AuthProvider.findByCode(provider))){
                     throw new JwtException("CANNOT_FOUND_USER");
                 }
+
+                Authentication authentication = securityUtils.parseAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
             filterChain.doFilter(request, response);

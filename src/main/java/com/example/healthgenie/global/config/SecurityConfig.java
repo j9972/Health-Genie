@@ -1,5 +1,8 @@
 package com.example.healthgenie.global.config;
 
+import com.example.healthgenie.global.config.auth.SecurityFilter;
+import com.example.healthgenie.global.utils.SecurityUtils;
+import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -15,6 +19,8 @@ public class SecurityConfig {
 
 //    private final JwtUtil jwtTokenProvider;
 //    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final SecurityUtils securityUtils;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,6 +42,8 @@ public class SecurityConfig {
                 .redirectionEndpoint()
                 .baseUri("/oauth2/code/*")
         ;
+
+        http.addFilterBefore(new SecurityFilter(securityUtils, userRepository), UsernamePasswordAuthenticationFilter.class);
 
 //        http.csrf().disable();
 //        http.httpBasic().disable()

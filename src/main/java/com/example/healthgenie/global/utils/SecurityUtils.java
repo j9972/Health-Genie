@@ -1,9 +1,13 @@
 package com.example.healthgenie.global.utils;
 
 import com.example.healthgenie.domain.user.entity.AuthProvider;
+import com.example.healthgenie.global.config.CustomerUsersDetailsService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -12,6 +16,8 @@ import java.util.HashMap;
 @Component
 @RequiredArgsConstructor
 public class SecurityUtils {
+
+    private final CustomerUsersDetailsService usersDetailsService;
 
     @Value("${custom.jwt.secret-key}")
     private String secret;
@@ -87,5 +93,24 @@ public class SecurityUtils {
         long weekTime = 1000 * 60 * 60 * 24 * 7L;
 
         return new Date().getTime() > (expirationTime - weekTime);
+    }
+
+    /**
+     * JWT 토큰으로 인증 객체 생성
+     */
+    public Authentication parseAuthentication(String jwt) {
+        String email = (String) get(jwt).get("email");
+        UserDetails user = usersDetailsService.loadUserByUsername(email);
+
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    }
+
+    /**
+     * 테스트용 더미 데이터 인증 객체 생성
+     */
+    public Authentication createDummy(String email) {
+        UserDetails user = usersDetailsService.loadUserByUsername(email);
+
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
 }

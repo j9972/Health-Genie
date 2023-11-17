@@ -1,9 +1,7 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.user.dto.DummyUserDto;
-import com.example.healthgenie.domain.user.dto.SignUpRequest;
-import com.example.healthgenie.domain.user.dto.SocialSignupRequestDto;
-import com.example.healthgenie.domain.user.dto.UserRegisterDto;
+import com.example.healthgenie.domain.user.dto.*;
+import com.example.healthgenie.domain.user.entity.AuthProvider;
 import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.service.GoogleRequestService;
 import com.example.healthgenie.service.KakaoService;
@@ -55,10 +53,8 @@ public class UserController {
 
     //소셜 회원가입 카카오 //여기서 변경해야할 것 회원가입시 기존 유저가 있을 시 로그인으로, 없을시 회원가입으로 그리고 둘다 리프레쉬,엑세스토큰을 리턴
     @PostMapping("/user")
-    public ResponseEntity<Long> createUser(@RequestBody SignUpRequest signUpRequest){
-//        return ResponseEntity.ok(userService.createUser(signUpRequest));
-//        googleRequestService.getToken();
-        return null;
+    public ResponseEntity<TestSignUpResponse> createUser(@RequestBody TestSignUpRequest signUpRequest){
+        return ResponseEntity.ok(userService.createUser(signUpRequest));
     }
     @PostMapping("/kakao/signup") // http://localhost:1234/api/v1/auth/signup/kakao
     public ResponseEntity signupBySocial(@RequestBody SocialSignupRequestDto socialSignupRequestDto) {
@@ -92,7 +88,7 @@ public class UserController {
                 .role(Role.USER)
                 .name(dto.getName())
                 .uniName("test")
-//                .provider("kakao")
+                .authProvider(AuthProvider.EMPTY)
                 .build());
     }
 

@@ -19,7 +19,7 @@ public enum AuthProvider {
 
     public static AuthProvider findByCode(String code){
         return Arrays.stream(AuthProvider.values())
-                .filter(provider -> provider.getAuthProvider().equals(code))
+                .filter(provider -> provider.getAuthProvider().equalsIgnoreCase(code))
                 .findFirst()
                 .orElse(EMPTY);
     }
