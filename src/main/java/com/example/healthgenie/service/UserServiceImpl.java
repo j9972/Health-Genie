@@ -1,10 +1,13 @@
 package com.example.healthgenie.service;
 
+import com.example.healthgenie.domain.user.dto.TestSignUpRequest;
+import com.example.healthgenie.domain.user.dto.TestSignUpResponse;
 import com.example.healthgenie.domain.user.dto.UserLoginResponseDto;
 import com.example.healthgenie.domain.user.dto.UserRegisterDto;
 import com.example.healthgenie.domain.user.entity.RefreshToken;
 import com.example.healthgenie.domain.user.entity.User;
-import com.example.healthgenie.exception.*;
+import com.example.healthgenie.exception.CommonErrorResult;
+import com.example.healthgenie.exception.CommonException;
 import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.example.healthgenie.domain.user.entity.AuthProvider.KAKAO;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final JwtUtil jwtUtil;
@@ -68,26 +73,35 @@ public class UserServiceImpl implements UserService{
  */
     @Transactional
     @Override
-    public UserLoginResponseDto socialSignup(UserRegisterDto userSignupRequestDto) {
-        log.info(userSignupRequestDto.toString());
-        UserLoginResponseDto result = null;
-        if (userRepository
-                .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
-                .isPresent()
-        ) {
-            //기존회원이 존재한다면 소셜로그인으로 넘어간다.
-            result = socialLogin(userSignupRequestDto.getEmail());
-        }
-        else{
-            Long id = userRepository.save(userSignupRequestDto.tosocialEntity()).getId();
-            if(id !=null){
-                result = RefreshAccessIssue(userSignupRequestDto.getEmail(),userSignupRequestDto.getRole().toString(),id);
-            }
-            else{
-                log.info("error_신규 회원가입실패");
-            }
-        }
-        return result;
+    public User socialSignUp(UserRegisterDto dto) {
+//        log.info(userSignupRequestDto.toString());
+//        UserLoginResponseDto result = null;
+//        if (userRepository
+//                .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
+//                .isPresent()
+//        ) {
+//            //기존회원이 존재한다면 소셜로그인으로 넘어간다.
+//            result = socialLogin(userSignupRequestDto.getEmail());
+//        }
+//        else{
+//            Long id = userRepository.save(userSignupRequestDto.tosocialEntity()).getId();
+//            if(id !=null){
+//                result = RefreshAccessIssue(userSignupRequestDto.getEmail(),userSignupRequestDto.getRole().toString(),id);
+//            }
+//            else{
+//                log.info("error_신규 회원가입실패");
+//            }
+//        }
+//        return result;
+        User user = User.builder()
+                .email(dto.getEmail())
+                .name(dto.getName())
+                .authProvider(dto.getAuthProvider())
+                .uniName(dto.getUniName())
+                .role(dto.getRole())
+                .build();
+
+        return userRepository.save(user);
     }
 
     public UserLoginResponseDto RefreshAccessIssue(String email, String role, Long Id){
@@ -104,12 +118,14 @@ public class UserServiceImpl implements UserService{
                 .user_id(Id)
                 .email(email)
                 .build();
+
         return loginResponse;
     }
+
     @Transactional
     @Override
-    public UserLoginResponseDto socialLogin(String Email){
-        Optional<User> user  = userRepository.findByEmailAndProvider(Email, "kakao");
+    public UserLoginResponseDto socialLogin(String email){
+        Optional<User> user  = userRepository.findByEmailAndAuthProvider(email, KAKAO);
         if(user.isEmpty()){
             throw new CommonException(CommonErrorResult.ITEM_EMPTY);
         }
@@ -123,25 +139,50 @@ public class UserServiceImpl implements UserService{
 
 
     public UserLoginResponseDto addDummyUser(UserRegisterDto userSignupRequestDto){
-        UserLoginResponseDto result = null;
-
-        if (userRepository
-                .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
-                .isPresent()
-        ) {
-            //기존회원이 존재한다면 소셜로그인으로 넘어간다.
-            result = socialLogin(userSignupRequestDto.getEmail());
-        }
-        else{
-            Long id = userRepository.save(userSignupRequestDto.tosocialEntity()).getId();
-            if(id !=null){
-                result = RefreshAccessIssue(userSignupRequestDto.getEmail(),userSignupRequestDto.getRole().toString(),id);
-            }
-            else{
-                log.info("error_신규 회원가입실패");
-            }
-        }
-        return result;
+//        UserLoginResponseDto result = null;
+//
+//        if (userRepository
+//                .findByEmailAndProvider(userSignupRequestDto.getEmail(), userSignupRequestDto.getProvider())
+//                .isPresent()
+//        ) {
+//            //기존회원이 존재한다면 소셜로그인으로 넘어간다.
+//            result = socialLogin(userSignupRequestDto.getEmail());
+//        }
+//        else{
+//            Long id = userRepository.save(userSignupRequestDto.tosocialEntity()).getId();
+//            if(id !=null){
+//                result = RefreshAccessIssue(userSignupRequestDto.getEmail(),userSignupRequestDto.getRole().toString(),id);
+//            }
+//            else{
+//                log.info("error_신규 회원가입실패");
+//            }
+//        }
+//        return result;
+        return null;
     }
-*/
+
+    @Transactional
+    public TestSignUpResponse createUser(TestSignUpRequest signUpRequest){
+        if(userRepository.existsByEmailAndAuthProvider(signUpRequest.getEmail(), signUpRequest.getAuthProvider())){
+            throw new CommonException(CommonErrorResult.BAD_REQUEST);
+        }
+
+        User savedUser = userRepository.save(
+                User.builder()
+                        .name(signUpRequest.getNickname())
+                        .email(signUpRequest.getEmail())
+                        .role(signUpRequest.getRole())
+                        .authProvider(signUpRequest.getAuthProvider())
+                        .build()
+        );
+
+        return TestSignUpResponse.builder()
+                .id(savedUser.getId())
+                .authProvider(savedUser.getAuthProvider())
+                .createdDate(savedUser.getCreatedDate())
+                .nickname(savedUser.getName())
+                .email(savedUser.getEmail())
+                .role(savedUser.getRole())
+                .build();
+    }
 }
