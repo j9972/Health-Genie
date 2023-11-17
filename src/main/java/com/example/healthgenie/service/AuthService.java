@@ -30,11 +30,11 @@ public class AuthService {
     }
 
     public SignInResponse refreshToken(TokenRequest tokenRequest){
-        String userId = (String) securityUtils.get(tokenRequest.getRefreshToken()).get("userId");
+        String email = (String) securityUtils.get(tokenRequest.getRefreshToken()).get("email");
         String provider = (String) securityUtils.get(tokenRequest.getRefreshToken()).get("provider");
         String oldRefreshToken = (String) securityUtils.get(tokenRequest.getRefreshToken()).get("refreshToken");
 
-        if(!userRepository.existsByEmailAndAuthProvider(userId, AuthProvider.findByCode(provider))){
+        if(!userRepository.existsByEmailAndAuthProvider(email, AuthProvider.findByCode(provider))){
             throw new CommonException(CommonErrorResult.BAD_REQUEST);
         }
 
@@ -46,7 +46,7 @@ public class AuthService {
         }
 
         String accessToken = securityUtils.createAccessToken(
-                userId, AuthProvider.findByCode(provider.toLowerCase()), tokenResponse.getAccessToken());
+                email, AuthProvider.findByCode(provider.toLowerCase()), tokenResponse.getAccessToken());
 
         return SignInResponse.builder()
                 .authProvider(AuthProvider.findByCode(provider.toLowerCase()))

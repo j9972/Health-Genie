@@ -15,6 +15,10 @@ public class KakaoUserInfo {
         return kakaoAccount != null ? kakaoAccount.getEmail() : null;
     }
 
+    public String getName() {
+        return kakaoAccount != null ? kakaoAccount.getProfile().getNickname() : null;
+    }
+
     @Getter
     private static class KakaoAccount {
         private String email;

@@ -1,10 +1,9 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.user.dto.KakaoUserInfo;
-import com.example.healthgenie.domain.user.dto.SignInResponse;
-import com.example.healthgenie.domain.user.dto.TokenRequest;
-import com.example.healthgenie.domain.user.dto.TokenResponse;
+import com.example.healthgenie.domain.user.dto.*;
 import com.example.healthgenie.domain.user.entity.AuthProvider;
+import com.example.healthgenie.domain.user.entity.Role;
+import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.utils.SecurityUtils;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 @RequiredArgsConstructor
 public class KakaoRequestService implements RequestService {
+
+    private final UserService userService;
     private final UserRepository userRepository;
     private final SecurityUtils securityUtils;
     private final WebClient webClient;
@@ -40,25 +41,36 @@ public class KakaoRequestService implements RequestService {
         TokenResponse tokenResponse = getToken(tokenRequest);
         KakaoUserInfo kakaoUserInfo = getUserInfo(tokenResponse.getAccessToken());
 
-        if(userRepository.existsById(kakaoUserInfo.getId())) {
-            String accessToken = securityUtils.createAccessToken(
-                    String.valueOf(kakaoUserInfo.getId()), AuthProvider.KAKAO, tokenResponse.getAccessToken());
+        User user = userRepository.findByEmail(kakaoUserInfo.getEmail()).orElse(null);
 
-            String refreshToken = securityUtils.createRefreshToken(
-                    String.valueOf(kakaoUserInfo.getId()), AuthProvider.KAKAO, tokenResponse.getRefreshToken());
+        // 회원 가입이 안되어있는 경우(최초 로그인 시)
+        if(!userRepository.existsByEmail(kakaoUserInfo.getEmail())) {
+            UserRegisterDto dto = UserRegisterDto
+                    .builder()
+                    .email(kakaoUserInfo.getEmail())
+                    .name(kakaoUserInfo.getName())
+                    .role(Role.USER)
+                    .authProvider(AuthProvider.KAKAO)
+                    .build();
 
-            return SignInResponse.builder()
-                    .authProvider(AuthProvider.KAKAO)
-                    .kakaoUserInfo(null)
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
-        } else {
-            return SignInResponse.builder()
-                    .authProvider(AuthProvider.KAKAO)
-                    .kakaoUserInfo(kakaoUserInfo)
-                    .build();
+            user = userService.socialSignUp(dto);
         }
+
+        // 회원 가입이 되어있는 경우
+        // 서버에서 생성한 jwt 토큰
+        String accessToken = securityUtils.createAccessToken(
+                String.valueOf(kakaoUserInfo.getEmail()), AuthProvider.KAKAO, tokenResponse.getAccessToken());
+
+        String refreshToken = securityUtils.createRefreshToken(
+                String.valueOf(kakaoUserInfo.getEmail()), AuthProvider.KAKAO, tokenResponse.getRefreshToken());
+
+        return SignInResponse.builder()
+                .authProvider(AuthProvider.KAKAO)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .userId(user.getId())
+                .role(user.getRole())
+                .build();
     }
 
     @Override
