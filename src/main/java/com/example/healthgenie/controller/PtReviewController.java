@@ -71,7 +71,6 @@ public class PtReviewController {
 
         // processId를 통해서 trainerId를 찾기
         Long memberId = reviewService.findById(reviewId);
-        log.info("memberId : {}" , memberId);
         reviewService.deletePtReview(reviewId, memberId);
 
         return new ResponseEntity("후기 삭제가 성공했습니다",HttpStatus.OK);

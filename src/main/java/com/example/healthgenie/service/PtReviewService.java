@@ -82,15 +82,13 @@ public class PtReviewService {
         authentication.getPrincipal() == "anonymousUser" -> 현재 사용자가 인증되지 않은 사용자다
          */
 
-        log.info("review : {}",review);
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         } else {
             Optional<User> email = userRepository.findByEmail(authentication.getName());
             User member = userRepository.findById(email.get().getId()).orElseThrow();
-            log.info("service member : {}", member);
+
             boolean result = review.getMember().equals(member);
 
             if (result) {
@@ -168,7 +166,7 @@ public class PtReviewService {
     @Transactional(readOnly = true)
     public Long findById(Long reviewId) {
         Optional<PtReview> review = ptReviewRepository.findById(reviewId);
-        log.info("review : {}", review);
+
         if (review.isPresent()) {
             return review.get().getMember().getId();
         }
