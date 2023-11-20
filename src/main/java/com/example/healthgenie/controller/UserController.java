@@ -2,7 +2,7 @@ package com.example.healthgenie.controller;
 
 import com.example.healthgenie.domain.user.dto.TestSignUpRequest;
 import com.example.healthgenie.domain.user.dto.TestSignUpResponse;
-import com.example.healthgenie.domain.user.entity.Role;
+import com.example.healthgenie.domain.user.dto.UpdateRequest;
 import com.example.healthgenie.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +17,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @PatchMapping("/update/{userId}")
-    public ResponseEntity<String> updateRole(@PathVariable Long userId, @RequestParam Role role) {
-        userService.updateRole(userId, role);
+    @PatchMapping("/user/{id}")
+    public ResponseEntity<String> updateRole(@PathVariable Long id, @RequestBody UpdateRequest request) {
+        userService.updateRole(id, request.getRole());
 
         return ResponseEntity.ok("update");
     }

@@ -42,7 +42,7 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/login/**", "/user", "/oauth2/**", "/auth/**", "/h2-console/**", "/refresh", "/error/**").permitAll()
+                .requestMatchers("/login/**", "/oauth2/**", "/h2-console/**", "/refresh", "/error/**", "/auth/test/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
