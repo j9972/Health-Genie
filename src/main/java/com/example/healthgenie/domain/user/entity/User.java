@@ -9,6 +9,7 @@ import com.example.healthgenie.domain.ptreview.entity.PtReview;
 import com.example.healthgenie.domain.routine.entity.OwnRoutine;
 import com.example.healthgenie.domain.todo.entity.Todo;
 import com.example.healthgenie.domain.trainer.entity.TrainerPhoto;
+import com.example.healthgenie.exception.CommonException;
 import com.example.healthgenie.global.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -24,6 +25,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static com.example.healthgenie.domain.user.entity.Role.EMPTY;
+import static com.example.healthgenie.exception.CommonErrorResult.ALREADY_EXISTS_ROLE;
 
 @Entity
 @Getter
@@ -161,6 +165,9 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     public void updateRole(Role role) {
+        if(this.role != EMPTY) {
+            throw new CommonException(ALREADY_EXISTS_ROLE);
+        }
         this.role = role;
     }
 }
