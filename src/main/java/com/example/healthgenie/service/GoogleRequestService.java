@@ -1,32 +1,25 @@
 package com.example.healthgenie.service;
 
 import com.example.healthgenie.domain.user.dto.*;
-import com.example.healthgenie.domain.user.entity.RefreshToken;
+import com.example.healthgenie.domain.user.entity.AuthProvider;
+import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
-import com.example.healthgenie.global.utils.JwtTokenProvider;
-import com.example.healthgenie.repository.RefreshTokenRepository;
+import com.example.healthgenie.global.utils.SecurityUtils;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import static com.example.healthgenie.domain.user.entity.AuthProvider.GOOGLE;
-import static com.example.healthgenie.domain.user.entity.Role.USER;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class GoogleRequestService implements RequestService {
-
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final SecurityUtils securityUtils;
     private final WebClient webClient;
     private final UserService userService;
 
@@ -48,7 +41,6 @@ public class GoogleRequestService implements RequestService {
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String REDIRECT_URI;
 
-    @Transactional
     @Override
     public SignInResponse redirect(TokenRequest tokenRequest) {
         // 구글에서 넘겨준 엑세스 토큰
@@ -59,36 +51,30 @@ public class GoogleRequestService implements RequestService {
         User user = userRepository.findByEmail(googleUserInfo.getEmail()).orElse(null);
 
         // 회원 가입이 안되어있는 경우(최초 로그인 시)
-        if(user == null){
+        if(!userRepository.existsByEmail(googleUserInfo.getEmail())){
             UserRegisterDto dto = UserRegisterDto
                     .builder()
                     .email(googleUserInfo.getEmail())
                     .name(googleUserInfo.getName())
-                    .role(USER)
-                    .authProvider(GOOGLE)
+                    .role(Role.USER)
+                    .authProvider(AuthProvider.GOOGLE)
                     .build();
 
-            user = userService.signUp(dto);
+            user = userService.socialSignUp(dto);
         }
 
         // 회원 가입이 되어있는 경우
         // 서버에서 생성한 jwt 토큰
-        Token token = jwtTokenProvider.createToken(googleUserInfo.getEmail(), user.getRole().getCode());
+        String accessToken = securityUtils.createAccessToken(
+                googleUserInfo.getEmail(), AuthProvider.GOOGLE, tokenResponse.getAccessToken());
 
-        // 서버에 해당 이메일로 저장된 리프레시 토큰이 없으면 저장(== 첫 회원가입 시 -> 이후에는 리프레시 토큰 검증을 통해 재발급 및 저장함)
-        if(!refreshTokenRepository.existsByKeyEmail(user.getEmail())) {
-            RefreshToken newRefreshToken = RefreshToken.builder()
-                    .keyEmail(user.getEmail())
-                    .refreshToken(token.getRefreshToken())
-                    .build();
-
-            refreshTokenRepository.save(newRefreshToken);
-        }
+        String refreshToken = securityUtils.createRefreshToken(
+                googleUserInfo.getEmail(), AuthProvider.GOOGLE, tokenResponse.getRefreshToken());
 
         return SignInResponse.builder()
-                .authProvider(GOOGLE)
-                .accessToken(token.getAccessToken())
-                .refreshToken(token.getRefreshToken())
+                .authProvider(AuthProvider.GOOGLE)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .userId(user.getId())
                 .role(user.getRole())
                 .build();

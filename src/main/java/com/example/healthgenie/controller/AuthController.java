@@ -4,7 +4,6 @@ import com.example.healthgenie.domain.user.dto.JwtResponse;
 import com.example.healthgenie.domain.user.dto.SignInResponse;
 import com.example.healthgenie.domain.user.dto.TokenRequest;
 import com.example.healthgenie.service.AuthService;
-import com.example.healthgenie.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/login/oauth2/code/{registrationId}")
     public ResponseEntity<JwtResponse> redirect(
@@ -47,13 +45,14 @@ public class AuthController {
         return ResponseEntity.ok(jwt);
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/auth/token")
     public ResponseEntity<SignInResponse> refreshToken(@RequestBody TokenRequest tokenRequest){
         log.info("----- AuthController refreshToken -----");
         log.info("TokenRequest.registrationId={}", tokenRequest.getRegistrationId());
+        log.info("TokenRequest.code={}", tokenRequest.getCode());
         log.info("TokenRequest.refreshToken={}", tokenRequest.getRefreshToken());
+        log.info("TokenRequest.state={}", tokenRequest.getState());
 
         return ResponseEntity.ok(authService.refreshToken(tokenRequest));
     }
-
 }

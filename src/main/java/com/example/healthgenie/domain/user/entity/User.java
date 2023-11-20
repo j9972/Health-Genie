@@ -58,7 +58,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "provider")
     private AuthProvider authProvider;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
 

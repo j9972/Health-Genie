@@ -9,7 +9,7 @@ import com.example.healthgenie.domain.user.entity.User;
 public interface UserService {
 
 
-    User signUp(UserRegisterDto userSignupRequestDto);
+    User socialSignUp(UserRegisterDto userSignupRequestDto);
     UserLoginResponseDto socialLogin(String Email);
     UserLoginResponseDto addDummyUser(UserRegisterDto dto);
     TestSignUpResponse createUser(TestSignUpRequest signUpRequest);

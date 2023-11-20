@@ -1,5 +1,6 @@
 package com.example.healthgenie.domain.community.entity;
 
+import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,11 +21,7 @@ public class CommunityPostPhoto extends BaseEntity {
     @JoinColumn(name = "community_post_id")
     private CommunityPost post;
 
-    // 이미지 명
-    @Column(name ="post_photo_name")
-    private String postPhotoName;
-
-    // 이미지 경로
-    @Column(name = "post_photo_path")
-    private String postPhotoPath;
+    // 각 사진을 url로 저장하는 방식
+    @Column(name ="post_photo")
+    private String postPhoto;
 }
