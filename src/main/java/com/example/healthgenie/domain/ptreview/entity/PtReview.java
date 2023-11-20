@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Builder(toBuilder = true) // t
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @Table(name = "PT_REVIEW_TB")
 public class PtReview extends BaseEntity {
@@ -25,10 +25,6 @@ public class PtReview extends BaseEntity {
     @NotNull
     @Column(name = "review_content")
     private String content;
-
-    // 자동 시간 저장
-//    @Column(name = "pt_review_date")
-//    private Date ptReviewDate;
 
     @NotNull
     @Column(name = "stop_reason")

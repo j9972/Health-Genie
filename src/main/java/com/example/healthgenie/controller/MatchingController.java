@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/matching")
 public class MatchingController {
 
-    /**
-     * 매칭은 unique?
-     */
     private final MatchingService matchingService;
 
     // 임시 매칭 생성

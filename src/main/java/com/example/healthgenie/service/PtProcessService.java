@@ -128,7 +128,6 @@ public class PtProcessService {
     }
 
     public User isMemberCurrent(Long trainerId) {
-        //log.info("SecurityUtil.getCurrentMemberId() : {}",SecurityUtil.getCurrentMemberId());
         return userRepository.findById(trainerId)
                 .orElseThrow(() ->  new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
     }
