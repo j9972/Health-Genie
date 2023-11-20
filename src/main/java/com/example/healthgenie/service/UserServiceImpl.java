@@ -12,10 +12,15 @@ import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.example.healthgenie.domain.user.entity.AuthProvider.KAKAO;
 
@@ -24,7 +29,6 @@ import static com.example.healthgenie.domain.user.entity.AuthProvider.KAKAO;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final EmailService emailService;
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
 
@@ -71,6 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
  */
+
     @Transactional
     @Override
     public User socialSignUp(UserRegisterDto dto) {
@@ -136,7 +141,6 @@ public class UserServiceImpl implements UserService {
         //TODO : builder()를 데이터로 뽑는 방법이다
         return loginResponse;
     }
-
 
     public UserLoginResponseDto addDummyUser(UserRegisterDto userSignupRequestDto){
 //        UserLoginResponseDto result = null;

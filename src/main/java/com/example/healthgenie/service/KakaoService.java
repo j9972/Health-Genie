@@ -52,6 +52,7 @@ public class KakaoService {
         throw new CommonException(CommonErrorResult.VALID_OUT);
     }
 
+/*
     public RetKakaoOAuth getKakaoTokenInfo(String code) {
         HttpHeaders headers = new HttpHeaders();
         RestTemplate restTemplate = new RestTemplate();
@@ -79,6 +80,8 @@ public class KakaoService {
         }
         throw new CommonException(CommonErrorResult.BAD_REQUEST);
     }
+
+ */
 
     public void kakaoUnlink(String accessToken) {
         String unlinkUrl = env.getProperty("social.kakao.url.unlink");

@@ -49,6 +49,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.makeErrorResponseEntity(exception.getPtReviewErrorResult());
     }
 
+    @ExceptionHandler({MatchingException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final MatchingException exception) {
+        log.warn("MatchingException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getMatchingErrorResult());
+    }
+
     @ExceptionHandler({CommunityPostException.class})
     public ResponseEntity<ErrorResponse> handleRestApiException(final CommunityPostException exception) {
         log.warn("CommunityException occur: ", exception);
@@ -98,6 +104,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final TrainerProfileErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final MatchingErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }

@@ -1,118 +1,145 @@
 package com.example.healthgenie.service;
 
+import com.example.healthgenie.domain.ptrecord.dto.PtProcessRequestDto;
+import com.example.healthgenie.domain.ptrecord.dto.PtProcessResponseDto;
+import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
+import com.example.healthgenie.domain.user.entity.User;
+import com.example.healthgenie.exception.*;
+import com.example.healthgenie.global.config.SecurityUtil;
+import com.example.healthgenie.repository.MatchingRepository;
 import com.example.healthgenie.repository.PtProcessRepository;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PtProcessService {
     private final PtProcessRepository ptProcessRepository;
     private final UserRepository userRepository;
+    private final MatchingRepository matchingRepository;
 
-//    /*
-//        pt 기록물은 trainer 에 의해서만 작성되지만, 조회는 둘다 가능하게 만들어야 한다
-//     */
-//    public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, Long trainerId){
-//
-//        User trainer = userRepository.findByRoleAndId(dto.getRole(),dto.getTrainerId());
-//        if(trainer == null){
-//            throw new PtProcessException(PtProcessErrorResult.TRAINER_EMPTY);
-//        }
-//
-//        User user = userRepository.findByRoleAndId(dto.getRole(),dto.getUserId());
-//        if(user == null){
-//            throw new PtProcessException(PtProcessErrorResult.USER_EMPTY);
-//        }
-//
-//        //dto
-//        PtProcess ptProcess = PtProcess.builder()
-//                .member(User.builder().id(dto.getUserId()).build())
-//                .trainer(User.builder().id(trainerId).build())
-//                .date(dto.getDate())
-//                .ptTimes(dto.getPtTimes())
-//                .bodyState(dto.getBodyState())
-//                .bmi(dto.getBmi())
-//                .weakness(dto.getWeakness())
-//                .strength(dto.getStrength())
-//                .ptComment(dto.getPtComment())
-//                .ptStartDate(dto.getPtStartDate())
-//                .ptEndTimes(dto.getPtEndTimes())
-//                .build();
-//
-//        PtProcess result = userPtProcessRepository.save(ptProcess);
-//
-//        return PtProcessResponseDto.builder()
-//                .processId(result.getId()).build();
-//    }
-//
-//    // 트레이너에 관련된 모든 유저에 대한 pt record 가져오기
-//    public List<PtProcessListResponseDto> getPtProcessListByTrainer(Long trainerId) {
-//
-//        List<PtProcess> getProcessList = userPtProcessRepository.getAllByTrainer(User.builder().id(trainerId).build());
-//        List<PtProcessListResponseDto> resultList = new ArrayList<>();
-//
-//        if(getProcessList.isEmpty()){
-//            return resultList;
-//        }
-//
-//        return getProcessList.stream()
-//                .map(m -> new PtProcessListResponseDto(m.getId(), m.getPtTimes(), m.getDate(), m.getPtStartDate(),
-//                        m.getPtEndTimes(), m.getPtComment(), m.getBodyState(), m.getBmi(), m.getWeakness(), m.getStrength()))
-//                .collect(Collectors.toList());
-//
-//    }
-//
-//    public PtProcessDetailResponseDto getPtProcessDetail(Long processId) {
-//
-//        PtProcess result = userPtProcessRepository.findsById(processId);
-//        return toDetailResponse(result);
-//    }
-//
-//    public PtProcessDetailResponseDto toDetailResponse(PtProcess process){
-//        return PtProcessDetailResponseDto.builder()
-//                .id(process.getId())
-//                .ptTimes(process.getPtTimes())
-//                .date(process.getDate())
-//                .ptStartDate(process.getPtStartDate())
-//                .ptEndTimes(process.getPtEndTimes())
-//                .ptComment(process.getPtComment())
-//                .trainerId(process.getTrainer().getId())
-//                .userId(process.getMember().getId())
-//                .bodyState(process.getBodyState())
-//                .bmi(process.getBmi())
-//                .weakness(process.getWeakness())
-//                .strength(process.getStrength())
-//                .build();
-//    }
-//
-//    public PtProcessResponseDto updatePtProcess(PtProcessRequestDto dto, Long trainerId) {
-//
-//        User trainer = userRepository.findByRoleAndId(dto.getRole(),trainerId);
-//        if(trainer == null){
-//            throw new PtProcessException(PtProcessErrorResult.TRAINER_EMPTY);
-//        }
-//
-//
-//    }
-//
-//    public PtProcessResponseDto deletePtProcess(Long processId, Long trainerId) {
-//
-//        // findById 저거면 존재의 유무지, 트레이너인지 회원인지 구분이 가나?
-//        Optional<User> trainer = userRepository.findById(trainerId);
-//        if(trainer == null){
-//            throw new PtProcessException(PtProcessErrorResult.TRAINER_EMPTY);
-//        }
-//
-//        Optional<PtProcess> record = userPtProcessRepository.findById(processId);
-//
-//        if (record == null) {
-//            throw new PtProcessException(PtProcessErrorResult.RECORD_EMPTY);
-//        } else {
-//            PtProcessResponseDto result = userPtProcessRepository.deleteById(processId);
-//            return result;
-//        }
-//
-//    }
+
+    @Transactional
+    public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, Long trainerId){
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
+
+        User trainer = userRepository.findById(trainerId)
+                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.TRAINER_EMPTY));
+
+        matchingRepository.findByMemberIdAndTrainerId(user.getId(), trainerId)
+                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+
+        return makePtRProcess(dto,trainer,user);
+    }
+
+    @Transactional
+    public PtProcessResponseDto makePtRProcess(PtProcessRequestDto dto, User trainer, User user){
+
+        PtProcess ptProcess = PtProcess.builder()
+                .date(dto.getDate())
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .photo(dto.getPhoto())
+                .member(user)
+                .trainer(trainer)
+                .build();
+
+        PtProcess process = ptProcessRepository.save(ptProcess);
+
+        return PtProcessResponseDto.of(process);
+    }
+
+    @Transactional(readOnly = true)
+    public PtProcessResponseDto getPtProcess(Long processId) {
+        PtProcess process = ptProcessRepository.findById(processId).orElseThrow(
+                () -> new PtProcessException(PtProcessErrorResult.NO_PROCESS_HISTORY));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
+            throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
+        } else {
+
+            Optional<User> email = userRepository.findByEmail(authentication.getName());
+            /*
+                feedback은 해당 회원, 담당 트레이너만 볼 수 있다
+                따라서 상세페이지 조회는 회원용, 트레이너용을 나눌 필요가 없다.
+             */
+            User member = userRepository.findById(email.get().getId()).orElseThrow();
+            boolean result = process.getMember().equals(member);
+
+            if (result) {
+                return PtProcessResponseDto.of(process);
+            } else {
+                throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
+            }
+        }
+    }
+
+    /*
+        해당 트레이너가 작성한 모든 피드백들을 전부 모아보기
+     */
+    @Transactional(readOnly = true)
+    public Page<PtProcessResponseDto> getAllTrainerProcess(Long trainerId, int page, int size){
+        Page<PtProcess> process = ptProcessRepository.findAllByTrainerId(trainerId, PageRequest.of(page, size));
+        return process.map(PtProcessResponseDto::of);
+    }
+
+    /*
+        본인의 피드백들을 전부 모아보기
+    */
+    @Transactional(readOnly = true)
+    public Page<PtProcessResponseDto> getAllMyProcess(Long userId, int page, int size){
+        Page<PtProcess> process = ptProcessRepository.findAllByMemberId(userId, PageRequest.of(page, size));
+        return process.map(PtProcessResponseDto::of);
+    }
+
+    @Transactional(readOnly = true)
+    public Long findById(Long processId) {
+        Optional<PtProcess> process = ptProcessRepository.findById(processId);
+
+        if (process.isPresent()) {
+            return process.get().getTrainer().getId();
+        }
+        throw new PtProcessException(PtProcessErrorResult.NO_PROCESS_HISTORY);
+    }
+
+    @Transactional
+    public void deletePtProcess(Long processId, Long trainerId) {
+
+        userRepository.findById(trainerId)
+                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.TRAINER_EMPTY));
+
+        PtProcess process = authorizationProcessWriter(processId,trainerId);
+
+        ptProcessRepository.deleteById(process.getId());
+
+    }
+
+    public User isMemberCurrent(Long trainerId) {
+        //log.info("SecurityUtil.getCurrentMemberId() : {}",SecurityUtil.getCurrentMemberId());
+        return userRepository.findById(trainerId)
+                .orElseThrow(() ->  new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
+    }
+
+    public PtProcess authorizationProcessWriter(Long id, Long trainerId) {
+        User member = isMemberCurrent(trainerId);
+
+        PtProcess process = ptProcessRepository.findById(id).orElseThrow(() -> new PtProcessException(PtProcessErrorResult.RECORD_EMPTY));
+        if (!process.getTrainer().equals(member)) {
+            throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
+        }
+        return process;
+    }
 }
