@@ -4,14 +4,18 @@ import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Entity
 @NoArgsConstructor
+@Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "PT_PROCESS_TB")
 public class PtProcess extends BaseEntity {
 
@@ -33,12 +37,12 @@ public class PtProcess extends BaseEntity {
     @Column(name = "pt_process_photo")
     private String photo;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User member;
 
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainer_id")
     private User trainer;
 

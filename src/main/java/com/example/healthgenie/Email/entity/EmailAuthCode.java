@@ -1,4 +1,4 @@
-package com.example.healthgenie.domain.user.entity;
+package com.example.healthgenie.Email.entity;
 
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -19,10 +19,12 @@ public class EmailAuthCode extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="community_post_id")
+    @Column(name ="email_auth_code_id")
     private Long id;
 
-    @NotNull
+    @Column(name="email")
+    private String email;
+
     @Column(name = "auth_code")
     private String code;
 }

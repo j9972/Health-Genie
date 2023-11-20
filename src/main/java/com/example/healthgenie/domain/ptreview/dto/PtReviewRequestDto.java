@@ -1,15 +1,9 @@
 package com.example.healthgenie.domain.ptreview.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class PtReviewListResponseDto {
+@Data
+public class PtReviewRequestDto {
     private Long id;
 
     private String content;

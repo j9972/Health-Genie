@@ -20,7 +20,7 @@ public class Matching extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="user_pt_review_id")
+    @Column(name ="user_pt_matching_id")
     private Long id;
 
     @Column(name = "pt_date")
@@ -35,6 +35,12 @@ public class Matching extends BaseEntity {
     @Column(name = "pt_price")
     private int price;
 
+    /*
+        [채팅에서] 트레이너가 PT 요청시 회원이 수락 하면 True값으로 변경, 취소하면 default 값 그대로 유지
+     */
+    @Column(name = "pt_experiecne")
+    private boolean ptExperience;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id")
     private User member;
@@ -42,4 +48,17 @@ public class Matching extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="trainer_id")
     private User trainer;
+
+    @Override
+    public String toString() {
+        return "Matching{" +
+                "id=" + id +
+                ", ptDate=" + ptDate +
+                ", ptPlace='" + ptPlace + '\'' +
+                ", ptAccept=" + ptAccept +
+                ", price=" + price +
+                ", ptExperience=" + ptExperience +
+                // Include other fields as needed...
+                '}';
+    }
 }

@@ -9,7 +9,11 @@ import org.springframework.http.HttpStatus;
 public enum PtReviewErrorResult {
 
     DUPLICATED_REVIEW(HttpStatus.BAD_REQUEST, "Duplicated Membership Register Request"),
-    TRAINER_EMPTY(HttpStatus.BAD_REQUEST,"trainer is empty Request"),
+    NO_REVIEW_HISTORY(HttpStatus.BAD_REQUEST, "No Reivew History For Edit"),
+    WRONG_USER(HttpStatus.BAD_REQUEST, "Wrong User"),
+    TRAINER_EMPTY(HttpStatus.BAD_REQUEST,"trainer is empty"),
+    MEMBER_EMPTY(HttpStatus.BAD_REQUEST,"member is empty"),
+    NO_USER_INFO(HttpStatus.BAD_REQUEST,"user info is empty"),
     UNkNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"unknown_Exception")
     ;
 

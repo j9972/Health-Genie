@@ -17,9 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
+  
     private final UserRepository userRepository;
-
     @Transactional
     @Override
     public User signUp(UserRegisterDto dto) {
@@ -33,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(user);
     }
+
 
     @Transactional
     public TestSignUpResponse createUser(TestSignUpRequest signUpRequest){
