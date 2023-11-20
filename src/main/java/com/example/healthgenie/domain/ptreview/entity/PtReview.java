@@ -9,22 +9,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 @Entity
-@Builder
+@Builder(toBuilder = true) // t
 @AllArgsConstructor
 @Table(name = "PT_REVIEW_TB")
-public class PtReivew extends BaseEntity {
-
-    // TODO : [트레이너 입장 전체 조회]
-    //  -> trainer 이름, 회원 이름, 별점, 작성 날짜, content, [ 후기 전체 카운트, 후기 평균 평점[소수점 첫번째 자리]] return
-
-    // TODO : [회원 입장 ]
-    //        -> 본인이 작성한 후기들 전체 조회, 후기 작성, 후기 수정 [ 수정시 평점 및 내용만 수정 가능 ]
+public class PtReview extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +26,9 @@ public class PtReivew extends BaseEntity {
     @Column(name = "review_content")
     private String content;
 
-    // 자동으로 시간을 저장 안하는 이유는 후기 작성 날짜를 내가 설정할 수 있게 해야하기 때문
-    @Column(name = "pt_review_date")
-    private Date ptReviewDate;
+    // 자동 시간 저장
+//    @Column(name = "pt_review_date")
+//    private Date ptReviewDate;
 
     @NotNull
     @Column(name = "stop_reason")
@@ -53,4 +44,14 @@ public class PtReivew extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="trainer_id")
     private User trainer;
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+    public void updateReason(String reason) {
+        this.stopReason = reason;
+    }
+    public void updateScore(double score) {
+        this.reviewScore = score;
+    }
 }
