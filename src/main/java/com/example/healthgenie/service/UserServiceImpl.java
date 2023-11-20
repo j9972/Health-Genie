@@ -2,8 +2,8 @@ package com.example.healthgenie.service;
 
 import com.example.healthgenie.domain.user.dto.TestSignUpRequest;
 import com.example.healthgenie.domain.user.dto.TestSignUpResponse;
-import com.example.healthgenie.domain.user.dto.UserLoginResponseDto;
 import com.example.healthgenie.domain.user.dto.UserRegisterDto;
+import com.example.healthgenie.domain.user.entity.Role;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.CommonErrorResult;
 import com.example.healthgenie.exception.CommonException;
@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.healthgenie.exception.CommonErrorResult.USER_ID_NOT_FOUND;
+
+@Transactional(readOnly = true)
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -60,12 +63,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserLoginResponseDto socialLogin(String Email) {
-        return null;
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CommonException(USER_ID_NOT_FOUND));
     }
 
+    @Transactional
     @Override
-    public UserLoginResponseDto addDummyUser(UserRegisterDto dto) {
-        return null;
+    public void updateRole(Long userId, Role role) {
+        User user = findById(userId);
+
+        user.updateRole(role);
     }
 }

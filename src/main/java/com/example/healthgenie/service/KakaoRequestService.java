@@ -15,8 +15,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static com.example.healthgenie.domain.user.entity.AuthProvider.*;
-import static com.example.healthgenie.domain.user.entity.Role.*;
+import static com.example.healthgenie.domain.user.entity.AuthProvider.KAKAO;
+import static com.example.healthgenie.domain.user.entity.Role.EMPTY;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +55,7 @@ public class KakaoRequestService implements RequestService {
                     .builder()
                     .email(kakaoUserInfo.getEmail())
                     .name(kakaoUserInfo.getName())
-                    .role(USER)
+                    .role(EMPTY)
                     .authProvider(KAKAO)
                     .build();
 

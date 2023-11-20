@@ -16,7 +16,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import static com.example.healthgenie.domain.user.entity.AuthProvider.GOOGLE;
-import static com.example.healthgenie.domain.user.entity.Role.USER;
+import static com.example.healthgenie.domain.user.entity.Role.EMPTY;
 
 @Slf4j
 @Service
@@ -64,7 +64,7 @@ public class GoogleRequestService implements RequestService {
                     .builder()
                     .email(googleUserInfo.getEmail())
                     .name(googleUserInfo.getName())
-                    .role(USER)
+                    .role(EMPTY)
                     .authProvider(GOOGLE)
                     .build();
 

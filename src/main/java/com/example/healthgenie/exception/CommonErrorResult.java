@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum CommonErrorResult {
 
+    USER_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "not found user"),
     ITEM_EMPTY(HttpStatus.BAD_REQUEST,"No items"),
     VALID_OUT(HttpStatus.INTERNAL_SERVER_ERROR,"verification failed"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST,"bad request"),

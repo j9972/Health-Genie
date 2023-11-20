@@ -7,10 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Role {
 
-
     ADMIN("ROLE_ADMIN", "관리자 권한"),
+    EMPTY("ROLE_EMPTY", "기본 권한"),
     USER("ROLE_USER", "일반 사용자 권한"),
-    GUEST("ROLE_TRAINER", "트레이너 권한");
+    TRAINER("ROLE_TRAINER", "트레이너 권한");
 
     private final String code;
     private final String name;

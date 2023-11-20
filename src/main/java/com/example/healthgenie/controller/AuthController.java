@@ -4,7 +4,6 @@ import com.example.healthgenie.domain.user.dto.JwtResponse;
 import com.example.healthgenie.domain.user.dto.SignInResponse;
 import com.example.healthgenie.domain.user.dto.TokenRequest;
 import com.example.healthgenie.service.AuthService;
-import com.example.healthgenie.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/login/oauth2/code/{registrationId}")
     public ResponseEntity<JwtResponse> redirect(
