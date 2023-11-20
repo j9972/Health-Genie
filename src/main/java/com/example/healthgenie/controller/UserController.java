@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor // 생성자 DI
 @RequestMapping("/auth")
-
 public class UserController {
 
     private final UserService userService;

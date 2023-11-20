@@ -1,20 +1,24 @@
 package com.example.healthgenie.repository;
 
-import com.example.healthgenie.domain.ptreview.entity.PtReivew;
-import com.example.healthgenie.domain.user.entity.User;
+import com.example.healthgenie.domain.ptreview.entity.PtReview;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface PtReviewRepository extends JpaRepository<PtReivew, Long> {
+public interface PtReviewRepository extends JpaRepository<PtReview, Long> {
 
 
-//    @Query("select R from PtReivew R where R.id =:Id")
-//    public PtReivew findsById(Long Id);
+    public PtReview findByMemberIdAndTrainerId(Long userId, Long trainerId);
 
-    public List<PtReivew> getAllByTrainerId(Long trainerId);
+    @Query("select R from PtProcess R where R.id =:reviewId")
+    public PtReview findMemberIdById(Long reviewId);
 
-    public List<PtReivew> getAllByMemberId(Long userId);
+    Page<PtReview> findAllByTrainerId(Long trainerId, Pageable pageable);
+
+    Page<PtReview> findAllByMemberId(Long userId, Pageable pageable);
 }
