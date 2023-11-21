@@ -21,7 +21,6 @@ import static com.example.healthgenie.exception.CommunityPostErrorResult.POST_EM
 @Transactional(readOnly = true)
 public class CommunityPostService {
 
-    public static final int POST_COUNT = 20;
     private final CommunityPostRepository postRepository;
 
     public List<PostResponse> findAll() {
