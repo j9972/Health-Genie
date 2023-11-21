@@ -84,6 +84,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.makeErrorResponseEntity(exception.getUserEmailErrorResult());
     }
 
+    @ExceptionHandler({TodoException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final TodoException exception) {
+        log.warn("TodoException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getTodoErrorResult());
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final TodoErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final UserEmailErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));

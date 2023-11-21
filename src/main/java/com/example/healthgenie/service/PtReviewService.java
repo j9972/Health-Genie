@@ -132,6 +132,7 @@ public class PtReviewService {
         if(dto.getReviewScore() != null) {
             review.updateScore(dto.getReviewScore());
         }
+
         return reviewId;
     }
 
