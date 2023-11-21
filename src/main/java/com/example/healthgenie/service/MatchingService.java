@@ -34,7 +34,6 @@ public class MatchingService {
 
         Matching savedMatching = matchingRepository.save(matching);
 
-        // id 를 넘김으로써 ptReivew가 작성됨을 알 수 있다.
         return MatchingDto.builder()
                 .id(savedMatching.getId())
                 .ptDate(savedMatching.getPtDate())

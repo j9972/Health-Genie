@@ -48,8 +48,7 @@ public class TodoController {
     @DeleteMapping("/delete/{todoId}") // http://localhost:1234/calender/todo/delete/{todoId}
     public ResponseEntity deleteTodo(@PathVariable Long todoId) {
 
-        Long userId = todoService.findById(todoId);
-        todoService.deletePtReview(todoId, userId);
+        todoService.deletePtReview(todoId);
 
         return new ResponseEntity("todo가 삭제가 성공했습니다",HttpStatus.OK);
     }

@@ -105,35 +105,24 @@ public class PtProcessService {
         return process.map(PtProcessResponseDto::of);
     }
 
-    @Transactional(readOnly = true)
-    public Long findById(Long processId) {
-        Optional<PtProcess> process = ptProcessRepository.findById(processId);
-
-        if (process.isPresent()) {
-            return process.get().getTrainer().getId();
-        }
-        throw new PtProcessException(PtProcessErrorResult.NO_PROCESS_HISTORY);
-    }
 
     @Transactional
-    public void deletePtProcess(Long processId, Long trainerId) {
+    public void deletePtProcess(Long processId) {
 
-        userRepository.findById(trainerId)
-                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.TRAINER_EMPTY));
-
-        PtProcess process = authorizationProcessWriter(processId,trainerId);
+        PtProcess process = authorizationProcessWriter(processId);
 
         ptProcessRepository.deleteById(process.getId());
 
     }
 
-    public User isMemberCurrent(Long trainerId) {
-        return userRepository.findById(trainerId)
+    public User isMemberCurrent() {
+        return userRepository.findById(SecurityUtil.getCurrentUserId())
                 .orElseThrow(() ->  new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
     }
 
-    public PtProcess authorizationProcessWriter(Long id, Long trainerId) {
-        User member = isMemberCurrent(trainerId);
+    // process는 트레이너만 수정 삭제 가능
+    public PtProcess authorizationProcessWriter(Long id) {
+        User member = isMemberCurrent();
 
         PtProcess process = ptProcessRepository.findById(id).orElseThrow(() -> new PtProcessException(PtProcessErrorResult.RECORD_EMPTY));
         if (!process.getTrainer().equals(member)) {

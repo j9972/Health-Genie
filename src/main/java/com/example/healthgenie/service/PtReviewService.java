@@ -121,7 +121,8 @@ public class PtReviewService {
     @Transactional
     public Long editPtReview(PtReviewRequestDto dto, Long reviewId){
 
-        PtReview review = authorizationReviewWriter(reviewId,dto.getUserId());
+        //PtReview review = authorizationReviewWriter(reviewId,dto.getUserId());
+        PtReview review = authorizationReviewWriter(reviewId);
 
         if(dto.getContent() != null) {
             review.updateContent(dto.getContent());
@@ -134,43 +135,31 @@ public class PtReviewService {
         }
 
         return reviewId;
+        //return PtReviewResponseDto.of(review);
     }
 
 
     @Transactional
-    public void deletePtReview(Long reviewId, Long userId) {
+    public void deletePtReview(Long reviewId) {
 
-        userRepository.findById(userId)
-                .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.MEMBER_EMPTY));
-
-        PtReview review = authorizationReviewWriter(reviewId,userId);
+        PtReview review = authorizationReviewWriter(reviewId);
         ptReviewRepository.deleteById(review.getId());
 
     }
 
-
-    public User isMemberCurrent(Long userId) {
-        return userRepository.findById(userId)
+    public User isMemberCurrent() {
+        return userRepository.findById(SecurityUtil.getCurrentUserId())
                 .orElseThrow(() ->  new PtReviewException(PtReviewErrorResult.NO_USER_INFO));
     }
 
-    public PtReview authorizationReviewWriter(Long id, Long userId) {
-        User member = isMemberCurrent(userId);
+    // review는 회원만 수정 삭제 가능
+    public PtReview authorizationReviewWriter(Long id) {
+        User member = isMemberCurrent();
 
         PtReview review = ptReviewRepository.findById(id).orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
         if (!review.getMember().equals(member)) {
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         }
         return review;
-    }
-
-    @Transactional(readOnly = true)
-    public Long findById(Long reviewId) {
-        Optional<PtReview> review = ptReviewRepository.findById(reviewId);
-
-        if (review.isPresent()) {
-            return review.get().getMember().getId();
-        }
-        throw new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY);
     }
 }

@@ -68,10 +68,7 @@ public class PtReviewController {
     // 본인만 삭제 가능하게 하기 -> 프론트에서 기능을 숨기면 되어서 구별 로직뺌
     @DeleteMapping("/member/{reviewId}") // http://localhost:1234/review/member/{reviewId}
     public ResponseEntity deleteReview(@PathVariable Long reviewId) {
-
-        // processId를 통해서 trainerId를 찾기
-        Long memberId = reviewService.findById(reviewId);
-        reviewService.deletePtReview(reviewId, memberId);
+        reviewService.deletePtReview(reviewId);
 
         return new ResponseEntity("후기 삭제가 성공했습니다",HttpStatus.OK);
     }
