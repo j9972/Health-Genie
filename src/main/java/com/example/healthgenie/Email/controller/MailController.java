@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor // 생성자 DI
-@RequestMapping("/auth")
+@RequestMapping("/auth/mail")
 public class MailController {
 
     private final UserMailService userMailService;
     private final MailService mailService;
 
     // 이메일 코드전송,이메일유효성검사
-    @PostMapping("/mail/send") // http://localhost:1234/auth/mail/send
+    @PostMapping("/send") // http://localhost:1234/auth/mail/send
     public ResponseEntity authMail(@RequestBody String email) throws MessagingException {
 
         userMailService.sendCode(email);
@@ -30,7 +30,7 @@ public class MailController {
     }
 
     //이메일 코드검증
-    @GetMapping("/mail/verify") // http://localhost:1234/auth/mail/verify
+    @GetMapping("/verify") // http://localhost:1234/auth/mail/verify
     public ResponseEntity validMailCode(@RequestParam("email") String email,
                                         @RequestParam("authCode") String authCode){
         boolean result = userMailService.verify(email, authCode);
