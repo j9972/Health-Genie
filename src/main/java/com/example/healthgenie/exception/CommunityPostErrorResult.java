@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum CommunityPostErrorResult {
 
+    PHOTO_EMPTY(HttpStatus.BAD_REQUEST, "photo is empty"),
     NO_PERMISSION(HttpStatus.BAD_REQUEST, "don't have permission"),
     POST_EMPTY(HttpStatus.BAD_REQUEST,"post is empty Request"),
     UNkNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"unknown_Exception"),

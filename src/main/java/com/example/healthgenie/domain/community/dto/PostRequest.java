@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,6 +17,5 @@ public class PostRequest {
     private Long id;
     private String title;
     private String content;
-    private String photoName;
-    private String photoPath;
+    private List<MultipartFile> photos;
 }

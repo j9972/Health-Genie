@@ -12,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.example.healthgenie.exception.CommunityPostErrorResult.NO_PERMISSION;
 import static com.example.healthgenie.exception.CommunityPostErrorResult.POST_EMPTY;
@@ -24,18 +22,20 @@ import static com.example.healthgenie.exception.CommunityPostErrorResult.POST_EM
 @Transactional(readOnly = true)
 public class CommunityPostService {
 
-    private final CommunityPostRepository postRepository;
+    private final CommunityPostRepository communityPostRepository;
+    private final CommunityPostPhotoService communityPostPhotoService;
+    private final S3UploadService s3UploadService;
 
-    public List<PostResponse> findAll() {
-        return postRepository.findAll().stream()
-                .map(p -> new PostResponse(p.getId(), p.getTitle(), p.getContent(), p.getMember().getId()))
-                .collect(Collectors.toList());
-    }
+//    public List<PostResponse> findAll() {
+//        return communityPostRepository.findAll().stream()
+//                .map(p -> new PostResponse(p.getId(), p.getTitle(), p.getContent(), p.getMember().getId(), p.getCommunityPostPhotos()))
+//                .collect(Collectors.toList());
+//    }
 
     public PostResponse findById(Long id) {
         User currentUser = SecurityUtil.getCurrentUser();
 
-        CommunityPost post = postRepository.findById(id)
+        CommunityPost post = communityPostRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         return PostResponse.builder()
@@ -50,7 +50,7 @@ public class CommunityPostService {
     public PostResponse save(PostRequest dto) {
         User currentUser = SecurityUtil.getCurrentUser();
 
-        CommunityPost savedPost = postRepository.save(CommunityPost.builder()
+        CommunityPost savedPost = communityPostRepository.save(CommunityPost.builder()
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .member(currentUser)
@@ -68,21 +68,21 @@ public class CommunityPostService {
     public void delete(Long id) {
         User currentUser = SecurityUtil.getCurrentUser();
 
-        CommunityPost post = postRepository.findById(id)
+        CommunityPost post = communityPostRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         if(!Objects.equals(currentUser.getId(), post.getMember().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 
-        postRepository.delete(post);
+        communityPostRepository.delete(post);
     }
 
     @Transactional
     public PostResponse update(Long id, PostRequest request) {
         User currentUser = SecurityUtil.getCurrentUser();
 
-        CommunityPost post = postRepository.findById(id)
+        CommunityPost post = communityPostRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         if(request.getTitle() != null) {
