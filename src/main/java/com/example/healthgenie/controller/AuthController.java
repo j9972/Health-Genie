@@ -45,14 +45,13 @@ public class AuthController {
         return ResponseEntity.ok(jwt);
     }
 
-    @PostMapping("/auth/token")
+    @PostMapping("/refresh")
     public ResponseEntity<SignInResponse> refreshToken(@RequestBody TokenRequest tokenRequest){
         log.info("----- AuthController refreshToken -----");
         log.info("TokenRequest.registrationId={}", tokenRequest.getRegistrationId());
-        log.info("TokenRequest.code={}", tokenRequest.getCode());
         log.info("TokenRequest.refreshToken={}", tokenRequest.getRefreshToken());
-        log.info("TokenRequest.state={}", tokenRequest.getState());
 
         return ResponseEntity.ok(authService.refreshToken(tokenRequest));
     }
+
 }

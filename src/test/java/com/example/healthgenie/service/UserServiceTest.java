@@ -1,6 +1,5 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.global.config.JwtUtil;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
