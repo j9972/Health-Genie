@@ -2,7 +2,6 @@ package com.example.healthgenie.controller;
 
 import com.example.healthgenie.domain.community.dto.PostRequest;
 import com.example.healthgenie.domain.community.dto.PostResponse;
-import com.example.healthgenie.domain.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.service.CommunityPostPhotoService;
 import com.example.healthgenie.service.CommunityPostService;
 import com.example.healthgenie.service.S3UploadService;
@@ -34,7 +33,7 @@ public class CommunityPostController {
     public ResponseEntity<PostResponse> save(PostRequest request) throws IOException {
         // 이미지 S3 저장
         List<String> photoPaths = new ArrayList<>();
-        if(!request.getPhotos().isEmpty()) {
+        if(existsFile(request)) {
             photoPaths = s3UploadService.upload(request.getPhotos(), "post-photos");
         }
 
@@ -42,7 +41,9 @@ public class CommunityPostController {
         PostResponse savedPost = communityPostService.save(request);
 
         // CommunityPostPhoto 엔티티 저장
-        List<CommunityPostPhoto> savedPhotos = communityPostPhotoService.saveAll(savedPost.getId(), photoPaths);
+        if(existsFile(request)) {
+            communityPostPhotoService.saveAll(savedPost.getId(), photoPaths);
+        }
 
         PostResponse response = PostResponse.builder()
                 .id(savedPost.getId())
@@ -64,5 +65,9 @@ public class CommunityPostController {
     public ResponseEntity<String> delete(@PathVariable Long id) {
         communityPostService.delete(id);
         return ResponseEntity.ok(id + "번 게시글이 삭제되었습니다.");
+    }
+
+    private boolean existsFile(PostRequest request) {
+        return !request.getPhotos().isEmpty();
     }
 }
