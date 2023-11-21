@@ -8,6 +8,7 @@ import com.example.healthgenie.domain.todo.dto.TodoResponseDto;
 import com.example.healthgenie.domain.todo.entity.Todo;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.*;
+import com.example.healthgenie.global.config.SecurityUtil;
 import com.example.healthgenie.repository.TodoRepository;
 import com.example.healthgenie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,6 @@ public class TodoService {
         return addTodo(dto, user);
     }
 
-
-
     @Transactional
     public TodoResponseDto addTodo(TodoRequestDto dto, User user){
         Todo todo = Todo.builder()
@@ -60,7 +59,7 @@ public class TodoService {
     @Transactional
     public Long update(TodoRequestDto dto, Long todoId){
 
-        Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new RuntimeException("todo 가 없습니다."));
+        Todo todo = authorizationWriter(todoId);
 
         if(dto.getTodoDate() != null) {
             todo.updateDate(dto.getTodoDate());
@@ -81,35 +80,25 @@ public class TodoService {
         return todoId;
     }
 
-    public void deletePtReview(Long todoId, Long userId) {
+    public void deletePtReview(Long todoId) {
         // user가 해당 글을 작성한 유저인지 체크 [ DB에 많은 데이터가 쌓이기 때문에 필요 ]
-        Todo todo = authorizationWriter(todoId, userId);
+        Todo todo = authorizationWriter(todoId);
         todoRepository.deleteById(todo.getId());
     }
 
-    public User isMemberCurrent(Long userId) {
-        return userRepository.findById(userId)
+    public User isMemberCurrent() {
+        return userRepository.findById(SecurityUtil.getCurrentUserId())
                 .orElseThrow(() ->  new TodoException(TodoErrorResult.NO_USER_INFO));
     }
 
-    public Todo authorizationWriter(Long id, Long userId) {
-        User member = isMemberCurrent(userId);
+    public Todo authorizationWriter(Long id) {
+        User member = isMemberCurrent();
 
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new TodoException(TodoErrorResult.NO_TODO_INFO));
         if (!todo.getMember().equals(member)) {
             throw new TodoException(TodoErrorResult.WRONG_USER);
         }
         return todo;
-    }
-
-    @Transactional(readOnly = true)
-    public Long findById(Long todoId) {
-        Optional<Todo> todo = todoRepository.findById(todoId);
-
-        if (todo.isPresent()) {
-            return todo.get().getMember().getId();
-        }
-        throw new TodoException(TodoErrorResult.TODO_EMPTY);
     }
 
     public List<TodoResponseDto> getAllMyTodo(Long userId) {
