@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.healthgenie.exception.CommonErrorResult.USER_ID_NOT_FOUND;
+import static com.example.healthgenie.exception.CommonErrorResult.USER_NOT_FOUND;
 
 @Transactional(readOnly = true)
 @Service
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new CommonException(USER_ID_NOT_FOUND));
+                .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
     }
 
     @Transactional
@@ -74,5 +74,10 @@ public class UserServiceImpl implements UserService {
         User user = findById(userId);
 
         user.updateRole(role);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new CommonException(USER_NOT_FOUND));
     }
 }

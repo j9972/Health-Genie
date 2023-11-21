@@ -4,7 +4,9 @@ package com.example.healthgenie.service;
 import com.example.healthgenie.domain.community.dto.PostRequest;
 import com.example.healthgenie.domain.community.dto.PostResponse;
 import com.example.healthgenie.domain.community.entity.CommunityPost;
+import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.CommunityPostException;
+import com.example.healthgenie.global.config.SecurityUtil;
 import com.example.healthgenie.repository.CommunityPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,10 +24,11 @@ import static com.example.healthgenie.exception.CommunityPostErrorResult.POST_EM
 public class CommunityPostService {
 
     private final CommunityPostRepository postRepository;
+    private final UserService userService;
 
     public List<PostResponse> findAll() {
         return postRepository.findAll().stream()
-                .map(p -> new PostResponse(p.getId(), p.getTitle(), p.getContent()))
+                .map(p -> new PostResponse(p.getId(), p.getTitle(), p.getContent(), p.getMember().getId()))
                 .collect(Collectors.toList());
     }
 
@@ -41,13 +44,19 @@ public class CommunityPostService {
 
     @Transactional
     public PostResponse save(PostRequest dto) {
+        User currentUser = SecurityUtil.getCurrentUser();
+
         CommunityPost savedPost = postRepository.save(CommunityPost.builder()
                 .title(dto.getTitle())
                 .content(dto.getContent())
+                .member(currentUser)
                 .build());
 
         return PostResponse.builder()
                 .id(savedPost.getId())
+                .title(savedPost.getTitle())
+                .content(savedPost.getContent())
+                .userId(currentUser.getId())
                 .build();
     }
 
