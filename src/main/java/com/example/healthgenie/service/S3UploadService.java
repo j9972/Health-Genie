@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,6 +34,18 @@ public class S3UploadService {
         File uploadFile = convert(multipartFile).orElseThrow(() -> new IllegalArgumentException("파일 전환 실패"));
 
         return upload(uploadFile, dirName);
+    }
+
+    /**
+     * @return 저장된 파일들의 경로
+     */
+    public List<String> upload(List<MultipartFile> multipartFiles, String dirName) throws IOException {
+        List<String> paths = new ArrayList<>();
+        for (MultipartFile multipartFile : multipartFiles) {
+            paths.add(upload(multipartFile, dirName));
+        }
+
+        return paths;
     }
 
     // S3로 파일 업로드하기
