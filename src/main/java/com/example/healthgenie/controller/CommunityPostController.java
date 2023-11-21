@@ -5,6 +5,7 @@ import com.example.healthgenie.domain.community.dto.PostResponse;
 import com.example.healthgenie.service.CommunityPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -15,24 +16,24 @@ public class CommunityPostController {
 
     private final CommunityPostService postService;
 
-    @GetMapping
-    public PostResponse findById(@RequestBody PostRequest request) {
-        return postService.findById(request.getId());
+    @GetMapping("/{id}")
+    public ResponseEntity<PostResponse> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(postService.findById(id));
     }
 
     @PostMapping("/write")
-    public PostResponse save(@RequestBody PostRequest request) {
-        return postService.save(request);
+    public ResponseEntity<PostResponse> save(@RequestBody PostRequest request) {
+        return ResponseEntity.ok(postService.save(request));
     }
 
     @PatchMapping("/edit/{id}")
-    public Long edit(@PathVariable Long id, @RequestBody PostRequest request) {
-        return postService.update(id, request);
+    public ResponseEntity<PostResponse> edit(@PathVariable Long id, @RequestBody PostRequest request) {
+        return ResponseEntity.ok(postService.update(id, request));
     }
 
     @DeleteMapping("/delete/{id}")
-    public Long delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         postService.delete(id);
-        return id;
+        return ResponseEntity.ok(id + "번 게시글이 삭제되었습니다.");
     }
 }

@@ -41,7 +41,7 @@ public class CommunityPost extends BaseEntity {
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<CommunityPostPhoto> communityPostPhotos = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User member;
 
