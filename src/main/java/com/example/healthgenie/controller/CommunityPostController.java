@@ -15,14 +15,14 @@ public class CommunityPostController {
 
     private final CommunityPostService postService;
 
-//    @PreAuthorize("isAnonymous()") // 로그인 안했을 경우에만 해당 URL 접속 가능
+    //    @PreAuthorize("isAnonymous()") // 로그인 안했을 경우에만 해당 URL 접속 가능
 //    @PreAuthorize("isAuthenticated()") // 로그인 했을 경우에만 해당 URL 접속 가능
     @GetMapping
     public PostResponse findById(@RequestBody PostRequest request) {
         return postService.findById(request.getId());
     }
 
-//    @PreAuthorize("permitAll()") // 아무나 해당 URL 접속 가능
+    //    @PreAuthorize("permitAll()") // 아무나 해당 URL 접속 가능
     @PostMapping("/write")
     public PostResponse save(@RequestBody PostRequest request) {
         return postService.save(request);
@@ -34,7 +34,7 @@ public class CommunityPostController {
         return postService.update(id, request);
     }
 
-//    @PreAuthorize("isAnonymous()") // 로그인 안했을 경우에만 해당 URL 접속 가능
+    //    @PreAuthorize("isAnonymous()") // 로그인 안했을 경우에만 해당 URL 접속 가능
     @DeleteMapping("/delete/{id}")
     public Long delete(@PathVariable Long id) {
         postService.delete(id);

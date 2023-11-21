@@ -127,7 +127,7 @@ public class GoogleRequestService implements RequestService {
                 .uri(TOKEN_URI)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters
-                .fromFormData("client_id", CLIENT_ID)
+                        .fromFormData("client_id", CLIENT_ID)
                         .with("client_secret", CLIENT_SECRET)
                         .with("refresh_token", refreshToken)
                         .with("grant_type", "refresh_token"))

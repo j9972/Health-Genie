@@ -20,7 +20,7 @@ import static com.example.healthgenie.exception.CommonErrorResult.USER_ID_NOT_FO
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-  
+
     private final UserRepository userRepository;
 
     @Transactional

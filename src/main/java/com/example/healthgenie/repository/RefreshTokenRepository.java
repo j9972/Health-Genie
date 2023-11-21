@@ -10,4 +10,3 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken,Long>
     boolean existsByKeyEmail(String email);
     void deleteByKeyEmail(String email);
 }
-
