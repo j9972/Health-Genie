@@ -14,6 +14,7 @@ public class PostResponse {
     private Long id;
     private String title;
     private String content;
+    private Long userId;
 //    private String photoName;
 //    private String photoPath;
 }
