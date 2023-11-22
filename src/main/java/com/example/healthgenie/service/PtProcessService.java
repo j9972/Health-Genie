@@ -81,6 +81,8 @@ public class PtProcessService {
             /*
                 feedback은 해당 회원, 담당 트레이너만 볼 수 있다
                 따라서 상세페이지 조회는 회원용, 트레이너용을 나눌 필요가 없다.
+
+                해당 trainer, user만 확인 가능
              */
             User member = userRepository.findById(email.get().getId()).orElseThrow();
             boolean user_result = process.getMember().equals(member);
