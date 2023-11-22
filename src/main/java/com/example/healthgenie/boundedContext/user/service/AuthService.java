@@ -1,16 +1,16 @@
 package com.example.healthgenie.boundedContext.user.service;
 
-import com.example.healthgenie.boundedContext.user.dto.SignInResponse;
-import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
-import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
-import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.boundedContext.user.dto.Token;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.service.RefreshTokenService;
+import com.example.healthgenie.boundedContext.user.dto.SignInResponse;
+import com.example.healthgenie.boundedContext.user.dto.Token;
+import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
+import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
