@@ -1,5 +1,6 @@
 package com.example.healthgenie.domain.ptrecord.entity;
 
+import com.example.healthgenie.domain.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.global.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -10,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -34,9 +37,6 @@ public class PtProcess extends BaseEntity {
     @Column(name = "process_title")
     private String title;
 
-    @Column(name = "pt_process_photo")
-    private String photo;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User member;
@@ -45,5 +45,17 @@ public class PtProcess extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainer_id")
     private User trainer;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "process",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<PtProcessPhoto> ptProcessPhotos = new ArrayList<>();
+
+    /*
+    연관 관계 편의 메서드
+     */
+    public void addProcess(PtProcessPhoto process) {
+        this.ptProcessPhotos.add(process);
+        process.setProcess(this);
+    }
 
 }
