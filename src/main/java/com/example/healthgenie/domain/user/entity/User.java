@@ -54,12 +54,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "refresh_token_id")
-    private String refreshTokenId;
-
-//    @Column(name = "provider")
-//    private String provider;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "provider")
     private AuthProvider authProvider;
@@ -68,8 +62,8 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "role")
     private Role role;
 
-    @Column(name = "profile_phoho")
-    private String profilePhoho;
+    @Column(name = "profile_photo")
+    private String profilePhoto;
 
     @Column(name = "email_verify")
     private boolean emailVerify;

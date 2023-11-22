@@ -4,14 +4,17 @@ package com.example.healthgenie.service;
 import com.example.healthgenie.domain.community.dto.PostRequest;
 import com.example.healthgenie.domain.community.dto.PostResponse;
 import com.example.healthgenie.domain.community.entity.CommunityPost;
+import com.example.healthgenie.domain.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.CommunityPostException;
 import com.example.healthgenie.global.config.SecurityUtil;
+import com.example.healthgenie.repository.CommunityPostQueryRepository;
 import com.example.healthgenie.repository.CommunityPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.example.healthgenie.exception.CommunityPostErrorResult.NO_PERMISSION;
@@ -23,8 +26,7 @@ import static com.example.healthgenie.exception.CommunityPostErrorResult.POST_EM
 public class CommunityPostService {
 
     private final CommunityPostRepository communityPostRepository;
-    private final CommunityPostPhotoService communityPostPhotoService;
-    private final S3UploadService s3UploadService;
+    private final CommunityPostQueryRepository communityPostQueryRepository;
 
 //    public List<PostResponse> findAll() {
 //        return communityPostRepository.findAll().stream()
@@ -38,11 +40,16 @@ public class CommunityPostService {
         CommunityPost post = communityPostRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
+        List<String> photoPaths = post.getCommunityPostPhotos().stream()
+                .map(CommunityPostPhoto::getPostPhotoPath)
+                .toList();
+
         return PostResponse.builder()
                 .id(id)
                 .title(post.getTitle())
                 .content(post.getContent())
                 .userId(currentUser.getId())
+                .photoPaths(photoPaths)
                 .build();
     }
 
@@ -99,5 +106,9 @@ public class CommunityPostService {
                 .content(post.getContent())
                 .userId(currentUser.getId())
                 .build();
+    }
+
+    public List<PostResponse> findAll() {
+        return communityPostQueryRepository.findAll();
     }
 }

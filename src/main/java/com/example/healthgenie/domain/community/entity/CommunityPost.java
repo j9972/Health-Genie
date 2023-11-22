@@ -60,4 +60,8 @@ public class CommunityPost extends BaseEntity {
         this.communityPostPhotos.add(photo);
         photo.setPost(this);
     }
+
+    public void removePhotos(List<CommunityPostPhoto> photos) {
+        this.communityPostPhotos.removeAll(photos);
+    }
 }
