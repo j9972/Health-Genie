@@ -1,27 +1,17 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.community.entity.CommunityPost;
-import com.example.healthgenie.domain.user.entity.User;
-import com.example.healthgenie.exception.CommunityPostErrorResult;
-import com.example.healthgenie.exception.CommunityPostException;
-import com.example.healthgenie.repository.CommunityPostRepository;
-import org.junit.jupiter.api.Test;
+import com.example.healthgenie.boundedContext.community.service.CommunityPostService;
+import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)

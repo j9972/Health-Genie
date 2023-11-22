@@ -1,11 +1,9 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.domain.user.dto.UserRegisterDto;
-import com.example.healthgenie.domain.user.entity.Role;
-import com.example.healthgenie.domain.user.entity.User;
-import com.example.healthgenie.global.exception.GlobalExceptionHandler;
-import com.example.healthgenie.repository.UserRepository;
-import com.example.healthgenie.service.UserServiceImpl;
+import com.example.healthgenie.base.exception.GlobalExceptionHandler;
+import com.example.healthgenie.boundedContext.user.controller.UserController;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.example.healthgenie.boundedContext.user.service.UserServiceImpl;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,17 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 

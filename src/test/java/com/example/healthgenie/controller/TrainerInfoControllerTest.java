@@ -1,22 +1,18 @@
 package com.example.healthgenie.controller;
 
-import com.example.healthgenie.global.exception.GlobalExceptionHandler;
-import com.example.healthgenie.service.TrainerProfileServie;
+import com.example.healthgenie.base.exception.GlobalExceptionHandler;
+import com.example.healthgenie.boundedContext.trainer.controller.TrainerProfileController;
+import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.doReturn;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class TrainerInfoControllerTest {
@@ -29,7 +25,7 @@ public class TrainerInfoControllerTest {
     private Gson gson;
 
     @Mock
-    TrainerProfileServie service;
+    TrainerProfileService service;
 
 
 

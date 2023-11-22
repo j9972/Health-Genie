@@ -1,7 +1,6 @@
 package com.example.healthgenie.repository;
 
-import com.example.healthgenie.domain.user.entity.Role;
-import com.example.healthgenie.domain.user.entity.User;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
