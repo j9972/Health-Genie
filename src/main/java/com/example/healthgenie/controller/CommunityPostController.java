@@ -2,6 +2,8 @@ package com.example.healthgenie.controller;
 
 import com.example.healthgenie.domain.community.dto.PostRequest;
 import com.example.healthgenie.domain.community.dto.PostResponse;
+import com.example.healthgenie.exception.CommunityPostException;
+import com.example.healthgenie.global.config.SecurityUtil;
 import com.example.healthgenie.service.CommunityPostPhotoService;
 import com.example.healthgenie.service.CommunityPostService;
 import com.example.healthgenie.service.S3UploadService;
@@ -14,6 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static com.example.healthgenie.exception.CommunityPostErrorResult.NO_PERMISSION;
 
 @Slf4j
 @RestController
@@ -59,6 +64,11 @@ public class CommunityPostController {
 
     @PatchMapping("/edit/{id}")
     public ResponseEntity<PostResponse> edit(@PathVariable Long id, PostRequest request) throws IOException {
+        PostResponse post = communityPostService.findById(id);
+        if(!Objects.equals(post.getUserId(), SecurityUtil.getCurrentUserId())) {
+            throw new CommunityPostException(NO_PERMISSION);
+        }
+
         // 이미지 S3 저장
         List<String> photoPaths = new ArrayList<>();
         if(existsFile(request)) {
@@ -86,7 +96,13 @@ public class CommunityPostController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
+        PostResponse post = communityPostService.findById(id);
+        if(!Objects.equals(post.getUserId(), SecurityUtil.getCurrentUserId())) {
+            throw new CommunityPostException(NO_PERMISSION);
+        }
+
         communityPostService.delete(id);
+
         return ResponseEntity.ok(id + "번 게시글이 삭제되었습니다.");
     }
 
