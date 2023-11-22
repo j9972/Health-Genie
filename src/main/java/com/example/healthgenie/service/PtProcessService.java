@@ -1,5 +1,6 @@
 package com.example.healthgenie.service;
 
+
 import com.example.healthgenie.domain.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.domain.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.domain.ptrecord.entity.PtProcess;
@@ -30,35 +31,40 @@ public class PtProcessService {
 
 
     @Transactional
-    public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, Long trainerId){
+    public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto){
 
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
 
-        User trainer = userRepository.findById(trainerId)
-                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.TRAINER_EMPTY));
-
-        matchingRepository.findByMemberIdAndTrainerId(user.getId(), trainerId)
+        matchingRepository.findByMemberIdAndTrainerId(user.getId(), dto.getTrainerId())
                 .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
-        return makePtRProcess(dto,trainer,user);
+        return makePtRProcess(dto,user);
     }
 
     @Transactional
-    public PtProcessResponseDto makePtRProcess(PtProcessRequestDto dto, User trainer, User user){
+    public PtProcessResponseDto makePtRProcess(PtProcessRequestDto dto, User user) {
 
-        PtProcess ptProcess = PtProcess.builder()
-                .date(dto.getDate())
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .photo(dto.getPhoto())
-                .member(user)
-                .trainer(trainer)
+        User currentUser = SecurityUtil.getCurrentUser();
+
+        PtProcess process = ptProcessRepository.save(
+                PtProcess.builder()
+                        .date(dto.getDate())
+                        .content(dto.getContent())
+                        .title(dto.getTitle())
+                        .member(user)
+                        .trainer(currentUser)
+                        .build()
+        );
+
+        return PtProcessResponseDto.builder()
+                .id(process.getId())
+                .date(process.getDate())
+                .content(process.getContent())
+                .title(process.getTitle())
+                .userId(process.getMember().getId())
+                .trainerId(currentUser.getId())
                 .build();
-
-        PtProcess process = ptProcessRepository.save(ptProcess);
-
-        return PtProcessResponseDto.of(process);
     }
 
     @Transactional(readOnly = true)
@@ -75,11 +81,16 @@ public class PtProcessService {
             /*
                 feedback은 해당 회원, 담당 트레이너만 볼 수 있다
                 따라서 상세페이지 조회는 회원용, 트레이너용을 나눌 필요가 없다.
+
+                해당 trainer, user만 확인 가능
              */
             User member = userRepository.findById(email.get().getId()).orElseThrow();
-            boolean result = process.getMember().equals(member);
+            boolean user_result = process.getMember().equals(member);
+            boolean trainer_result = process.getTrainer().equals(member);
 
-            if (result) {
+            if (user_result)  {
+                return PtProcessResponseDto.of(process);
+            } else if (trainer_result) {
                 return PtProcessResponseDto.of(process);
             } else {
                 throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
@@ -92,6 +103,7 @@ public class PtProcessService {
      */
     @Transactional(readOnly = true)
     public Page<PtProcessResponseDto> getAllTrainerProcess(Long trainerId, int page, int size){
+
         Page<PtProcess> process = ptProcessRepository.findAllByTrainerId(trainerId, PageRequest.of(page, size));
         return process.map(PtProcessResponseDto::of);
     }
@@ -130,4 +142,5 @@ public class PtProcessService {
         }
         return process;
     }
+
 }
