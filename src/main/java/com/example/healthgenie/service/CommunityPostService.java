@@ -8,6 +8,7 @@ import com.example.healthgenie.domain.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.CommunityPostException;
 import com.example.healthgenie.global.config.SecurityUtil;
+import com.example.healthgenie.repository.CommunityPostQueryRepository;
 import com.example.healthgenie.repository.CommunityPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,7 @@ import static com.example.healthgenie.exception.CommunityPostErrorResult.POST_EM
 public class CommunityPostService {
 
     private final CommunityPostRepository communityPostRepository;
-    private final CommunityPostPhotoService communityPostPhotoService;
-    private final S3UploadService s3UploadService;
+    private final CommunityPostQueryRepository communityPostQueryRepository;
 
 //    public List<PostResponse> findAll() {
 //        return communityPostRepository.findAll().stream()
@@ -106,5 +106,9 @@ public class CommunityPostService {
                 .content(post.getContent())
                 .userId(currentUser.getId())
                 .build();
+    }
+
+    public List<PostResponse> findAll() {
+        return communityPostQueryRepository.findAll();
     }
 }

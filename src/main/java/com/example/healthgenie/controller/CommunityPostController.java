@@ -113,4 +113,9 @@ public class CommunityPostController {
 
         return !request.getPhotos().isEmpty() && totalFileSize > 0;
     }
+
+    @GetMapping("/test/findAll")
+    public List<PostResponse> findAll() {
+        return communityPostService.findAll();
+    }
 }
