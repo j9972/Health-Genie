@@ -42,3 +42,5 @@ out/
 application.yml
 Constants.java
 application.yml
+
+src/main/generated/
