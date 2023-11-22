@@ -64,7 +64,18 @@ public class CommunityPostPhotoService {
         return communityPostPhotoRepository.findAll();
     }
 
-//    public void update(CommunityPostPhotoRequest request) {
-//        request.
-//    }
+    @Transactional
+    public List<CommunityPostPhoto> updateAll(Long postId, List<String> photoPaths) {
+        CommunityPost post = communityPostRepository.findById(postId)
+                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
+
+        // 객체 그래프 탐색용
+        post.removePhotos(post.getCommunityPostPhotos());
+
+        // 기존 Photo 삭제
+        communityPostPhotoRepository.deleteAllByPostId(postId);
+
+        // 새로운 Photo 저장
+        return saveAll(postId, photoPaths);
+    }
 }

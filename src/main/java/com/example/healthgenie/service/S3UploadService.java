@@ -1,5 +1,6 @@
 package com.example.healthgenie.service;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -12,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +58,6 @@ public class S3UploadService {
         removeNewFile(uploadFile);
         return uploadImageUrl;
     }
-
     // S3로 업로드
     private String putS3(File uploadFile, String fileName) {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
@@ -83,5 +85,27 @@ public class S3UploadService {
 
         return Optional.empty();
 
+    }
+
+    /**
+     * S3에서 파일 삭제
+     *
+     * @param fileUrl 삭제할 파일의 S3 URL
+     */
+    public void deleteS3Object(String fileUrl) {
+        String fileName = extractFileNameFromUrl(fileUrl);
+        try {
+            amazonS3Client.deleteObject(bucket, fileName);
+            log.info("File delete from S3 success");
+        } catch (AmazonServiceException e) {
+            log.error("Error occurred while deleting file from S3", e);
+        }
+    }
+
+    // S3 URL에서 파일 이름 추출
+    private String extractFileNameFromUrl(String fileUrl) {
+        String urlEncodedFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+
+        return URLDecoder.decode(urlEncodedFileName, StandardCharsets.UTF_8);
     }
 }

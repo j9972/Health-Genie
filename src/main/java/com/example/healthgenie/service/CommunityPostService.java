@@ -4,6 +4,7 @@ package com.example.healthgenie.service;
 import com.example.healthgenie.domain.community.dto.PostRequest;
 import com.example.healthgenie.domain.community.dto.PostResponse;
 import com.example.healthgenie.domain.community.entity.CommunityPost;
+import com.example.healthgenie.domain.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.domain.user.entity.User;
 import com.example.healthgenie.exception.CommunityPostException;
 import com.example.healthgenie.global.config.SecurityUtil;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.example.healthgenie.exception.CommunityPostErrorResult.NO_PERMISSION;
@@ -38,11 +40,16 @@ public class CommunityPostService {
         CommunityPost post = communityPostRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
+        List<String> photoPaths = post.getCommunityPostPhotos().stream()
+                .map(CommunityPostPhoto::getPostPhotoPath)
+                .toList();
+
         return PostResponse.builder()
                 .id(id)
                 .title(post.getTitle())
                 .content(post.getContent())
                 .userId(currentUser.getId())
+                .photoPaths(photoPaths)
                 .build();
     }
 

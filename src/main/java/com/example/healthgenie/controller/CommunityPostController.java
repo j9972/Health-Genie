@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,8 +58,30 @@ public class CommunityPostController {
     }
 
     @PatchMapping("/edit/{id}")
-    public ResponseEntity<PostResponse> edit(@PathVariable Long id, @RequestBody PostRequest request) {
-        return ResponseEntity.ok(communityPostService.update(id, request));
+    public ResponseEntity<PostResponse> edit(@PathVariable Long id, PostRequest request) throws IOException {
+        // 이미지 S3 저장
+        List<String> photoPaths = new ArrayList<>();
+        if(existsFile(request)) {
+            photoPaths = s3UploadService.upload(request.getPhotos(), "post-photos");
+        }
+
+        // CommunityPost 엔티티 저장
+        PostResponse updatedPost = communityPostService.update(id, request);
+
+        // CommunityPostPhoto 엔티티 저장
+        if (existsFile(request)) {
+            communityPostPhotoService.updateAll(updatedPost.getId(), photoPaths);
+        }
+
+        PostResponse response = PostResponse.builder()
+                .id(updatedPost.getId())
+                .title(updatedPost.getTitle())
+                .content(updatedPost.getContent())
+                .userId(updatedPost.getUserId())
+                .photoPaths(photoPaths)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -68,6 +91,10 @@ public class CommunityPostController {
     }
 
     private boolean existsFile(PostRequest request) {
-        return !request.getPhotos().isEmpty();
+        long totalFileSize = request.getPhotos().stream()
+                .mapToLong(MultipartFile::getSize)
+                .sum();
+
+        return !request.getPhotos().isEmpty() && totalFileSize > 0;
     }
 }
