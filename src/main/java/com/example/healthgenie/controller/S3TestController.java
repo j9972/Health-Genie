@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -17,11 +18,19 @@ public class S3TestController {
 
     private final S3UploadService s3UploadService;
 
-    @PostMapping("/images")
+    @PostMapping("/image")
     public String test(@RequestParam("image") MultipartFile file) throws IOException {
         String savedUrl = s3UploadService.upload(file, "test");
         log.info("savedUrl={}", savedUrl);
 
-        return "image upload success!";
+        return "file upload success!";
+    }
+
+    @PostMapping("/images")
+    public String test(@RequestParam("images")List<MultipartFile> files) throws IOException {
+        List<String> savedUrls = s3UploadService.upload(files, "test");
+        log.info("savedUrls={}", savedUrls);
+
+        return "files upload success!";
     }
 }

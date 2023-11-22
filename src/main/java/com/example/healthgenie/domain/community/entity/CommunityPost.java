@@ -33,6 +33,10 @@ public class CommunityPost extends BaseEntity {
     @Column(name ="post_content")
     private String content;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User member;
+
     @Builder.Default
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<CommunityComment> commentList = new ArrayList<>();
@@ -41,15 +45,19 @@ public class CommunityPost extends BaseEntity {
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<CommunityPostPhoto> communityPostPhotos = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User member;
-
     public void updateTitle(String title) {
         this.title = title;
     }
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    /*
+    연관 관계 편의 메서드
+     */
+    public void addPhoto(CommunityPostPhoto photo) {
+        this.communityPostPhotos.add(photo);
+        photo.setPost(this);
     }
 }
