@@ -1,16 +1,12 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.trainer.entity.TrainerInfo;
-import com.example.healthgenie.exception.TrainerProfileErrorResult;
-import com.example.healthgenie.exception.TrainerProfileException;
-import com.example.healthgenie.repository.TrainerProfileRepository;
+import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileService;
+import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,7 +17,7 @@ import static org.mockito.Mockito.doReturn;
 public class TrainerInfoServieTest {
 
     @InjectMocks
-    TrainerProfileServie target;
+    TrainerProfileService target;
 
     @Mock
     TrainerProfileRepository repository;

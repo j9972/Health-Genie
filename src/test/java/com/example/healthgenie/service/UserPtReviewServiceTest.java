@@ -1,8 +1,9 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.domain.user.entity.Role;
-import com.example.healthgenie.repository.PtReviewRepository;
-import com.example.healthgenie.repository.UserRepository;
+import com.example.healthgenie.boundedContext.ptreview.service.PtReviewService;
+import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

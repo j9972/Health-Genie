@@ -1,6 +1,8 @@
 package com.example.healthgenie.service;
 
-import com.example.healthgenie.repository.UserRepository;
+import com.example.healthgenie.boundedContext.refreshtoken.service.RefreshTokenService;
+import com.example.healthgenie.boundedContext.user.service.UserServiceImpl;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;

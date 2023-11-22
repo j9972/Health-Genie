@@ -1,11 +1,8 @@
 package com.example.healthgenie.repository;
 
-import com.example.healthgenie.domain.trainer.entity.TrainerInfo;
-import org.junit.jupiter.api.Test;
+import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
