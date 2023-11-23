@@ -1,52 +1,90 @@
 package com.example.healthgenie.boundedContext.community.service;
 
+import com.example.healthgenie.base.exception.*;
+import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
+import com.example.healthgenie.boundedContext.community.dto.CommentResponse;
+import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
+import com.example.healthgenie.boundedContext.community.repository.CommunityCommentRepository;
+import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
+import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static com.example.healthgenie.base.exception.CommonErrorResult.USER_NOT_FOUND;
+import static com.example.healthgenie.base.exception.CommunityCommentErrorResult.COMMENT_EMPTY;
+import static com.example.healthgenie.base.exception.CommunityPostErrorResult.*;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class CommunityCommentService {
 
-    /*
-    private final CommunityCommentRepository commentRepository;
-    public CommunityCommentResponseDto addComment(CommunityCommentRequestDto dto, Long postId, Long userId) {
-        postId = 1L;
-        userId = 1L;
+    private final CommunityCommentRepository communityCommentRepository;
+    private final CommunityPostRepository communityPostRepository;
+    private final UserRepository userRepository;
 
-        log.info("CommunityCommentService");
+    public CommentResponse save(Long postId, CommentRequest request) {
+        CommunityPost post = communityPostRepository.findById(postId)
+                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
-        CommunityComment saveResult = commentRepository.save(buildComment(dto, postId, userId));
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
-        // getId()를 건네주는 이유는 CommunityCommentResponseDto 에 post_id뿐 이기 때문이다
-        return new CommunityCommentResponseDto(saveResult.getId());
-    }
-
-    public CommunityComment buildComment(CommunityCommentRequestDto dto, Long postId, Long userId){
-        return CommunityComment.builder()
-                .commentBody(dto.getCommentBody())
-                .communityPost(CommunityPost.builder().id(postId).build())
-                .member(User.builder().id(userId).build())
+        CommunityComment comment = CommunityComment.builder()
+                .post(post)
+                .commentBody(request.getContent())
+                .member(user)
                 .build();
+
+        communityCommentRepository.save(comment);
+
+        return CommentResponse.of(comment);
     }
 
-    // 1개의 comment 조회
-    public CommunityCommentGetResponseDto getComment(Long commentId) {
-        Optional<CommunityComment> optionalResult = commentRepository.findById(commentId);
+    public CommentResponse findById(Long id) {
+        CommunityComment comment = communityCommentRepository.findById(id)
+                .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
 
-        // 찾은 댓글이 없을 수 있는 경우의 수들을 throw 처리
-        if(optionalResult.isEmpty() || !optionalResult.isPresent() || optionalResult==null){
-            throw new CommunityCommentException(CommunityCommentErrorResult.COMMENT_EMPTY);
+        return CommentResponse.of(comment);
+    }
+
+    public List<CommentResponse> findAll() {
+        return CommentResponse.of(communityCommentRepository.findAll());
+    }
+
+    public List<CommentResponse> findAllByPostId(Long postId) {
+        return CommentResponse.of(communityCommentRepository.findAllByPostId(postId));
+    }
+
+    public CommentResponse update(Long postId, Long commentId, CommentRequest request) {
+        communityPostRepository.findById(postId)
+                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
+
+        CommunityComment comment = communityCommentRepository.findById(commentId)
+                .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
+
+        if(request.getContent() != null) {
+            comment.changeContent(request.getContent());
         }
 
-        CommunityComment comment = optionalResult.get();
-        CommunityCommentGetResponseDto result = CommunityCommentGetResponseDto.builder()
-                .id(comment.getId())
-                .commentBody(comment.getCommentBody())
-                .build();
-        return result;
+        return CommentResponse.of(comment);
     }
 
-     */
+    public void deleteById(Long postId, Long commentId) {
+        communityPostRepository.findById(postId)
+                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
+
+        communityCommentRepository.findById(commentId)
+                .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
+
+        communityCommentRepository.deleteById(commentId);
+    }
+
 }

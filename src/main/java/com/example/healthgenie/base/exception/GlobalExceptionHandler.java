@@ -59,6 +59,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.makeErrorResponseEntity(exception.getCommunityPostErrorResult());
     }
 
+    @ExceptionHandler({CommunityCommentException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final CommunityCommentException exception) {
+        log.warn("CommunityException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getCommunityCommentErrorResult());
+    }
+
     @ExceptionHandler({TrainerProfileException.class})
     public ResponseEntity<ErrorResponse> handleRestApiException(final TrainerProfileException exception) {
         log.warn("TrainerProfileException occur: ", exception);
@@ -108,6 +114,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final CommunityPostErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final CommunityCommentErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
