@@ -17,13 +17,15 @@ public class CommunityPostQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<PostResponse> findAll() {
-        return queryFactory
+        List<PostResponse> fetch = queryFactory
                 .select(Projections.fields(PostResponse.class,
                         communityPost.id,
                         communityPost.title,
                         communityPost.content,
-                        communityPost.member.id))
+                        communityPost.member.id.as("userId")))
                 .from(communityPost)
                 .fetch();
+
+        return fetch;
     }
 }
