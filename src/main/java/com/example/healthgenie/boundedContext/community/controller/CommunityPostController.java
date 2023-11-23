@@ -23,7 +23,7 @@ import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/community/post")
+@RequestMapping("/community/posts")
 public class CommunityPostController {
 
     private final CommunityPostService communityPostService;
@@ -35,7 +35,7 @@ public class CommunityPostController {
         return ResponseEntity.ok(communityPostService.findById(id));
     }
 
-    @PostMapping("/write")
+    @PostMapping
     public ResponseEntity<PostResponse> save(PostRequest request) throws IOException {
         // 이미지 S3 저장
         List<String> photoPaths = new ArrayList<>();
@@ -62,7 +62,7 @@ public class CommunityPostController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/edit/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<PostResponse> edit(@PathVariable Long id, PostRequest request) throws IOException {
         PostResponse post = communityPostService.findById(id);
         if(!Objects.equals(post.getUserId(), SecurityUtils.getCurrentUserId())) {
@@ -94,7 +94,7 @@ public class CommunityPostController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         PostResponse post = communityPostService.findById(id);
         if(!Objects.equals(post.getUserId(), SecurityUtils.getCurrentUserId())) {
