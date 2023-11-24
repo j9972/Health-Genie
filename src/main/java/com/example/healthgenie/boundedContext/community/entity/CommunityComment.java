@@ -1,18 +1,15 @@
 package com.example.healthgenie.boundedContext.community.entity;
 
 
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.entity.BaseEntity;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @Entity
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @Table(name = "COMMUNITY_COMMENT_TB")
 public class CommunityComment extends BaseEntity {
@@ -26,10 +23,6 @@ public class CommunityComment extends BaseEntity {
     @Column(name ="comment_body")
     private String commentBody;
 
-    @CreationTimestamp // 댓글 작성 시간을 자동으로 기록
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")
     private CommunityPost post;
@@ -38,4 +31,11 @@ public class CommunityComment extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User member;
 
+    public void changeContent(String content) {
+        this.commentBody = content;
+    }
+
+    public void setPost(CommunityPost post) {
+        this.post = post;
+    }
 }

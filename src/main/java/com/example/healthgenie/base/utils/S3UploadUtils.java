@@ -92,10 +92,10 @@ public class S3UploadUtils {
      *
      * @param fileUrl 삭제할 파일의 S3 URL
      */
-    public void deleteS3Object(String fileUrl) {
+    public void deleteS3Object(String dirName, String fileUrl) {
         String fileName = extractFileNameFromUrl(fileUrl);
         try {
-            amazonS3Client.deleteObject(bucket, fileName);
+            amazonS3Client.deleteObject(bucket, dirName + "/" + fileName);
             log.info("File delete from S3 success");
         } catch (AmazonServiceException e) {
             log.error("Error occurred while deleting file from S3", e);

@@ -2,120 +2,47 @@ package com.example.healthgenie.boundedContext.community.controller;
 
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
-import com.example.healthgenie.base.exception.CommunityPostException;
-import com.example.healthgenie.base.utils.SecurityUtils;
-import com.example.healthgenie.boundedContext.community.service.CommunityPostPhotoService;
 import com.example.healthgenie.boundedContext.community.service.CommunityPostService;
-import com.example.healthgenie.base.utils.S3UploadUtils;
+import com.example.healthgenie.boundedContext.community.service.CommunityPostTransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/community/post")
+@RequestMapping("/community/posts")
 public class CommunityPostController {
 
     private final CommunityPostService communityPostService;
-    private final CommunityPostPhotoService communityPostPhotoService;
-    private final S3UploadUtils s3UploadUtils;
+    private final CommunityPostTransactionService communityPostTransactionService;
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(communityPostService.findById(id));
+        return ResponseEntity.ok(communityPostService.findDtoById(id));
     }
 
-    @PostMapping("/write")
+    @PostMapping
     public ResponseEntity<PostResponse> save(PostRequest request) throws IOException {
-        // 이미지 S3 저장
-        List<String> photoPaths = new ArrayList<>();
-        if(existsFile(request)) {
-            photoPaths = s3UploadUtils.upload(request.getPhotos(), "post-photos");
-        }
-
-        // CommunityPost 엔티티 저장
-        PostResponse savedPost = communityPostService.save(request);
-
-        // CommunityPostPhoto 엔티티 저장
-        if(existsFile(request)) {
-            communityPostPhotoService.saveAll(savedPost.getId(), photoPaths);
-        }
-
-        PostResponse response = PostResponse.builder()
-                .id(savedPost.getId())
-                .title(savedPost.getTitle())
-                .content(savedPost.getContent())
-                .userId(savedPost.getUserId())
-                .photoPaths(photoPaths)
-                .build();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(communityPostTransactionService.save(request));
     }
 
-    @PatchMapping("/edit/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<PostResponse> edit(@PathVariable Long id, PostRequest request) throws IOException {
-        PostResponse post = communityPostService.findById(id);
-        if(!Objects.equals(post.getUserId(), SecurityUtils.getCurrentUserId())) {
-            throw new CommunityPostException(NO_PERMISSION);
-        }
-
-        // 이미지 S3 저장
-        List<String> photoPaths = new ArrayList<>();
-        if(existsFile(request)) {
-            photoPaths = s3UploadUtils.upload(request.getPhotos(), "post-photos");
-        }
-
-        // CommunityPost 엔티티 저장
-        PostResponse updatedPost = communityPostService.update(id, request);
-
-        // CommunityPostPhoto 엔티티 저장
-        if (existsFile(request)) {
-            communityPostPhotoService.updateAll(updatedPost.getId(), photoPaths);
-        }
-
-        PostResponse response = PostResponse.builder()
-                .id(updatedPost.getId())
-                .title(updatedPost.getTitle())
-                .content(updatedPost.getContent())
-                .userId(updatedPost.getUserId())
-                .photoPaths(photoPaths)
-                .build();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(communityPostTransactionService.update(id, request));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
-        PostResponse post = communityPostService.findById(id);
-        if(!Objects.equals(post.getUserId(), SecurityUtils.getCurrentUserId())) {
-            throw new CommunityPostException(NO_PERMISSION);
-        }
-
-        communityPostService.delete(id);
-
-        return ResponseEntity.ok(id + "번 게시글이 삭제되었습니다.");
-    }
-
-    private boolean existsFile(PostRequest request) {
-        long totalFileSize = request.getPhotos().stream()
-                .mapToLong(MultipartFile::getSize)
-                .sum();
-
-        return !request.getPhotos().isEmpty() && totalFileSize > 0;
+        return ResponseEntity.ok(communityPostService.delete(id));
     }
 
     @GetMapping("/test/findAll")
-    public List<PostResponse> findAll() {
-        return communityPostService.findAll();
+    public List<PostResponse> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
+        return communityPostService.findAll(keyword);
     }
 }

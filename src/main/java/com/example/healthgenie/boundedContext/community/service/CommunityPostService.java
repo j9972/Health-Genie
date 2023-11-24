@@ -1,15 +1,14 @@
 package com.example.healthgenie.boundedContext.community.service;
 
 
+import com.example.healthgenie.base.exception.CommunityPostException;
+import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
-import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.base.exception.CommunityPostException;
-import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostQueryRepository;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +26,7 @@ public class CommunityPostService {
 
     private final CommunityPostRepository communityPostRepository;
     private final CommunityPostQueryRepository communityPostQueryRepository;
+    private final CommunityPostPhotoService communityPostPhotoService;
 
 //    public List<PostResponse> findAll() {
 //        return communityPostRepository.findAll().stream()
@@ -34,23 +34,16 @@ public class CommunityPostService {
 //                .collect(Collectors.toList());
 //    }
 
-    public PostResponse findById(Long id) {
-        User currentUser = SecurityUtils.getCurrentUser();
-
+    public PostResponse findDtoById(Long id) {
         CommunityPost post = communityPostRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
-        List<String> photoPaths = post.getCommunityPostPhotos().stream()
-                .map(CommunityPostPhoto::getPostPhotoPath)
-                .toList();
+        return PostResponse.of(post);
+    }
 
-        return PostResponse.builder()
-                .id(id)
-                .title(post.getTitle())
-                .content(post.getContent())
-                .userId(currentUser.getId())
-                .photoPaths(photoPaths)
-                .build();
+    public CommunityPost findById(Long id) {
+        return communityPostRepository.findById(id)
+                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
     }
 
     @Transactional
@@ -63,16 +56,11 @@ public class CommunityPostService {
                 .member(currentUser)
                 .build());
 
-        return PostResponse.builder()
-                .id(savedPost.getId())
-                .title(savedPost.getTitle())
-                .content(savedPost.getContent())
-                .userId(currentUser.getId())
-                .build();
+        return PostResponse.of(savedPost);
     }
 
     @Transactional
-    public void delete(Long id) {
+    public String delete(Long id) {
         User currentUser = SecurityUtils.getCurrentUser();
 
         CommunityPost post = communityPostRepository.findById(id)
@@ -83,6 +71,8 @@ public class CommunityPostService {
         }
 
         communityPostRepository.delete(post);
+
+        return "게시글이 삭제 되었습니다.";
     }
 
     @Transactional
@@ -92,6 +82,10 @@ public class CommunityPostService {
         CommunityPost post = communityPostRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
+        if(!Objects.equals(currentUser.getId(), post.getMember().getId())) {
+            throw new CommunityPostException(NO_PERMISSION);
+        }
+
         if(request.getTitle() != null) {
             post.updateTitle(request.getTitle());
         }
@@ -100,15 +94,10 @@ public class CommunityPostService {
             post.updateContent(request.getContent());
         }
 
-        return PostResponse.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .userId(currentUser.getId())
-                .build();
+        return PostResponse.of(post);
     }
 
-    public List<PostResponse> findAll() {
-        return communityPostQueryRepository.findAll();
+    public List<PostResponse> findAll(String keyword) {
+        return PostResponse.of(communityPostQueryRepository.findAll(keyword));
     }
 }
