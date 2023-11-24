@@ -1,6 +1,6 @@
 package com.example.healthgenie.base.utils;
 
-import com.example.healthgenie.base.constant.Constants;
+import com.example.healthgenie.base.global.constant.Constants;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.user.dto.Token;
 import io.jsonwebtoken.*;

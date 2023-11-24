@@ -1,45 +1,36 @@
 package com.example.healthgenie.boundedContext.routine.dto;
 
-import com.example.healthgenie.boundedContext.routine.entity.GenieRoutine;
-import com.example.healthgenie.boundedContext.routine.entity.OwnRoutine;
+import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
+import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Builder
 public class RoutineResponseDto {
     private Long id;
-    private Level level;
-    private String workoutPart;
-    private String workoutName;
-    private String workoutDay;
-    private int workoutSets;
-    private int workoutReps;
-    private Long userId;
+    private Level level; // genie에서 사용되는 난이도
+    private List<String> parts;
+    private Day day;
+    private String content;
+    private String workoutName; // 운동 명칭
+    private int sets;
+    private int reps;
+    private String writer; // 헬스 루틴 작성자 -> genie or 본인 이름
 
-
-    public static RoutineResponseDto of(GenieRoutine genie) {
+    public static RoutineResponseDto ofOwn(Routine routine) {
         return RoutineResponseDto.builder()
-                .id(genie.getId())
-                .level(Level.valueOf(genie.getLevel())) // .level(genie.getLevel())
-                .workoutPart(genie.getWorkoutPart())
-                .workoutName(genie.getName())
-                .workoutDay(genie.getWorkoutDay())
-                .workoutSets(genie.getWorkoutSets())
-                .workoutReps(genie.getWorkoutReps())
-                .build();
-    }
-
-    public static RoutineResponseDto of(OwnRoutine own) {
-        return RoutineResponseDto.builder()
-                .id(own.getId())
-                .workoutPart(own.getWorkoutPart())
-                .workoutName(own.getName())
-                .workoutDay(own.getWorkoutDay())
-                .workoutSets(own.getWorkoutSets())
-                .workoutReps(own.getWorkoutReps())
-                .userId(own.getMember().getId())
+                .id(routine.getId())
+                .parts(routine.getParts())
+                .day(routine.getDay())
+                .content(routine.getContent())
+                .workoutName(routine.getWorkoutName())
+                .sets(routine.getSets())
+                .reps(routine.getReps())
+                .writer(routine.getMember().getName())
                 .build();
     }
 }

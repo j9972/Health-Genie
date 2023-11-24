@@ -1,7 +1,7 @@
 package com.example.healthgenie.boundedContext.user.controller;
 
-import com.example.healthgenie.boundedContext.user.dto.TestSignUpRequest;
 import com.example.healthgenie.boundedContext.user.dto.TestSignUpResponse;
+import com.example.healthgenie.boundedContext.user.dto.TestSignUpRequest;
 import com.example.healthgenie.boundedContext.user.dto.UpdateRequest;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;

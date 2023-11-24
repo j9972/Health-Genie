@@ -33,7 +33,7 @@ public class TodoController {
     }
 
     // 수정
-    @PostMapping("/update/{todoId}") // http://localhost:1234/calender/todo/update/{todoId}
+    @PatchMapping("/update/{todoId}") // http://localhost:1234/calender/todo/update/{todoId}
     public ResponseEntity updateTodo(@RequestBody TodoRequestDto dto, @PathVariable Long todoId){
 
         Long id = todoService.update(dto,todoId);
