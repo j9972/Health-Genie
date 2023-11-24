@@ -2,7 +2,7 @@ package com.example.healthgenie.boundedContext.user.entity;
 
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
-import com.example.healthgenie.boundedContext.routine.entity.OwnRoutine;
+import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.chat.entity.ChatMessage;
@@ -119,7 +119,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Builder.Default
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
-    private List<OwnRoutine> own_routine = new ArrayList<>();
+    private List<Routine> routine = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

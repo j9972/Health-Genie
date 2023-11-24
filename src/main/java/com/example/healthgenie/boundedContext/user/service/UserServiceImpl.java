@@ -1,13 +1,13 @@
 package com.example.healthgenie.boundedContext.user.service;
 
-import com.example.healthgenie.boundedContext.user.dto.TestSignUpRequest;
 import com.example.healthgenie.boundedContext.user.dto.TestSignUpResponse;
 import com.example.healthgenie.boundedContext.user.dto.UserRegisterDto;
 import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.example.healthgenie.boundedContext.user.dto.TestSignUpRequest;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

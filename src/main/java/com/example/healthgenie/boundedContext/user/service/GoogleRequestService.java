@@ -3,9 +3,11 @@ package com.example.healthgenie.boundedContext.user.service;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
+//import com.example.healthgenie.boundedContext.todo.dto.user.dto.*;
+import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import com.example.healthgenie.boundedContext.user.dto.*;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +18,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.GOOGLE;
-import static com.example.healthgenie.boundedContext.user.entity.Role.EMPTY;
 
 @Slf4j
 @Service
@@ -64,7 +65,7 @@ public class GoogleRequestService implements RequestService {
                     .builder()
                     .email(googleUserInfo.getEmail())
                     .name(googleUserInfo.getName())
-                    .role(EMPTY)
+                    .role(Role.EMPTY)
                     .authProvider(GOOGLE)
                     .build();
 

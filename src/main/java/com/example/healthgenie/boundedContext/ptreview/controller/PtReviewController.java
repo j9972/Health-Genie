@@ -25,8 +25,7 @@ public class PtReviewController {
     @PostMapping("/write")// http://localhost:1234/review/write
     public ResponseEntity addReview(@RequestBody PtReviewRequestDto dto){
 
-        Long userId = dto.getUserId();
-        PtReviewResponseDto responseDto = reviewService.addPtReview(dto,userId);
+        PtReviewResponseDto responseDto = reviewService.addPtReview(dto);
         return new ResponseEntity(responseDto,HttpStatus.OK);
     }
 
@@ -56,9 +55,9 @@ public class PtReviewController {
 
     // 수정
     @PostMapping("/edit/{reviewId}")// http://localhost:1234/review/edit/{reviewId}
-    public ResponseEntity editReview(@RequestBody PtReviewRequestDto dto, @PathVariable Long reviewId){
+    public ResponseEntity updateReview(@RequestBody PtReviewRequestDto dto, @PathVariable Long reviewId){
 
-        Long id = reviewService.editPtReview(dto,reviewId);
+        Long id = reviewService.updateReview(dto,reviewId);
         return new ResponseEntity(id,HttpStatus.OK);
     }
 

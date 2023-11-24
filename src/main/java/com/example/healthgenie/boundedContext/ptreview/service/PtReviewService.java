@@ -34,36 +34,37 @@ public class PtReviewService {
     private final MatchingRepository matchingRepository;
 
     @Transactional
-    public PtReviewResponseDto addPtReview(PtReviewRequestDto dto, Long userId){
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_USER_INFO));
+    public PtReviewResponseDto addPtReview(PtReviewRequestDto dto){
 
         User trainer = userRepository.findById(dto.getTrainerId())
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY));
 
-        matchingRepository.findByMemberIdAndTrainerId(userId, dto.getTrainerId())
+        matchingRepository.findByMemberIdAndTrainerId(dto.getUserId(), dto.getTrainerId())
                 .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
-        PtReview reviewHistory = ptReviewRepository.findByMemberIdAndTrainerId(userId, dto.getTrainerId());
+        PtReview reviewHistory = ptReviewRepository.findByMemberIdAndTrainerId(dto.getUserId(), dto.getTrainerId());
 
         // 해당 리뷰가 있는지 검사 -> 리뷰는 여러개 안됨
         if(reviewHistory != null) {
             throw new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
         }
 
-        return makePtReview(dto, trainer, user);
+        return makePtReview(dto, trainer);
     }
 
     @Transactional
-    public PtReviewResponseDto makePtReview(PtReviewRequestDto dto, User trainer, User user){
+    public PtReviewResponseDto makePtReview(PtReviewRequestDto dto, User trainer){
+
+        User currentUser = SecurityUtils.getCurrentUser();
+
         PtReview ptReview = PtReview.builder()
                 .content(dto.getContent())
                 .reviewScore(dto.getReviewScore())
                 .stopReason(dto.getStopReason())
-                .member(user)
+                .member(currentUser)
                 .trainer(trainer)
                 .build();
+
         PtReview savedReview = ptReviewRepository.save(ptReview);
 
         return PtReviewResponseDto.of(savedReview);
@@ -115,9 +116,9 @@ public class PtReviewService {
     }
 
     @Transactional
-    public Long editPtReview(PtReviewRequestDto dto, Long reviewId){
+    public Long updateReview(PtReviewRequestDto dto, Long reviewId){
 
-        //PtReview review = authorizationReviewWriter(reviewId,dto.getUserId());
+        // PtReview review = authorizationReviewWriter(dto.getId()); -> request에서 id는 null이 나와서 안된다
         PtReview review = authorizationReviewWriter(reviewId);
 
         if(dto.getContent() != null) {
@@ -131,7 +132,6 @@ public class PtReviewService {
         }
 
         return reviewId;
-        //return PtReviewResponseDto.of(review);
     }
 
 

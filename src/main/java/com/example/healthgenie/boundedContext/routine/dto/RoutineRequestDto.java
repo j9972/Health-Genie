@@ -1,16 +1,20 @@
 package com.example.healthgenie.boundedContext.routine.dto;
 
+import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class RoutineRequestDto {
     private Long id;
-    private Level level; // own 에서는 사용 안함
-    private String workoutPart;
-    private String workoutName;
-    private String workoutDay;
-    private int workoutSets;
-    private int workoutReps;
-    private Long userId; // genie 에서는 사용 안함
+    private Level level; // genie에서 사용되는 난이도
+    private List<String> parts;
+    private Day day;
+    private String content;
+    private String workoutName; // 운동 명칭
+    private int sets;
+    private int reps;
+    //private String writer; // 헬스 루틴 작성자 -> genie or 본인 이름
 }
