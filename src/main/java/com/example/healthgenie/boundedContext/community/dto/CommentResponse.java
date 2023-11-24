@@ -6,33 +6,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class CommentResponse {
 
     private Long id;
-    private Long postId;
-    private Long userId;
+    private LocalDateTime createdDate;
+    private String writer;
     private String content;
-
-    public static CommentResponse of(CommentRequest request) {
-        return CommentResponse.builder()
-                .id(request.getId())
-                .postId(request.getPostId())
-                .userId(request.getUserId())
-                .content(request.getContent())
-                .build();
-    }
 
     public static CommentResponse of(CommunityComment comment) {
         return CommentResponse.builder()
                 .id(comment.getId())
-                .postId(comment.getPost().getId())
-                .userId(comment.getMember().getId())
+                .createdDate(comment.getCreatedDate())
+                .writer(comment.getMember().getName())
                 .content(comment.getCommentBody())
                 .build();
     }

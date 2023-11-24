@@ -34,4 +34,8 @@ public class CommunityComment extends BaseEntity {
     public void changeContent(String content) {
         this.commentBody = content;
     }
+
+    public void setPost(CommunityPost post) {
+        this.post = post;
+    }
 }

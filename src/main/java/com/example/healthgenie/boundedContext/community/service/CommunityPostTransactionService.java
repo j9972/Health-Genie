@@ -1,8 +1,11 @@
 package com.example.healthgenie.boundedContext.community.service;
 
+import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
+import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
 
 /**
  * 작업 단위를 늘려서 같은 트랜잭션에서 변경이 일어나게 하기 위한 서비스
@@ -51,14 +57,20 @@ public class CommunityPostTransactionService {
 
         return PostResponse.builder()
                 .id(savedPost.getId())
+                .createdDate(savedPost.getCreatedDate())
                 .title(savedPost.getTitle())
                 .content(savedPost.getContent())
-                .userId(savedPost.getUserId())
+                .writer(savedPost.getWriter())
                 .photoPaths(photoPaths)
                 .build();
     }
 
     public PostResponse update(Long id, PostRequest request) throws IOException {
+        CommunityPost post = communityPostService.findById(id);
+        if(!Objects.equals(post.getMember().getId(), SecurityUtils.getCurrentUserId())) {
+            throw new CommunityPostException(NO_PERMISSION);
+        }
+
         List<String> photoPaths = new ArrayList<>();
         PostResponse updatedPost = null;
         try {
@@ -82,11 +94,12 @@ public class CommunityPostTransactionService {
         }
 
         return PostResponse.builder()
-                .id(updatedPost.getId())
+                .id(post.getId())
+                .createdDate(post.getCreatedDate())
                 .title(updatedPost.getTitle())
                 .content(updatedPost.getContent())
-                .userId(updatedPost.getUserId())
-                .photoPaths(photoPaths)
+                .writer(updatedPost.getWriter())
+                .photoPaths(updatedPost.getPhotoPaths())
                 .build();
     }
 

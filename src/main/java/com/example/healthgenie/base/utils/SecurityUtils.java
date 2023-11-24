@@ -1,8 +1,11 @@
 package com.example.healthgenie.base.utils;
 
+import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import static com.example.healthgenie.base.exception.CommonErrorResult.USER_NOT_FOUND;
 
 public class SecurityUtils {
 
@@ -12,7 +15,7 @@ public class SecurityUtils {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null) {
-            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
+            throw new CommonException(USER_NOT_FOUND);
         }
         return (User) authentication.getPrincipal();
     }

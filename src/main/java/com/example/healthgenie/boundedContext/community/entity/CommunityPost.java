@@ -39,7 +39,7 @@ public class CommunityPost extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<CommunityComment> commentList = new ArrayList<>();
+    private List<CommunityComment> communityComments = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
@@ -56,6 +56,15 @@ public class CommunityPost extends BaseEntity {
     /*
     연관 관계 편의 메서드
      */
+    public void addComment(CommunityComment comment) {
+        this.communityComments.add(comment);
+        comment.setPost(this);
+    }
+
+    public void removeComment(CommunityComment comment) {
+        this.communityComments.remove(comment);
+    }
+
     public void addPhoto(CommunityPostPhoto photo) {
         this.communityPostPhotos.add(photo);
         photo.setPost(this);
