@@ -6,6 +6,7 @@ import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessPhotoService;
 import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessService;
 import com.example.healthgenie.base.utils.S3UploadUtils;
+import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessTransactionSerivce;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,37 +25,12 @@ import java.util.List;
 @Slf4j
 public class PtProcessController {
     private final PtProcessService processService;
-    private final S3UploadUtils s3UploadUtils;
-    private final PtProcessPhotoService ptProcessPhotoService;
+    private final PtProcessTransactionSerivce processTransactionSerivce;
 
     @PostMapping("/trainer/write")// http://localhost:1234/process/trainer/write
     public ResponseEntity addPtProcess(PtProcessRequestDto dto)  throws IOException {
 
-        // 이미지 S3 저장
-        List<String> photoPaths = new ArrayList<>();
-        if(existsFile(dto)) {
-            photoPaths = s3UploadUtils.upload(dto.getPhotos(), "post-photos");
-        }
-
-        // PtProcess 엔티티 저장
-        PtProcessResponseDto savedProcess = processService.addPtProcess(dto);
-
-        // PtProcessPhoto 엔티티 저장
-        if(existsFile(dto)) {
-            ptProcessPhotoService.saveAll(savedProcess.getId(), photoPaths);
-        }
-
-        PtProcessResponseDto response = PtProcessResponseDto.builder()
-                .id(savedProcess.getId())
-                .date(savedProcess.getDate())
-                .title(savedProcess.getTitle())
-                .content(savedProcess.getContent())
-                .trainerId(savedProcess.getTrainerId())
-                .userId(savedProcess.getUserId())
-                .photoPaths(photoPaths)
-                .build();
-
-        return new ResponseEntity(response, HttpStatus.OK);
+        return ResponseEntity.ok(processTransactionSerivce.addPtProcess(dto));
     }
 
     // 트레이너가 작성한 전체 피드백 모아보기 -> n+1 문제
@@ -88,10 +64,5 @@ public class PtProcessController {
         return new ResponseEntity("피드백 삭제가 성공했습니다",HttpStatus.OK);
     }
 
-    private boolean existsFile(PtProcessRequestDto request) {
-        long totalFileSize = request.getPhotos().stream()
-                .mapToLong(MultipartFile::getSize)
-                .sum();
-        return !request.getPhotos().isEmpty() && totalFileSize > 0;
-    }
+
 }

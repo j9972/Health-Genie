@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.ptrecord.dto;
 
+import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
 import lombok.Builder;
