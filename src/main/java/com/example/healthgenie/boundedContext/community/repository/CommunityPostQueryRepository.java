@@ -1,7 +1,6 @@
 package com.example.healthgenie.boundedContext.community.repository;
 
-import com.example.healthgenie.boundedContext.community.dto.PostResponse;
-import com.querydsl.core.types.Projections;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,16 +15,11 @@ public class CommunityPostQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<PostResponse> findAll() {
-        List<PostResponse> fetch = queryFactory
-                .select(Projections.fields(PostResponse.class,
-                        communityPost.id,
-                        communityPost.title,
-                        communityPost.content,
-                        communityPost.member.id.as("userId")))
-                .from(communityPost)
+    public List<CommunityPost> findAll(String keyword) {
+        return queryFactory
+                .selectFrom(communityPost)
+                .where(communityPost.title.like("%" + keyword + "%"))
+                .orderBy(communityPost.id.desc())
                 .fetch();
-
-        return fetch;
     }
 }

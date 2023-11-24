@@ -42,7 +42,7 @@ public class CommunityPostController {
     }
 
     @GetMapping("/test/findAll")
-    public List<PostResponse> findAll() {
-        return communityPostService.findAll();
+    public List<PostResponse> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
+        return communityPostService.findAll(keyword);
     }
 }

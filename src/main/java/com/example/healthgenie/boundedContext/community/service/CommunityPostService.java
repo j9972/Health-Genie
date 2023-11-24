@@ -97,7 +97,7 @@ public class CommunityPostService {
         return PostResponse.of(post);
     }
 
-    public List<PostResponse> findAll() {
-        return communityPostQueryRepository.findAll();
+    public List<PostResponse> findAll(String keyword) {
+        return PostResponse.of(communityPostQueryRepository.findAll(keyword));
     }
 }
