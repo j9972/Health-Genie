@@ -60,14 +60,7 @@ public class PtProcessService {
                         .build()
         );
 
-        return PtProcessResponseDto.builder()
-                .id(process.getId())
-                .date(process.getDate())
-                .content(process.getContent())
-                .title(process.getTitle())
-                .userId(process.getMember().getId())
-                .trainerId(currentUser.getId())
-                .build();
+        return PtProcessResponseDto.of(process);
     }
 
     @Transactional(readOnly = true)
