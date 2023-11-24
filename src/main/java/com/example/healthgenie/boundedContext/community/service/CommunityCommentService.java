@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.example.healthgenie.base.exception.CommunityCommentErrorResult.COMMENT_EMPTY;
+import static com.example.healthgenie.base.exception.CommunityCommentErrorResult.NO_PERMISSION;
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
 
 @Service
@@ -70,6 +71,12 @@ public class CommunityCommentService {
         CommunityComment comment = communityCommentRepository.findById(commentId)
                 .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
 
+        User user = SecurityUtils.getCurrentUser();
+
+        if(!comment.getMember().getId().equals(user.getId())) {
+            throw new CommunityCommentException(NO_PERMISSION);
+        }
+
         if(request.getContent() != null) {
             comment.changeContent(request.getContent());
         }
@@ -83,6 +90,12 @@ public class CommunityCommentService {
 
         CommunityComment comment = communityCommentRepository.findById(commentId)
                 .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
+
+        User user = SecurityUtils.getCurrentUser();
+
+        if(!comment.getMember().getId().equals(user.getId())) {
+            throw new CommunityCommentException(NO_PERMISSION);
+        }
 
         communityCommentRepository.deleteById(commentId);
 
