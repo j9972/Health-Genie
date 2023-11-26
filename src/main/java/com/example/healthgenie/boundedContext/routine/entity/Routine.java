@@ -28,11 +28,6 @@ public class Routine extends BaseEntity {
     @Column(name ="routine_id")
     private Long id;
 
-    // genie 추천 운동에서 하 / 중 / 상급자를 나누는 level
-    @Enumerated(EnumType.STRING)
-    @Column(name = "level")
-    private Level level;
-
     @NotNull
     @Column(name = "workout_day")
     @Enumerated(EnumType.STRING)

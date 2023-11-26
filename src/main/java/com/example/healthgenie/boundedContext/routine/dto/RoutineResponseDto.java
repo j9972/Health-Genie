@@ -12,7 +12,6 @@ import java.util.List;
 @Builder
 public class RoutineResponseDto {
     private Long id;
-    private Level level; // genie에서 사용되는 난이도
     private List<String> parts;
     private Day day;
     private String content;
@@ -33,4 +32,6 @@ public class RoutineResponseDto {
                 .writer(routine.getMember().getEmail())
                 .build();
     }
+
+
 }
