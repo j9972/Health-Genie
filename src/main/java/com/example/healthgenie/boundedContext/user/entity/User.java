@@ -1,16 +1,15 @@
 package com.example.healthgenie.boundedContext.user.entity;
 
+import com.example.healthgenie.base.entity.BaseEntity;
+import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.routine.entity.OwnRoutine;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
-import com.example.healthgenie.boundedContext.chat.entity.ChatMessage;
-import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
-import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.base.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -70,9 +69,9 @@ public class User extends BaseEntity implements UserDetails {
     // 다른 메서드나 로직에서 추가적인 초기화 필요 없기에 아래 OneToMany 코드들을 초기화 하지 않음
     // trainerInfo, RefreshToken, userProfile 부분 oneToOne 매핑 스킵 -> 한쪽에서만 참조하기에!
     // user 2번 참조한 데이터 ( chatMessage, mathcing, PT_PROCESS_TB, PtReivew ) -> 한번만 하면 된다
-    @Builder.Default
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
-    private List<ChatMessage> chatMessages_member = new ArrayList<>(); // NullPointerException을 방지하기 위해서 초기화 해놓음
+//    @Builder.Default
+//    @OneToMany(mappedBy = "user_id",fetch = FetchType.LAZY )
+//    private List<ChatMessage> chatMessages_member = new ArrayList<>(); // NullPointerException을 방지하기 위해서 초기화 해놓음
 
 //    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
 //    private List<ChatMessage> chatMessages_trainer;
