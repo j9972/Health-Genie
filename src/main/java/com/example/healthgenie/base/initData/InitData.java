@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 //@Profile("dev")
-@Configuration
+//@Configuration
 public class InitData {
 
     @Bean
@@ -55,4 +55,13 @@ public class InitData {
             }
         };
     }
+
+
 }
+/*
+      Book book1 = createBook("JPA1 BOOK", 10000, 100);
+            em.persist(book1);
+
+            Book book2 = createBook("JPA2 BOOK", 20000, 100);
+            em.persist(book2);
+ */

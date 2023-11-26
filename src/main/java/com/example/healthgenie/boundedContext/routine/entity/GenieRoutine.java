@@ -8,39 +8,47 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @Entity
 @Builder
 @AllArgsConstructor
-@Table(name = "WORKOUT_ROUTINE_GENIE_TB")
+@Table(name = "GENIE_ROUTINE_TB")
 public class GenieRoutine extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="genie_routine_id")
+    @Column(name ="routine_id")
     private Long id;
 
-    @NotNull
-    @Column(name = "workout_part")
-    private String workoutPart;
-
-    @NotNull
-    @Column(name = "workout_name")
-    private String name;
+    // genie 추천 운동에서 하 / 중 / 상급자를 나누는 level
+    @Enumerated(EnumType.STRING)
+    @Column(name = "level")
+    private Level level;
 
     @NotNull
     @Column(name = "workout_day")
-    private String workoutDay;
+    @Enumerated(EnumType.STRING)
+    private Day day;
 
     @NotNull
-    @Column(name = "level")
-    private String level;
+    @ElementCollection
+    @Column(name = "workout_part")
+    private List<String> parts = new ArrayList<>();
 
-    @Column(name = "workout_sets")
-    private int workoutSets;
+    // 지니 추천에서 간략한 설명을 위함
+    @Column(name = "content")
+    private String content;
 
-    @Column(name = "workout_reps")
-    private int workoutReps;
+    /*
+        이름, sets * reps 순서로 데이터 넣기
+     */
+    @NotNull
+    @ElementCollection
+    @Column(name = "workout")
+    private List<String> workout = new ArrayList<>();
+
 }
-

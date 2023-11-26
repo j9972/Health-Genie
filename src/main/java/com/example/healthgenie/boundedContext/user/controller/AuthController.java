@@ -1,9 +1,9 @@
 package com.example.healthgenie.boundedContext.user.controller;
 
+import com.example.healthgenie.boundedContext.user.service.AuthService;
 import com.example.healthgenie.boundedContext.user.dto.JwtResponse;
 import com.example.healthgenie.boundedContext.user.dto.SignInResponse;
 import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
-import com.example.healthgenie.boundedContext.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
