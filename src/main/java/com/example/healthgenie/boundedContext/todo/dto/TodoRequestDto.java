@@ -17,5 +17,5 @@ public class TodoRequestDto {
     private String title;
     private String description;
     private Status status;
-    private Long userId;
+    private String userMail;
 }

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 //@Profile("dev")
-@Configuration
+//@Configuration
 public class InitData {
 
     @Bean
@@ -55,4 +55,6 @@ public class InitData {
             }
         };
     }
+
+
 }

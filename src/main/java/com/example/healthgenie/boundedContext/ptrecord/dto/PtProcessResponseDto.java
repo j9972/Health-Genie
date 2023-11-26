@@ -16,9 +16,8 @@ public class PtProcessResponseDto {
     private String content;
     private String title;
     private List<String> photoPaths;
-    private Long userId;
-    private Long trainerId; // 작성하는 사람
-
+    private String userMail;
+    private String trainerMail; // 작성하는 사람
     public static PtProcessResponseDto of(PtProcess process) {
         List<String> photoPaths = process.getPtProcessPhotos().stream()
                 .map(PtProcessPhoto::getProcessPhotoPath)
@@ -30,8 +29,8 @@ public class PtProcessResponseDto {
                 .content(process.getContent())
                 .title(process.getTitle())
                 .photoPaths(photoPaths)
-                .trainerId(process.getTrainer().getId())
-                .userId(process.getMember().getId())
+                .trainerMail(process.getTrainer().getEmail())
+                .userMail(process.getMember().getEmail())
                 .build();
     }
 }

@@ -27,6 +27,7 @@ public class PtProcessController {
     private final PtProcessService processService;
     private final PtProcessTransactionSerivce processTransactionSerivce;
 
+    // trainer가 작성
     @PostMapping("/trainer/write")// http://localhost:1234/process/trainer/write
     public ResponseEntity addPtProcess(PtProcessRequestDto dto)  throws IOException {
 

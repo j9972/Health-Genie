@@ -23,4 +23,5 @@ public class CustomUserDetailService implements UserDetailsService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
     }
+
 }

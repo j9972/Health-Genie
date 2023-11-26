@@ -29,9 +29,9 @@ public class TodoService {
     private final TodoRepository todoRepository;
 
     @Transactional
-    public TodoResponseDto addTodoList(TodoRequestDto dto, Long userId){
+    public TodoResponseDto addTodoList(TodoRequestDto dto){
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByEmail(dto.getUserMail())
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_USER_INFO));
 
         return addTodo(dto, user);
@@ -53,7 +53,7 @@ public class TodoService {
     }
 
     @Transactional
-    public Long update(TodoRequestDto dto, Long todoId){
+    public TodoResponseDto update(TodoRequestDto dto, Long todoId){
 
         Todo todo = authorizationWriter(todoId);
 
@@ -73,7 +73,7 @@ public class TodoService {
             todo.updateStatus(dto.getStatus());
         }
 
-        return todoId;
+        return TodoResponseDto.of(todo);
     }
 
     public void deletePtReview(Long todoId) {

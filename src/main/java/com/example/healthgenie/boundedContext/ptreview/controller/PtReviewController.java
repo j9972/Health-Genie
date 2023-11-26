@@ -37,7 +37,10 @@ public class PtReviewController {
         return new ResponseEntity(responseDto,HttpStatus.OK);
     }
 
-    // 트레이너에 관한 후기 전체 모아보기
+    /*
+        traienr 랑 user 를 나누는 이유는 review 안에 col 을 보면 userId, trainerId로 나뉘니까 userId 로만 데이터를 가져올 수 없다.
+     */
+    // 특정 trainer review list 조회
     @GetMapping("/list/trainer/{trainerId}") // http://localhost:1234/review/list/trainer/{trainerId}
     public Page<PtReviewResponseDto> getAllTrainerReview(@PathVariable Long trainerId, @RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
@@ -45,23 +48,23 @@ public class PtReviewController {
         return reviewService.getAllTrainerReview(trainerId, page, size);
     }
 
-    // 본인이 작성한 후기 전체 모아보기
-    @GetMapping("/list/my/{userId}") // http://localhost:1234/review/list/my/{userId}
+    // 본인이 작성한 review list 조회
+    @GetMapping("/list/my/{userId}") // http://localhost:1234/review/list/{userId}
     public Page<PtReviewResponseDto> getAllMyReview(@PathVariable Long userId, @RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
         int size = 5;
-        return reviewService.getAllMyReview(userId, page, size);
+        return reviewService.getAllReview(userId, page, size);
     }
 
-    // 수정
+    // 트레이너 말고 회원 본인만 수정 가능하기
     @PostMapping("/edit/{reviewId}")// http://localhost:1234/review/edit/{reviewId}
     public ResponseEntity updateReview(@RequestBody PtReviewRequestDto dto, @PathVariable Long reviewId){
 
-        Long id = reviewService.updateReview(dto,reviewId);
-        return new ResponseEntity(id,HttpStatus.OK);
+        PtReviewResponseDto response = reviewService.updateReview(dto,reviewId);
+        return new ResponseEntity(response,HttpStatus.OK);
     }
 
-    // 본인만 삭제 가능하게 하기 -> 프론트에서 기능을 숨기면 되어서 구별 로직뺌
+    // 트레이너 말고 회원 본인만 삭제 가능하게 하기
     @DeleteMapping("/member/{reviewId}") // http://localhost:1234/review/member/{reviewId}
     public ResponseEntity deleteReview(@PathVariable Long reviewId) {
         reviewService.deletePtReview(reviewId);

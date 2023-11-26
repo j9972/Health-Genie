@@ -12,6 +12,6 @@ public class PtProcessRequestDto {
     private String title;
     private String content;
     private List<MultipartFile> photos;
-    private Long userId;
-    private Long trainerId; // 작성하는 사람
+    private String userMail;
+    private String trainerMail; // 작성하는 사람
 }
