@@ -36,10 +36,10 @@ public class PtProcessService {
     @Transactional
     public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto){
 
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findByEmail(dto.getUserMail())
                 .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
 
-        matchingRepository.findByMemberIdAndTrainerId(user.getId(), dto.getTrainerId())
+        matchingRepository.findByMemberEmailAndTrainerEmail(user.getEmail(), dto.getTrainerMail())
                 .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
         return makePtRProcess(dto,user);
@@ -93,6 +93,7 @@ public class PtProcessService {
             }
         }
     }
+
 
     /*
         해당 트레이너가 작성한 모든 피드백들을 전부 모아보기

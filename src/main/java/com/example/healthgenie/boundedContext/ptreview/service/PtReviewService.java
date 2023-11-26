@@ -7,6 +7,7 @@ import com.example.healthgenie.base.exception.PtReviewException;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
+import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -36,13 +37,13 @@ public class PtReviewService {
     @Transactional
     public PtReviewResponseDto addPtReview(PtReviewRequestDto dto){
 
-        User trainer = userRepository.findById(dto.getTrainerId())
+        User trainer = userRepository.findByEmail(dto.getTrainerMail())
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY));
 
-        matchingRepository.findByMemberIdAndTrainerId(dto.getUserId(), dto.getTrainerId())
+        matchingRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail())
                 .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
-        PtReview reviewHistory = ptReviewRepository.findByMemberIdAndTrainerId(dto.getUserId(), dto.getTrainerId());
+        PtReview reviewHistory = ptReviewRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail());
 
         // 해당 리뷰가 있는지 검사 -> 리뷰는 여러개 안됨
         if(reviewHistory != null) {
@@ -98,7 +99,8 @@ public class PtReviewService {
     }
 
     /*
-        해당 트레이너에 관한 후기들을 전부 모아보기
+         특정 trainer review list 조회
+         review안에서 trainerId를 조회하는데, review안에는 userId/trainerId가 나뉘어 있어서 필요함
      */
     @Transactional(readOnly = true)
     public Page<PtReviewResponseDto> getAllTrainerReview(Long trainerId, int page, int size){
@@ -107,16 +109,16 @@ public class PtReviewService {
     }
 
     /*
-        본인이 작성한 후기들을 전부 모아보기
+        본인이 작성한 review list 조회, ]
     */
     @Transactional(readOnly = true)
-    public Page<PtReviewResponseDto> getAllMyReview(Long userId, int page, int size){
+    public Page<PtReviewResponseDto> getAllReview(Long userId, int page, int size){
         Page<PtReview> review = ptReviewRepository.findAllByMemberId(userId, PageRequest.of(page, size));
         return review.map(PtReviewResponseDto::of);
     }
 
     @Transactional
-    public Long updateReview(PtReviewRequestDto dto, Long reviewId){
+    public PtReviewResponseDto updateReview(PtReviewRequestDto dto, Long reviewId){
 
         // PtReview review = authorizationReviewWriter(dto.getId()); -> request에서 id는 null이 나와서 안된다
         PtReview review = authorizationReviewWriter(reviewId);
@@ -131,7 +133,7 @@ public class PtReviewService {
             review.updateScore(dto.getReviewScore());
         }
 
-        return reviewId;
+        return PtReviewResponseDto.of(review);
     }
 
 

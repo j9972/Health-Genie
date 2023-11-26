@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface PtReviewRepository extends JpaRepository<PtReview, Long> {
 
 
-    public PtReview findByMemberIdAndTrainerId(Long userId, Long trainerId);
+    public PtReview findByMemberEmailAndTrainerEmail(String userMail, String trainerMail);
 
     @Query("select R from PtProcess R where R.id =:reviewId")
     public PtReview findMemberIdById(Long reviewId);

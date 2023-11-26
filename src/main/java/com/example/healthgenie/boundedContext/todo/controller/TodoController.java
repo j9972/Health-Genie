@@ -22,8 +22,7 @@ public class TodoController {
     @PostMapping("/write") // http://localhost:1234/calender/todo/write
     public ResponseEntity addTodo(@RequestBody TodoRequestDto dto){
 
-        Long userId = dto.getUserId();
-        TodoResponseDto result = todoService.addTodoList(dto, userId);
+        TodoResponseDto result = todoService.addTodoList(dto);
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
@@ -36,8 +35,8 @@ public class TodoController {
     @PatchMapping("/update/{todoId}") // http://localhost:1234/calender/todo/update/{todoId}
     public ResponseEntity updateTodo(@RequestBody TodoRequestDto dto, @PathVariable Long todoId){
 
-        Long id = todoService.update(dto,todoId);
-        return new ResponseEntity(id,HttpStatus.OK);
+        TodoResponseDto response = todoService.update(dto,todoId);
+        return new ResponseEntity(response,HttpStatus.OK);
     }
 
     // 본인만 삭제 가능하게 하기 -> 프론트에서 기능을 숨기면 되어서 구별 로직뺌

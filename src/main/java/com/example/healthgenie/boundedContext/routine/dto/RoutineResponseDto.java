@@ -30,7 +30,7 @@ public class RoutineResponseDto {
                 .workoutName(routine.getWorkoutName())
                 .sets(routine.getSets())
                 .reps(routine.getReps())
-                .writer(routine.getMember().getName())
+                .writer(routine.getMember().getEmail())
                 .build();
     }
 }
