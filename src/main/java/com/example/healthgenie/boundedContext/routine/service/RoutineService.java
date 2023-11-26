@@ -4,9 +4,14 @@ import com.example.healthgenie.base.exception.RoutineErrorResult;
 import com.example.healthgenie.base.exception.RoutineException;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
+import com.example.healthgenie.boundedContext.routine.dto.GenieResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
+import com.example.healthgenie.boundedContext.routine.entity.Day;
+import com.example.healthgenie.boundedContext.routine.entity.GenieRoutine;
+import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
+import com.example.healthgenie.boundedContext.routine.repository.GenieRoutineRepository;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -26,6 +31,7 @@ import static java.util.stream.Collectors.toList;
 public class RoutineService {
 
     private final RoutineRepository routineRepository;
+    private final GenieRoutineRepository genieRoutineRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -92,6 +98,27 @@ public class RoutineService {
 
         return RoutineResponseDto.ofOwn(own);
     }
+
+    @Transactional(readOnly = true)
+    public List<GenieResponseDto> getAllGenieRoutine(Level level) {
+
+        List<GenieRoutine> genie = genieRoutineRepository.findByLevel(level);
+        return genie.stream()
+                .map(GenieResponseDto::ofGenie)
+                .collect(toList());
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<GenieResponseDto> getGenieRoutine(Level level, Day day) {
+        List<GenieRoutine> genie = genieRoutineRepository.findByLevelAndDay(level,day);
+
+        return genie.stream()
+                .map(GenieResponseDto::ofGenie)
+                .collect(toList());
+    }
+
+
 
     @Transactional
     public void deleteRoutine(Long routineId) {
