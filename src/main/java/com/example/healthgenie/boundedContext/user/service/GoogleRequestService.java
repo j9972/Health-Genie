@@ -4,6 +4,7 @@ import com.example.healthgenie.base.utils.JwtTokenProvider;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
 //import com.example.healthgenie.boundedContext.todo.dto.user.dto.*;
+import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import com.example.healthgenie.boundedContext.user.dto.*;
@@ -67,6 +68,7 @@ public class GoogleRequestService implements RequestService {
                     .name(googleUserInfo.getName())
                     .role(Role.EMPTY)
                     .authProvider(GOOGLE)
+                    .level(Level.EMPTY)
                     .build();
 
             user = userService.signUp(dto);
