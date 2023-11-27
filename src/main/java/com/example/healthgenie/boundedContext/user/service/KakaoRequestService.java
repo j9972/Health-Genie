@@ -3,10 +3,11 @@ package com.example.healthgenie.boundedContext.user.service;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
-//import com.example.healthgenie.boundedContext.todo.dto.user.dto.*;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.dto.*;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -17,7 +18,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.KAKAO;
-import static com.example.healthgenie.boundedContext.user.entity.Role.EMPTY;
 
 @Service
 @RequiredArgsConstructor
@@ -56,8 +56,9 @@ public class KakaoRequestService implements RequestService {
                     .builder()
                     .email(kakaoUserInfo.getEmail())
                     .name(kakaoUserInfo.getName())
-                    .role(EMPTY)
+                    .role(Role.EMPTY)
                     .authProvider(KAKAO)
+                    .level(Level.EMPTY)
                     .build();
 
             user = userService.signUp(dto);

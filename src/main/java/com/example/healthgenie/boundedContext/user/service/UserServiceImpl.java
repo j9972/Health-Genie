@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
                 .authProvider(dto.getAuthProvider())
                 .uniName(dto.getUniName())
                 .role(dto.getRole())
+                .level(dto.getLevel())
                 .build();
 
         return userRepository.save(user);
