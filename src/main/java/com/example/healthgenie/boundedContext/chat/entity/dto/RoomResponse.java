@@ -16,8 +16,8 @@ import java.util.List;
 public class RoomResponse {
 
     private Long id;
-    private String userName;
-    private String trainerName;
+    private String senderName;
+    private String receiverName;
     private List<String> messages;
 
     public static RoomResponse of(ChatRoom room) {
@@ -27,9 +27,17 @@ public class RoomResponse {
 
         return RoomResponse.builder()
                 .id(room.getId())
-                .userName(room.getUser().getName())
-                .trainerName(room.getTrainer().getName())
+                .senderName(room.getSender().getName())
+                .receiverName(room.getReceiver().getName())
                 .messages(messages)
+                .build();
+    }
+
+    public static RoomResponse ofExcludeMessages(ChatRoom room) {
+        return RoomResponse.builder()
+                .id(room.getId())
+                .senderName(room.getSender().getName())
+                .receiverName(room.getReceiver().getName())
                 .build();
     }
 }
