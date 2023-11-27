@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.routine.controller;
 
-import com.example.healthgenie.boundedContext.routine.dto.GenieResponseDto;
+import com.example.healthgenie.boundedContext.routine.dto.LevelUpdateRequest;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
@@ -53,16 +53,16 @@ public class RoutineController {
     }
 
     // 지니 - 초/중/고 급자 전체 조회
-    @GetMapping("/genie/{level}") // http://localhost:1234/routine/genie/{level}
-    public List<GenieResponseDto> getAllGenieRoutines(@PathVariable Level level) {
-        return routineService.getAllGenieRoutine(level);
+    @GetMapping("/genie/{level}") // http://localhost:1234/routine/genie/{userId}/{level}
+    public List<RoutineResponseDto> getAllGenieRoutines(@PathVariable Long userId, @PathVariable Level level) {
+        return routineService.getAllGenieRoutine(userId,level);
     }
 
-    // 지니 - 초/중/고 급자 상세 조회 -> 요일에 대한 상세조회인데 list 혀ㅛ
+    // 지니 - 초/중/고 급자 상세 조회 -> 요일에 대한 상세 조회인데 list 조회
     @GetMapping("/genie/detail/{level}/{day}") // http://localhost:1234/routine/genie/detail/{level}/{day}
     public ResponseEntity getGenieRoutine(@PathVariable Level level, @PathVariable Day day) {
 
-        List<GenieResponseDto> response = routineService.getGenieRoutine(level, day);
+        List<RoutineResponseDto> response = routineService.getGenieRoutine(level, day);
         return new ResponseEntity(response,HttpStatus.OK);
     }
 

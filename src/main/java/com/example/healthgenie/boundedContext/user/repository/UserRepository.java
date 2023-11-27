@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
+
     // test code 에서 사용
 //    User findByEmailId(@Param("email") String email);
 
