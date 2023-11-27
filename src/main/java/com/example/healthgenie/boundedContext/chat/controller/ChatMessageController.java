@@ -16,17 +16,10 @@ public class ChatMessageController {
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatMessageService chatMessageService;
 
-    @MessageMapping("/chat/send")
+    @MessageMapping("/chat/message") // -> /app/chat/message
     public void chat(MessageRequest request) {
         log.info("REQUEST /chat/send, request={}", request);
         chatMessageService.sendMessage(request);
-        messagingTemplate.convertAndSend("/topic/chat/" + request.getRoomId(), request);
-        // receiverId? roomId?
-        // request? messageContent?
-
-        // APIC Testing
-        // Request URL : ws://localhost:1234/ws
-        // Connection Type : STOMP
-        // Subscription URL : /topic/chat/{id}
+        messagingTemplate.convertAndSend("/topic/chat/room/" + request.getRoomId(), request); // -> /topic/chat/room/{roomId}
     }
 }

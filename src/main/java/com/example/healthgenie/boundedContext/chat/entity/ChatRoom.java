@@ -25,12 +25,12 @@ public class ChatRoom extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trainer_id")
-    private User trainer;
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
 
     // 전송 상태 체크
     @Column(name = "chat_room_status")

@@ -29,32 +29,32 @@ public class ChatRoomService {
 
     @Transactional
     public Long joinChatRoom(RoomRequest request) {
-        if(request.getUserId().equals(request.getTrainerId())) {
+        if(request.getSenderId().equals(request.getReceiverId())) {
             throw new ChatException(SELF_CHAT);
         }
 
-        Optional<ChatRoom> opChatRoom = chatRoomRepository.findByUserIdAndTrainerId(request.getUserId(), request.getTrainerId());
+        Optional<ChatRoom> opChatRoom = chatRoomRepository.findBySenderIdAndReceiverId(request.getSenderId(), request.getReceiverId());
         if(opChatRoom.isPresent()) {
             return opChatRoom.get().getId();
         } else {
-            User user = userRepository.findById(request.getUserId())
+            User sender = userRepository.findById(request.getSenderId())
                     .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
-            User trainer = userRepository.findById(request.getTrainerId())
+            User receiver = userRepository.findById(request.getReceiverId())
                     .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
             ChatRoom chatRoom = ChatRoom.builder()
-                    .user(user)
-                    .trainer(trainer)
+                    .sender(sender)
+                    .receiver(receiver)
                     .build();
 
             return chatRoomRepository.save(chatRoom).getId();
         }
     }
 
-    public List<RoomResponse> getRoomList(Long userId) {
-        return chatRoomRepository.findAllByUserId(userId).stream()
-                .map(RoomResponse::of)
+    public List<RoomResponse> getRoomList(Long senderId) {
+        return chatRoomRepository.findAllBySenderId(senderId).stream()
+                .map(RoomResponse::ofExcludeMessages)
                 .toList();
     }
 
