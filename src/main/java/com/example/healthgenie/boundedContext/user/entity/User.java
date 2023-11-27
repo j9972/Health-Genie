@@ -7,6 +7,7 @@ import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
+import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
@@ -65,6 +66,11 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "email_verify")
     private boolean emailVerify;
+
+    // level field 추
+    @Enumerated(EnumType.STRING)
+    @Column(name = "level")
+    private Level level;
 
     // 다른 메서드나 로직에서 추가적인 초기화 필요 없기에 아래 OneToMany 코드들을 초기화 하지 않음
     // trainerInfo, RefreshToken, userProfile 부분 oneToOne 매핑 스킵 -> 한쪽에서만 참조하기에!
@@ -161,5 +167,10 @@ public class User extends BaseEntity implements UserDetails {
             throw new CommonException(ALREADY_EXISTS_ROLE);
         }
         this.role = role;
+    }
+
+    // level update 추가
+    public void updateLevel(Level level) {
+        this.level = level;
     }
 }

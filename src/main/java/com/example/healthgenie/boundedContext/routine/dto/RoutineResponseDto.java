@@ -1,8 +1,6 @@
 package com.example.healthgenie.boundedContext.routine.dto;
 
-import com.example.healthgenie.boundedContext.routine.entity.Day;
-import com.example.healthgenie.boundedContext.routine.entity.Level;
-import com.example.healthgenie.boundedContext.routine.entity.Routine;
+import com.example.healthgenie.boundedContext.routine.entity.*;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,24 +10,30 @@ import java.util.List;
 @Builder
 public class RoutineResponseDto {
     private Long id;
-    private List<String> parts;
+    private Level level;
     private Day day;
     private String content;
-    private String workoutName; // 운동 명칭
-    private int sets;
-    private int reps;
+    private WorkoutRecipe recipe; // woroutName, sets reps
     private String writer; // 헬스 루틴 작성자 -> genie or 본인 이름
 
     public static RoutineResponseDto ofOwn(Routine routine) {
         return RoutineResponseDto.builder()
                 .id(routine.getId())
-                .parts(routine.getParts())
+                .level(routine.getLevel())
                 .day(routine.getDay())
                 .content(routine.getContent())
-                .workoutName(routine.getWorkoutName())
-                .sets(routine.getSets())
-                .reps(routine.getReps())
+                .recipe(routine.getWorkoutRecipe())
                 .writer(routine.getMember().getEmail())
+                .build();
+    }
+
+    public static RoutineResponseDto ofGenie(Routine routine) {
+        return RoutineResponseDto.builder()
+                .id(routine.getId())
+                .level(routine.getLevel())
+                .day(routine.getDay())
+                .content(routine.getContent())
+                .recipe(routine.getWorkoutRecipe())
                 .build();
     }
 

@@ -1,20 +1,17 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
+import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.RoutineErrorResult;
 import com.example.healthgenie.base.exception.RoutineException;
 import com.example.healthgenie.base.utils.SecurityUtils;
-import com.example.healthgenie.boundedContext.community.dto.PostResponse;
-import com.example.healthgenie.boundedContext.routine.dto.GenieResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
-import com.example.healthgenie.boundedContext.routine.entity.Day;
-import com.example.healthgenie.boundedContext.routine.entity.GenieRoutine;
-import com.example.healthgenie.boundedContext.routine.entity.Level;
-import com.example.healthgenie.boundedContext.routine.entity.Routine;
-import com.example.healthgenie.boundedContext.routine.repository.GenieRoutineRepository;
+import com.example.healthgenie.boundedContext.routine.entity.*;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.example.healthgenie.boundedContext.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.healthgenie.base.exception.CommonErrorResult.ALREADY_EXISTS_ROLE;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -31,22 +29,23 @@ import static java.util.stream.Collectors.toList;
 public class RoutineService {
 
     private final RoutineRepository routineRepository;
-    private final GenieRoutineRepository genieRoutineRepository;
     private final UserRepository userRepository;
+    private final UserServiceImpl userServiceImpl;
 
+    // own routine 관련 해서 level 언급은 필요 없다
     @Transactional
     public RoutineResponseDto writeRoutine(RoutineRequestDto dto) {
         User currentUser = SecurityUtils.getCurrentUser();
 
+        WorkoutRecipe recipe = new WorkoutRecipe(dto.getParts(), dto.getWorkoutName(),dto.getSets(), dto.getReps());
+
         Routine routine = Routine.builder()
-                .parts(dto.getParts())
                 .day(dto.getDay())
                 .content(dto.getContent())
-                .workoutName(dto.getWorkoutName())
-                .sets(dto.getSets())
-                .reps(dto.getReps())
+                .workoutRecipe(recipe)
                 .member(currentUser)
                 .build();
+
 
         Routine saved = routineRepository.save(routine);
 
@@ -56,7 +55,9 @@ public class RoutineService {
     @Transactional
     public RoutineResponseDto updateRoutine(RoutineRequestDto dto, Long routineId) {
         Routine routine = authorizationWriter(routineId);
-
+        return null;
+    }
+/*
         Optional<Integer> reps = Optional.of(dto.getReps());
         Optional<Integer> sets = Optional.of(dto.getSets());
 
@@ -82,6 +83,8 @@ public class RoutineService {
         return RoutineResponseDto.ofOwn(routine);
     }
 
+ */
+
     @Transactional(readOnly = true)
     public List<RoutineResponseDto> getAllMyRoutine(Long userId) {
 
@@ -99,22 +102,29 @@ public class RoutineService {
         return RoutineResponseDto.ofOwn(own);
     }
 
-    @Transactional(readOnly = true)
-    public List<GenieResponseDto> getAllGenieRoutine(Level level) {
+    /*
+        지니 레벨을 선택할 때 마다 level 변동 시키기
+     */
 
-        List<GenieRoutine> genie = genieRoutineRepository.findByLevel(level);
+
+    @Transactional(readOnly = true)
+    public List<RoutineResponseDto> getAllGenieRoutine(Long userId, Level level) {
+        User user = userServiceImpl.findById(userId);
+        user.updateLevel(level); // 이 부분 [ 매번 level update ]
+
+        List<Routine> genie = routineRepository.findByLevel(level);
         return genie.stream()
-                .map(GenieResponseDto::ofGenie)
+                .map(RoutineResponseDto::ofGenie)
                 .collect(toList());
     }
 
 
     @Transactional(readOnly = true)
-    public List<GenieResponseDto> getGenieRoutine(Level level, Day day) {
-        List<GenieRoutine> genie = genieRoutineRepository.findByLevelAndDay(level,day);
+    public List<RoutineResponseDto> getGenieRoutine(Level level, Day day) {
+        List<Routine> genie = routineRepository.findByLevelAndDay(level,day);
 
         return genie.stream()
-                .map(GenieResponseDto::ofGenie)
+                .map(RoutineResponseDto::ofGenie)
                 .collect(toList());
     }
 
@@ -142,6 +152,5 @@ public class RoutineService {
         }
         return routine;
     }
-
 
 }
