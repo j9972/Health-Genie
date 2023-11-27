@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface MatchingRepository extends JpaRepository<Matching, Long> {
 
-    public Optional<Matching> findByMemberIdAndTrainerId(Long userId, Long trainerId);
+    public Optional<Matching> findByMemberEmailAndTrainerEmail(String userMail, String trainerMail);
 }

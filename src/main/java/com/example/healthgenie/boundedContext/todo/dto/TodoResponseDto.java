@@ -23,7 +23,7 @@ public class TodoResponseDto {
     private String title;
     private String description;
     private Status status;
-    private Long userId;
+    private String userMail;
 
     public static TodoResponseDto of(Todo todo) {
         return TodoResponseDto.builder()
@@ -33,7 +33,7 @@ public class TodoResponseDto {
                 .title(todo.getTitle())
                 .description(todo.getDescription())
                 .status(todo.getStatus())
-                .userId(todo.getMember().getId())
+                .userMail(todo.getMember().getEmail())
                 .build();
     }
 }

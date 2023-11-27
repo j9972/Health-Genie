@@ -47,6 +47,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.makeErrorResponseEntity(exception.getPtReviewErrorResult());
     }
 
+    @ExceptionHandler({RoutineException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final RoutineException exception) {
+        log.warn("PtReviewException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getRoutineErrorResult());
+    }
+
     @ExceptionHandler({MatchingException.class})
     public ResponseEntity<ErrorResponse> handleRestApiException(final MatchingException exception) {
         log.warn("MatchingException occur: ", exception);
@@ -101,6 +107,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final TodoErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final RoutineErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
