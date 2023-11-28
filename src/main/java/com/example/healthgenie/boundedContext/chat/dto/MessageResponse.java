@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.chat.entity.dto;
+package com.example.healthgenie.boundedContext.chat.dto;
 
 
 import com.example.healthgenie.boundedContext.chat.entity.ChatMessage;

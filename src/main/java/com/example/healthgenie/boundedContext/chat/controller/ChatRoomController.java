@@ -1,7 +1,7 @@
 package com.example.healthgenie.boundedContext.chat.controller;
 
-import com.example.healthgenie.boundedContext.chat.entity.dto.RoomRequest;
-import com.example.healthgenie.boundedContext.chat.entity.dto.RoomResponse;
+import com.example.healthgenie.boundedContext.chat.dto.RoomRequest;
+import com.example.healthgenie.boundedContext.chat.dto.RoomResponse;
 import com.example.healthgenie.boundedContext.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -4,7 +4,7 @@ import com.example.healthgenie.base.exception.ChatException;
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.boundedContext.chat.entity.ChatMessage;
 import com.example.healthgenie.boundedContext.chat.entity.ChatRoom;
-import com.example.healthgenie.boundedContext.chat.entity.dto.MessageRequest;
+import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
 import com.example.healthgenie.boundedContext.chat.repository.ChatMessageRepository;
 import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
