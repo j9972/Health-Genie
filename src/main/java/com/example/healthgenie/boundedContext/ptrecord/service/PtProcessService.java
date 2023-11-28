@@ -13,16 +13,21 @@ import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessRepository;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.querydsl.core.types.OrderSpecifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static com.example.healthgenie.boundedContext.ptrecord.entity.QPtProcess.ptProcess;
 
 @Service
 @Slf4j
@@ -101,8 +106,31 @@ public class PtProcessService {
     @Transactional(readOnly = true)
     public Page<PtProcessResponseDto> getAllTrainerProcess(Long trainerId, int page, int size){
 
-        Page<PtProcess> process = ptProcessRepository.findAllByTrainerId(trainerId, PageRequest.of(page, size));
+        // 작성 시간 역순으로 정렬 (가장 최근 작성 순)
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        Page<PtProcess> process = ptProcessRepository.findAllByTrainerId(trainerId, pageable);
         return process.map(PtProcessResponseDto::of);
+
+
+        //QPtProcess ptProcess = QPtProcess.ptProcess;
+
+        /*
+        // 작성 시간 역순으로 정렬
+        OrderSpecifier<?> orderByCreatedAtDesc = ptProcess.createdDate.desc();
+
+
+        List<PtProcess> ptProcesses = queryFactory.selectFrom(ptProcess)
+                .where(ptProcess.trainer.id.eq(trainerId))
+                .orderBy(orderByCreatedAtDesc)
+                .offset(page * size)
+                .limit(size)
+                .fetch();
+
+        return new PageImpl<>(ptProcesses.stream()
+                .map(PtProcessResponseDto::of)
+                .collect(Collectors.toList()));
+         */
     }
 
     /*
@@ -110,7 +138,8 @@ public class PtProcessService {
     */
     @Transactional(readOnly = true)
     public Page<PtProcessResponseDto> getAllMyProcess(Long userId, int page, int size){
-        Page<PtProcess> process = ptProcessRepository.findAllByMemberId(userId, PageRequest.of(page, size));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<PtProcess> process = ptProcessRepository.findAllByMemberId(userId, pageable);
         return process.map(PtProcessResponseDto::of);
     }
 
