@@ -53,7 +53,7 @@ public class RoutineController {
     }
 
     // 지니 - 초/중/고 급자 전체 조회
-    @GetMapping("/genie/{level}") // http://localhost:1234/routine/genie/{userId}/{level}
+    @GetMapping("/genie/{userId}/{level}") // http://localhost:1234/routine/genie/{userId}/{level}
     public List<RoutineResponseDto> getAllGenieRoutines(@PathVariable Long userId, @PathVariable Level level) {
         return routineService.getAllGenieRoutine(userId,level);
     }
