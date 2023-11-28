@@ -24,17 +24,13 @@ public class ChatRoom extends BaseEntity {
     @Column(name = "chatting_room_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "sender_id")
     private User sender;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "receiver_id")
     private User receiver;
-
-    // 전송 상태 체크
-    @Column(name = "chat_room_status")
-    private boolean chatRoomStatus;
 
     @Builder.Default
     @OneToMany(mappedBy = "chatRoom",fetch = FetchType.LAZY,cascade = CascadeType.ALL)

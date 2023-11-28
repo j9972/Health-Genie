@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.chat.entity.dto;
+package com.example.healthgenie.boundedContext.chat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RoomRequest {
 
-    private Long senderId;
-    private Long receiverId;
+    private String receiverEmail;
 }

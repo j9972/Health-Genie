@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ChatErrorResult {
 
+    NO_PERMISSION(HttpStatus.BAD_REQUEST, "don't have any permissions"),
     SELF_CHAT(HttpStatus.BAD_REQUEST, "don't create self chat room"),
     ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "not found room");
 

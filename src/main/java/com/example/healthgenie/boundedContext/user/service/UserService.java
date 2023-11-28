@@ -15,6 +15,4 @@ public interface UserService {
     User findById(Long userId);
 
     void updateRole(Long userId, Role role);
-
-    User findByEmail(String email);
 }

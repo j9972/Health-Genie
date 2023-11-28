@@ -9,9 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,23 +26,16 @@ public class ChatMessage extends BaseEntity {
     @Column(name = "message_content")
     private String messageContent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name ="sender_id")
     private User sender;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="receiver_id")
-    private User receiver;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name ="room_id")
     private ChatRoom chatRoom;
 
-    @Column(name = "reading")
-    private boolean reading;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "chatMessage",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<ChatMessagePhoto> chatMessagePhotoList = new ArrayList<>();
+//    @Builder.Default
+//    @OneToMany(mappedBy = "chatMessage",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+//    private List<ChatMessagePhoto> chatMessagePhotoList = new ArrayList<>();
 
 }
