@@ -3,10 +3,12 @@ package com.example.healthgenie.boundedContext.user.controller;
 import com.example.healthgenie.boundedContext.user.dto.TestSignUpResponse;
 import com.example.healthgenie.boundedContext.user.dto.TestSignUpRequest;
 import com.example.healthgenie.boundedContext.user.dto.UpdateRequest;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -30,5 +32,11 @@ public class UserController {
     @PostMapping("/test/create")
     public ResponseEntity<TestSignUpResponse> createUser(@RequestBody TestSignUpRequest signUpRequest){
         return ResponseEntity.ok(userService.createUser(signUpRequest));
+    }
+
+    @GetMapping("/test/authentication")
+    public User showAuthenticationPrincipal(@AuthenticationPrincipal User user) {
+        log.info("[TEST] user={}", user);
+        return user;
     }
 }

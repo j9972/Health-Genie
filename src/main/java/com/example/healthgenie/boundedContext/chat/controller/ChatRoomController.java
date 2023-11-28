@@ -7,28 +7,43 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/chat/rooms")
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
-    @PostMapping("/chat/room")
-    public ResponseEntity<Long> JoinChatRoom(@RequestBody RoomRequest request) {
-        return ResponseEntity.ok(chatRoomService.joinChatRoom(request));
+    @PostMapping
+    public ResponseEntity<?> JoinChatRoom(@RequestBody RoomRequest request) {
+        Long roomId = chatRoomService.joinChatRoom(request);
+
+        URI chatRoomUri = UriComponentsBuilder.newInstance()
+                .path("/chat/rooms/{roomId}")
+                .buildAndExpand(roomId)
+                .toUri();
+
+        return ResponseEntity.ok(chatRoomUri);
     }
 
-    @GetMapping("/chat/room")
-    public ResponseEntity<List<RoomResponse>> getChatRoomList(@RequestParam Long userId) {
-        return ResponseEntity.ok(chatRoomService.getRoomList(userId));
+    @GetMapping
+    public ResponseEntity<List<RoomResponse>> getChatRooms() {
+        return ResponseEntity.ok(chatRoomService.getRoomList());
     }
 
-    @GetMapping("/chat/room/{roomId}")
-    public ResponseEntity<RoomResponse> getChatRoomDetail(@PathVariable Long roomId) {
+    @GetMapping("/{roomId}")
+    public ResponseEntity<RoomResponse> getChatRoom(@PathVariable Long roomId) {
         return ResponseEntity.ok(chatRoomService.getRoomDetail(roomId));
+    }
+
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity<String> removeChatRoom(@PathVariable Long roomId) {
+        return ResponseEntity.ok(chatRoomService.deleteRoom(roomId));
     }
 }

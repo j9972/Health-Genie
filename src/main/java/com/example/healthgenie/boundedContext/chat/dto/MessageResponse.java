@@ -16,14 +16,14 @@ import java.util.List;
 @Builder
 public class MessageResponse {
 
-    private LocalDateTime sendAt;
-    private String sender;
+    private LocalDateTime createdDate;
+    private String senderEmail;
     private String content;
 
     public static MessageResponse of(ChatMessage message) {
         return MessageResponse.builder()
-                .sendAt(message.getCreatedDate())
-                .sender(message.getSender().getName())
+                .createdDate(message.getCreatedDate())
+                .senderEmail(message.getSender().getEmail())
                 .content(message.getMessageContent())
                 .build();
     }
