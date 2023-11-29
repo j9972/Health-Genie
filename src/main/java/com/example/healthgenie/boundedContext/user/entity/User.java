@@ -32,9 +32,7 @@ import static com.example.healthgenie.base.exception.CommonErrorResult.ALREADY_E
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(uniqueConstraints = {
-        @UniqueConstraint(name = "User_tb", columnNames = {"user_id"})
-})
+@Table(name = "user_tb")
 @Builder(toBuilder = true)
 public class User extends BaseEntity implements UserDetails {
 
