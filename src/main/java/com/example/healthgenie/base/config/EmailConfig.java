@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.email;
+package com.example.healthgenie.base.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

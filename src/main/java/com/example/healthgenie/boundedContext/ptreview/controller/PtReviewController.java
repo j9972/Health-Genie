@@ -19,8 +19,8 @@ public class PtReviewController {
     private final PtReviewService reviewService;
 
     /*
+        user 회원이 작성
         프론트에서 트레이너에게는 후기 작성란이 없기에 작성 불가하게 막아줌.
-        프론트에서 본인이 작성한 후기에만 수정할 수 있도록 막아줌.
      */
     @PostMapping("/write")// http://localhost:1234/review/write
     public ResponseEntity addReview(@RequestBody PtReviewRequestDto dto){
@@ -38,9 +38,11 @@ public class PtReviewController {
     }
 
     /*
+        특정 trainer review list 조회 [ 트레이너용 관리페이지 ]
         traienr 랑 user 를 나누는 이유는 review 안에 col 을 보면 userId, trainerId로 나뉘니까 userId 로만 데이터를 가져올 수 없다.
+        최근 작성순서로 정렬했기에 프론트에서 상위 3개씩 가져다가 사용하면 된다.
      */
-    // 특정 trainer review list 조회
+    //
     @GetMapping("/list/trainer/{trainerId}") // http://localhost:1234/review/list/trainer/{trainerId}
     public Page<PtReviewResponseDto> getAllTrainerReview(@PathVariable Long trainerId, @RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
@@ -48,7 +50,10 @@ public class PtReviewController {
         return reviewService.getAllTrainerReview(trainerId, page, size);
     }
 
-    // 본인이 작성한 review list 조회
+    /*
+        본인이 작성한 review list 조회 [ 회원용 관리페이지 ]
+        최근 작성순서로 정렬했기에 프론트에서 상위 3개씩 가져다가 사용하면 된다.
+    */
     @GetMapping("/list/my/{userId}") // http://localhost:1234/review/list/{userId}
     public Page<PtReviewResponseDto> getAllMyReview(@PathVariable Long userId, @RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리

@@ -1,83 +1,125 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
+import com.example.healthgenie.base.exception.*;
+import com.example.healthgenie.base.utils.SecurityUtils;
+import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
+import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
+import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
+import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
+import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
+import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TrainerProfileService {
     private final TrainerProfileRepository trainerProfileRepository;
+    private final UserRepository userRepository;
+
+    /*
+        트레이너만 가능
+     */
+    @Transactional
+    public ProfileResponseDto writeProfile(ProfileRequestDto dto) {
+        User trainer = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
+
+        User currentUser = SecurityUtils.getCurrentUser();
+
+        // 작성자와 trainer이 같다면 저장 가능하다
+        if (trainer.getEmail().equals(currentUser.getEmail())) {
+            log.info("true");
+            TrainerInfo profile = TrainerInfo.builder()
+                    .introduction(dto.getIntroduction())
+                    .cost(dto.getCost())
+                    .careerMonth(dto.getMonth())
+                    .career(dto.getCareer())
+                    .member(currentUser)
+                    .build();
+
+            TrainerInfo savedProfile = trainerProfileRepository.save(profile);
+
+            return ProfileResponseDto.ofProfile(savedProfile);
+        }
+        log.info("false");
+        throw new TrainerProfileException(TrainerProfileErrorResult.DIFFERENT_USER);
+    }
+
+    /*
+        트레이너만 가능
+    */
+    @Transactional
+    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId) {
+        TrainerInfo profile = authorizationWriter(profileId);
+
+        if(dto.getIntroduction() != null) {
+            profile.updateIntroduction(dto.getIntroduction());
+        }
+        if(dto.getCost() != 0 || profile.getCost() == 0) {
+            profile.updateCost(dto.getCost());
+        }
+        if(dto.getCareer() != null) {
+            profile.updateCareer(dto.getCareer());
+        }
+        if(dto.getMonth() != 0 || profile.getCareerMonth() == 0) {
+            profile.updateMonth(dto.getMonth());
+        }
+
+        return ProfileResponseDto.ofProfile(profile);
+
+    }
+
+    /*
+        관리페이지에서 트레이너만 조회 하는 본인의 프로필
+    */
+    @Transactional(readOnly = true)
+    public ProfileResponseDto getProfile(Long profileId) {
+        TrainerInfo profile = trainerProfileRepository.findById(profileId).orElseThrow(
+                () -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
+            throw new TrainerProfileException(TrainerProfileErrorResult.WRONG_USER);
+        } else {
+            Optional<User> email = userRepository.findByEmail(authentication.getName());
+            User member = userRepository.findById(email.get().getId()).orElseThrow();
+            boolean result = profile.getMember().equals(member);
+
+            if (result) {
+                return ProfileResponseDto.ofProfile(profile);
+            }
+            throw new TrainerProfileException(TrainerProfileErrorResult.WRONG_USER);
+        }
+
+    }
+
+    public User isMemberCurrent() {
+        return userRepository.findById(SecurityUtils.getCurrentUserId())
+                .orElseThrow(() ->  new TrainerProfileException(TrainerProfileErrorResult.USER_EMPTY));
+    }
+
+    // review는 회원만 수정 삭제 가능
+    public TrainerInfo authorizationWriter(Long id) {
+        User member = isMemberCurrent();
+
+        TrainerInfo profile = trainerProfileRepository.findById(id).orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
+        if (!profile.getMember().equals(member)) {
+            throw new TrainerProfileException(TrainerProfileErrorResult.USER_EMPTY);
+        }
+        return profile;
+    }
 
 
-    //trainer와 onetoone관계 - 트레이너Id넣고 save하면 같은거 찾아서 업데이트함
-    //약력작성 전에 trainer정보를 미리 보내놓기 때문에 trainer정보가 틀릴일이 없다.
-    //트레이너 정보를 보내는 과정에서 트레이너 id가 틀릴 경우가 검증되어있음 그냥 save하면 된다.
-
-    //약력 작성
-//    public TrainerProfileResponseDto profileAdd(TrainerProfileRequestDto profileRequestDto, Long Id,String filePath){
-//
-//        TrainerProfile saveProfile = TrainerProfile.builder()
-//                .avgSarScore(profileRequestDto.getAvgSarScore())
-//                .name(profileRequestDto.getName())
-//                .description(profileRequestDto.getDescription())
-//                .certification(profileRequestDto.getCertification())
-//                .matchingTimes(profileRequestDto.getMatchingTimes())
-//                .pics(filePath)
-//                .prize(profileRequestDto.getPrize())
-//                .trainer(User.builder().id(Id).build())
-//                .build();
-//
-//        TrainerProfileResponseDto result = new TrainerProfileResponseDto(trainerProfileRepository.save(saveProfile).getId());
-//        return result;
-//    }
-//
-//    //약력 수정
-//    public TrainerProfileModifiyResponseDto profileModify(TrainerProfileModifyRequestDto dto, Long Id){
-//        Optional<TrainerProfile> findProfileOp = trainerProfileRepository.findById(dto.getProfileId());
-//        TrainerProfile findProfile = findProfileOp.get();
-//
-//        TrainerProfile saveProfile = TrainerProfile.builder()
-//                .matchingTimes(findProfile.getMatchingTimes())
-//                .avgSarScore(findProfile.getAvgSarScore())
-//                .name(findProfile.getName())
-//                .certification(dto.getCertification())
-//                .pics(dto.getPics())
-//                .prize(dto.getPrize())
-//                .description(dto.getDescription())
-//                .id(findProfile.getId())
-//                .trainer(findProfile.getTrainer())
-//                .build();
-//
-//        TrainerProfile resultProfile = trainerProfileRepository.save(saveProfile);
-//        return TrainerProfileModifiyResponseDto.builder().profileId(resultProfile.getId()).build();
-//    }
-//
-//    //약력 조회
-//    public TrainerProfileGetResponseDto profileGet(Long id){
-//
-//        Optional<TrainerProfile> optFindProfile = trainerProfileRepository.findById(id);
-//
-//        // profile 이 없는 경우는 throw 처리
-//        if(!optFindProfile.isPresent()){
-//            throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY);
-//        }
-//
-//        // optional 은 get() 방식으로 데이터 받기
-//        TrainerProfile findProfile = optFindProfile.get();
-//
-//        TrainerProfileGetResponseDto resultDto = TrainerProfileGetResponseDto.builder()
-//                .id(findProfile.getId())
-//                .avgSarScore(findProfile.getAvgSarScore())
-//                .certification(findProfile.getCertification())
-//                .description(findProfile.getDescription())
-//                .matchingTimes(findProfile.getMatchingTimes())
-//                .name(findProfile.getName())
-//                .pics(findProfile.getPics())
-//                .trainer(findProfile.getTrainer())
-//                .prize(findProfile.getPrize())
-//                .build();
-//
-//        return resultDto;
-//    }
 }

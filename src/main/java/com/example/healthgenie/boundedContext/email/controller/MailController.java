@@ -32,7 +32,7 @@ public class MailController {
     public ResponseEntity validMailCode(@RequestParam("email") String email,
                                         @RequestParam("authCode") String authCode){
         boolean result = userMailService.verify(email, authCode);
-        if (result) {
+        if (!result) {
             return new ResponseEntity("authcode is correct",HttpStatus.OK);
         }
         return new ResponseEntity("authcode is wrong ",HttpStatus.BAD_REQUEST);
