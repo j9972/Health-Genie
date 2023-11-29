@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 //@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 @SpringBootApplication
-@EnableEncryptableProperties // jasypt 를 위함
 @EnableJpaAuditing
 public class HealthGenieApplication {
 

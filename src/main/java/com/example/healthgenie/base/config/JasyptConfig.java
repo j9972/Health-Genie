@@ -1,5 +1,6 @@
 package com.example.healthgenie.base.config;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
@@ -9,8 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@Slf4j
-@PropertySource("application.yml")
+@EnableEncryptableProperties
 public class JasyptConfig {
 
     @Bean("jasyptStringEncryptor")
