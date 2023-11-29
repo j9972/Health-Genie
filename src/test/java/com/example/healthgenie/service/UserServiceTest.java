@@ -31,10 +31,13 @@ public class UserServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private AuthenticationManager authenticationManager;
+    /*
     @Mock
     private EmailService emailService;
     @Mock
     private JwtUtil jwtUtil;
+
+     */
     @Mock
     private RefreshTokenService refreshTokenService;
 

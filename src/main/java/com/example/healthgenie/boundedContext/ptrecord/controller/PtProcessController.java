@@ -34,7 +34,10 @@ public class PtProcessController {
         return ResponseEntity.ok(processTransactionSerivce.addPtProcess(dto));
     }
 
-    // 트레이너가 작성한 전체 피드백 모아보기 -> n+1 문제
+    /*
+        트레이너가 작성한 전체 피드백 모아보기 [ 트레이너용 관리페이지에서 사용 ]
+        관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
+     */
     @GetMapping("/list/trainer/{trainerId}") // http://localhost:1234/process/list/trainer/{trainerId}
     public Page<PtProcessResponseDto> getAllTrainerProcess(@PathVariable Long trainerId, @RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
@@ -42,7 +45,10 @@ public class PtProcessController {
         return processService.getAllTrainerProcess(trainerId, page, size);
     }
 
-    // 본인이 관련 모든 피드백 모아보기
+    /*
+        본인이 관련 모든 피드백 모아보기 [ 회원용 관리페이지에서 사용 ]
+        관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
+     */
     @GetMapping("/list/my/{userId}") // http://localhost:1234/process/list/my/{userId}
     public Page<PtProcessResponseDto> getAllMyProcess(@PathVariable Long userId, @RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리

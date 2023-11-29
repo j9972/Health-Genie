@@ -112,25 +112,6 @@ public class PtProcessService {
         Page<PtProcess> process = ptProcessRepository.findAllByTrainerId(trainerId, pageable);
         return process.map(PtProcessResponseDto::of);
 
-
-        //QPtProcess ptProcess = QPtProcess.ptProcess;
-
-        /*
-        // 작성 시간 역순으로 정렬
-        OrderSpecifier<?> orderByCreatedAtDesc = ptProcess.createdDate.desc();
-
-
-        List<PtProcess> ptProcesses = queryFactory.selectFrom(ptProcess)
-                .where(ptProcess.trainer.id.eq(trainerId))
-                .orderBy(orderByCreatedAtDesc)
-                .offset(page * size)
-                .limit(size)
-                .fetch();
-
-        return new PageImpl<>(ptProcesses.stream()
-                .map(PtProcessResponseDto::of)
-                .collect(Collectors.toList()));
-         */
     }
 
     /*

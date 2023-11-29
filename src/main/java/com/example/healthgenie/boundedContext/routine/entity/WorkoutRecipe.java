@@ -25,4 +25,17 @@ public class WorkoutRecipe {
         this.sets = sets;
         this.reps = reps;
     }
+
+    public void updatePart(String part) {
+        this.part = part;
+    }
+    public void updateName(String name) {
+        this.name = name;
+    }
+    public void updateSets(int sets) {
+        this.sets = sets;
+    }
+    public void updateReps(int reps) {
+        this.reps = reps;
+    }
 }

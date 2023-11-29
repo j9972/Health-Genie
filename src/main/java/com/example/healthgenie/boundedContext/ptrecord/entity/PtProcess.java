@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.ptrecord.entity;
 
+
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -46,6 +47,7 @@ public class PtProcess extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "process",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<PtProcessPhoto> ptProcessPhotos = new ArrayList<>();
+
 
     /*
     연관 관계 편의 메서드
