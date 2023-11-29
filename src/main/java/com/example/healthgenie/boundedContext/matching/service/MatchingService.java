@@ -19,11 +19,12 @@ public class MatchingService {
     @Transactional
     public MatchingDto add(MatchingDto dto) {
         Matching matching = Matching.builder()
-                .ptDate(dto.getPtDate())
-                .ptPlace(dto.getPtPlace())
+                .date(dto.getDate())
+                .place(dto.getPlace())
+                .time(dto.getTime())
                 .ptAccept(true)
                 .price(dto.getPrice())
-                .ptExperience(true)
+                .expericence(true)
                 .member(User.builder().id(dto.getUserId()).build())
                 .trainer(User.builder().id(dto.getTrainerId()).build())
                 .build();
@@ -32,11 +33,12 @@ public class MatchingService {
 
         return MatchingDto.builder()
                 .id(savedMatching.getId())
-                .ptDate(savedMatching.getPtDate())
-                .ptPlace(savedMatching.getPtPlace())
+                .date(savedMatching.getDate())
+                .place(savedMatching.getPlace())
+                .time(savedMatching.getTime())
                 .ptAccept(savedMatching.isPtAccept())
                 .price(savedMatching.getPrice())
-                .ptExperience(savedMatching.isPtExperience())
+                .experience(savedMatching.isExpericence())
                 .userId(savedMatching.getMember().getId())
                 .trainerId(savedMatching.getTrainer().getId())
                 .build();

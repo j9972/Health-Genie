@@ -8,11 +8,12 @@ import java.sql.Date;
 @Builder
 public class MatchingDto {
     private Long id;
-    private Date ptDate;
-    private String ptPlace;
+    private Date date;
+    private String place;
+    private String time;
     private boolean ptAccept;
     private int price;
-    private boolean ptExperience;
+    private boolean experience;
     private Long trainerId;
     private Long userId;
 }

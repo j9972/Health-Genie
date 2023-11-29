@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.todo.entity;
 
+
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.entity.BaseEntity;
 import jakarta.persistence.*;

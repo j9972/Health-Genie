@@ -1,58 +1,40 @@
 package com.example.healthgenie.boundedContext.trainer.controller;
 
+import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
+import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
+import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/profile")
+@RequestMapping("/trainer/profile")
 public class TrainerProfileController {
 
     private final TrainerProfileService profileServie;
 
-//<<<<<<< Updated upstream
+    /*
+        관리페이지 용 트레이너에게 본인 정보에 대한 CRU
+        기존에 정보가 있을 수도 있다 ( 해당 4개의 필드에 대해서 update 식으로 생각하면 된다 )
+     */
+    @GetMapping("/{profileId}") // https://localhost:1234/trainer/profile/{profileId}
+    public ResponseEntity getProfile(@PathVariable Long profileId){
+        ProfileResponseDto response = profileServie.getProfile(profileId);
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
 
-//    @PostMapping("/add") // http://localhost:1234/api/v1/profile/add
-//    public ResponseEntity profileAdd(@RequestBody TrainerProfileRequestDto dto){
-//=======
-//    @PostMapping("/addtest")
-//    public ResponseEntity profileAdd(@RequestPart("info") TrainerProfileRequestDto dto, @RequestPart("file") MultipartFile file){
-//
-//        Long userId =1L;//회원기능 구현 시 userAdapter에서 Id받는 것으로 대체
-//        System.out.println(dto);
-//        System.out.println(file.getOriginalFilename());
-//
-//        String filePath = fileService.trainerProfileAdd(file);
-//        TrainerProfileResponseDto result = profileServie.profileAdd(dto,userId,filePath);
-//        return new ResponseEntity("result", HttpStatus.OK);
-//    }
-//    @PostMapping("/add")
-//    public ResponseEntity profileAdd(@RequestPart("info") TrainerProfileRequestDto dto, @RequestPart("file") MultipartFile file){
-////>>>>>>> Stashed changes
-//
-//        Long userId =1L;//회원기능 구현 시 userAdapter에서 Id받는 것으로 대체
-//
-//        String filePath = fileServiceImpl.trainerProfileAdd(file);
-//        TrainerProfileResponseDto result = profileServie.profileAdd(dto,userId,filePath);
-//        return new ResponseEntity(result, HttpStatus.OK);
-//    }
-//
-//    @PostMapping("/modify") // http://localhost:1234/api/v1/profile/modify
-//    public ResponseEntity profileModifiy(@RequestBody TrainerProfileModifyRequestDto dto){
-//
-//        Long userId = 1L;//회원기능 구현 시 userAdapter에서 Id받는 것으로 대체
-//
-//        TrainerProfileModifiyResponseDto result = profileServie.profileModify(dto,userId);
-//
-//        return new ResponseEntity(result,HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/{id}") // http://localhost:1234/api/v1/profile/
-//    public ResponseEntity profileGet(@PathVariable("id") Long id){
-//
-//        TrainerProfileGetResponseDto result = profileServie.profileGet(id);
-//
-//        return new ResponseEntity(result,HttpStatus.OK);
-//    }
+    @PostMapping("/write") // https://localhost:1234/trainer/profile/write
+    public ResponseEntity writeProfile(@RequestBody ProfileRequestDto dto){
+        ProfileResponseDto response = profileServie.writeProfile(dto);
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/update/{profileId}") // https://localhost:1234/trainer/profile/update/{profileId}
+    public ResponseEntity updateProfile(@RequestBody ProfileRequestDto dto, @PathVariable Long profileId){
+        ProfileResponseDto response = profileServie.updateProfile(dto, profileId);
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
 }

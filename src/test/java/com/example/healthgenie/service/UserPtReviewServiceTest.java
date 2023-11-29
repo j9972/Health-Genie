@@ -27,7 +27,7 @@ public class UserPtReviewServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    private final Role role = Role.GUEST;
+    //private final Role role = Role.GUEST;
 
     private final Long trainerId =1L;
     private final Long matchingId =1L;

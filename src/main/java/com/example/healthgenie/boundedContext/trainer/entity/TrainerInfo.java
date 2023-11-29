@@ -19,12 +19,25 @@ public class TrainerInfo extends BaseEntity {
     @Column(name = "trainer_info_id")
     private Long id;
 
-    @NotNull
     @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
-    private String description;
+    // 아래 4개는 관리페이지에서도 사용
+    // 소개글
+    @Column(name = "introduction")
+    private String introduction;
+
+    // 약력
+    @Column(name = "career_history")
+    private String career;
+
+    // 경력 [ 개월 수 ]
+    @Column(name = "career_month")
+    private int careerMonth;
+
+    // 견적
+    @Column(name = "cost")
+    private int cost;
 
     @Column(name = "uniname")
     private String uniname;
@@ -33,23 +46,14 @@ public class TrainerInfo extends BaseEntity {
     @Column(name = "profile_photo")
     private String profilePhoto;
 
-    @Column(name = "career_history")
-    private String career;
-
     @Column(name = "member_cnt")
     private int memberCnt;
-
-    @Column(name = "career_month")
-    private int careerMonth;
 
     @Column(name = "start_time")
     private int startTime;
 
     @Column(name = "end_time")
     private int endTime;
-
-    @Column(name = "cost")
-    private int cost;
 
     @Column(name = "contact_time")
     private int contactTime;
@@ -60,5 +64,21 @@ public class TrainerInfo extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User member;
+
+    public void updateIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public void updateCost(int cost) {
+        this.cost = cost;
+    }
+
+    public void updateCareer(String career) {
+        this.career = career;
+    }
+
+    public void updateMonth(int month) {
+        this.careerMonth = month;
+    }
 
 }

@@ -1,8 +1,6 @@
 package com.example.healthgenie.boundedContext.routine.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
-import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -57,25 +55,11 @@ public class Routine extends BaseEntity {
         this.day = day;
     }
 
-//    public void updateParts(List<String> parts) {
-//        this.parts = parts;
-//    }
 
     public void updateContent(String content) {
         this.content = content;
     }
 
-//    public void updateWorkoutName(String workoutName) {
-//        this.workoutName = workoutName;
-//    }
-//
-//    public void updateSets(int sets) {
-//        this.sets = sets;
-//    }
-//
-//    public void updateReps(int reps) {
-//        this.reps = reps;
-//    }
 
 }
 
