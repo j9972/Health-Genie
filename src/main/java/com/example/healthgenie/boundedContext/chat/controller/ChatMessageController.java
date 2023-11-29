@@ -11,6 +11,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -36,9 +37,10 @@ public class ChatMessageController {
     }
 
     // 메세지 가져오기
-    // TODO : 메세지 페이징 처리
     @GetMapping("/chat/messages/{roomId}")
-    public ResponseEntity<List<MessageResponse>> getMessages(@PathVariable Long roomId) {
-        return ResponseEntity.ok(chatMessageService.getMessages(roomId));
+    public ResponseEntity<List<MessageResponse>> getMessages(@PathVariable Long roomId,
+                                                             @RequestParam(defaultValue = "1") int page,
+                                                             @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(chatMessageService.getMessages(roomId, page, size));
     }
 }
