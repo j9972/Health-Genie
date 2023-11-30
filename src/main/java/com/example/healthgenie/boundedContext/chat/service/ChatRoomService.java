@@ -84,9 +84,6 @@ public class ChatRoomService {
             throw new ChatException(NO_PERMISSION);
         }
 
-        // TODO : 한명만 채팅방을 삭제 했을 경우엔 DB에서 삭제가 안되야 함 / 둘 다 삭제 했을 경우에 DB에서 아예 삭제 되어야 함
-        // 지금은 한쪽만 삭제해도 채팅방이 사라짐
-
         chatRoom.exitRoom(currentUser);
 
         if(chatRoom.getSender() == null && chatRoom.getReceiver() == null) {
