@@ -61,8 +61,14 @@ public class ChatRoomService {
     }
 
     public RoomResponse getRoomDetail(Long roomId) {
+        User currentUser = SecurityUtils.getCurrentUser();
+
         ChatRoom chatRoom = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
+
+        if(!isRelated(currentUser, chatRoom)) {
+            throw new ChatException(NO_PERMISSION);
+        }
 
         return RoomResponse.of(chatRoom);
     }
@@ -84,5 +90,9 @@ public class ChatRoomService {
         chatRoomRepository.delete(chatRoom);
 
         return "채팅방이 삭제 되었습니다.";
+    }
+
+    private boolean isRelated(User user, ChatRoom room) {
+        return Objects.equals(user.getId(), room.getSender().getId()) || Objects.equals(user.getId(), room.getReceiver().getId());
     }
 }
