@@ -10,12 +10,13 @@ import java.time.LocalTime;
 @Data
 public class TodoRequestDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate todoDate;
+    private LocalDate date;
     @JsonFormat(pattern = "HH:mm")
-    private LocalTime todoTime;
+    private LocalTime time;
 
     private String title;
     private String description;
     private Status status;
     private String userMail;
+    private boolean pt;
 }

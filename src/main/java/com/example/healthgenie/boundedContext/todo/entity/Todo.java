@@ -27,16 +27,19 @@ public class Todo extends BaseEntity {
 
     // LocalDateTime -> 특정 날짜와 시간대 설정 , 브라우저에서 정렬 조건을 나누기 위해서 날짜 시간대를 나눔
     @Column(name = "todo_date")
-    private LocalDate todoDate;
+    private LocalDate date;
 
     @Column(name = "todo_time")
-    private LocalTime todoTime;
+    private LocalTime time;
 
     @Column(name = "title")
     private String title;
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "pt")
+    private boolean pt;
 
     @Enumerated(EnumType.STRING) // 안써주면 숫자로 DB에 반영된다.
     @Column(name = "status")
@@ -56,10 +59,13 @@ public class Todo extends BaseEntity {
         this.status = status;
     }
     public void updateDate(LocalDate date) {
-        this.todoDate = date;
+        this.date = date;
     }
     public void updateTime(LocalTime time) {
-        this.todoTime = time;
+        this.time = time;
+    }
+    public void updatePt(boolean pt) {
+        this.pt = pt;
     }
 
 }

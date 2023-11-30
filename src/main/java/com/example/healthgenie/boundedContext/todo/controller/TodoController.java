@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,9 +27,10 @@ public class TodoController {
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}") // http://localhost:1234/calender/todo/{userId}
-    public List<TodoResponseDto> getTodos(@PathVariable Long userId) {
-        return todoService.getAllMyTodo(userId);
+    @GetMapping("/{date}/{userId}") // http://localhost:1234/calender/todo/{date}/{userId}
+    public List<TodoResponseDto> getTodos(@PathVariable LocalDate date , @PathVariable Long userId) {
+
+        return todoService.getAllMyTodo(date,userId);
     }
 
     // 수정

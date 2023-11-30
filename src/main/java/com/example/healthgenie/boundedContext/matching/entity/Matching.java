@@ -57,9 +57,9 @@ public class Matching extends BaseEntity {
     public String toString() {
         return "Matching{" +
                 "id=" + id +
-                ", ptDate=" + date +
-                ", ptPlace='" + place + '\'' +
-                ", ptTime=" + time +
+                ", date=" + date +
+                ", place='" + place + '\'' +
+                ", time=" + time +
                 ", ptAccept=" + ptAccept +
                 ", price=" + price +
                 ", ptExperience=" + expericence +

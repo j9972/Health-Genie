@@ -71,13 +71,6 @@ public class UserMailService {
 //        return EmailAuthResponseDto.builder().id(savedCode.getId()).build();
 //    }
 
-    private void checkDuplicatedEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            log.debug("MemberServiceImpl.checkDuplicatedEmail exception occur email: {}", email);
-            throw new CommonException(CommonErrorResult.MEMBER_EXISTS);
-        }
-    }
 
     private String createCode() {
         int lenth = 8;
