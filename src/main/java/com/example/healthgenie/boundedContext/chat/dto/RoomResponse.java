@@ -17,10 +17,21 @@ public class RoomResponse {
     private String receiverEmail;
 
     public static RoomResponse of(ChatRoom room) {
+        String senderEmail = "";
+        String receiverEmail = "";
+
+        if(room.getSender() != null) {
+            senderEmail = room.getSender().getEmail();
+        }
+
+        if(room.getSender() != null) {
+            receiverEmail = room.getReceiver().getEmail();
+        }
+
         return RoomResponse.builder()
                 .id(room.getId())
-                .senderEmail(room.getSender().getEmail())
-                .receiverEmail(room.getReceiver().getEmail())
+                .senderEmail(senderEmail)
+                .receiverEmail(receiverEmail)
                 .build();
     }
 }

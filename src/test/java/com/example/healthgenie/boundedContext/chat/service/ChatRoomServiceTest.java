@@ -178,6 +178,45 @@ class ChatRoomServiceTest {
         // then
     }
 
+    @Test
+    @DisplayName("한명만 채팅방 나가기")
+    void oneExitChatRoom() {
+        // given
+        login(sender);
+
+        RoomRequest request = createRoomRequest(receiver.getEmail());
+        Long roomId = chatRoomService.joinChatRoom(request);
+
+        // when
+        chatRoomService.deleteRoom(roomId);
+
+        login(receiver);
+
+        // then
+        RoomResponse response = chatRoomService.getRoomDetail(roomId);
+        assertThat(response.getSenderEmail()).isNullOrEmpty();
+    }
+
+    @Test
+    @DisplayName("양쪽 모두 채팅방 나가기")
+    void allExitChatRoom() {
+        // given
+        login(sender);
+
+        RoomRequest request = createRoomRequest(receiver.getEmail());
+        Long roomId = chatRoomService.joinChatRoom(request);
+
+        // when
+        chatRoomService.deleteRoom(roomId);
+
+        login(receiver);
+        chatRoomService.deleteRoom(roomId);
+
+        // then
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
+        assertThat(chatRoom).isNull();
+    }
+
     private RoomRequest createRoomRequest(String receiverEmail) {
         return RoomRequest.builder()
                 .receiverEmail(receiverEmail)

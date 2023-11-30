@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
@@ -35,4 +36,13 @@ public class ChatRoom extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "chatRoom",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages = new ArrayList<>();
+
+    public void exitRoom(User user) {
+        if(sender != null && Objects.equals(user.getId(), sender.getId())) {
+            sender = null;
+        }
+        if (receiver != null && Objects.equals(user.getId(), receiver.getId())) {
+            receiver = null;
+        }
+    }
 }
