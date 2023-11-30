@@ -32,7 +32,7 @@ import static com.example.healthgenie.base.exception.CommonErrorResult.ALREADY_E
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_tb")
+@Table(name = "USER_TB")
 @Builder(toBuilder = true)
 public class User extends BaseEntity implements UserDetails {
 

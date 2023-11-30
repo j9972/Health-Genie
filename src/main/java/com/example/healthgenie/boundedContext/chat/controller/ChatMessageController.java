@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.chat.controller;
 
+import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
 import com.example.healthgenie.boundedContext.chat.dto.MessageResponse;
 import com.example.healthgenie.boundedContext.chat.service.ChatMessageService;
@@ -38,9 +39,11 @@ public class ChatMessageController {
 
     // 메세지 가져오기
     @GetMapping("/chat/messages/{roomId}")
-    public ResponseEntity<List<MessageResponse>> getMessages(@PathVariable Long roomId,
-                                                             @RequestParam(defaultValue = "1") int page,
-                                                             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(chatMessageService.getMessages(roomId, page, size));
+    public ResponseEntity<Result> getMessages(@PathVariable Long roomId,
+                                              @RequestParam(defaultValue = "1") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        List<MessageResponse> messages = chatMessageService.getMessages(roomId, page, size);
+
+        return ResponseEntity.ok(Result.of(messages));
     }
 }
