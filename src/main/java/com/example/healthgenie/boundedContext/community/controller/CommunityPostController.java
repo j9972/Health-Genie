@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.community.controller;
 
+import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.service.CommunityPostService;
@@ -22,27 +23,37 @@ public class CommunityPostController {
     private final CommunityPostTransactionService communityPostTransactionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponse> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(communityPostService.findDtoById(id));
+    public ResponseEntity<Result> findById(@PathVariable Long id) {
+        PostResponse response = communityPostService.findDtoById(id);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> save(PostRequest request) throws IOException {
-        return ResponseEntity.ok(communityPostTransactionService.save(request));
+    public ResponseEntity<Result> save(PostRequest request) throws IOException {
+        PostResponse response = communityPostTransactionService.save(request);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<PostResponse> edit(@PathVariable Long id, PostRequest request) throws IOException {
-        return ResponseEntity.ok(communityPostTransactionService.update(id, request));
+    public ResponseEntity<Result> edit(@PathVariable Long id, PostRequest request) throws IOException {
+        PostResponse response = communityPostTransactionService.update(id, request);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        return ResponseEntity.ok(communityPostService.delete(id));
+    public ResponseEntity<Result> delete(@PathVariable Long id) {
+        String response = communityPostService.delete(id);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping("/test/findAll")
-    public List<PostResponse> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
-        return communityPostService.findAll(keyword);
+    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
+        List<PostResponse> response = communityPostService.findAll(keyword);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 }

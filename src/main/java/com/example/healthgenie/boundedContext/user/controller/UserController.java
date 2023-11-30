@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.user.controller;
 
+import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.user.dto.TestSignUpResponse;
 import com.example.healthgenie.boundedContext.user.dto.TestSignUpRequest;
 import com.example.healthgenie.boundedContext.user.dto.UpdateRequest;
@@ -20,23 +21,25 @@ public class UserController {
     private final UserService userService;
 
     @PatchMapping("/user/{id}")
-    public ResponseEntity<String> updateRole(@PathVariable Long id, @RequestBody UpdateRequest request) {
+    public ResponseEntity<Result> updateRole(@PathVariable Long id, @RequestBody UpdateRequest request) {
         userService.updateRole(id, request.getRole());
 
-        return ResponseEntity.ok("update");
+        return ResponseEntity.ok(Result.of("Role이 업데이트 되었습니다."));
     }
 
     /**
      * 테스트용 엔드포인트
      */
     @PostMapping("/test/create")
-    public ResponseEntity<TestSignUpResponse> createUser(@RequestBody TestSignUpRequest signUpRequest){
-        return ResponseEntity.ok(userService.createUser(signUpRequest));
+    public ResponseEntity<Result> createUser(@RequestBody TestSignUpRequest signUpRequest){
+        TestSignUpResponse response = userService.createUser(signUpRequest);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping("/test/authentication")
-    public User showAuthenticationPrincipal(@AuthenticationPrincipal User user) {
+    public ResponseEntity<Result> showAuthenticationPrincipal(@AuthenticationPrincipal User user) {
         log.info("[TEST] user={}", user);
-        return user;
+        return ResponseEntity.ok(Result.of(user));
     }
 }

@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.chat.controller;
 
+import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.chat.dto.RoomRequest;
 import com.example.healthgenie.boundedContext.chat.dto.RoomResponse;
 import com.example.healthgenie.boundedContext.chat.service.ChatRoomService;
@@ -21,7 +22,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
     @PostMapping
-    public ResponseEntity<?> JoinChatRoom(@RequestBody RoomRequest request) {
+    public ResponseEntity<Result> JoinChatRoom(@RequestBody RoomRequest request) {
         Long roomId = chatRoomService.joinChatRoom(request);
 
         URI chatRoomUri = UriComponentsBuilder.newInstance()
@@ -29,21 +30,27 @@ public class ChatRoomController {
                 .buildAndExpand(roomId)
                 .toUri();
 
-        return ResponseEntity.ok(chatRoomUri);
+        return ResponseEntity.ok(Result.of(chatRoomUri));
     }
 
     @GetMapping
-    public ResponseEntity<List<RoomResponse>> getChatRooms() {
-        return ResponseEntity.ok(chatRoomService.getRoomList());
+    public ResponseEntity<Result> getChatRooms() {
+        List<RoomResponse> response = chatRoomService.getRoomList();
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<RoomResponse> getChatRoom(@PathVariable Long roomId) {
-        return ResponseEntity.ok(chatRoomService.getRoomDetail(roomId));
+    public ResponseEntity<Result> getChatRoom(@PathVariable Long roomId) {
+        RoomResponse response = chatRoomService.getRoomDetail(roomId);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity<String> removeChatRoom(@PathVariable Long roomId) {
-        return ResponseEntity.ok(chatRoomService.deleteRoom(roomId));
+    public ResponseEntity<Result> removeChatRoom(@PathVariable Long roomId) {
+        String response = chatRoomService.deleteRoom(roomId);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 }

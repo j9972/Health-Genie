@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.user.controller;
 
+import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.user.service.AuthService;
 import com.example.healthgenie.boundedContext.user.dto.JwtResponse;
 import com.example.healthgenie.boundedContext.user.dto.SignInResponse;
@@ -17,7 +18,7 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/login/oauth2/code/{registrationId}")
-    public ResponseEntity<JwtResponse> redirect(
+    public ResponseEntity<Result> redirect(
             @PathVariable("registrationId") String registrationId,
             @RequestParam("code") String code,
             @RequestParam("state") String state
@@ -42,16 +43,18 @@ public class AuthController {
                 .refreshToken(result.getRefreshToken())
                 .build();
 
-        return ResponseEntity.ok(jwt);
+        return ResponseEntity.ok(Result.of(jwt));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<SignInResponse> refreshToken(@RequestBody TokenRequest tokenRequest){
+    public ResponseEntity<Result> refreshToken(@RequestBody TokenRequest tokenRequest){
         log.info("----- AuthController refreshToken -----");
         log.info("TokenRequest.registrationId={}", tokenRequest.getRegistrationId());
         log.info("TokenRequest.refreshToken={}", tokenRequest.getRefreshToken());
 
-        return ResponseEntity.ok(authService.refreshToken(tokenRequest));
+        SignInResponse response = authService.refreshToken(tokenRequest);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
 }
