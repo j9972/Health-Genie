@@ -55,9 +55,9 @@ public class RoutineController {
     }
 
     // 지니 - 초/중/고 급자 전체 조회
-    @GetMapping("/genie/{level}/{userId}") // http://localhost:1234/routine/genie/{level}/{userId}
-    public ResponseEntity<Result> getAllGenieRoutines(@PathVariable Level level, @PathVariable Long userId) {
-        List<RoutineResponseDto> response = routineService.getAllGenieRoutine(level, userId);
+    @GetMapping("/genie/{level}/{userId}") // http://localhost:1234/routine/genie/{level}
+    public ResponseEntity<Result> getAllGenieRoutines(@PathVariable Level level) {
+        List<RoutineResponseDto> response = routineService.getAllGenieRoutine(level);
         return ResponseEntity.ok(Result.of(response));
     }
 

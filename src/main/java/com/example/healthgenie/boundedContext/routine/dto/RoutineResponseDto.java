@@ -13,6 +13,7 @@ public class RoutineResponseDto {
     private Level level;
     private Day day;
     private String content;
+    private List<String> parts;
     private WorkoutRecipe recipe; // woroutName, sets reps
     private String writer; // 헬스 루틴 작성자 -> genie or 본인 이름
 
@@ -22,6 +23,7 @@ public class RoutineResponseDto {
                 .level(routine.getLevel())
                 .day(routine.getDay())
                 .content(routine.getContent())
+                .parts(routine.getPart())
                 .recipe(routine.getWorkoutRecipe())
                 .writer(routine.getMember().getEmail())
                 .build();
@@ -33,6 +35,7 @@ public class RoutineResponseDto {
                 .level(routine.getLevel())
                 .day(routine.getDay())
                 .content(routine.getContent())
+                .parts(routine.getPart())
                 .recipe(routine.getWorkoutRecipe())
                 .build();
     }
