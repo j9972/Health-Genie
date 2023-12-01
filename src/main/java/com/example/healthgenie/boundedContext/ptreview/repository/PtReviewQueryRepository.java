@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.healthgenie.boundedContext.ptreview.entity.QPtReview.ptReview;
@@ -19,6 +20,15 @@ public class PtReviewQueryRepository {
         return query
                 .selectFrom(ptReview)
                 .where(ptReview.content.like("%" + keyword + "%"))
+                .orderBy(ptReview.id.desc())
+                .fetch();
+    }
+
+    public List<PtReview> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
+        return query
+                .selectFrom(ptReview)
+                // between은 localdate를 지원하지 않으므로, atStartOfDay로 자정이라는 특정 시간으로 초기화
+                .where(ptReview.createdDate.between(searchStartDate.atStartOfDay(), searchEndDate.atStartOfDay().plusDays(1)))
                 .orderBy(ptReview.id.desc())
                 .fetch();
     }
