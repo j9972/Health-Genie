@@ -15,20 +15,14 @@ import jakarta.persistence.EntityManager;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.healthgenie.boundedContext.routine.entity.Level.BEGINNER;
-import static com.example.healthgenie.boundedContext.routine.entity.Level.INTERMEDIATE;
-import static com.example.healthgenie.boundedContext.routine.entity.Level.EXPERT;
-import static com.example.healthgenie.boundedContext.routine.entity.Day.MONDAY;
-import static com.example.healthgenie.boundedContext.routine.entity.Day.TUESDAY;
-import static com.example.healthgenie.boundedContext.routine.entity.Day.WEDNESDAY;
-import static com.example.healthgenie.boundedContext.routine.entity.Day.THURSDAY;
-import static com.example.healthgenie.boundedContext.routine.entity.Day.FRIDAY;
-import static com.example.healthgenie.boundedContext.routine.entity.Day.SATURDAY;
+import static com.example.healthgenie.boundedContext.routine.entity.Day.*;
+import static com.example.healthgenie.boundedContext.routine.entity.Level.*;
 
 
-//@Profile("dev")
+@Profile("dev")
 @Configuration
 public class InitData {
 

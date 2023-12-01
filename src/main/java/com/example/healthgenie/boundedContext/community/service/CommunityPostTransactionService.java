@@ -6,6 +6,7 @@ import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
+import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
+import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
 
 /**
  * 작업 단위를 늘려서 같은 트랜잭션에서 변경이 일어나게 하기 위한 서비스
@@ -30,6 +32,7 @@ public class CommunityPostTransactionService {
 
     private final S3UploadUtils s3UploadUtils;
     private final CommunityPostService communityPostService;
+    private final CommunityPostRepository communityPostRepository;
     private final CommunityPostPhotoService communityPostPhotoService;
 
     public PostResponse save(PostRequest request) throws IOException {
@@ -66,7 +69,9 @@ public class CommunityPostTransactionService {
     }
 
     public PostResponse update(Long id, PostRequest request) throws IOException {
-        CommunityPost post = communityPostService.findById(id);
+        CommunityPost post = communityPostRepository.findById(id)
+                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
+
         if(!Objects.equals(post.getMember().getId(), SecurityUtils.getCurrentUserId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
