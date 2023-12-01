@@ -45,12 +45,8 @@ public class PtReviewService {
         matchingRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail())
                 .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
-        PtReview reviewHistory = ptReviewRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail());
-
-        // 해당 리뷰가 있는지 검사 -> 리뷰는 여러개 안됨
-        if(reviewHistory != null) {
-            throw new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
-        }
+        ptReviewRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail())
+                .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW));
 
         return makePtReview(dto, trainer);
     }
@@ -93,11 +89,9 @@ public class PtReviewService {
 
             if (result) {
                 return PtReviewResponseDto.of(review);
-            } else {
-                throw new  PtReviewException(PtReviewErrorResult.WRONG_USER);
             }
+            throw new  PtReviewException(PtReviewErrorResult.WRONG_USER);
         }
-
     }
 
     /*
@@ -126,7 +120,6 @@ public class PtReviewService {
     @Transactional
     public PtReviewResponseDto updateReview(PtReviewRequestDto dto, Long reviewId){
 
-        // PtReview review = authorizationReviewWriter(dto.getId()); -> request에서 id는 null이 나와서 안된다
         PtReview review = authorizationReviewWriter(reviewId);
 
         if(dto.getContent() != null) {

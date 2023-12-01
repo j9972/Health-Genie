@@ -68,6 +68,12 @@ public class PtProcessService {
         return PtProcessResponseDto.of(process);
     }
 
+    /*
+        feedback은 해당 회원, 담당 트레이너만 볼 수 있다
+        따라서 상세페이지 조회는 회원용, 트레이너용을 나눌 필요가 없다.
+
+        해당 trainer, user만 확인 가능
+    */
     @Transactional(readOnly = true)
     public PtProcessResponseDto getPtProcess(Long processId) {
         PtProcess process = ptProcessRepository.findById(processId).orElseThrow(
@@ -75,27 +81,22 @@ public class PtProcessService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
+
             throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
+
         } else {
 
             Optional<User> email = userRepository.findByEmail(authentication.getName());
-            /*
-                feedback은 해당 회원, 담당 트레이너만 볼 수 있다
-                따라서 상세페이지 조회는 회원용, 트레이너용을 나눌 필요가 없다.
-
-                해당 trainer, user만 확인 가능
-             */
             User member = userRepository.findById(email.get().getId()).orElseThrow();
+
             boolean user_result = process.getMember().equals(member);
             boolean trainer_result = process.getTrainer().equals(member);
 
-            if (user_result)  {
+            if (user_result || trainer_result)  {
                 return PtProcessResponseDto.of(process);
-            } else if (trainer_result) {
-                return PtProcessResponseDto.of(process);
-            } else {
-                throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
             }
+            throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
+
         }
     }
 
@@ -120,6 +121,7 @@ public class PtProcessService {
     @Transactional(readOnly = true)
     public Page<PtProcessResponseDto> getAllMyProcess(Long userId, int page, int size){
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+
         Page<PtProcess> process = ptProcessRepository.findAllByMemberId(userId, pageable);
         return process.map(PtProcessResponseDto::of);
     }

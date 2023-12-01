@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.ptrecord.controller;
 
 
+import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessPhotoService;
@@ -29,9 +30,10 @@ public class PtProcessController {
 
     // trainer가 작성
     @PostMapping("/trainer/write")// http://localhost:1234/process/trainer/write
-    public ResponseEntity addPtProcess(PtProcessRequestDto dto)  throws IOException {
+    public ResponseEntity<Result> addPtProcess(PtProcessRequestDto dto)  throws IOException {
+        PtProcessResponseDto response = processTransactionSerivce.addPtProcess(dto);
 
-        return ResponseEntity.ok(processTransactionSerivce.addPtProcess(dto));
+        return ResponseEntity.ok(Result.of(response));
     }
 
     /*
@@ -39,10 +41,11 @@ public class PtProcessController {
         관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
      */
     @GetMapping("/list/trainer/{trainerId}") // http://localhost:1234/process/list/trainer/{trainerId}
-    public Page<PtProcessResponseDto> getAllTrainerProcess(@PathVariable Long trainerId, @RequestParam(required = false, defaultValue = "0") int page){
+    public ResponseEntity<Result> getAllTrainerProcess(@PathVariable Long trainerId, @RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
         int size = 5;
-        return processService.getAllTrainerProcess(trainerId, page, size);
+        Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(trainerId, page, size);
+        return ResponseEntity.ok(Result.of(response));
     }
 
     /*
@@ -50,25 +53,26 @@ public class PtProcessController {
         관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
      */
     @GetMapping("/list/my/{userId}") // http://localhost:1234/process/list/my/{userId}
-    public Page<PtProcessResponseDto> getAllMyProcess(@PathVariable Long userId, @RequestParam(required = false, defaultValue = "0") int page){
+    public ResponseEntity<Result> getAllMyProcess(@PathVariable Long userId, @RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
         int size = 5;
-        return processService.getAllMyProcess(userId, page, size);
+        Page<PtProcessResponseDto> response = processService.getAllMyProcess(userId, page, size);
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping("/detail/{processId}") // http://localhost:1234/process/detail/{processId}
-    public ResponseEntity getProcess(@PathVariable Long processId){
-        PtProcessResponseDto responseDto = processService.getPtProcess(processId);
-        return new ResponseEntity(responseDto,HttpStatus.OK);
+    public ResponseEntity<Result> getProcess(@PathVariable Long processId){
+        PtProcessResponseDto response = processService.getPtProcess(processId);
+        return ResponseEntity.ok(Result.of(response));
     }
 
     // 트레이너만 삭제 기능이 가능
     @DeleteMapping("/trainer/{processId}") // http://localhost:1234/process/trainer/{processId}
-    public ResponseEntity deleteProcess(@PathVariable Long processId) {
+    public ResponseEntity<Result> deleteProcess(@PathVariable Long processId) {
 
         processService.deletePtProcess(processId);
 
-        return new ResponseEntity("피드백 삭제가 성공했습니다",HttpStatus.OK);
+        return ResponseEntity.ok(Result.of("피드백이 삭제 되었습니다."));
     }
 
 

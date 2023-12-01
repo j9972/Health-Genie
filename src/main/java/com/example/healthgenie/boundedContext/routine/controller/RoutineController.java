@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.routine.controller;
 
+import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
@@ -22,24 +23,25 @@ public class RoutineController {
      private final RoutineService routineService;
 
      @PostMapping("/write") // http://localhost:1234/routine/write
-     public ResponseEntity writeRoutine(@RequestBody RoutineRequestDto dto) {
+     public ResponseEntity<Result> writeRoutine(@RequestBody RoutineRequestDto dto) {
 
          RoutineResponseDto response = routineService.writeRoutine(dto);
-         return new ResponseEntity(response, HttpStatus.OK);
+         return ResponseEntity.ok(Result.of(response));
      }
 
      @PostMapping("/update/{routineId}") // http://localhost:1234/routine/update/{routineId}
-     public ResponseEntity updateRoutine(@RequestBody RoutineRequestDto dto, @PathVariable Long routineId) {
+     public ResponseEntity<Result> updateRoutine(@RequestBody RoutineRequestDto dto, @PathVariable Long routineId) {
 
          RoutineResponseDto response = routineService.updateRoutine(dto,routineId);
-         return new ResponseEntity(response,HttpStatus.OK);
+         return ResponseEntity.ok(Result.of(response));
      }
 
 
     // 개인 루틴 전체조회
     @GetMapping("/{userId}") // http://localhost:1234/routine/{userId}
-    public List<RoutineResponseDto> getAllRoutines(@PathVariable Long userId) {
-         return routineService.getAllMyRoutine(userId);
+    public ResponseEntity<Result> getAllRoutines(@PathVariable Long userId) {
+        List<RoutineResponseDto> response = routineService.getAllMyRoutine(userId);
+        return ResponseEntity.ok(Result.of(response));
     }
 
     /*
@@ -47,14 +49,16 @@ public class RoutineController {
         회원용/트레이너용 관리페이지에서 조회할때 사용할 API
      */
     @GetMapping("/detail/{day}/{userId}") // http://localhost:1234/routine/detail/{day}/{userId}
-    public List<RoutineResponseDto> getRoutine(@PathVariable Day day, @PathVariable Long userId){
-        return routineService.getMyRoutine(day,userId);
+    public ResponseEntity<Result> getRoutine(@PathVariable Day day, @PathVariable Long userId){
+        List<RoutineResponseDto> response = routineService.getMyRoutine(day, userId);
+        return ResponseEntity.ok(Result.of(response));
     }
 
     // 지니 - 초/중/고 급자 전체 조회
     @GetMapping("/genie/{level}/{userId}") // http://localhost:1234/routine/genie/{level}/{userId}
-    public List<RoutineResponseDto> getAllGenieRoutines(@PathVariable Level level, @PathVariable Long userId) {
-        return routineService.getAllGenieRoutine(level,userId);
+    public ResponseEntity<Result> getAllGenieRoutines(@PathVariable Level level, @PathVariable Long userId) {
+        List<RoutineResponseDto> response = routineService.getAllGenieRoutine(level, userId);
+        return ResponseEntity.ok(Result.of(response));
     }
 
     /*
@@ -62,20 +66,20 @@ public class RoutineController {
         회원용/트레이너용 관리페이지에서 조회할때 사용할 API
      */
     @GetMapping("/genie/detail/{level}/{day}") // http://localhost:1234/routine/genie/detail/{level}/{day}
-    public ResponseEntity getGenieRoutine(@PathVariable Level level, @PathVariable Day day) {
+    public ResponseEntity<Result> getGenieRoutine(@PathVariable Level level, @PathVariable Day day) {
 
         List<RoutineResponseDto> response = routineService.getGenieRoutine(level, day);
-        return new ResponseEntity(response,HttpStatus.OK);
+        return ResponseEntity.ok(Result.of(response));
     }
 
 
 
     // 본인만 삭제 가능하게 하기 -> 프론트에서 기능을 숨기면 되어서 구별 로직뺌
     @DeleteMapping("/delete/{routineId}") // http://localhost:1234/routine/delete/{routineId}
-    public ResponseEntity deleteRoutine(@PathVariable Long routineId) {
+    public ResponseEntity<Result> deleteRoutine(@PathVariable Long routineId) {
         routineService.deleteRoutine(routineId);
 
-        return new ResponseEntity("후기 삭제를 성공했습니다",HttpStatus.OK);
+        return ResponseEntity.ok(Result.of("운동 루틴이 삭제 되었습니다."));
     }
 
 

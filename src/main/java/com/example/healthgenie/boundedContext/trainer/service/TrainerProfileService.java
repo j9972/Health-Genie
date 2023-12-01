@@ -40,7 +40,7 @@ public class TrainerProfileService {
 
         // 작성자와 trainer이 같다면 저장 가능하다
         if (trainer.getEmail().equals(currentUser.getEmail())) {
-            log.info("true");
+
             TrainerInfo profile = TrainerInfo.builder()
                     .introduction(dto.getIntroduction())
                     .cost(dto.getCost())
@@ -53,7 +53,7 @@ public class TrainerProfileService {
 
             return ProfileResponseDto.ofProfile(savedProfile);
         }
-        log.info("false");
+
         throw new TrainerProfileException(TrainerProfileErrorResult.DIFFERENT_USER);
     }
 
@@ -91,13 +91,14 @@ public class TrainerProfileService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
+
             throw new TrainerProfileException(TrainerProfileErrorResult.WRONG_USER);
+
         } else {
             Optional<User> email = userRepository.findByEmail(authentication.getName());
             User member = userRepository.findById(email.get().getId()).orElseThrow();
-            boolean result = profile.getMember().equals(member);
 
-            if (result) {
+            if (profile.getMember().equals(member)) {
                 return ProfileResponseDto.ofProfile(profile);
             }
             throw new TrainerProfileException(TrainerProfileErrorResult.WRONG_USER);
