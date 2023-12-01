@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,9 +26,12 @@ public class PostResponse {
     private List<CommentResponse> comments;
 
     public static PostResponse of(CommunityPost post) {
-        List<String> paths = post.getCommunityPostPhotos().stream()
-                .map(CommunityPostPhoto::getPostPhotoPath)
-                .toList();
+        List<String> paths = new ArrayList<>();
+        if(post.getCommunityPostPhotos() != null) {
+            paths = post.getCommunityPostPhotos().stream()
+                    .map(CommunityPostPhoto::getPostPhotoPath)
+                    .toList();
+        }
 
         List<CommentResponse> comments = post.getCommunityComments().stream()
                 .map(comment -> CommentResponse.builder()

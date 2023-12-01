@@ -26,24 +26,12 @@ public class CommunityPostService {
 
     private final CommunityPostRepository communityPostRepository;
     private final CommunityPostQueryRepository communityPostQueryRepository;
-    private final CommunityPostPhotoService communityPostPhotoService;
 
-//    public List<PostResponse> findAll() {
-//        return communityPostRepository.findAll().stream()
-//                .map(p -> new PostResponse(p.getId(), p.getTitle(), p.getContent(), p.getMember().getId(), p.getCommunityPostPhotos()))
-//                .collect(Collectors.toList());
-//    }
-
-    public PostResponse findDtoById(Long id) {
+    public PostResponse findById(Long id) {
         CommunityPost post = communityPostRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         return PostResponse.of(post);
-    }
-
-    public CommunityPost findById(Long id) {
-        return communityPostRepository.findById(id)
-                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
     }
 
     @Transactional

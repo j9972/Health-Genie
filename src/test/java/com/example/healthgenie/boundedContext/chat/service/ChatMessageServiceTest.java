@@ -8,13 +8,12 @@ import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.example.healthgenie.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -32,6 +31,8 @@ class ChatMessageServiceTest {
     UserRepository userRepository;
     @Autowired
     ChatRoomRepository chatRoomRepository;
+    @Autowired
+    TestUtils testUtils;
 
     User sender;
     User receiver;
@@ -41,21 +42,21 @@ class ChatMessageServiceTest {
     @BeforeEach
     void before() {
         // 사용자 생성
-        sender = createUser("sender1", Role.USER, "sender1@test.com");
-        receiver = createUser("receiver1", Role.TRAINER, "receiver1@test.com");
-        other = createUser("other1", Role.EMPTY, "other1@test.com");
+        sender = testUtils.createUser("sender1", Role.USER, "sender1@test.com");
+        receiver = testUtils.createUser("receiver1", Role.TRAINER, "receiver1@test.com");
+        other = testUtils.createUser("other1", Role.EMPTY, "other1@test.com");
 
         // 채팅방 생성
-        room = createChatRoom(sender, receiver);
+        room = testUtils.createChatRoom(sender, receiver);
     }
 
     @Test
     @DisplayName("정상적으로 메세지를 보낸다.")
     void rightMessage() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
-        MessageRequest request = createMessageRequest(room.getId(), "정상적으로 메세지 보내기!", sender.getEmail());
+        MessageRequest request = testUtils.createMessageRequest(room.getId(), "정상적으로 메세지 보내기!", sender.getEmail());
 
         // when
         chatMessageService.sendMessage(request);
@@ -70,9 +71,9 @@ class ChatMessageServiceTest {
     @DisplayName("잘못된 채팅방으로 메세지를 보낸다.")
     void wrongMessage() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
-        MessageRequest request = createMessageRequest(999L, "잘못된 채팅방으로 메세지 보내기!", sender.getEmail());
+        MessageRequest request = testUtils.createMessageRequest(999L, "잘못된 채팅방으로 메세지 보내기!", sender.getEmail());
 
         // when
         assertThatThrownBy(() -> chatMessageService.sendMessage(request))
@@ -88,43 +89,12 @@ class ChatMessageServiceTest {
     @DisplayName("채팅방에 없는 사용자가 메세지를 확인한다.")
     void notRelatedUser() {
         // given
-        login(other);
+        testUtils.login(other);
 
         // when
         assertThatThrownBy(() -> chatMessageService.getMessages(room.getId(), 0, 10))
                 .isInstanceOf(ChatException.class);
 
         // then
-    }
-
-    private MessageRequest createMessageRequest(Long roomId, String content, String senderEmail) {
-        return MessageRequest.builder()
-                .content(content)
-                .roomId(roomId)
-                .senderEmail(senderEmail)
-                .build();
-    }
-
-    private User createUser(String name, Role role, String email) {
-        User user = User.builder()
-                .name(name)
-                .role(role)
-                .email(email)
-                .build();
-
-        return userRepository.save(user);
-    }
-
-    private ChatRoom createChatRoom(User sender, User receiver) {
-        ChatRoom chatRoom = ChatRoom.builder()
-                .sender(sender)
-                .receiver(receiver)
-                .build();
-
-        return chatRoomRepository.save(chatRoom);
-    }
-
-    private void login(User user) {
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities()));
     }
 }

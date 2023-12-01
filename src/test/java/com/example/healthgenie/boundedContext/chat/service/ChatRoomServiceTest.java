@@ -10,13 +10,12 @@ import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.example.healthgenie.util.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -34,27 +33,28 @@ class ChatRoomServiceTest {
     UserRepository userRepository;
     @Autowired
     ChatRoomRepository chatRoomRepository;
+    @Autowired
+    TestUtils testUtils;
 
     User sender;
     User receiver;
     User other;
-    ChatRoom room;
 
     @BeforeEach
     void before() {
         // 사용자 생성
-        sender = createUser("sender1", Role.USER, "sender1@test.com");
-        receiver = createUser("receiver1", Role.TRAINER, "receiver1@test.com");
-        other = createUser("other1", Role.EMPTY, "other1@test.com");
+        sender = testUtils.createUser("sender1", Role.USER, "sender1@test.com");
+        receiver = testUtils.createUser("receiver1", Role.TRAINER, "receiver1@test.com");
+        other = testUtils.createUser("other1", Role.EMPTY, "other1@test.com");
     }
 
     @Test
     @DisplayName("정상적으로 새로운 채팅방을 생성한다.")
     void rightCreateRoom() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
-        RoomRequest request = createRoomRequest(receiver.getEmail());
+        RoomRequest request = testUtils.createRoomRequest(receiver.getEmail());
 
         // when
         Long createRoomId = chatRoomService.joinChatRoom(request);
@@ -68,10 +68,10 @@ class ChatRoomServiceTest {
     @DisplayName("존재하지 않는 사용자와 채팅방을 생성한다.")
     void notExistReceiver() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
         String notExistUserEmail = "none@test.com";
-        RoomRequest request = createRoomRequest(notExistUserEmail);
+        RoomRequest request = testUtils.createRoomRequest(notExistUserEmail);
 
         // when
         assertThatThrownBy(() -> chatRoomService.joinChatRoom(request))
@@ -84,9 +84,9 @@ class ChatRoomServiceTest {
     @DisplayName("자기 자신과 채팅방을 생성한다.")
     void selfChat() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
-        RoomRequest request = createRoomRequest(sender.getEmail());
+        RoomRequest request = testUtils.createRoomRequest(sender.getEmail());
 
         // when
         assertThatThrownBy(() -> chatRoomService.joinChatRoom(request))
@@ -99,9 +99,9 @@ class ChatRoomServiceTest {
     @DisplayName("정상적으로 기존의 채팅방에 입장한다.")
     void rightAlreadyRoom() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
-        RoomRequest request = createRoomRequest(receiver.getEmail());
+        RoomRequest request = testUtils.createRoomRequest(receiver.getEmail());
 
         // when
         Long createRoomId = chatRoomService.joinChatRoom(request);
@@ -115,10 +115,10 @@ class ChatRoomServiceTest {
     @DisplayName("현재 사용자의 모든 채팅방을 조회한다.")
     void getChatRooms() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
-        RoomRequest request1 = createRoomRequest(receiver.getEmail());
-        RoomRequest request2 = createRoomRequest(other.getEmail());
+        RoomRequest request1 = testUtils.createRoomRequest(receiver.getEmail());
+        RoomRequest request2 = testUtils.createRoomRequest(other.getEmail());
         chatRoomService.joinChatRoom(request1);
         chatRoomService.joinChatRoom(request2);
 
@@ -133,9 +133,9 @@ class ChatRoomServiceTest {
     @DisplayName("정상적으로 채팅방 입장 시 상세 보기")
     void getChatRoomDetail() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
-        RoomRequest request = createRoomRequest(receiver.getEmail());
+        RoomRequest request = testUtils.createRoomRequest(receiver.getEmail());
 
         Long roomId = chatRoomService.joinChatRoom(request);
 
@@ -151,14 +151,14 @@ class ChatRoomServiceTest {
     @DisplayName("채팅방에 참여하지 않은 사용자가 채팅방 입장 시 상세 보기")
     void wrongUserChatDetail() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
-        RoomRequest request = createRoomRequest(receiver.getEmail());
+        RoomRequest request = testUtils.createRoomRequest(receiver.getEmail());
 
         Long roomId = chatRoomService.joinChatRoom(request);
 
         // when
-        login(other);
+        testUtils.login(other);
 
         // then
         assertThatThrownBy(() -> chatRoomService.getRoomDetail(roomId))
@@ -169,7 +169,7 @@ class ChatRoomServiceTest {
     @DisplayName("존재하지 않는 채팅방 상세 보기")
     void notExistChatRoom() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
         // when
         assertThatThrownBy(() -> chatRoomService.getRoomDetail(999L))
@@ -182,15 +182,15 @@ class ChatRoomServiceTest {
     @DisplayName("한명만 채팅방 나가기")
     void oneExitChatRoom() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
-        RoomRequest request = createRoomRequest(receiver.getEmail());
+        RoomRequest request = testUtils.createRoomRequest(receiver.getEmail());
         Long roomId = chatRoomService.joinChatRoom(request);
 
         // when
         chatRoomService.deleteRoom(roomId);
 
-        login(receiver);
+        testUtils.login(receiver);
 
         // then
         RoomResponse response = chatRoomService.getRoomDetail(roomId);
@@ -201,39 +201,19 @@ class ChatRoomServiceTest {
     @DisplayName("양쪽 모두 채팅방 나가기")
     void allExitChatRoom() {
         // given
-        login(sender);
+        testUtils.login(sender);
 
-        RoomRequest request = createRoomRequest(receiver.getEmail());
+        RoomRequest request = testUtils.createRoomRequest(receiver.getEmail());
         Long roomId = chatRoomService.joinChatRoom(request);
 
         // when
         chatRoomService.deleteRoom(roomId);
 
-        login(receiver);
+        testUtils.login(receiver);
         chatRoomService.deleteRoom(roomId);
 
         // then
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
         assertThat(chatRoom).isNull();
-    }
-
-    private RoomRequest createRoomRequest(String receiverEmail) {
-        return RoomRequest.builder()
-                .receiverEmail(receiverEmail)
-                .build();
-    }
-
-    private User createUser(String name, Role role, String email) {
-        User user = User.builder()
-                .name(name)
-                .role(role)
-                .email(email)
-                .build();
-
-        return userRepository.save(user);
-    }
-
-    private void login(User user) {
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities()));
     }
 }

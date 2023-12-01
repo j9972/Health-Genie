@@ -15,6 +15,7 @@ public class CommunityPostQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
+    // TODO : 페이징 or 무한 스크롤 처리
     public List<CommunityPost> findAll(String keyword) {
         return queryFactory
                 .selectFrom(communityPost)

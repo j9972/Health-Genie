@@ -22,9 +22,16 @@ public class CommunityPostController {
     private final CommunityPostService communityPostService;
     private final CommunityPostTransactionService communityPostTransactionService;
 
+    @GetMapping
+    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
+        List<PostResponse> response = communityPostService.findAll(keyword);
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Result> findById(@PathVariable Long id) {
-        PostResponse response = communityPostService.findDtoById(id);
+        PostResponse response = communityPostService.findById(id);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -46,13 +53,6 @@ public class CommunityPostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Result> delete(@PathVariable Long id) {
         String response = communityPostService.delete(id);
-
-        return ResponseEntity.ok(Result.of(response));
-    }
-
-    @GetMapping("/test/findAll")
-    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
-        List<PostResponse> response = communityPostService.findAll(keyword);
 
         return ResponseEntity.ok(Result.of(response));
     }
