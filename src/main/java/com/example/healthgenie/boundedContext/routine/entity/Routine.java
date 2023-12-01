@@ -43,6 +43,10 @@ public class Routine extends BaseEntity {
     @Column(name = "content")
     private String content;
 
+    // 피그마보면 운동 부위를 한번에 가져온다.
+    @ElementCollection
+    private List<String> part = new ArrayList<>();
+
     @Embedded // 내장타입이다.
     private WorkoutRecipe workoutRecipe;
 
@@ -60,6 +64,8 @@ public class Routine extends BaseEntity {
         this.content = content;
     }
 
-
+    public void updatePart(List<String> part) {
+        this.part = part;
+    }
 }
 
