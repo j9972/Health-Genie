@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.ptrecord.controller;
 
 
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessPhotoService;
@@ -59,6 +60,15 @@ public class PtProcessController {
         Page<PtProcessResponseDto> response = processService.getAllMyProcess(userId, page, size);
         return ResponseEntity.ok(Result.of(response));
     }
+
+    // 일지를 검색으로 찾기
+    @GetMapping("/list/findAll") // http://localhost:1234/process/list/findAll
+    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
+        List<PtProcessResponseDto> response = processService.findAll(keyword);
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
 
     @GetMapping("/detail/{processId}") // http://localhost:1234/process/detail/{processId}
     public ResponseEntity<Result> getProcess(@PathVariable Long processId){
