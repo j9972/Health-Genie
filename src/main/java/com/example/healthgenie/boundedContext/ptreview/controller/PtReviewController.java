@@ -1,15 +1,20 @@
 package com.example.healthgenie.boundedContext.ptreview.controller;
 
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.service.PtReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,6 +66,23 @@ public class PtReviewController {
         // 5개씩 페이징 처리
         int size = 5;
         Page<PtReviewResponseDto> response = reviewService.getAllReview(userId, page, size);
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    // 후기를 검색으로 찾기
+    @GetMapping("/list/findAll") // http://localhost:1234/review/list/findAll
+    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
+        List<PtReviewResponseDto> response = reviewService.findAll(keyword);
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    // 날짜 필터링으로 후기 모아보기
+    @GetMapping("/list/dateFilter") // http://localhost:1234/review/list/dateFilter
+    public ResponseEntity<Result> findAll(@RequestParam(required = false, defaultValue = "1900-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate searchStartDate,
+                                          @RequestParam(required = false, defaultValue = "9999-12-31") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate searchEndDate) {
+        List<PtReviewResponseDto> response = reviewService.findAllByDate(searchStartDate,searchEndDate);
+
         return ResponseEntity.ok(Result.of(response));
     }
 

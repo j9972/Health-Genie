@@ -37,11 +37,12 @@ public class RoutineService {
     public RoutineResponseDto writeRoutine(RoutineRequestDto dto) {
         User currentUser = SecurityUtils.getCurrentUser();
 
-        WorkoutRecipe recipe = new WorkoutRecipe(dto.getParts(), dto.getWorkoutName(),dto.getSets(), dto.getReps());
+        WorkoutRecipe recipe = new WorkoutRecipe(dto.getWorkoutName(), dto.getKg() ,dto.getSets(), dto.getReps());
 
         Routine routine = Routine.builder()
                 .day(dto.getDay())
                 .content(dto.getContent())
+                .part(dto.getParts())
                 .workoutRecipe(recipe)
                 .member(currentUser)
                 .build();
@@ -65,7 +66,7 @@ public class RoutineService {
             routine.updateContent(dto.getContent());
         }
         if(dto.getParts() != null) {
-            workoutRecipe.updatePart(dto.getParts());
+            routine.updatePart(dto.getParts());
         }
         if(dto.getWorkoutName() != null) {
             workoutRecipe.updateName(dto.getWorkoutName());
@@ -77,6 +78,10 @@ public class RoutineService {
         // 0도 유효한 값으로 처리
         if(dto.getReps() != 0 || workoutRecipe.getReps() == 0) {
             workoutRecipe.updateReps(dto.getReps());
+        }
+        // 0도 유효한 값으로 처리
+        if(dto.getKg() != 0 || workoutRecipe.getKg() == 0) {
+            workoutRecipe.updateKg(dto.getKg());
         }
 
 
@@ -109,9 +114,9 @@ public class RoutineService {
         지니 레벨을 선택할 때 마다 level 변동 시키기
      */
     @Transactional
-    public List<RoutineResponseDto> getAllGenieRoutine(Level level, Long userId) {
-        User user = userServiceImpl.findById(userId);
-        user.updateLevel(level); // 이 부분 [ 매번 level update ]
+    public List<RoutineResponseDto> getAllGenieRoutine(Level level) {
+        User currentUser = SecurityUtils.getCurrentUser();
+        currentUser.updateLevel(level); // 이 부분 [ 매번 level update ]
 
         List<Routine> genie = routineRepository.findByLevel(level);
         return genie.stream()

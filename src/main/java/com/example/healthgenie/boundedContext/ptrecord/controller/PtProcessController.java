@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.ptrecord.controller;
 
 
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessPhotoService;
@@ -11,12 +12,14 @@ import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessTransact
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +62,24 @@ public class PtProcessController {
         Page<PtProcessResponseDto> response = processService.getAllMyProcess(userId, page, size);
         return ResponseEntity.ok(Result.of(response));
     }
+
+    // 일지를 검색으로 찾기
+    @GetMapping("/list/findAll") // http://localhost:1234/process/list/findAll
+    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
+        List<PtProcessResponseDto> response = processService.findAll(keyword);
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    // 날짜 필터링으로 일지 모아보기
+    @GetMapping("/list/dateFilter") // http://localhost:1234/process/list/dateFilter
+    public ResponseEntity<Result> findAll(@RequestParam(required = false, defaultValue = "1900-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate searchStartDate,
+                                          @RequestParam(required = false, defaultValue = "9999-12-31") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate searchEndDate) {
+        List<PtProcessResponseDto> response = processService.findAllByDate(searchStartDate,searchEndDate);
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
 
     @GetMapping("/detail/{processId}") // http://localhost:1234/process/detail/{processId}
     public ResponseEntity<Result> getProcess(@PathVariable Long processId){

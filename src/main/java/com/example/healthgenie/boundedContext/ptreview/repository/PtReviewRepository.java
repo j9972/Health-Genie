@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface PtReviewRepository extends JpaRepository<PtReview, Long> {
 
 
-    Optional<PtReview> findByMemberEmailAndTrainerEmail(String userMail, String trainerMail);
+    PtReview findByMemberEmailAndTrainerEmail(String userMail, String trainerMail);
 
     Page<PtReview> findAllByTrainerId(Long trainerId, Pageable pageable);
 

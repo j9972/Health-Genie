@@ -4,10 +4,11 @@ import com.example.healthgenie.base.exception.MatchingErrorResult;
 import com.example.healthgenie.base.exception.MatchingException;
 import com.example.healthgenie.base.exception.PtReviewErrorResult;
 import com.example.healthgenie.base.exception.PtReviewException;
+import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
-import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewQueryRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -24,6 +25,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -35,6 +38,7 @@ public class PtReviewService {
     private final PtReviewRepository ptReviewRepository;
     private final UserRepository userRepository;
     private final MatchingRepository matchingRepository;
+    private final PtReviewQueryRepository ptReviewQueryRepository;
 
     @Transactional
     public PtReviewResponseDto addPtReview(PtReviewRequestDto dto){
@@ -45,8 +49,12 @@ public class PtReviewService {
         matchingRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail())
                 .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
-        ptReviewRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail())
-                .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW));
+        PtReview review = ptReviewRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail());
+
+
+        if (review != null) {
+            throw  new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
+        }
 
         return makePtReview(dto, trainer);
     }
@@ -158,5 +166,13 @@ public class PtReviewService {
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         }
         return review;
+    }
+
+    public List<PtReviewResponseDto> findAll(String keyword) {
+        return PtReviewResponseDto.of(ptReviewQueryRepository.findAll(keyword));
+    }
+
+    public List<PtReviewResponseDto> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
+        return PtReviewResponseDto.of(ptReviewQueryRepository.findAllByDate(searchStartDate, searchEndDate));
     }
 }

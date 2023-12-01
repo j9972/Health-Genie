@@ -1,7 +1,11 @@
 package com.example.healthgenie.boundedContext.ptreview.dto;
 
+import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
+import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import lombok.*;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -27,5 +31,11 @@ public class PtReviewResponseDto {
                 .trainerMail(review.getTrainer().getEmail())
                 .userMail(review.getMember().getEmail())
                 .build();
+    }
+
+    public static List<PtReviewResponseDto> of(List<PtReview> review) {
+        return review.stream()
+                .map(PtReviewResponseDto::of)
+                .toList();
     }
 }
