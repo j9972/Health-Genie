@@ -112,7 +112,7 @@ public class TodoService {
 
         List<Todo> todos = todoRepository.findAllByMemberIdAndDate(userId, date);
 
-        if (date.equals(today)) { // cli가 선택한 날짜와 오늘이 같은 날짜면 pt있는지 체크하고 있으면 dto 변경해서 repsonse
+        if (date.equals(today)) {
             // 관리페이지에 보내줄 데이터 [ 매칭 날짜랑 오늘이 같으면 데이터 보내주기 ]
             Optional<Matching> matching = matchingRepository.findByMemberIdAndDate(userId, date);
 
@@ -125,11 +125,6 @@ public class TodoService {
                     }
                 }
             }
-
-            // 유저가 매칭이 없으면 그냥 반환
-            return todos.stream()
-                    .map(TodoResponseDto::of)
-                    .collect(toList());
         }
 
         // 오늘 날짜와 cli에서 보내준 날짜가 다르다면 Todo list 반환

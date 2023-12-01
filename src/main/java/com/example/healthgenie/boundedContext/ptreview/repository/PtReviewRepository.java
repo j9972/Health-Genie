@@ -7,14 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PtReviewRepository extends JpaRepository<PtReview, Long> {
 
 
-    public PtReview findByMemberEmailAndTrainerEmail(String userMail, String trainerMail);
-
-    @Query("select R from PtProcess R where R.id =:reviewId")
-    public PtReview findMemberIdById(Long reviewId);
+    Optional<PtReview> findByMemberEmailAndTrainerEmail(String userMail, String trainerMail);
 
     Page<PtReview> findAllByTrainerId(Long trainerId, Pageable pageable);
 

@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.trainer.controller;
 
+import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
@@ -21,20 +22,20 @@ public class TrainerProfileController {
         기존에 정보가 있을 수도 있다 ( 해당 4개의 필드에 대해서 update 식으로 생각하면 된다 )
      */
     @GetMapping("/{profileId}") // https://localhost:1234/trainer/profile/{profileId}
-    public ResponseEntity getProfile(@PathVariable Long profileId){
+    public ResponseEntity<Result> getProfile(@PathVariable Long profileId){
         ProfileResponseDto response = profileServie.getProfile(profileId);
-        return new ResponseEntity(response, HttpStatus.OK);
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @PostMapping("/write") // https://localhost:1234/trainer/profile/write
-    public ResponseEntity writeProfile(@RequestBody ProfileRequestDto dto){
+    public ResponseEntity<Result> writeProfile(@RequestBody ProfileRequestDto dto){
         ProfileResponseDto response = profileServie.writeProfile(dto);
-        return new ResponseEntity(response, HttpStatus.OK);
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @PostMapping("/update/{profileId}") // https://localhost:1234/trainer/profile/update/{profileId}
-    public ResponseEntity updateProfile(@RequestBody ProfileRequestDto dto, @PathVariable Long profileId){
+    public ResponseEntity<Result> updateProfile(@RequestBody ProfileRequestDto dto, @PathVariable Long profileId){
         ProfileResponseDto response = profileServie.updateProfile(dto, profileId);
-        return new ResponseEntity(response, HttpStatus.OK);
+        return ResponseEntity.ok(Result.of(response));
     }
 }

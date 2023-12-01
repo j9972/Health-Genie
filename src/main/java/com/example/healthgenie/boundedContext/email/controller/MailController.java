@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.email.controller;
 
+import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.email.service.UserMailService;
 import com.example.healthgenie.boundedContext.email.service.MailService;
 import jakarta.mail.MessagingException;
@@ -32,9 +33,9 @@ public class MailController {
     public ResponseEntity validMailCode(@RequestParam("email") String email,
                                         @RequestParam("authCode") String authCode){
         boolean result = userMailService.verify(email, authCode);
-        if (!result) {
-            return new ResponseEntity("authcode is correct",HttpStatus.OK);
-        }
-        return new ResponseEntity("authcode is wrong ",HttpStatus.BAD_REQUEST);
+
+        // 검증 실패시 redirect 시켜주세요.
+        return ResponseEntity.ok(Result.of(result ? "검증이 실패했습니다" : "검증이 성공했습니다"));
+
     }
 }

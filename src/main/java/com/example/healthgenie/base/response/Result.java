@@ -51,6 +51,7 @@ public class Result<T> {
     }
 
     public static <T> Result<T> failOf(T data) {
+
         return of("실패", data);
     }
 }
