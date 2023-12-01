@@ -1,5 +1,7 @@
 package com.example.healthgenie.boundedContext.ptrecord.dto;
 
+import com.example.healthgenie.boundedContext.community.dto.PostResponse;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
@@ -32,5 +34,11 @@ public class PtProcessResponseDto {
                 .trainerMail(process.getTrainer().getEmail())
                 .userMail(process.getMember().getEmail())
                 .build();
+    }
+
+    public static List<PtProcessResponseDto> of(List<PtProcess> process) {
+        return process.stream()
+                .map(PtProcessResponseDto::of)
+                .toList();
     }
 }

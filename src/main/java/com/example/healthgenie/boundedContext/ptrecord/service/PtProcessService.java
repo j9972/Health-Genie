@@ -5,9 +5,11 @@ import com.example.healthgenie.base.exception.MatchingErrorResult;
 import com.example.healthgenie.base.exception.MatchingException;
 import com.example.healthgenie.base.exception.PtProcessErrorResult;
 import com.example.healthgenie.base.exception.PtProcessException;
+import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
+import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessQueryRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -25,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.healthgenie.boundedContext.ptrecord.entity.QPtProcess.ptProcess;
@@ -36,6 +39,7 @@ public class PtProcessService {
     private final PtProcessRepository ptProcessRepository;
     private final UserRepository userRepository;
     private final MatchingRepository matchingRepository;
+    private final PtProcessQueryRepository ptProcessQueryRepository;
 
 
     @Transactional
@@ -152,4 +156,7 @@ public class PtProcessService {
         return process;
     }
 
+    public List<PtProcessResponseDto> findAll(String keyword) {
+        return PtProcessResponseDto.of(ptProcessQueryRepository.findAll(keyword));
+    }
 }

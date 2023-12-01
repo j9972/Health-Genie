@@ -7,7 +7,7 @@ import com.example.healthgenie.base.exception.PtReviewException;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
-import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewQueryRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -35,6 +36,7 @@ public class PtReviewService {
     private final PtReviewRepository ptReviewRepository;
     private final UserRepository userRepository;
     private final MatchingRepository matchingRepository;
+    private final PtReviewQueryRepository ptReviewQueryRepository;
 
     @Transactional
     public PtReviewResponseDto addPtReview(PtReviewRequestDto dto){
@@ -158,5 +160,9 @@ public class PtReviewService {
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         }
         return review;
+    }
+
+    public List<PtReviewResponseDto> findAll(String keyword) {
+        return PtReviewResponseDto.of(ptReviewQueryRepository.findAll(keyword));
     }
 }
