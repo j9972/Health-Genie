@@ -51,6 +51,7 @@ public class PtReviewService {
 
         PtReview review = ptReviewRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail());
 
+
         if (review != null) {
             throw  new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
         }
