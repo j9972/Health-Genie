@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -158,5 +159,9 @@ public class PtProcessService {
 
     public List<PtProcessResponseDto> findAll(String keyword) {
         return PtProcessResponseDto.of(ptProcessQueryRepository.findAll(keyword));
+    }
+
+    public List<PtProcessResponseDto> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
+        return PtProcessResponseDto.of(ptProcessQueryRepository.findAllByDate(searchStartDate, searchEndDate));
     }
 }
