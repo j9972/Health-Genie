@@ -4,9 +4,12 @@ import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
 import com.example.healthgenie.boundedContext.chat.dto.RoomRequest;
 import com.example.healthgenie.boundedContext.chat.entity.ChatRoom;
 import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository;
+import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
+import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
+import com.example.healthgenie.boundedContext.community.repository.CommunityCommentRepository;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -26,6 +29,7 @@ public class TestUtils {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final CommunityPostRepository communityPostRepository;
+    private final CommunityCommentRepository communityCommentRepository;
 
     public void login(User user) {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities()));
@@ -89,5 +93,28 @@ public class TestUtils {
                 .content(content)
                 .photos(photos)
                 .build();
+    }
+
+    public CommentRequest createCommentRequest(String content, String writer) {
+        return CommentRequest.builder()
+                .content(content)
+                .writer(writer)
+                .build();
+    }
+
+    public CommentRequest createCommentRequest(String content) {
+        return createCommentRequest(content, null);
+    }
+
+    public CommunityComment createComment(String content, CommunityPost post) {
+        User writer = createUser("기본 사용자", Role.EMPTY, "default@test.com");
+
+        CommunityComment comment = CommunityComment.builder()
+                .commentBody(content)
+                .member(writer)
+                .post(post)
+                .build();
+
+        return communityCommentRepository.save(comment);
     }
 }

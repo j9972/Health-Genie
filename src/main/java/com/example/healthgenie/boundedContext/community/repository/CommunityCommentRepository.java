@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface CommunityCommentRepository extends JpaRepository<CommunityComment, Long> {
-    List<CommunityComment> findAllByPostId(Long postId);
+    List<CommunityComment> findAllByPostIdOrderByIdDesc(Long postId);
 }

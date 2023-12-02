@@ -61,7 +61,7 @@ public class CommunityCommentService {
     }
 
     public List<CommentResponse> findAllByPostId(Long postId) {
-        return CommentResponse.of(communityCommentRepository.findAllByPostId(postId));
+        return CommentResponse.of(communityCommentRepository.findAllByPostIdOrderByIdDesc(postId));
     }
 
     public CommentResponse update(Long postId, Long commentId, CommentRequest request) {
