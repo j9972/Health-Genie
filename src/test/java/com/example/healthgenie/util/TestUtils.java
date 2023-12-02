@@ -10,6 +10,7 @@ import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.community.repository.CommunityCommentRepository;
+import com.example.healthgenie.boundedContext.community.repository.CommunityPostPhotoRepository;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -30,6 +32,7 @@ public class TestUtils {
     private final ChatRoomRepository chatRoomRepository;
     private final CommunityPostRepository communityPostRepository;
     private final CommunityCommentRepository communityCommentRepository;
+    private final CommunityPostPhotoRepository communityPostPhotoRepository;
 
     public void login(User user) {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities()));
@@ -51,6 +54,7 @@ public class TestUtils {
                 .title(title)
                 .content(content)
                 .communityPostPhotos(photos)
+                .communityPostPhotos(new ArrayList<>())
                 .build();
 
         return communityPostRepository.save(post);
@@ -116,5 +120,14 @@ public class TestUtils {
                 .build();
 
         return communityCommentRepository.save(comment);
+    }
+
+    public CommunityPostPhoto createPostPhoto(CommunityPost post, String path) {
+        CommunityPostPhoto postPhoto = CommunityPostPhoto.builder()
+                .post(post)
+                .postPhotoPath(path)
+                .build();
+
+        return communityPostPhotoRepository.save(postPhoto);
     }
 }
