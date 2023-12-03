@@ -53,19 +53,4 @@ public class Matching extends BaseEntity {
     private User trainer;
 
     // PT 매칭 데이터에 "내용" 필드가 추가되어야 할 것 같음 -> 디자인에는 "내용" 필드 존재
-
-
-    @Override
-    public String toString() {
-        return "Matching{" +
-                "id=" + id +
-                ", date=" + date +
-                ", place='" + place + '\'' +
-                ", time=" + time +
-                ", ptAccept=" + ptAccept +
-                ", price=" + price +
-                ", ptExperience=" + expericence +
-                // Include other fields as needed...
-                '}';
-    }
 }
