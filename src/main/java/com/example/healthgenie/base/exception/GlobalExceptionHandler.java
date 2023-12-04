@@ -77,6 +77,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.makeErrorResponseEntity(exception.getChatErrorResult());
     }
 
+    @ExceptionHandler({JwtException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final JwtException exception) {
+        log.warn("JwtException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getJwtErrorResult());
+    }
+
     @ExceptionHandler({TrainerProfileException.class})
     public ResponseEntity<ErrorResponse> handleRestApiException(final TrainerProfileException exception) {
         log.warn("TrainerProfileException occur: ", exception);
@@ -141,6 +147,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final ChatErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final JwtErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }

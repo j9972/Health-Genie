@@ -38,7 +38,7 @@ public class PostResponse {
                         .id(comment.getId())
                         .createdDate(comment.getCreatedDate())
                         .content(comment.getCommentBody())
-                        .writer(comment.getMember().getName())
+                        .writer(comment.getMember().getNickname())
                         .build())
                 .toList();
 
@@ -47,7 +47,7 @@ public class PostResponse {
                 .createdDate(post.getCreatedDate())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .writer(post.getMember().getName())
+                .writer(post.getMember().getNickname())
                 .photoPaths(paths)
                 .comments(comments)
                 .build();

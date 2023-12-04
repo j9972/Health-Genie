@@ -67,15 +67,15 @@ public class TestUtils {
 
     public RoomRequest createRoomRequest(String receiverEmail) {
         return RoomRequest.builder()
-                .receiverEmail(receiverEmail)
+                .receiverNickname(receiverEmail)
                 .build();
     }
 
-    public MessageRequest createMessageRequest(Long roomId, String content, String senderEmail) {
+    public MessageRequest createMessageRequest(Long roomId, String content, String senderNickname) {
         return MessageRequest.builder()
                 .content(content)
                 .roomId(roomId)
-                .senderEmail(senderEmail)
+                .senderNickname(senderNickname)
                 .build();
     }
 

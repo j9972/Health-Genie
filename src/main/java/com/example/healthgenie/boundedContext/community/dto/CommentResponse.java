@@ -24,7 +24,7 @@ public class CommentResponse {
         return CommentResponse.builder()
                 .id(comment.getId())
                 .createdDate(comment.getCreatedDate())
-                .writer(comment.getMember().getName())
+                .writer(comment.getMember().getNickname())
                 .content(comment.getCommentBody())
                 .build();
     }
