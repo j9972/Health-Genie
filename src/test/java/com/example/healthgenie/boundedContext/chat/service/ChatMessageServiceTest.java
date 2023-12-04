@@ -56,7 +56,7 @@ class ChatMessageServiceTest {
         // given
         testUtils.login(sender);
 
-        MessageRequest request = testUtils.createMessageRequest(room.getId(), "정상적으로 메세지 보내기!", sender.getEmail());
+        MessageRequest request = testUtils.createMessageRequest(room.getId(), "정상적으로 메세지 보내기!", sender.getNickname());
 
         // when
         chatMessageService.sendMessage(request);
@@ -73,7 +73,7 @@ class ChatMessageServiceTest {
         // given
         testUtils.login(sender);
 
-        MessageRequest request = testUtils.createMessageRequest(999L, "잘못된 채팅방으로 메세지 보내기!", sender.getEmail());
+        MessageRequest request = testUtils.createMessageRequest(999L, "잘못된 채팅방으로 메세지 보내기!", sender.getNickname());
 
         // when
         assertThatThrownBy(() -> chatMessageService.sendMessage(request))

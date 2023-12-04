@@ -20,25 +20,4 @@ public class UserRegisterDto {
     private Role role;
     private AuthProvider authProvider;
     private Level level;
-
-    /*
-    public User toEntity(PasswordEncoder passwordEncoder) {
-        return User.builder()
-                .email(email)
-                .uniName(uniName)
-                .name(name)
-                .role(role)
-                .build();
-    }
-    public User tosocialEntity() {
-        return User.builder()
-                .email(email)
-                .uniName(uniName)
-                .name(name)
-                .provider(provider)
-                .role(role)
-                .build();
-    }
-
-     */
 }

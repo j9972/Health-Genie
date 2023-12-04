@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Random;
+
 import static com.example.healthgenie.base.exception.CommonErrorResult.USER_NOT_FOUND;
 
 @Transactional(readOnly = true)
@@ -24,9 +26,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User signUp(UserRegisterDto dto) {
+        String defaultNickname = createOriginalNickname();
+
         User user = User.builder()
                 .email(dto.getEmail())
                 .name(dto.getName())
+                .nickname(defaultNickname)
                 .authProvider(dto.getAuthProvider())
                 .uniName(dto.getUniName())
                 .role(dto.getRole())
@@ -48,5 +53,21 @@ public class UserServiceImpl implements UserService {
         User currentUser = SecurityUtils.getCurrentUser();
 
         currentUser.updateRole(role);
+    }
+
+    private String createOriginalNickname() {
+        String nickname;
+
+        Random random = new Random();
+        while(true) {
+            String temp = String.valueOf(random.nextInt(99999999) + 1);
+
+            if (!userRepository.existsByNickname(temp)) {
+                nickname = temp;
+                break;
+            }
+        }
+
+        return nickname;
     }
 }

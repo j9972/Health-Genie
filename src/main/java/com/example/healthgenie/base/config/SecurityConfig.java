@@ -1,6 +1,7 @@
 package com.example.healthgenie.base.config;
 
 import com.example.healthgenie.base.filter.JwtAuthenticationFilter;
+import com.example.healthgenie.base.filter.JwtExceptionFilter;
 import com.example.healthgenie.base.handler.JwtAccessDeniedHandler;
 import com.example.healthgenie.base.handler.JwtAuthenticationEntryPoint;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
@@ -22,6 +23,7 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     private final String[] COMMON_WHITE_LIST = new String[]
             {
@@ -63,7 +65,9 @@ public class SecurityConfig {
                 .baseUri("/oauth2/code/*")
         ;
 
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

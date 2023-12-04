@@ -38,7 +38,7 @@ public class ChatMessageService {
         ChatRoom chatRoom = chatRoomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
 
-        User sender = userRepository.findByEmail(request.getSenderEmail())
+        User sender = userRepository.findByNickname(request.getSenderNickname())
                 .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
         ChatMessage message = ChatMessage.builder()

@@ -1,6 +1,8 @@
 package com.example.healthgenie.base.utils;
 
 import com.example.healthgenie.base.constant.Constants;
+import com.example.healthgenie.base.exception.JwtErrorResult;
+import com.example.healthgenie.base.exception.JwtException;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.user.dto.Token;
 import io.jsonwebtoken.*;
@@ -84,20 +86,18 @@ public class JwtTokenProvider {
     }
 
     // 토큰의 유효성 확인
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
+            throw new JwtException(JwtErrorResult.WRONG_SIGNATURE);
         } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
+            throw new JwtException(JwtErrorResult.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
+            throw new JwtException(JwtErrorResult.UNSUPPORTED);
         } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
+            throw new JwtException(JwtErrorResult.WRONG_TOKEN);
         }
-        return false;
     }
 
     public boolean validateRefreshToken(RefreshToken refreshTokenObj){

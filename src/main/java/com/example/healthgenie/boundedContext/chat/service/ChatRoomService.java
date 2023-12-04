@@ -32,7 +32,7 @@ public class ChatRoomService {
     public Long joinChatRoom(RoomRequest request) {
         User sender = SecurityUtils.getCurrentUser();
 
-        User receiver = userRepository.findByEmail(request.getReceiverEmail())
+        User receiver = userRepository.findByNickname(request.getReceiverNickname())
                 .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
         if(Objects.equals(sender.getId(), receiver.getId())) {

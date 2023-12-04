@@ -7,8 +7,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface MatchingRepository extends JpaRepository<Matching, Long> {
+    Optional<Matching> findByMemberEmailAndTrainerEmail(String memberEmail, String trainerEmail); // 삭제 예정
 
-    public Optional<Matching> findByMemberEmailAndTrainerEmail(String userMail, String trainerMail);
-
-    Optional<Matching> findByMemberIdAndDate(Long userId, LocalDate date);
+    Optional<Matching> findByMemberIdAndDate(Long memberId, LocalDate date); // 삭제 예정
 }

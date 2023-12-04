@@ -98,6 +98,7 @@ public class InitData {
                 User user = User.builder()
                         .email(email)
                         .name(name)
+                        .nickname(name)
                         .role(Role.EMPTY)
                         .authProvider(AuthProvider.EMPTY)
                         .build();
