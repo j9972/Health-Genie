@@ -51,6 +51,10 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "name")
     private String name;
 
+    @NotNull
+    @Column(name = "nickname")
+    private String nickname;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "provider")
     private AuthProvider authProvider;

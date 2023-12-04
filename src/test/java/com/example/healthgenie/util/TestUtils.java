@@ -41,6 +41,7 @@ public class TestUtils {
     public User createUser(String name, Role role, String email) {
         User user = User.builder()
                 .name(name)
+                .nickname(name)
                 .role(role)
                 .email(email)
                 .build();

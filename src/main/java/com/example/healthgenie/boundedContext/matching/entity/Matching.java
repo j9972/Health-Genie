@@ -40,7 +40,7 @@ public class Matching extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name ="user_id")
-    private User user;
+    private User member;
 
     @ManyToOne
     @JoinColumn(name ="trainer_id")
