@@ -26,7 +26,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class TestUtils {
+public class TestKrUtils {
 
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
@@ -65,9 +65,9 @@ public class TestUtils {
         return createPost(writer, title, content, null);
     }
 
-    public RoomRequest createRoomRequest(String receiverEmail) {
+    public RoomRequest createRoomRequest(String receiverNickname) {
         return RoomRequest.builder()
-                .receiverNickname(receiverEmail)
+                .receiverNickname(receiverNickname)
                 .build();
     }
 
