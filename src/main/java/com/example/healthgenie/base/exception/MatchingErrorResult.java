@@ -7,8 +7,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum MatchingErrorResult {
-    MATCHING_EMPTY(HttpStatus.BAD_REQUEST,"matching is empty Request");
 
+//    MATCHING_EMPTY(HttpStatus.BAD_REQUEST,"matching is empty"),
+    MATCHING_EMPTY(HttpStatus.BAD_REQUEST,"matching is empty");
 
     private final HttpStatus httpStatus;
     private final String message;
