@@ -44,7 +44,7 @@ class ChatRoomServiceTest {
     void before() {
         // 사용자 생성
         sender = testKrUtils.createUser("sender1", Role.USER, "sender1@test.com");
-        receiver = testKrUtils.createUser("receiver1", Role.TRAINER, "receiver1@test.com");
+        receiver = testKrUtils.createUser("receiver", Role.TRAINER, "receiver1@test.com");
         other = testKrUtils.createUser("other1", Role.EMPTY, "other1@test.com");
     }
 

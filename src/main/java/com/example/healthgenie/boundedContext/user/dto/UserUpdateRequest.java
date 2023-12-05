@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateRequest {
+public class UserUpdateRequest {
 
     private Role role;
+    private String nickname;
 }

@@ -6,6 +6,7 @@ import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ class UserServiceTest {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    EntityManager em;
 
     @Test
     @DisplayName("정상적인 회원가입")
@@ -49,5 +53,25 @@ class UserServiceTest {
         testKrUtils.login(user);
 
         userService.updateRole(Role.TRAINER);
+
+        em.flush();
+        em.clear();
+
+        assertThat(user.getRole().getCode()).isEqualTo("TRAINER");
+    }
+
+    @Test
+    @DisplayName("정상적인 닉네임 변경")
+    void updateNickname() {
+        User user = testKrUtils.createUser("test1", Role.EMPTY, "test1@test.com");
+
+        testKrUtils.login(user);
+
+        userService.updateNickname("변경된 닉네임");
+
+        em.flush();
+        em.clear();
+
+        assertThat(user.getNickname()).isEqualTo("변경된 닉네임");
     }
 }

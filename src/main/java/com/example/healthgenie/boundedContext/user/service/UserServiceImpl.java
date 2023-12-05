@@ -50,9 +50,21 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void updateRole(Role role) {
-        User currentUser = SecurityUtils.getCurrentUser();
+        Long currentUserId = SecurityUtils.getCurrentUserId();
 
-        currentUser.updateRole(role);
+        User user = userRepository.findById(currentUserId).orElseThrow(() -> new CommonException(USER_NOT_FOUND));
+
+        user.updateRole(role);
+    }
+
+    @Transactional
+    @Override
+    public void updateNickname(String nickname) {
+        Long currentUserId = SecurityUtils.getCurrentUserId();
+
+        User user = userRepository.findById(currentUserId).orElseThrow(() -> new CommonException(USER_NOT_FOUND));
+
+        user.updateNickname(nickname);
     }
 
     private String createOriginalNickname() {
