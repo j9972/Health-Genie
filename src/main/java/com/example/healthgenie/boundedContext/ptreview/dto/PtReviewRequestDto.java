@@ -12,6 +12,6 @@ public class PtReviewRequestDto {
 
     private Double reviewScore;
 
-    private String userMail;// 작성하는 사람
-    private String trainerMail;
+    private String userNickName;
+    private String trainerNickName; // 작성하는 사람
 }

@@ -33,7 +33,7 @@ public class TrainerProfileService {
      */
     @Transactional
     public ProfileResponseDto writeProfile(ProfileRequestDto dto) {
-        User trainer = userRepository.findByEmail(dto.getEmail())
+        User trainer = userRepository.findByNickname(dto.getNickname())
                 .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
 
         User currentUser = SecurityUtils.getCurrentUser();
@@ -106,14 +106,9 @@ public class TrainerProfileService {
 
     }
 
-    public User isMemberCurrent() {
-        return userRepository.findById(SecurityUtils.getCurrentUserId())
-                .orElseThrow(() ->  new TrainerProfileException(TrainerProfileErrorResult.USER_EMPTY));
-    }
-
     // review는 회원만 수정 삭제 가능
     public TrainerInfo authorizationWriter(Long id) {
-        User member = isMemberCurrent();
+        User member = SecurityUtils.getCurrentUser();
 
         TrainerInfo profile = trainerProfileRepository.findById(id).orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
         if (!profile.getMember().equals(member)) {

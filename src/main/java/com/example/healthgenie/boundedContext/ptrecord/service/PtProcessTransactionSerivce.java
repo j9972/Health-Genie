@@ -52,8 +52,8 @@ public class PtProcessTransactionSerivce {
                 .content(saved.getContent())
                 .title(saved.getTitle())
                 .photoPaths(photoPaths)
-                .userMail(saved.getUserMail())
-                .trainerMail(saved.getTrainerMail())
+                .userNickName(saved.getUserNickName())
+                .trainerNickName(saved.getTrainerNickName())
                 .build();
     }
 

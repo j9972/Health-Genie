@@ -12,5 +12,5 @@ public class ProfileRequestDto {
     private String career;
     private int cost;
     private int month; // 견적을 개월 수로 변환
-    private String email; // 트레이너 이메일
+    private String nickname; // 트레이너 닉네임
 }

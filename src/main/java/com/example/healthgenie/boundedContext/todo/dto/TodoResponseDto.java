@@ -23,7 +23,7 @@ public class TodoResponseDto {
     private String title;
     private String description;
     private Status status;
-    private String userMail;
+    private String userNickname;
     private boolean pt;
 
     public static TodoResponseDto of(Todo todo) {
@@ -35,7 +35,7 @@ public class TodoResponseDto {
                 .description(todo.getDescription())
                 .status(todo.getStatus())
                 .pt(todo.isPt())
-                .userMail(todo.getMember().getEmail())
+                .userNickname(todo.getMember().getNickname())
                 .build();
     }
 }

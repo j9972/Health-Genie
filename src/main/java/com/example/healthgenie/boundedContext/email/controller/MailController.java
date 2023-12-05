@@ -6,7 +6,6 @@ import com.example.healthgenie.boundedContext.email.service.MailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,16 +20,16 @@ public class MailController {
 
     // 이메일 코드전송,이메일유효성검사
     @PostMapping("/send") // http://localhost:1234/auth/mail/send
-    public ResponseEntity authMail(@RequestBody String email) throws MessagingException {
+    public ResponseEntity<Result> authMail(@RequestBody String email) throws MessagingException {
 
         userMailService.sendCode(email);
 
-        return new ResponseEntity("이메일이 성공적으로 보내쟜습니다", HttpStatus.OK);
+        return ResponseEntity.ok(Result.of("이메일이 성공적으로 보내졌습니다."));
     }
 
     //이메일 코드검증
     @GetMapping("/verify") // http://localhost:1234/auth/mail/verify
-    public ResponseEntity validMailCode(@RequestParam("email") String email,
+    public ResponseEntity<Result> validMailCode(@RequestParam("email") String email,
                                         @RequestParam("authCode") String authCode){
         boolean result = userMailService.verify(email, authCode);
 

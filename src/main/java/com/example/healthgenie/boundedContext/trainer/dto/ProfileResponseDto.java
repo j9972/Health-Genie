@@ -17,7 +17,7 @@ public class ProfileResponseDto {
     private String career;
     private int cost;
     private int month; // 견적을 개월 수로 변환
-    private String email; // 트레이너 이메일
+    private String nickname; // 트레이너 닉네임
 
     public static ProfileResponseDto ofProfile(TrainerInfo profile) {
         return ProfileResponseDto.builder()
@@ -26,7 +26,7 @@ public class ProfileResponseDto {
                 .career(profile.getCareer())
                 .cost(profile.getCost())
                 .month(profile.getCareerMonth())
-                .email(profile.getMember().getEmail())
+                .nickname(profile.getMember().getNickname())
                 .build();
     }
 }

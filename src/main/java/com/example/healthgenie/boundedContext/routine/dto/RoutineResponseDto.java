@@ -25,7 +25,7 @@ public class RoutineResponseDto {
                 .content(routine.getContent())
                 .parts(routine.getPart())
                 .recipe(routine.getWorkoutRecipe())
-                .writer(routine.getMember().getEmail())
+                .writer(routine.getMember().getNickname())
                 .build();
     }
 

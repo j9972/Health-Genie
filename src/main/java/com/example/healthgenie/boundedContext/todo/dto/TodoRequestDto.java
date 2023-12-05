@@ -17,6 +17,6 @@ public class TodoRequestDto {
     private String title;
     private String description;
     private Status status;
-    private String userMail;
+    private String userNickname;
     private boolean pt;
 }

@@ -46,10 +46,10 @@ public class PtProcessService {
     @Transactional
     public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto){
 
-        User user = userRepository.findByEmail(dto.getUserMail())
+        User user = userRepository.findByNickname(dto.getUserNickName())
                 .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
 
-        matchingRepository.findByMemberEmailAndTrainerEmail(user.getEmail(), dto.getTrainerMail())
+        matchingRepository.findByMemberNicknameAndTrainerNickname(user.getNickname(), dto.getTrainerNickName())
                 .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
         return makePtRProcess(dto,user);
@@ -90,6 +90,9 @@ public class PtProcessService {
             throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
 
         } else {
+            // TODO : authentication.getName() 결과값 체크하기
+            log.info("authentication.getName() : {}", authentication.getName());
+
 
             Optional<User> email = userRepository.findByEmail(authentication.getName());
             User member = userRepository.findById(email.get().getId()).orElseThrow();
@@ -110,7 +113,9 @@ public class PtProcessService {
         해당 트레이너가 작성한 모든 피드백들을 전부 모아보기
      */
     @Transactional(readOnly = true)
-    public Page<PtProcessResponseDto> getAllTrainerProcess(Long trainerId, int page, int size){
+    public Page<PtProcessResponseDto> getAllTrainerProcess(int page, int size){
+
+        Long trainerId = SecurityUtils.getCurrentUserId();
 
         // 작성 시간 역순으로 정렬 (가장 최근 작성 순)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
@@ -124,7 +129,10 @@ public class PtProcessService {
         본인의 피드백들을 전부 모아보기
     */
     @Transactional(readOnly = true)
-    public Page<PtProcessResponseDto> getAllMyProcess(Long userId, int page, int size){
+    public Page<PtProcessResponseDto> getAllMyProcess(int page, int size){
+
+        Long userId = SecurityUtils.getCurrentUserId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<PtProcess> process = ptProcessRepository.findAllByMemberId(userId, pageable);
@@ -141,14 +149,9 @@ public class PtProcessService {
 
     }
 
-    public User isMemberCurrent() {
-        return userRepository.findById(SecurityUtils.getCurrentUserId())
-                .orElseThrow(() ->  new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
-    }
-
     // process는 트레이너만 수정 삭제 가능
     public PtProcess authorizationProcessWriter(Long id) {
-        User member = isMemberCurrent();
+        User member = SecurityUtils.getCurrentUser();
 
         PtProcess process = ptProcessRepository.findById(id).orElseThrow(() -> new PtProcessException(PtProcessErrorResult.RECORD_EMPTY));
         if (!process.getTrainer().equals(member)) {

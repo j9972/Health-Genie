@@ -43,13 +43,13 @@ public class PtReviewService {
     @Transactional
     public PtReviewResponseDto addPtReview(PtReviewRequestDto dto){
 
-        User trainer = userRepository.findByEmail(dto.getTrainerMail())
+        User trainer = userRepository.findByNickname(dto.getTrainerNickName())
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY));
 
-        matchingRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail())
+        matchingRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(), dto.getTrainerNickName())
                 .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
-        PtReview review = ptReviewRepository.findByMemberEmailAndTrainerEmail(dto.getUserMail(), dto.getTrainerMail());
+        PtReview review = ptReviewRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(), dto.getTrainerNickName());
 
 
         if (review != null) {
@@ -83,8 +83,8 @@ public class PtReviewService {
                 () -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
 
         /*
-        authentication.getPrincipal() == "anonymousUser" -> 현재 사용자가 인증되지 않은 사용자다
-         */
+            authentication.getPrincipal() == "anonymousUser" -> 현재 사용자가 인증되지 않은 사용자다
+        */
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
@@ -107,7 +107,8 @@ public class PtReviewService {
          review안에서 trainerId를 조회하는데, review안에는 userId/trainerId가 나뉘어 있어서 필요함
      */
     @Transactional(readOnly = true)
-    public Page<PtReviewResponseDto> getAllTrainerReview(Long trainerId, int page, int size){
+    public Page<PtReviewResponseDto> getAllTrainerReview(int page, int size){
+        Long trainerId = SecurityUtils.getCurrentUserId();
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<PtReview> review = ptReviewRepository.findAllByTrainerId(trainerId, pageable);
@@ -118,7 +119,8 @@ public class PtReviewService {
         본인이 작성한 review list 조회, ]
     */
     @Transactional(readOnly = true)
-    public Page<PtReviewResponseDto> getAllReview(Long userId, int page, int size){
+    public Page<PtReviewResponseDto> getAllReview(int page, int size){
+        Long userId = SecurityUtils.getCurrentUserId();
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<PtReview> review = ptReviewRepository.findAllByMemberId(userId, pageable);
@@ -152,14 +154,10 @@ public class PtReviewService {
 
     }
 
-    public User isMemberCurrent() {
-        return userRepository.findById(SecurityUtils.getCurrentUserId())
-                .orElseThrow(() ->  new PtReviewException(PtReviewErrorResult.NO_USER_INFO));
-    }
 
     // review는 회원만 수정 삭제 가능
     public PtReview authorizationReviewWriter(Long id) {
-        User member = isMemberCurrent();
+        User member = SecurityUtils.getCurrentUser();
 
         PtReview review = ptReviewRepository.findById(id).orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
         if (!review.getMember().equals(member)) {

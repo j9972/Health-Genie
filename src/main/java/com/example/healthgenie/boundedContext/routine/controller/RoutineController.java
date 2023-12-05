@@ -37,10 +37,10 @@ public class RoutineController {
      }
 
 
-    // 개인 루틴 전체조회
-    @GetMapping("/{userId}") // http://localhost:1234/routine/{userId}
-    public ResponseEntity<Result> getAllRoutines(@PathVariable Long userId) {
-        List<RoutineResponseDto> response = routineService.getAllMyRoutine(userId);
+    // 개인 루틴 전체조회 -> currentUser 사용하면 userId 필요없다
+    @GetMapping() // http://localhost:1234/routine
+    public ResponseEntity<Result> getAllRoutines() {
+        List<RoutineResponseDto> response = routineService.getAllMyRoutine();
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -48,14 +48,14 @@ public class RoutineController {
         개인 루틴 상세조회
         회원용/트레이너용 관리페이지에서 조회할때 사용할 API
      */
-    @GetMapping("/detail/{day}/{userId}") // http://localhost:1234/routine/detail/{day}/{userId}
-    public ResponseEntity<Result> getRoutine(@PathVariable Day day, @PathVariable Long userId){
-        List<RoutineResponseDto> response = routineService.getMyRoutine(day, userId);
+    @GetMapping("/detail/{day}") // http://localhost:1234/routine/detail/{day}
+    public ResponseEntity<Result> getRoutine(@PathVariable Day day){
+        List<RoutineResponseDto> response = routineService.getMyRoutine(day);
         return ResponseEntity.ok(Result.of(response));
     }
 
     // 지니 - 초/중/고 급자 전체 조회
-    @GetMapping("/genie/{level}/{userId}") // http://localhost:1234/routine/genie/{level}
+    @GetMapping("/genie/{level}") // http://localhost:1234/routine/genie/{level}
     public ResponseEntity<Result> getAllGenieRoutines(@PathVariable Level level) {
         List<RoutineResponseDto> response = routineService.getAllGenieRoutine(level);
         return ResponseEntity.ok(Result.of(response));

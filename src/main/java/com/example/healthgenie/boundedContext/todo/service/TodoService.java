@@ -29,21 +29,14 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class TodoService {
 
-    private final UserRepository userRepository;
     private final TodoRepository todoRepository;
     private final MatchingRepository matchingRepository;
 
     @Transactional
     public TodoResponseDto addTodoList(TodoRequestDto dto){
 
-        User user = userRepository.findByEmail(dto.getUserMail())
-                .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_USER_INFO));
+        User user = SecurityUtils.getCurrentUser();
 
-        return addTodo(dto, user);
-    }
-
-    @Transactional
-    public TodoResponseDto addTodo(TodoRequestDto dto, User user){
         Todo todo = Todo.builder()
                 .date(dto.getDate())
                 .time(dto.getTime())
@@ -87,13 +80,8 @@ public class TodoService {
         todoRepository.deleteById(todo.getId());
     }
 
-    public User isMemberCurrent() {
-        return userRepository.findById(SecurityUtils.getCurrentUserId())
-                .orElseThrow(() ->  new TodoException(TodoErrorResult.NO_USER_INFO));
-    }
-
     public Todo authorizationWriter(Long id) {
-        User member = isMemberCurrent();
+        User member = SecurityUtils.getCurrentUser();
 
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new TodoException(TodoErrorResult.NO_TODO_INFO));
         if (!todo.getMember().equals(member)) {
@@ -105,7 +93,9 @@ public class TodoService {
     /*
         todo를 전부 띄우는게 아니라 날짜 별로 띄워야 하는게 핵심
      */
-    public List<TodoResponseDto> getAllMyTodo(LocalDate date, Long userId) {
+    public List<TodoResponseDto> getAllMyTodo(LocalDate date) {
+
+        Long userId = SecurityUtils.getCurrentUserId();
 
         LocalDate today = LocalDate.now();
         // LocalDate date1 = LocalDate.of(2023, 12, 13); test data

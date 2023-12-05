@@ -49,11 +49,11 @@ public class PtReviewController {
         최근 작성순서로 정렬했기에 프론트에서 상위 3개씩 가져다가 사용하면 된다.
      */
     //
-    @GetMapping("/list/trainer/{trainerId}") // http://localhost:1234/review/list/trainer/{trainerId}
-    public ResponseEntity<Result> getAllTrainerReview(@PathVariable Long trainerId, @RequestParam(required = false, defaultValue = "0") int page){
+    @GetMapping("/list/trainer") // http://localhost:1234/review/list/trainer
+    public ResponseEntity<Result> getAllTrainerReview(@RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
         int size = 5;
-        Page<PtReviewResponseDto> response = reviewService.getAllTrainerReview(trainerId, page, size);
+        Page<PtReviewResponseDto> response = reviewService.getAllTrainerReview(page, size);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -61,11 +61,11 @@ public class PtReviewController {
         본인이 작성한 review list 조회 [ 회원용 관리페이지 ]
         최근 작성순서로 정렬했기에 프론트에서 상위 3개씩 가져다가 사용하면 된다.
     */
-    @GetMapping("/list/my/{userId}") // http://localhost:1234/review/list/{userId}
-    public ResponseEntity<Result> getAllMyReview(@PathVariable Long userId, @RequestParam(required = false, defaultValue = "0") int page){
+    @GetMapping("/list/my") // http://localhost:1234/review/list
+    public ResponseEntity<Result> getAllMyReview(@RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
         int size = 5;
-        Page<PtReviewResponseDto> response = reviewService.getAllReview(userId, page, size);
+        Page<PtReviewResponseDto> response = reviewService.getAllReview(page, size);
         return ResponseEntity.ok(Result.of(response));
     }
 

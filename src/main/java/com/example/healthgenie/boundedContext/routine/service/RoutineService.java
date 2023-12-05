@@ -92,7 +92,9 @@ public class RoutineService {
 
     // 나의 루틴 요일 상관없이 전체 조회 [ userId 로만 구분 ]
     @Transactional(readOnly = true)
-    public List<RoutineResponseDto> getAllMyRoutine(Long userId) {
+    public List<RoutineResponseDto> getAllMyRoutine() {
+
+        Long userId = SecurityUtils.getCurrentUserId();
 
         List<Routine> own = routineRepository.findAllByMemberId(userId);
         return own.stream()
@@ -102,7 +104,10 @@ public class RoutineService {
 
     // 나의 루틴 요일별 상세조회
     @Transactional(readOnly = true)
-    public List<RoutineResponseDto> getMyRoutine(Day day, Long userId) {
+    public List<RoutineResponseDto> getMyRoutine(Day day) {
+
+        Long userId = SecurityUtils.getCurrentUserId();
+
         List<Routine> genie = routineRepository.findAllByMemberIdAndDay(userId,day);
 
         return genie.stream()
@@ -115,6 +120,7 @@ public class RoutineService {
      */
     @Transactional
     public List<RoutineResponseDto> getAllGenieRoutine(Level level) {
+
         User currentUser = SecurityUtils.getCurrentUser();
         currentUser.updateLevel(level); // 이 부분 [ 매번 level update ]
 
@@ -142,15 +148,8 @@ public class RoutineService {
         routineRepository.deleteById(own.getId());
     }
 
-
-
-    public User isMemberCurrent() {
-        return userRepository.findById(SecurityUtils.getCurrentUserId())
-                .orElseThrow(() ->  new RoutineException(RoutineErrorResult.NO_USER_INFO));
-    }
-
     public Routine authorizationWriter(Long id) {
-        User member = isMemberCurrent();
+        User member = SecurityUtils.getCurrentUser();
 
         Routine routine = routineRepository.findById(id).orElseThrow(() -> new RoutineException(RoutineErrorResult.NO_HISTORY));
         if (!routine.getMember().equals(member)) {
