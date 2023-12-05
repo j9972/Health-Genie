@@ -7,7 +7,7 @@ import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.util.TestUtils;
+import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class CommunityPostServiceTest {
 
     @Autowired
-    TestUtils testUtils;
+    TestKrUtils testKrUtils;
 
     @Autowired
     CommunityPostService communityPostService;
@@ -37,18 +37,18 @@ class CommunityPostServiceTest {
 
     @BeforeEach
     void before() {
-        user1 = testUtils.createUser("test1", Role.EMPTY, "test1@test.com");
-        user2 = testUtils.createUser("test2", Role.EMPTY, "test2@test.com");
-        post1 = testUtils.createPost(user1, "초기 게시글 제목", "초기 게시글 내용");
+        user1 = testKrUtils.createUser("test1", Role.EMPTY, "test1@test.com");
+        user2 = testKrUtils.createUser("test2", Role.EMPTY, "test2@test.com");
+        post1 = testKrUtils.createPost(user1, "초기 게시글 제목", "초기 게시글 내용");
     }
 
     @Test
     @DisplayName("정상적인 게시글 생성하기")
     void createPost() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        PostRequest request = testUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
+        PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
 
         // when
         PostResponse response = communityPostService.save(request);
@@ -63,7 +63,7 @@ class CommunityPostServiceTest {
     @DisplayName("로그인하지 않은 사용자가 게시글 생성하기")
     void notLoginCreatePost() {
         // given
-        PostRequest request = testUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
+        PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
 
         // when
 
@@ -76,9 +76,9 @@ class CommunityPostServiceTest {
     @DisplayName("정상적인 게시글 조회하기")
     void findById() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        PostRequest request = testUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
+        PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
         PostResponse savedPost = communityPostService.save(request);
 
         // when
@@ -94,7 +94,7 @@ class CommunityPostServiceTest {
     @DisplayName("존재하지 않는 게시글 조회하기")
     void notExistPost() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         // when
 
@@ -107,10 +107,10 @@ class CommunityPostServiceTest {
     @DisplayName("정상적인 게시글 전체 조회하기")
     void findAll() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         for(int i=1; i<=10; i++) {
-            PostRequest request = testUtils.createPostRequest("테스트 게시글 제목" + i, "테스트 게시글 내용" + i);
+            PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목" + i, "테스트 게시글 내용" + i);
             communityPostService.save(request);
         }
 
@@ -126,15 +126,15 @@ class CommunityPostServiceTest {
     @DisplayName("정상적인 게시글 제목 키워드 조회하기")
     void findAllByKeyword() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         for(int i=1; i<=10; i++) {
-            PostRequest request = testUtils.createPostRequest("테스트 게시글 제목" + i, "테스트 게시글 내용" + i);
+            PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목" + i, "테스트 게시글 내용" + i);
             communityPostService.save(request);
         }
 
         for(int i=1; i<=3; i++) {
-            PostRequest request = testUtils.createPostRequest("키워드입니다." + i, "테스트 게시글 내용" + i);
+            PostRequest request = testKrUtils.createPostRequest("키워드입니다." + i, "테스트 게시글 내용" + i);
             communityPostService.save(request);
         }
 
@@ -152,10 +152,10 @@ class CommunityPostServiceTest {
     @DisplayName("정상적인 게시글 수정하기")
     void update() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         // when
-        PostRequest updateRequest = testUtils.createPostRequest("수정한 제목", "수정한 내용");
+        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용");
 
         // then
         PostResponse response = communityPostService.update(post1.getId(), updateRequest);
@@ -168,10 +168,10 @@ class CommunityPostServiceTest {
     @DisplayName("자신의 게시글이 아닌 게시글을 수정하기")
     void notOwnUpdate() {
         // given
-        testUtils.login(user2);
+        testKrUtils.login(user2);
 
         // when
-        PostRequest updateRequest = testUtils.createPostRequest("수정한 제목", "수정한 내용");
+        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용");
 
         // then
         assertThatThrownBy(() -> communityPostService.update(post1.getId(), updateRequest))
@@ -182,15 +182,15 @@ class CommunityPostServiceTest {
     @DisplayName("로그인 하지 않은 사용자가 게시글을 수정하기")
     void notLoginUpdate() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        PostRequest saveRequest = testUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
+        PostRequest saveRequest = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
 
         // when
         PostResponse savedPost = communityPostService.save(saveRequest);
-        PostRequest updateRequest = testUtils.createPostRequest("수정한 제목", "수정한 내용");
+        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용");
 
-        testUtils.login(user2);
+        testKrUtils.login(user2);
 
         // then
         assertThatThrownBy(() -> communityPostService.update(savedPost.getId(), updateRequest))
@@ -201,10 +201,10 @@ class CommunityPostServiceTest {
     @DisplayName("존재하지 않는 게시글을 수정하기")
     void notExistUpdate() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         // when
-        PostRequest updateRequest = testUtils.createPostRequest("수정한 제목", "수정한 내용");
+        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용");
 
         // then
         assertThatThrownBy(() -> communityPostService.update(999L, updateRequest))
@@ -215,7 +215,7 @@ class CommunityPostServiceTest {
     @DisplayName("정상적인 게시글 삭제하기")
     void delete() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         // when
 
@@ -241,7 +241,7 @@ class CommunityPostServiceTest {
     @DisplayName("자신의 게시글이 아닌 게시글을 삭제하기")
     void notOwnDelete() {
         // given
-        testUtils.login(user2);
+        testKrUtils.login(user2);
 
         // when
 
@@ -254,7 +254,7 @@ class CommunityPostServiceTest {
     @DisplayName("존재하지 않는 게시글을 삭제하기")
     void notExistDelete() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         // when
 

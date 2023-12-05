@@ -9,7 +9,7 @@ import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.util.TestUtils;
+import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class CommunityCommentServiceTest {
 
     @Autowired
-    TestUtils testUtils;
+    TestKrUtils testKrUtils;
 
     @Autowired
     CommunityCommentService communityCommentService;
@@ -39,18 +39,18 @@ class CommunityCommentServiceTest {
 
     @BeforeEach
     void before() {
-        user1 = testUtils.createUser("test1", Role.EMPTY, "test1@test.com");
-        post1 = testUtils.createPost(user1, "테스트 게시글 제목1", "테스트 게시글 내용1");
-        comment1 = testUtils.createComment("기본 댓글", post1);
+        user1 = testKrUtils.createUser("test1", Role.EMPTY, "test1@test.com");
+        post1 = testKrUtils.createPost(user1, "테스트 게시글 제목1", "테스트 게시글 내용1");
+        comment1 = testKrUtils.createComment("기본 댓글", post1);
     }
 
     @Test
     @DisplayName("정상적으로 댓글 달기")
     void save() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        CommentRequest request = testUtils.createCommentRequest("테스트 댓글1", user1.getName());
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getName());
 
         // when
         CommentResponse savedComment = communityCommentService.save(post1.getId(), request);
@@ -64,9 +64,9 @@ class CommunityCommentServiceTest {
     @DisplayName("존재하지 않는 게시글에 댓글 달기")
     void notExistPostComment() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        CommentRequest request = testUtils.createCommentRequest("테스트 댓글1", user1.getName());
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getName());
 
         // when
 
@@ -79,7 +79,7 @@ class CommunityCommentServiceTest {
     @DisplayName("로그인하지 않은 사용자가 게시글에 댓글 달기")
     void notLoginComment() {
         // given
-        CommentRequest request = testUtils.createCommentRequest("테스트 댓글1", user1.getName());
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getName());
 
         // when
 
@@ -92,9 +92,9 @@ class CommunityCommentServiceTest {
     @DisplayName("댓글 한개 조회하기 - 개발자용")
     void findById() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        CommentRequest request = testUtils.createCommentRequest("테스트 댓글1", user1.getName());
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getName());
         CommentResponse savedComment = communityCommentService.save(post1.getId(), request);
 
         // when
@@ -121,10 +121,10 @@ class CommunityCommentServiceTest {
     @DisplayName("게시글 내 모든 댓글 조회하기")
     void allComments() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         for(int i=1; i<=10; i++) {
-            CommentRequest request = testUtils.createCommentRequest("테스트 댓글" + i, user1.getName());
+            CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글" + i, user1.getName());
             communityCommentService.save(post1.getId(), request);
         }
 
@@ -140,15 +140,15 @@ class CommunityCommentServiceTest {
     @DisplayName("정상적으로 댓글 수정하기")
     void editComment() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        CommentRequest request1 = testUtils.createCommentRequest("테스트 댓글1", user1.getName());
+        CommentRequest request1 = testKrUtils.createCommentRequest("테스트 댓글1", user1.getName());
         CommentResponse savedComment = communityCommentService.save(post1.getId(), request1);
 
-        CommentRequest request2 = testUtils.createCommentRequest("테스트 댓글2", user1.getName());
+        CommentRequest request2 = testKrUtils.createCommentRequest("테스트 댓글2", user1.getName());
         communityCommentService.save(post1.getId(), request2);
 
-        CommentRequest updateRequest = testUtils.createCommentRequest("수정된 댓글");
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
         CommentResponse updatedComment = communityCommentService.update(post1.getId(), savedComment.getId(), updateRequest);
@@ -163,9 +163,9 @@ class CommunityCommentServiceTest {
     @DisplayName("존재하지 않는 게시글의 댓글 수정하기")
     void notExistPostEditComment() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        CommentRequest updateRequest = testUtils.createCommentRequest("수정된 댓글");
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
 
@@ -178,9 +178,9 @@ class CommunityCommentServiceTest {
     @DisplayName("존재하지 않는 댓글 수정하기")
     void notExistCommentEdit() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        CommentRequest updateRequest = testUtils.createCommentRequest("수정된 댓글");
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
 
@@ -193,7 +193,7 @@ class CommunityCommentServiceTest {
     @DisplayName("로그인하지 않은 사용자가 댓글 수정하기")
     void notLoginEditComment() {
         // given
-        CommentRequest updateRequest = testUtils.createCommentRequest("수정된 댓글");
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
 
@@ -206,9 +206,9 @@ class CommunityCommentServiceTest {
     @DisplayName("자신이 작성하지 않은 댓글 수정하기")
     void noPermissionToEdit() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        CommentRequest updateRequest = testUtils.createCommentRequest("수정된 댓글");
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
 
@@ -221,9 +221,9 @@ class CommunityCommentServiceTest {
     @DisplayName("정상적으로 댓글 삭제하기")
     void removeComment() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
-        CommentRequest request = testUtils.createCommentRequest("테스트 댓글1");
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
         CommentResponse savedComment = communityCommentService.save(post1.getId(), request);
 
         // when
@@ -239,7 +239,7 @@ class CommunityCommentServiceTest {
     @DisplayName("존재하지 않는 게시글의 댓글 삭제하기")
     void notExistPostRemoveComment() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         // when
 
@@ -252,7 +252,7 @@ class CommunityCommentServiceTest {
     @DisplayName("존재하지 않는 댓글 삭제하기")
     void notExistCommentRemove() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         // when
 
@@ -277,7 +277,7 @@ class CommunityCommentServiceTest {
     @DisplayName("자신이 작성하지 않은 댓글 삭제하기")
     void noPermissionToRemove() {
         // given
-        testUtils.login(user1);
+        testKrUtils.login(user1);
 
         // when
 
