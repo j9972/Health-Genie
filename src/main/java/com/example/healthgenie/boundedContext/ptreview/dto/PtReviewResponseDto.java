@@ -19,8 +19,8 @@ public class PtReviewResponseDto {
     private Double reviewScore;
 
 
-    private String userMail;// 작성하는 사람
-    private String trainerMail;
+    private String userNickName;
+    private String trainerNickName; // 작성하는 사람
 
     public static PtReviewResponseDto of(PtReview review) {
         return PtReviewResponseDto.builder()
@@ -28,8 +28,8 @@ public class PtReviewResponseDto {
                 .content(review.getContent())
                 .stopReason(review.getStopReason())
                 .reviewScore(review.getReviewScore())
-                .trainerMail(review.getTrainer().getEmail())
-                .userMail(review.getMember().getEmail())
+                .trainerNickName(review.getTrainer().getNickname())
+                .userNickName(review.getMember().getNickname())
                 .build();
     }
 

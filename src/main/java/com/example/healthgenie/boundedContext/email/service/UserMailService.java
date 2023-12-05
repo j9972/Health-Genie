@@ -32,17 +32,18 @@ public class UserMailService {
     private long authCodeExpirationMillis;
 
     @Transactional
-    public void sendCode(String toEmail) throws MessagingException {
+    public String sendCode(String toEmail) throws MessagingException {
 
         String title = "Health Genie 이메일 인증 번호";
         String authCode = this.createCode();
+//
+//        JsonObject jsonObject = new Gson().fromJson(toEmail, JsonObject.class);
+//        String email = jsonObject.get("email").getAsString();
 
-        JsonObject jsonObject = new Gson().fromJson(toEmail, JsonObject.class);
-        String email = jsonObject.get("email").getAsString();
-
-        mailService.sendEmail(email, title, authCode);
+        mailService.sendEmail(toEmail, title, authCode);
 
         redisService.setValues(AUTH_CODE_PREFIX + toEmail, authCode, Duration.ofMillis(this.authCodeExpirationMillis));
+        return authCode;
     }
 
     private String createCode() {

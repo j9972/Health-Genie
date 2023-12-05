@@ -43,11 +43,11 @@ public class PtProcessController {
         트레이너가 작성한 전체 피드백 모아보기 [ 트레이너용 관리페이지에서 사용 ]
         관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
      */
-    @GetMapping("/list/trainer/{trainerId}") // http://localhost:1234/process/list/trainer/{trainerId}
-    public ResponseEntity<Result> getAllTrainerProcess(@PathVariable Long trainerId, @RequestParam(required = false, defaultValue = "0") int page){
+    @GetMapping("/list/trainer") // http://localhost:1234/process/list/trainer
+    public ResponseEntity<Result> getAllTrainerProcess(@RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
         int size = 5;
-        Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(trainerId, page, size);
+        Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(page, size);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -55,11 +55,11 @@ public class PtProcessController {
         본인이 관련 모든 피드백 모아보기 [ 회원용 관리페이지에서 사용 ]
         관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
      */
-    @GetMapping("/list/my/{userId}") // http://localhost:1234/process/list/my/{userId}
-    public ResponseEntity<Result> getAllMyProcess(@PathVariable Long userId, @RequestParam(required = false, defaultValue = "0") int page){
+    @GetMapping("/list/my") // http://localhost:1234/process/list/my
+    public ResponseEntity<Result> getAllMyProcess(@RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
         int size = 5;
-        Page<PtProcessResponseDto> response = processService.getAllMyProcess(userId, page, size);
+        Page<PtProcessResponseDto> response = processService.getAllMyProcess(page, size);
         return ResponseEntity.ok(Result.of(response));
     }
 

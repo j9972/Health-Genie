@@ -18,6 +18,6 @@ public class PtProcessRequestDto {
     private String title;
     private String content;
     private List<MultipartFile> photos;
-    private String userMail;
-    private String trainerMail; // 작성하는 사람
+    private String userNickName;
+    private String trainerNickName; // 작성하는 사람
 }

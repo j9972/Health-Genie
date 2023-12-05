@@ -28,9 +28,9 @@ public class TodoController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/{date}/{userId}") // http://localhost:1234/calender/todo/{date}/{userId}
-    public ResponseEntity<Result> getTodos(@PathVariable LocalDate date , @PathVariable Long userId) {
-        List<TodoResponseDto> response = todoService.getAllMyTodo(date, userId);
+    @GetMapping("/{date}") // http://localhost:1234/calender/todo/{date}
+    public ResponseEntity<Result> getTodos(@PathVariable LocalDate date) {
+        List<TodoResponseDto> response = todoService.getAllMyTodo(date);
         return ResponseEntity.ok(Result.of(response));
     }
 
