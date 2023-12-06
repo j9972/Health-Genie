@@ -54,9 +54,14 @@ public class MatchingService {
         return MatchingResponse.of(savedMatching);
     }
 
-    public List<MatchingResponse> findByDateAndNicknames(MatchingRequest request) {
-        User currentUser = SecurityUtils.getCurrentUser();
+    public MatchingResponse findOne(MatchingRequest request) {
+        Matching matching =
+                matchingQueryRepository.findOne(request.getDate(), request.getUserNickname(), request.getTrainerNickname());
 
+        return MatchingResponse.of(matching);
+    }
+
+    public List<MatchingResponse> findByDateAndNicknames(MatchingRequest request) {
         List<Matching> matchings =
                 matchingQueryRepository.findAllMatchingsForOneDay(request.getDate(), request.getUserNickname(), request.getTrainerNickname());
 
@@ -78,11 +83,11 @@ public class MatchingService {
 
         return findMatching.getId();
     }
-
     /*
     고민 : participate()와 cancel()을 통합해서 조건문으로 분기해야할까?
           아니면 미래에 요구 사항이 변경으로 로직이 바뀌어서 유지 보수를 위해 이대로 나눠 놔야 할까?
      */
+
     @Transactional
     public Long cancel(MatchingRequest request) {
         Long currentUserId = SecurityUtils.getCurrentUserId();

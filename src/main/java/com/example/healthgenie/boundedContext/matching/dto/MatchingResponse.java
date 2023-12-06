@@ -20,6 +20,7 @@ public class MatchingResponse {
     private String place;
     private String userNickname;
     private String trainerNickname;
+    private String description;
 
     public static MatchingResponse of(Matching matching) {
         return MatchingResponse.builder()
@@ -28,6 +29,7 @@ public class MatchingResponse {
                 .place(matching.getPlace())
                 .userNickname(matching.getMember().getNickname())
                 .trainerNickname(matching.getTrainer().getNickname())
+                .description(matching.getDescription())
                 .build();
     }
 

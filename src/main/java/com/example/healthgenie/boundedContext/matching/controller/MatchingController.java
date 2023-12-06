@@ -34,6 +34,13 @@ public class MatchingController {
         return ResponseEntity.ok(Result.of(responses));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Result> findOne(@PathVariable Long id, @RequestBody MatchingRequest request) {
+        MatchingResponse response = matchingService.findOne(request);
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
     @PatchMapping
     public ResponseEntity<Result> update(@RequestParam(name = "state") MatchingState state,
                                          @RequestBody MatchingRequest request

@@ -72,6 +72,38 @@ class MatchingServiceTest {
     }
 
     @Test
+    @DisplayName("매칭 상세 조회하기")
+    void findOne() {
+        // given
+        testKrUtils.login(user1);
+
+        for(int i=1; i<=10; i++) {
+            LocalDateTime date = LocalDateTime.of(2099, 1, 1, i*2, 30);
+            testKrUtils.createMatching(
+                    date,
+                    "테스트 체육관" + i,
+                    "테스트 PT 내용" + i,
+                    user1,
+                    trainer1
+            );
+        }
+
+        // when
+        LocalDateTime date = LocalDateTime.of(2099, 1, 1, 20, 30);
+        MatchingRequest findRequest = testKrUtils.createMatchingRequest(date, user1, trainer1);
+
+        MatchingResponse response = matchingService.findOne(findRequest);
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.getDate()).isEqualTo(date);
+        assertThat(response.getPlace()).isEqualTo("테스트 체육관10");
+        assertThat(response.getDescription()).isEqualTo("테스트 PT 내용10");
+        assertThat(response.getUserNickname()).isEqualTo(user1.getNickname());
+        assertThat(response.getTrainerNickname()).isEqualTo(trainer1.getNickname());
+    }
+
+    @Test
     @DisplayName("해당 날짜의 매칭 조회하기")
     void findByDateAndNicknames() {
         // given
