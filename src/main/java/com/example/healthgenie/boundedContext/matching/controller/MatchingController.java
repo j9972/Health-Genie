@@ -3,6 +3,7 @@ package com.example.healthgenie.boundedContext.matching.controller;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingResponse;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
 import com.example.healthgenie.boundedContext.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,38 +29,29 @@ public class MatchingController {
 
     @GetMapping
     public ResponseEntity<Result> findAllByDate(@RequestBody MatchingRequest request) {
-        List<MatchingResponse> responses = matchingService.findAllByDate(request);
+        List<MatchingResponse> responses = matchingService.findByDateAndNicknames(request);
 
         return ResponseEntity.ok(Result.of(responses));
     }
 
-    @PatchMapping("/participate")
-    public ResponseEntity<Result> participate(@RequestParam(name = "state") Boolean state,
-                                              @RequestBody MatchingRequest request
-    ) {
-        String response = "";
-
-        if(state) {
-            response = matchingService.participate(request);
-        } else {
-            response = matchingService.cancel(request);
-        }
-
-        return ResponseEntity.ok(Result.of(response));
-    }
-
-    @PatchMapping("/accept")
-    public ResponseEntity<Result> accept(@RequestParam(name = "state") Boolean state,
+    @PatchMapping
+    public ResponseEntity<Result> update(@RequestParam(name = "state") MatchingState state,
                                          @RequestBody MatchingRequest request
     ) {
-        String response = "";
-
-        if(state) {
-            response = matchingService.accept(request);
-        } else {
-            response = matchingService.reject(request);
+        switch (state) {
+            case PARTICIPATE -> matchingService.participate(request);
+            case CANCEL -> matchingService.cancel(request);
+            case PARTICIPATE_ACCEPT -> matchingService.participateAccept(request);
+            default -> throw new IllegalStateException("wrong state value");
         }
 
-        return ResponseEntity.ok(Result.of(response));
+        return ResponseEntity.ok(Result.of(state.getCode() + " 수정 완료"));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Result> remove(@RequestBody MatchingRequest request) {
+        matchingService.breakup(request);
+
+        return ResponseEntity.ok(Result.of("매칭 취소 완료"));
     }
 }

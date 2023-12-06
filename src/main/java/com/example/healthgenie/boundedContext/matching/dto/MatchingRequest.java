@@ -15,8 +15,6 @@ public class MatchingRequest {
 
     private LocalDateTime date;
     private String place;
-    private Boolean isParticipated;
-    private Boolean isAccepted;
     private String description;
     private String userNickname;
     private String trainerNickname;

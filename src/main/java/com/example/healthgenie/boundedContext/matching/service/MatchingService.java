@@ -6,6 +6,7 @@ import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingResponse;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingQueryRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -17,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.example.healthgenie.base.exception.CommonErrorResult.USER_NOT_FOUND;
-import static com.example.healthgenie.base.exception.MatchingErrorResult.MATCHING_EMPTY;
+import static com.example.healthgenie.base.exception.MatchingErrorResult.*;
+import static com.example.healthgenie.boundedContext.matching.entity.MatchingState.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ import static com.example.healthgenie.base.exception.MatchingErrorResult.MATCHIN
 public class MatchingService {
 
     private final MatchingRepository matchingRepository;
+    private final MatchingQueryRepository matchingQueryRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -42,8 +45,8 @@ public class MatchingService {
                 .member(user)
                 .trainer(trainer)
                 .place(request.getPlace())
-                .isParticipated(false)
-                .isAccepted(false)
+                .participateState(DEFAULT)
+                .acceptState(DEFAULT)
                 .build();
 
         Matching savedMatching = matchingRepository.save(matching);
@@ -51,24 +54,29 @@ public class MatchingService {
         return MatchingResponse.of(savedMatching);
     }
 
-    public List<MatchingResponse> findAllByDate(MatchingRequest request) {
+    public List<MatchingResponse> findByDateAndNicknames(MatchingRequest request) {
         User currentUser = SecurityUtils.getCurrentUser();
 
-        List<Matching> matchings =  matchingRepository.findAllByDateOrderByDate(request.getDate());
+        List<Matching> matchings =
+                matchingQueryRepository.findAllMatchingsForOneDay(request.getDate(), request.getUserNickname(), request.getTrainerNickname());
 
         return MatchingResponse.of(matchings);
     }
 
     @Transactional
-    public String participate(MatchingRequest request) {
+    public Long participate(MatchingRequest request) {
         Long currentUserId = SecurityUtils.getCurrentUserId();
 
         Matching findMatching = matchingRepository.findByDateAndMemberId(request.getDate(), currentUserId)
                 .orElseThrow(() -> new MatchingException(MATCHING_EMPTY));
 
-        findMatching.updateParticipated(true);
+        if(!currentUserId.equals(findMatching.getMember().getId())) {
+            throw new MatchingException(NO_PERMISSION);
+        }
 
-        return "회원님이 PT에 참석합니다.";
+        findMatching.updateParticipateState(PARTICIPATE);
+
+        return findMatching.getId();
     }
 
     /*
@@ -76,42 +84,58 @@ public class MatchingService {
           아니면 미래에 요구 사항이 변경으로 로직이 바뀌어서 유지 보수를 위해 이대로 나눠 놔야 할까?
      */
     @Transactional
-    public String cancel(MatchingRequest request) {
+    public Long cancel(MatchingRequest request) {
         Long currentUserId = SecurityUtils.getCurrentUserId();
 
-        Matching findMatching = matchingRepository.findByDateAndMemberId(request.getDate(), currentUserId)
-                .orElseThrow(() -> new MatchingException(MATCHING_EMPTY));
+        Matching findMatching =
+                matchingQueryRepository.findOne(request.getDate(), request.getUserNickname(), request.getTrainerNickname());
 
-        findMatching.updateParticipated(false);
+        if(findMatching == null) {
+            throw new MatchingException(MATCHING_EMPTY);
+        }
 
-        return "회원님이 PT를 취소합니다.";
+        if(!currentUserId.equals(findMatching.getMember().getId())) {
+            throw new MatchingException(NO_PERMISSION);
+        }
+
+        findMatching.updateParticipateState(CANCEL);
+
+        return findMatching.getId();
     }
 
     @Transactional
-    public String accept(MatchingRequest request) {
+    public Long participateAccept(MatchingRequest request) {
         Long currentUserId = SecurityUtils.getCurrentUserId();
 
         Matching findMatching = matchingRepository.findByDateAndTrainerId(request.getDate(), currentUserId)
                 .orElseThrow(() -> new MatchingException(MATCHING_EMPTY));
 
-        findMatching.updateAccepted(true);
+        if(!currentUserId.equals(findMatching.getTrainer().getId())) {
+            throw new MatchingException(NO_PERMISSION);
+        }
 
-        return "트레이너님이 PT 참석을 승인합니다.";
+        findMatching.updateAcceptState(PARTICIPATE_ACCEPT);
+
+        return findMatching.getId();
     }
 
-    /*
-    고민 : accept()와 reject()을 통합해서 조건문으로 분기해야할까?
-          아니면 미래에 요구 사항이 변경으로 로직이 바뀌어서 유지 보수를 위해 이대로 나눠 놔야 할까?
-    */
     @Transactional
-    public String reject(MatchingRequest request) {
+    public Long breakup(MatchingRequest request) {
         Long currentUserId = SecurityUtils.getCurrentUserId();
 
-        Matching findMatching = matchingRepository.findByDateAndTrainerId(request.getDate(), currentUserId)
+        Matching findMatching = matchingRepository.findByMemberNicknameAndTrainerNickname(request.getUserNickname(), request.getTrainerNickname())
                 .orElseThrow(() -> new MatchingException(MATCHING_EMPTY));
 
-        findMatching.updateAccepted(false);
+        if(!currentUserId.equals(findMatching.getTrainer().getId())) {
+            throw new MatchingException(NO_PERMISSION);
+        }
 
-        return "트레이너님이 PT 취소를 승인합니다.";
+        if(!findMatching.getParticipateState().equals(CANCEL)) {
+            throw new MatchingException(NOT_CANCELED);
+        }
+
+        matchingRepository.delete(findMatching);
+
+        return findMatching.getId();
     }
 }
