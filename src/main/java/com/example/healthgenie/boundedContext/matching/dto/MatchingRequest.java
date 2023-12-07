@@ -15,9 +15,7 @@ public class MatchingRequest {
 
     private LocalDateTime date;
     private String place;
-    private Boolean isAccepted;
-    private Integer price;
     private String description;
-    private String userEmail;
-    private String trainerEmail;
+    private String userNickname;
+    private String trainerNickname;
 }

@@ -11,4 +11,6 @@ public interface UserService {
     User findById(Long userId);
 
     void updateRole(Role role);
+
+    void updateNickname(String nickname);
 }

@@ -12,6 +12,11 @@ import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhot
 import com.example.healthgenie.boundedContext.community.repository.CommunityCommentRepository;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostPhotoRepository;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
+
+import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
+import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -21,6 +26,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +40,8 @@ public class TestKrUtils {
     private final CommunityPostRepository communityPostRepository;
     private final CommunityCommentRepository communityCommentRepository;
     private final CommunityPostPhotoRepository communityPostPhotoRepository;
+    private final MatchingRepository matchingRepository;
+
 
     public void login(User user) {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities()));
@@ -65,9 +74,10 @@ public class TestKrUtils {
         return createPost(writer, title, content, null);
     }
 
-    public RoomRequest createRoomRequest(String receiverEmail) {
+
+    public RoomRequest createRoomRequest(String receiverNickname) {
         return RoomRequest.builder()
-                .receiverNickname(receiverEmail)
+                .receiverNickname(receiverNickname)
                 .build();
     }
 
@@ -131,4 +141,33 @@ public class TestKrUtils {
 
         return communityPostPhotoRepository.save(postPhoto);
     }
+
+    public MatchingRequest createMatchingRequest(LocalDateTime date, String place, String description, User member, User trainer) {
+        return MatchingRequest.builder()
+                .date(date)
+                .place(place)
+                .description(description)
+                .userNickname(member.getNickname())
+                .trainerNickname(trainer.getNickname())
+                .build();
+    }
+
+    public MatchingRequest createMatchingRequest(LocalDateTime date, User member, User trainer) {
+        return createMatchingRequest(date, null, null, member, trainer);
+    }
+
+    public Matching createMatching(LocalDateTime date, String place, String description, User member, User trainer) {
+        Matching matching = Matching.builder()
+                .date(date)
+                .place(place)
+                .description(description)
+                .member(member)
+                .trainer(trainer)
+                .participateState(MatchingState.DEFAULT)
+                .acceptState(MatchingState.DEFAULT)
+                .build();
+
+        return matchingRepository.save(matching);
+    }
+
 }

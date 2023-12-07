@@ -14,6 +14,7 @@ import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,6 +53,7 @@ public class User extends BaseEntity implements UserDetails {
     private String name;
 
     @NotNull
+    @Size(min = 2, max = 8)
     @Column(name = "nickname")
     private String nickname;
 
@@ -171,8 +173,11 @@ public class User extends BaseEntity implements UserDetails {
         this.role = role;
     }
 
-    // level update 추가
     public void updateLevel(Level level) {
         this.level = level;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
