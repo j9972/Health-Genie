@@ -40,6 +40,8 @@ public class PtProcessController {
     }
 
     /*
+        본인은 본인것만 볼 수 있기에 userId 같은거 필요없다 [ security로 가능 ]
+
         트레이너가 작성한 전체 피드백 모아보기 [ 트레이너용 관리페이지에서 사용 ]
         관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
      */
@@ -88,12 +90,12 @@ public class PtProcessController {
     }
 
     // 트레이너만 삭제 기능이 가능
-    @DeleteMapping("/trainer/{processId}") // http://localhost:1234/process/trainer/{processId}
+    @DeleteMapping("/trainer/delete/{processId}") // http://localhost:1234/process/trainer/{processId}
     public ResponseEntity<Result> deleteProcess(@PathVariable Long processId) {
 
-        processService.deletePtProcess(processId);
+        String response = processService.deletePtProcess(processId);
 
-        return ResponseEntity.ok(Result.of("피드백이 삭제 되었습니다."));
+        return ResponseEntity.ok(Result.of(response));
     }
 
 

@@ -34,7 +34,6 @@ public class Routine extends BaseEntity {
     @Column(name = "level")
     private Level level;
 
-    @NotNull
     @Column(name = "workout_day")
     @Enumerated(EnumType.STRING)
     private Day day;

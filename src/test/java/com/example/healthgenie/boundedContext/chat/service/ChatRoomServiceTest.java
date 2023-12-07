@@ -70,6 +70,7 @@ class ChatRoomServiceTest {
         // given
         testKrUtils.login(sender);
 
+
         String notExistUserNickname = "none";
         RoomRequest request = testKrUtils.createRoomRequest(notExistUserNickname);
 
@@ -119,6 +120,7 @@ class ChatRoomServiceTest {
 
         RoomRequest request1 = testKrUtils.createRoomRequest(receiver.getNickname());
         RoomRequest request2 = testKrUtils.createRoomRequest(other.getNickname());
+
         chatRoomService.joinChatRoom(request1);
         chatRoomService.joinChatRoom(request2);
 
@@ -185,6 +187,7 @@ class ChatRoomServiceTest {
         testKrUtils.login(sender);
 
         RoomRequest request = testKrUtils.createRoomRequest(receiver.getNickname());
+
         Long roomId = chatRoomService.joinChatRoom(request);
 
         // when
@@ -204,6 +207,7 @@ class ChatRoomServiceTest {
         testKrUtils.login(sender);
 
         RoomRequest request = testKrUtils.createRoomRequest(receiver.getNickname());
+
         Long roomId = chatRoomService.joinChatRoom(request);
 
         // when
