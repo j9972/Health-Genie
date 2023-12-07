@@ -2,9 +2,8 @@ package com.example.healthgenie.boundedContext.email.service;
 
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.util.TestUtils;
+import com.example.healthgenie.util.TestKrUtils;
 import jakarta.mail.MessagingException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,14 +12,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
 class UserMailServiceTest {
 
     @Autowired
-    TestUtils testUtils;
+    TestKrUtils testUtils;
 
     @Autowired
     UserMailService userMailService;

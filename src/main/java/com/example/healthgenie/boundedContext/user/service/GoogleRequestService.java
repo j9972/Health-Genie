@@ -3,12 +3,9 @@ package com.example.healthgenie.boundedContext.user.service;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
-//import com.example.healthgenie.boundedContext.todo.dto.user.dto.*;
-import com.example.healthgenie.boundedContext.routine.entity.Level;
-import com.example.healthgenie.boundedContext.user.entity.Role;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import com.example.healthgenie.boundedContext.user.dto.*;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,16 +59,7 @@ public class GoogleRequestService implements RequestService {
 
         // 회원 가입이 안되어있는 경우(최초 로그인 시)
         if(user == null){
-            UserRegisterDto dto = UserRegisterDto
-                    .builder()
-                    .email(googleUserInfo.getEmail())
-                    .name(googleUserInfo.getName())
-                    .role(Role.EMPTY)
-                    .authProvider(GOOGLE)
-                    .level(Level.EMPTY)
-                    .build();
-
-            user = userService.signUp(dto);
+            user = UserResponse.toEntity(userService.signUp(googleUserInfo.getEmail(), googleUserInfo.getName(), GOOGLE));
         }
 
         // 회원 가입이 되어있는 경우

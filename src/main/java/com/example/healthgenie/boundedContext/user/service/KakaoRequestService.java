@@ -3,9 +3,7 @@ package com.example.healthgenie.boundedContext.user.service;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
-import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.dto.*;
-import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,16 +50,7 @@ public class KakaoRequestService implements RequestService {
 
         // 회원 가입이 안되어있는 경우(최초 로그인 시)
         if(user == null) {
-            UserRegisterDto dto = UserRegisterDto
-                    .builder()
-                    .email(kakaoUserInfo.getEmail())
-                    .name(kakaoUserInfo.getName())
-                    .role(Role.EMPTY)
-                    .authProvider(KAKAO)
-                    .level(Level.EMPTY)
-                    .build();
-
-            user = userService.signUp(dto);
+            user = UserResponse.toEntity(userService.signUp(kakaoUserInfo.getEmail(), kakaoUserInfo.getName(), KAKAO));
         }
 
         // 회원 가입이 되어있는 경우

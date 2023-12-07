@@ -1,7 +1,7 @@
 package com.example.healthgenie.boundedContext.user.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
-import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.example.healthgenie.base.exception.CommonErrorResult.ALREADY_EXISTS_ROLE;
+import static com.example.healthgenie.base.exception.UserErrorResult.ALREADY_EXISTS_ROLE;
 
 @Entity
 @Getter
@@ -168,7 +168,7 @@ public class User extends BaseEntity implements UserDetails {
 
     public void updateRole(Role role) {
         if(this.role != Role.EMPTY) {
-            throw new CommonException(ALREADY_EXISTS_ROLE);
+            throw new UserException(ALREADY_EXISTS_ROLE);
         }
         this.role = role;
     }

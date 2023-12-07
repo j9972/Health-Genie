@@ -1,12 +1,12 @@
 package com.example.healthgenie.boundedContext.user.service;
 
-import com.example.healthgenie.boundedContext.routine.entity.Level;
-import com.example.healthgenie.boundedContext.user.dto.UserRegisterDto;
+import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.dto.UserResponse;
 import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
-import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,53 +25,62 @@ class UserServiceTest {
     @Autowired
     UserService userService;
 
-    @Autowired
-    EntityManager em;
+    User default1;
+    User user1;
+    User trainer1;
+
+    @BeforeEach
+    void before() {
+        default1 = testKrUtils.createUser("default1", Role.EMPTY, "default1@test.com");
+        user1 = testKrUtils.createUser("user1", Role.USER, "user1@test.com");
+        trainer1 = testKrUtils.createUser("trainer1", Role.TRAINER, "trainer1@test.com");
+    }
 
     @Test
     @DisplayName("정상적인 회원가입")
     void signUp() {
-        UserRegisterDto request = UserRegisterDto.builder()
-                .name("test1")
-                .role(Role.EMPTY)
-                .level(Level.EMPTY)
-                .authProvider(AuthProvider.EMPTY)
+        // given
+        UserRequest request = UserRequest.builder()
                 .email("test1@test.com")
-                .uniName("테스트대학교")
+                .name("test1")
+                .authProvider(AuthProvider.EMPTY)
                 .build();
 
-        User savedUser = userService.signUp(request);
+        // when
+        UserResponse response =
+                userService.signUp(request.getEmail(), request.getName(), request.getAuthProvider());
 
-        assertThat(savedUser.getEmail()).isEqualTo("test1@test.com");
+        // then
+        assertThat(response.getEmail()).isEqualTo("test1@test.com");
+        assertThat(response.getName()).isEqualTo("test1");
+        assertThat(response.getAuthProvider()).isEqualTo(AuthProvider.EMPTY);
     }
 
     @Test
     @DisplayName("정상적인 Role 변경")
     void updateRole() {
-        User user = testKrUtils.createUser("test1", Role.EMPTY, "test1@test.com");
+        // given
+        testKrUtils.login(default1);
 
-        testKrUtils.login(user);
+        // when
+        UserResponse response = userService.updateRole(default1.getId(), Role.USER);
 
-        userService.updateRole(Role.TRAINER);
-
-        em.flush();
-        em.clear();
-
-        assertThat(user.getRole().getCode()).isEqualTo("TRAINER");
+        // then
+        assertThat(response.getId()).isEqualTo(default1.getId());
+        assertThat(default1.getRole()).isEqualTo(Role.USER);
     }
 
     @Test
     @DisplayName("정상적인 닉네임 변경")
     void updateNickname() {
-        User user = testKrUtils.createUser("test1", Role.EMPTY, "test1@test.com");
+        // given
+        testKrUtils.login(default1);
 
-        testKrUtils.login(user);
+        // when
+        UserResponse response = userService.updateNickname(default1.getId(), "변경된 닉네임");
 
-        userService.updateNickname("변경된 닉네임");
-
-        em.flush();
-        em.clear();
-
-        assertThat(user.getNickname()).isEqualTo("변경된 닉네임");
+        // then
+        assertThat(response.getId()).isEqualTo(default1.getId());
+        assertThat(default1.getNickname()).isEqualTo("변경된 닉네임");
     }
 }
