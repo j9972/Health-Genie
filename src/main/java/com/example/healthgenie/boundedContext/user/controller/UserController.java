@@ -1,35 +1,39 @@
 package com.example.healthgenie.boundedContext.user.controller;
 
+import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.user.dto.UserUpdateRequest;
+import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.dto.UserResponse;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.example.healthgenie.base.exception.UserErrorResult.NOT_VALID_FIELD;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor // 생성자 DI
+@RequiredArgsConstructor
 @RequestMapping("/auth")
 public class UserController {
 
     private final UserService userService;
 
-    @PatchMapping("/user/role")
-    public ResponseEntity<Result> updateRole(@RequestBody UserUpdateRequest request) {
-        userService.updateRole(request.getRole());
+    @PatchMapping("/user/{userId}")
+    public ResponseEntity<Result> update(@PathVariable Long userId,
+                                         @RequestParam(defaultValue = "") String field,
+                                         @RequestBody UserRequest request
+    ) {
+        UserResponse response = null;
+        if(field.equalsIgnoreCase("ROLE")) {
+            response = userService.updateRole(userId, request.getRole());
+        } else if(field.equalsIgnoreCase("NICKNAME")) {
+            response = userService.updateNickname(userId, request.getNickname());
+        } else {
+            throw new UserException(NOT_VALID_FIELD);
+        }
 
-        return ResponseEntity.ok(Result.of("Role이 업데이트 되었습니다."));
-    }
-
-    @PatchMapping("/user/nickname")
-    public ResponseEntity<Result> updateNickname(@RequestBody UserUpdateRequest request) {
-        userService.updateNickname(request.getNickname());
-
-        return ResponseEntity.ok(Result.of("Nickname이 업데이트 되었습니다."));
+        return ResponseEntity.ok(Result.of(response));
     }
 }

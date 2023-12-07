@@ -4,6 +4,7 @@ import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.util.TestKrUtils;
 
 import com.example.healthgenie.util.TestSyUtils;
 import jakarta.mail.MessagingException;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class UserMailServiceTest {
 
     @Autowired
+    TestKrUtils testUtils;
     TestSyUtils testSyUtils;
 
     @Autowired

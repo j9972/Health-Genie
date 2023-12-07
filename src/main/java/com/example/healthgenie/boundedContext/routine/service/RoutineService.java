@@ -1,6 +1,5 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
-import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.RoutineErrorResult;
 import com.example.healthgenie.base.exception.RoutineException;
 import com.example.healthgenie.base.utils.SecurityUtils;
@@ -9,10 +8,9 @@ import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.routine.entity.*;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
-import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import com.example.healthgenie.boundedContext.user.service.UserServiceImpl;
+import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
-import static com.example.healthgenie.base.exception.CommonErrorResult.ALREADY_EXISTS_ROLE;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -34,6 +30,8 @@ import static java.util.stream.Collectors.toList;
 public class RoutineService {
 
     private final RoutineRepository routineRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     // own routine 관련 해서 level 언급은 필요 없다
     @Transactional
