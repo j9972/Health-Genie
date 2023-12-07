@@ -87,17 +87,33 @@ public class MatchingService {
         User currentUser = SecurityUtils.getCurrentUser();
 
         validatePermission(currentUser, state);
-        validateUpdate(matching);
+        validateUpdate(matching, state);
 
         matching.updateState(state);
 
         return MatchingResponse.of(matching);
     }
 
-    private void validateUpdate(Matching matching) {
-        if(matching.getState().equals(CANCEL_ACCEPT)) {
+    private void validateUpdate(Matching matching, MatchingState changeState) {
+        MatchingState currentState = matching.getState();
+
+        if(currentState.equals(CANCEL_ACCEPT)) {
             throw new MatchingException(NO_PERMISSION);
         }
+
+        if(currentState.equals(DEFAULT)) {
+            if(changeState.equals(PARTICIPATE) || changeState.equals(CANCEL)) {
+                return;
+            }
+        }
+        else if(currentState.equals(PARTICIPATE) && changeState.equals(PARTICIPATE_ACCEPT)) {
+            return;
+        }
+        else if(currentState.equals(CANCEL) && changeState.equals(CANCEL_ACCEPT)) {
+            return;
+        }
+
+        throw new MatchingException(NO_PERMISSION);
     }
 
     private void validateSave(User user, User trainer) {
