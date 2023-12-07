@@ -7,6 +7,7 @@ import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.routine.entity.*;
+import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -30,8 +31,8 @@ import static java.util.stream.Collectors.toList;
 public class RoutineService {
 
     private final RoutineRepository routineRepository;
-    private final UserRepository userRepository;
-    private final UserService userService;
+
+    private final RoutineQueryRepository routineQueryRepository;
 
     // own routine 관련 해서 level 언급은 필요 없다
     @Transactional
@@ -97,10 +98,7 @@ public class RoutineService {
 
         Long userId = SecurityUtils.getCurrentUserId();
 
-        List<Routine> own = routineRepository.findAllByMemberId(userId);
-        return own.stream()
-                .map(RoutineResponseDto::ofOwn)
-                .collect(toList());
+        return RoutineResponseDto.ofOwn(routineQueryRepository.findAllByMemberId(userId));
     }
 
     // 나의 루틴 요일별 상세조회
@@ -108,12 +106,7 @@ public class RoutineService {
     public List<RoutineResponseDto> getMyRoutine(Day day) {
 
         Long userId = SecurityUtils.getCurrentUserId();
-
-        List<Routine> genie = routineRepository.findAllByMemberIdAndDay(userId,day);
-
-        return genie.stream()
-                .map(RoutineResponseDto::ofOwn)
-                .collect(toList());
+        return RoutineResponseDto.ofOwn(routineQueryRepository.findAllByMemberIdAndDay(userId, day));
     }
 
     /*
@@ -125,21 +118,13 @@ public class RoutineService {
 
         User currentUser = SecurityUtils.getCurrentUser();
         currentUser.updateLevel(level); // 이 부분 [ 매번 level update ]
-
-        List<Routine> genie = routineRepository.findByLevel(level);
-        return genie.stream()
-                .map(RoutineResponseDto::ofGenie)
-                .collect(toList());
+        return RoutineResponseDto.ofGenie(routineQueryRepository.findAllByLevel(level));
     }
 
 
     @Transactional(readOnly = true)
     public List<RoutineResponseDto> getGenieRoutine(Level level, Day day) {
-        List<Routine> genie = routineRepository.findByLevelAndDay(level,day);
-
-        return genie.stream()
-                .map(RoutineResponseDto::ofGenie)
-                .collect(toList());
+        return RoutineResponseDto.ofGenie(routineQueryRepository.findAllByLevelAndDay(level,day));
     }
 
 

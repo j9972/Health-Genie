@@ -8,13 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+
 public interface RoutineRepository extends JpaRepository<Routine, Long> {
-    List<Routine> findAllByMemberId(Long userId);
-
-    List<Routine> findByLevel(Level level);
-    List<Routine> findByLevelAndDay(Level level, Day day);
-
-    List<Routine> findAllByMemberIdAndDay(Long userId, Day day);
 
 }

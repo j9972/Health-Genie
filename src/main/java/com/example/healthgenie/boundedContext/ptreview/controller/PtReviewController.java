@@ -8,6 +8,7 @@ import com.example.healthgenie.boundedContext.ptreview.service.PtReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class PtReviewController {
         traienr 랑 user 를 나누는 이유는 review 안에 col 을 보면 userId, trainerId로 나뉘니까 userId 로만 데이터를 가져올 수 없다.
         최근 작성순서로 정렬했기에 프론트에서 상위 3개씩 가져다가 사용하면 된다.
      */
-    //
+
     @GetMapping("/list/trainer/{trainerId}") // http://localhost:1234/review/list/trainer/{trainerId}
     public ResponseEntity<Result> getAllTrainerReview(@PathVariable Long trainerId ,@RequestParam(required = false, defaultValue = "0") int page){
         // 5개씩 페이징 처리
@@ -56,6 +57,7 @@ public class PtReviewController {
         Page<PtReviewResponseDto> response = reviewService.getAllTrainerReview(trainerId, page, size);
         return ResponseEntity.ok(Result.of(response));
     }
+
 
     /*
         본인이 작성한 review list 조회 [ 회원용 관리페이지 ]
