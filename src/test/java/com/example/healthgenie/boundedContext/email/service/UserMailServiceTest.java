@@ -24,7 +24,6 @@ class UserMailServiceTest {
 
     @Autowired
     TestKrUtils testUtils;
-    TestSyUtils testSyUtils;
 
     @Autowired
     UserMailService userMailService;
@@ -40,7 +39,7 @@ class UserMailServiceTest {
      */
     @BeforeEach
     void before() {
-        user = testSyUtils.createUser("test1", Role.EMPTY, "jh485200@gmail.com");
+        user = testUtils.createUser("test1", Role.EMPTY, "jh485200@gmail.com");
     }
 
 
@@ -48,7 +47,7 @@ class UserMailServiceTest {
     @DisplayName("이메일에 검증 코드 보내기")
     void sendCode() throws MessagingException {
         // given
-        testSyUtils.login(user);
+        testUtils.login(user);
 
         // when
         String code = userMailService.sendCode(user.getEmail());
@@ -74,7 +73,7 @@ class UserMailServiceTest {
     @DisplayName("코드 검증")
     void verify() throws MessagingException {
         // given
-        testSyUtils.login(user);
+        testUtils.login(user);
 
         String email = "jh485200@gmail.com";
         String authCode = userMailService.sendCode(user.getEmail());
@@ -90,7 +89,7 @@ class UserMailServiceTest {
     @DisplayName("검증 코드가 달라서 실패")
     void diffCode() throws MessagingException {
         // given
-        testSyUtils.login(user);
+        testUtils.login(user);
 
         String authCode = userMailService.sendCode(user.getEmail());
         int testCode = 12345678;
@@ -109,7 +108,7 @@ class UserMailServiceTest {
     @DisplayName("레디스 코드가 만료되어 검증 실패")
     void expireCode(){
         // given
-        testSyUtils.login(user);
+        testUtils.login(user);
         String email = "jh485200@gmail.com";
 
         // when
@@ -128,7 +127,7 @@ class UserMailServiceTest {
     @DisplayName("코드가 존재하지 않아서 검증 실패")
     void failVerify(){
         // given
-        testSyUtils.login(user);
+        testUtils.login(user);
         String email = "jh485200@gmail.com";
 
         // when

@@ -8,6 +8,7 @@ import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,9 @@ class PtReviewServiceTest {
     TestSyUtils testSyUtils;
 
     @Autowired
+    TestKrUtils testKrUtils;
+
+    @Autowired
     PtReviewService reviewService;
 
     User user;
@@ -53,7 +57,7 @@ class PtReviewServiceTest {
         user3 = testSyUtils.createUser("test3", Role.USER,"test3@gmail.com");
         user4 = testSyUtils.createUser("test4", Role.TRAINER,"test4@test.com");
 
-        matching = testSyUtils.createMatching(date, "gym", true, 20000, "test", user, user2);
+        matching = testKrUtils.createMatching(date, "gym", "test",  user, user2);
         review = testSyUtils.createReview("test review","stop",4.5, user3,user4);
     }
 
