@@ -90,9 +90,6 @@ public class PtProcessService {
             throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
 
         } else {
-            // TODO : authentication.getName() 결과값 체크하기
-            log.info("authentication.getName() : {}", authentication.getName());
-
 
             Optional<User> email = userRepository.findByEmail(authentication.getName());
             User member = userRepository.findById(email.get().getId()).orElseThrow();
@@ -141,11 +138,13 @@ public class PtProcessService {
 
 
     @Transactional
-    public void deletePtProcess(Long processId) {
+    public String deletePtProcess(Long processId) {
 
         PtProcess process = authorizationProcessWriter(processId);
 
         ptProcessRepository.deleteById(process.getId());
+
+        return "피드백이 삭제 되었습니다.";
 
     }
 

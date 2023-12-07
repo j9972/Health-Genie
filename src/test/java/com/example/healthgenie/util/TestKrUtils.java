@@ -12,6 +12,7 @@ import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhot
 import com.example.healthgenie.boundedContext.community.repository.CommunityCommentRepository;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostPhotoRepository;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
+
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
@@ -24,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class TestKrUtils {
     private final CommunityCommentRepository communityCommentRepository;
     private final CommunityPostPhotoRepository communityPostPhotoRepository;
     private final MatchingRepository matchingRepository;
+
 
     public void login(User user) {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities()));
@@ -70,6 +73,7 @@ public class TestKrUtils {
     public CommunityPost createPost(User writer, String title, String content) {
         return createPost(writer, title, content, null);
     }
+
 
     public RoomRequest createRoomRequest(String receiverNickname) {
         return RoomRequest.builder()
@@ -165,4 +169,5 @@ public class TestKrUtils {
 
         return matchingRepository.save(matching);
     }
+
 }

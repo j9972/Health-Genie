@@ -90,15 +90,7 @@ public class PtReviewService {
         if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         } else {
-            Optional<User> email = userRepository.findByEmail(authentication.getName());
-            User member = userRepository.findById(email.get().getId()).orElseThrow();
-
-            boolean result = review.getMember().equals(member);
-
-            if (result) {
-                return PtReviewResponseDto.of(review);
-            }
-            throw new  PtReviewException(PtReviewErrorResult.WRONG_USER);
+            return PtReviewResponseDto.of(review);
         }
     }
 
@@ -107,8 +99,8 @@ public class PtReviewService {
          review안에서 trainerId를 조회하는데, review안에는 userId/trainerId가 나뉘어 있어서 필요함
      */
     @Transactional(readOnly = true)
-    public Page<PtReviewResponseDto> getAllTrainerReview(int page, int size){
-        Long trainerId = SecurityUtils.getCurrentUserId();
+    public Page<PtReviewResponseDto> getAllTrainerReview(Long trainerId, int page, int size){
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<PtReview> review = ptReviewRepository.findAllByTrainerId(trainerId, pageable);
@@ -119,8 +111,8 @@ public class PtReviewService {
         본인이 작성한 review list 조회, ]
     */
     @Transactional(readOnly = true)
-    public Page<PtReviewResponseDto> getAllReview(int page, int size){
-        Long userId = SecurityUtils.getCurrentUserId();
+    public Page<PtReviewResponseDto> getAllReview(Long userId, int page, int size){
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<PtReview> review = ptReviewRepository.findAllByMemberId(userId, pageable);
@@ -147,11 +139,12 @@ public class PtReviewService {
 
 
     @Transactional
-    public void deletePtReview(Long reviewId) {
+    public String deletePtReview(Long reviewId) {
 
         PtReview review = authorizationReviewWriter(reviewId);
         ptReviewRepository.deleteById(review.getId());
 
+        return "후기가 삭제 되었습니다.";
     }
 
 

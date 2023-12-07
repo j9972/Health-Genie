@@ -8,13 +8,14 @@ import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @Builder(toBuilder = true)
 public class PtProcessResponseDto {
     private Long id;
-    private String date; // 내가 작성한 날짜가 필요하다.
+    private LocalDate date; // 내가 작성한 날짜가 필요하다.
     private String content;
     private String title;
     private List<String> photoPaths;
