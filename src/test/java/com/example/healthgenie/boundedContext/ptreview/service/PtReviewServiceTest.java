@@ -52,10 +52,10 @@ class PtReviewServiceTest {
     void before() {
         LocalDateTime date = LocalDateTime.of(2023, 12, 5, 14, 30, 0);
 
-        user = testSyUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
-        user2 = testSyUtils.createUser("test2", Role.TRAINER,"test@test.com");
-        user3 = testSyUtils.createUser("test3", Role.USER,"test3@gmail.com");
-        user4 = testSyUtils.createUser("test4", Role.TRAINER,"test4@test.com");
+        user = testKrUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
+        user2 = testKrUtils.createUser("test2", Role.TRAINER,"test@test.com");
+        user3 = testKrUtils.createUser("test3", Role.USER,"test3@gmail.com");
+        user4 = testKrUtils.createUser("test4", Role.TRAINER,"test4@test.com");
 
         matching = testKrUtils.createMatching(date, "gym", "test",  user, user2);
         review = testSyUtils.createReview("test review","stop",4.5, user3,user4);
@@ -65,7 +65,7 @@ class PtReviewServiceTest {
     @DisplayName("회원이 리뷰 작성 성공")
     void addPtReview() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
 
@@ -84,7 +84,7 @@ class PtReviewServiceTest {
     @DisplayName("회원이 아닌 트레이너면 리뷰 작성 실패")
     void failAddPtReview() {
         // given
-        testSyUtils.login(user2);
+        testKrUtils.login(user2);
 
         PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
         // when
@@ -114,7 +114,7 @@ class PtReviewServiceTest {
     @DisplayName("매칭 기록없이 리뷰 작성 실패")
     void noMatchingHistoryAddPtReview() {
         // given
-        testSyUtils.login(user3);
+        testKrUtils.login(user3);
 
         PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test3", "test4");
         // when
@@ -130,7 +130,7 @@ class PtReviewServiceTest {
     void getPtReview() {
         // given
         // review 작성한 사람 아니여도 조회 가능
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
         PtReviewResponseDto response = reviewService.getPtReview(review.getId());
@@ -147,7 +147,7 @@ class PtReviewServiceTest {
     @DisplayName("존재하지 않는 리뷰 조회 실패")
     void notExistPtReview() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
 
@@ -160,7 +160,7 @@ class PtReviewServiceTest {
     @DisplayName("해당 트레이너 리뷰 전체 조회 성공")
     void getAllTrainerReview() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
         Long trainerId = review.getTrainer().getId();
 
         // when
@@ -179,7 +179,7 @@ class PtReviewServiceTest {
     @DisplayName("내가 작성한 리뷰 전체 조회 성공")
     void getAllReview() {
         // given
-        testSyUtils.login(user3);
+        testKrUtils.login(user3);
         Long userId = review.getMember().getId();
 
         // when
@@ -199,7 +199,7 @@ class PtReviewServiceTest {
     @DisplayName("리뷰 수정 성공")
     void updateReview() {
         // given
-        testSyUtils.login(user3);
+        testKrUtils.login(user3);
 
         // when
         PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
@@ -230,7 +230,7 @@ class PtReviewServiceTest {
     @DisplayName("다른 사람이 작성한 리뷰 수정 실패")
     void failOtherReviewUpdate() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
         PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
@@ -244,7 +244,7 @@ class PtReviewServiceTest {
     @DisplayName("트레이너가 리뷰 수정 실패")
     void trainerFailReviewUpdate() {
         // given
-        testSyUtils.login(user4);
+        testKrUtils.login(user4);
 
         // when
         PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
@@ -261,7 +261,7 @@ class PtReviewServiceTest {
     @DisplayName("리뷰 삭제 성공")
     void deletePtReview() {
         // given
-        testSyUtils.login(user3);
+        testKrUtils.login(user3);
 
         // when
 
@@ -286,7 +286,7 @@ class PtReviewServiceTest {
     @DisplayName("트레이가 리뷰 삭제 실패")
     void failTrainerDeletePtReview() {
         // given
-        testSyUtils.login(user4);
+        testKrUtils.login(user4);
 
         // when
 
@@ -302,7 +302,7 @@ class PtReviewServiceTest {
     @DisplayName("다른 사람 리뷰 삭제 실패")
     void failOtherDeletePtReview() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
 
@@ -315,7 +315,7 @@ class PtReviewServiceTest {
     @DisplayName("리뷰 검색 성공")
     void findAll() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
         String keyword = "review";

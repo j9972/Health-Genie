@@ -1,11 +1,5 @@
 package com.example.healthgenie.util;
 
-import com.example.healthgenie.boundedContext.community.dto.PostRequest;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
-import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
-import com.example.healthgenie.boundedContext.matching.entity.Matching;
-import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
@@ -30,7 +24,6 @@ import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileR
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,10 +31,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -49,29 +40,11 @@ import java.util.List;
 public class TestSyUtils {
 
     private final RoutineRepository routineRepository;
-    private final UserRepository userRepository;
     private final TodoRepository todoRepository;
     private final PtReviewRepository ptReviewRepository;
     private final TrainerProfileRepository trainerProfileRepository;
-    private final MatchingRepository matchingRepository;
     private final PtProcessRepository ptProcessRepository;
     private final PtProcessPhotoRepository ptProcessPhotoRepository;
-
-
-    public void login(User user) {
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities()));
-    }
-
-    public User createUser(String name, Role role, String email) {
-        User user = User.builder()
-                .name(name)
-                .nickname(name)
-                .role(role)
-                .email(email)
-                .build();
-
-        return userRepository.save(user);
-    }
 
 
     public RoutineRequestDto createOwnRoutineRequest(Day day, String content,

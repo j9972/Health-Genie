@@ -7,6 +7,7 @@ import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +27,9 @@ class TrainerProfileServiceTest {
     TestSyUtils testSyUtils;
 
     @Autowired
+    TestKrUtils testKrUtils;
+
+    @Autowired
     TrainerProfileService trainerProfileService;
 
     User user;
@@ -34,8 +38,8 @@ class TrainerProfileServiceTest {
 
     @BeforeEach
     void before() {
-        user = testSyUtils.createUser("test", Role.USER,"jh485200@gmail.com");
-        user2 = testSyUtils.createUser("test2", Role.TRAINER,"test@gmail.com");
+        user = testKrUtils.createUser("test", Role.USER,"jh485200@gmail.com");
+        user2 = testKrUtils.createUser("test2", Role.TRAINER,"test@gmail.com");
         profile = testSyUtils.createProfile("introduction", "career", 10000,20,user);
     }
 
@@ -43,7 +47,7 @@ class TrainerProfileServiceTest {
     @DisplayName("정상적으로 profile 작성")
     void writeProfile() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", 12000, 25, "test");
 
@@ -76,7 +80,7 @@ class TrainerProfileServiceTest {
     @DisplayName("정상적으로 profile 수정")
     void updateProfile() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", 12000, 25, "test");
 
@@ -108,7 +112,7 @@ class TrainerProfileServiceTest {
     @DisplayName("다른 유저가 profile 수정")
     void notOwnUpdateProfile() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", 12000, 25, "test");
 
@@ -116,7 +120,7 @@ class TrainerProfileServiceTest {
         ProfileResponseDto saved = trainerProfileService.writeProfile(dto);
         ProfileRequestDto updatedDto = testSyUtils.createProfileDto("update intro", "update", 12000, 25, "test");
 
-        testSyUtils.login(user2);
+        testKrUtils.login(user2);
 
         // then
         assertThatThrownBy(() -> trainerProfileService.updateProfile(updatedDto, saved.getId()))
@@ -127,7 +131,7 @@ class TrainerProfileServiceTest {
     @DisplayName("정상적으로 profile 조회")
     void getProfile() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", 12000, 25, "test");
 
