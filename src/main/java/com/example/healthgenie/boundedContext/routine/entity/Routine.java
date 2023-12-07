@@ -3,7 +3,6 @@ package com.example.healthgenie.boundedContext.routine.entity;
 import com.example.healthgenie.base.entity.BaseEntity;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.healthgenie.base.exception.CommonErrorResult.ALREADY_EXISTS_ROLE;
 
 /*
     공통
@@ -44,6 +41,7 @@ public class Routine extends BaseEntity {
 
     // 피그마보면 운동 부위를 한번에 가져온다.
     @ElementCollection
+    @Builder.Default
     private List<String> part = new ArrayList<>();
 
     @Embedded // 내장타입이다.
