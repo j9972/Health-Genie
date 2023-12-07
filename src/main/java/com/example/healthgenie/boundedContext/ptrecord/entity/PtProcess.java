@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class PtProcess extends BaseEntity {
 
     // 자동으로 시간을 저장 안하는 이유는 일지 작성 날짜를 내가 설정할 수 있게 해야하기 때문
     @Column(name = "pt_process_date")
-    private String date;
+    private LocalDate date;
 
     @Column(name ="process_content")
     private String content;

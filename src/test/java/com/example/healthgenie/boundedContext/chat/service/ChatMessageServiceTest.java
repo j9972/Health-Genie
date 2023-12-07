@@ -8,7 +8,7 @@ import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import com.example.healthgenie.util.TestUtils;
+import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class ChatMessageServiceTest {
     @Autowired
     ChatRoomRepository chatRoomRepository;
     @Autowired
-    TestUtils testUtils;
+    TestKrUtils testKrUtils;
 
     User sender;
     User receiver;
@@ -42,21 +42,21 @@ class ChatMessageServiceTest {
     @BeforeEach
     void before() {
         // 사용자 생성
-        sender = testUtils.createUser("sender1", Role.USER, "sender1@test.com");
-        receiver = testUtils.createUser("receiver1", Role.TRAINER, "receiver1@test.com");
-        other = testUtils.createUser("other1", Role.EMPTY, "other1@test.com");
+        sender = testKrUtils.createUser("sender1", Role.USER, "sender1@test.com");
+        receiver = testKrUtils.createUser("receiver1", Role.TRAINER, "receiver1@test.com");
+        other = testKrUtils.createUser("other1", Role.EMPTY, "other1@test.com");
 
         // 채팅방 생성
-        room = testUtils.createChatRoom(sender, receiver);
+        room = testKrUtils.createChatRoom(sender, receiver);
     }
 
     @Test
     @DisplayName("정상적으로 메세지를 보낸다.")
     void rightMessage() {
         // given
-        testUtils.login(sender);
+        testKrUtils.login(sender);
 
-        MessageRequest request = testUtils.createMessageRequest(room.getId(), "정상적으로 메세지 보내기!", sender.getNickname());
+        MessageRequest request = testKrUtils.createMessageRequest(room.getId(), "정상적으로 메세지 보내기!", sender.getNickname());
 
         // when
         chatMessageService.sendMessage(request);
@@ -71,9 +71,9 @@ class ChatMessageServiceTest {
     @DisplayName("잘못된 채팅방으로 메세지를 보낸다.")
     void wrongMessage() {
         // given
-        testUtils.login(sender);
+        testKrUtils.login(sender);
 
-        MessageRequest request = testUtils.createMessageRequest(999L, "잘못된 채팅방으로 메세지 보내기!", sender.getNickname());
+        MessageRequest request = testKrUtils.createMessageRequest(999L, "잘못된 채팅방으로 메세지 보내기!", sender.getNickname());
 
         // when
         assertThatThrownBy(() -> chatMessageService.sendMessage(request))
@@ -89,7 +89,7 @@ class ChatMessageServiceTest {
     @DisplayName("채팅방에 없는 사용자가 메세지를 확인한다.")
     void notRelatedUser() {
         // given
-        testUtils.login(other);
+        testKrUtils.login(other);
 
         // when
         assertThatThrownBy(() -> chatMessageService.getMessages(room.getId(), 0, 10))

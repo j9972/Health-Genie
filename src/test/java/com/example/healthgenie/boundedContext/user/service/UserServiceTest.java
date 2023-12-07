@@ -5,7 +5,7 @@ import com.example.healthgenie.boundedContext.user.dto.UserRegisterDto;
 import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.util.TestUtils;
+import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UserServiceTest {
 
     @Autowired
-    TestUtils testUtils;
+    TestKrUtils testKrUtils;
 
     @Autowired
     UserService userService;
@@ -44,9 +44,9 @@ class UserServiceTest {
     @Test
     @DisplayName("정상적인 Role 변경")
     void updateRole() {
-        User user = testUtils.createUser("test1", Role.EMPTY, "test1@test.com");
+        User user = testKrUtils.createUser("test1", Role.EMPTY, "test1@test.com");
 
-        testUtils.login(user);
+        testKrUtils.login(user);
 
         userService.updateRole(Role.TRAINER);
     }

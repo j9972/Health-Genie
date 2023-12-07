@@ -3,6 +3,7 @@ package com.example.healthgenie.boundedContext.ptreview.dto;
 import lombok.*;
 
 @Data
+@Builder
 public class PtReviewRequestDto {
     private Long id;
 
@@ -13,5 +14,6 @@ public class PtReviewRequestDto {
     private Double reviewScore;
 
     private String userNickName;
+
     private String trainerNickName; // 작성하는 사람
 }

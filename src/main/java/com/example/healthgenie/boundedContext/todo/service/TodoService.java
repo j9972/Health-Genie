@@ -74,10 +74,12 @@ public class TodoService {
         return TodoResponseDto.of(todo);
     }
 
-    public void deletePtReview(Long todoId) {
+    public String deleteTodo(Long todoId) {
         // user가 해당 글을 작성한 유저인지 체크 [ DB에 많은 데이터가 쌓이기 때문에 필요 ]
         Todo todo = authorizationWriter(todoId);
         todoRepository.deleteById(todo.getId());
+
+        return "오늘 할일이 삭제되었습니다.";
     }
 
     public Todo authorizationWriter(Long id) {

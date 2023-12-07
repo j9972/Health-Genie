@@ -4,6 +4,9 @@ package com.example.healthgenie.boundedContext.email.service;
 
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.UserEmailErrorResult;
+import com.example.healthgenie.base.exception.UserEmailException;
+import com.example.healthgenie.base.utils.SecurityUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import jakarta.mail.MessagingException;
@@ -36,7 +39,7 @@ public class UserMailService {
 
         String title = "Health Genie 이메일 인증 번호";
         String authCode = this.createCode();
-//
+
 //        JsonObject jsonObject = new Gson().fromJson(toEmail, JsonObject.class);
 //        String email = jsonObject.get("email").getAsString();
 

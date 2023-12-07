@@ -5,7 +5,7 @@ import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.util.TestUtils;
+import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class CommunityPostPhotoServiceTest {
 
     @Autowired
-    TestUtils testUtils;
+    TestKrUtils testKrUtils;
 
     @Autowired
     CommunityPostPhotoService communityPostPhotoService;
@@ -34,9 +34,9 @@ class CommunityPostPhotoServiceTest {
 
     @BeforeEach
     void before() {
-        user1 = testUtils.createUser("test1", Role.EMPTY, "test1@test.com");
-        post1 = testUtils.createPost(user1, "테스트 게시글 제목1", "테스트 게시글 내용1");
-        photo1 = testUtils.createPostPhoto(post1, "default-path.png");
+        user1 = testKrUtils.createUser("test1", Role.EMPTY, "test1@test.com");
+        post1 = testKrUtils.createPost(user1, "테스트 게시글 제목1", "테스트 게시글 내용1");
+        photo1 = testKrUtils.createPostPhoto(post1, "default-path.png");
     }
 
     @Test

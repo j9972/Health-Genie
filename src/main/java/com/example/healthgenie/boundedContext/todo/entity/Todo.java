@@ -38,6 +38,7 @@ public class Todo extends BaseEntity {
     @Column(name = "description")
     private String description;
 
+    // 관리 페이지에 오늘 pt 있음 없음을 알려주는 flag
     @Column(name = "pt")
     private boolean pt;
 

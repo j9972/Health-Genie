@@ -77,9 +77,9 @@ public class RoutineController {
     // 본인만 삭제 가능하게 하기 -> 프론트에서 기능을 숨기면 되어서 구별 로직뺌
     @DeleteMapping("/delete/{routineId}") // http://localhost:1234/routine/delete/{routineId}
     public ResponseEntity<Result> deleteRoutine(@PathVariable Long routineId) {
-        routineService.deleteRoutine(routineId);
+        String response = routineService.deleteRoutine(routineId);
 
-        return ResponseEntity.ok(Result.of("운동 루틴이 삭제 되었습니다."));
+        return ResponseEntity.ok(Result.of(response));
     }
 
 

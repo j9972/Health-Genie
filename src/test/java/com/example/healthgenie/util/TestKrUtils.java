@@ -26,7 +26,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class TestUtils {
+public class TestKrUtils {
 
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
