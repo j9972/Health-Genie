@@ -1,10 +1,14 @@
 package com.example.healthgenie.boundedContext.routine.dto;
 
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.routine.entity.*;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Data
 @Builder
@@ -29,6 +33,12 @@ public class RoutineResponseDto {
                 .build();
     }
 
+    public static List<RoutineResponseDto> ofOwn(List<Routine> routine) {
+        return routine.stream()
+                .map(RoutineResponseDto::ofOwn)
+                .collect(toList());
+    }
+
     public static RoutineResponseDto ofGenie(Routine routine) {
         return RoutineResponseDto.builder()
                 .id(routine.getId())
@@ -40,5 +50,9 @@ public class RoutineResponseDto {
                 .build();
     }
 
-
+    public static List<RoutineResponseDto> ofGenie(List<Routine> genie) {
+        return genie.stream()
+                .map(RoutineResponseDto::ofGenie)
+                .collect(toList());
+    }
 }

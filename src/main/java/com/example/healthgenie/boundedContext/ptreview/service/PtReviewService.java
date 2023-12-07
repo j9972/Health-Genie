@@ -97,7 +97,8 @@ public class PtReviewService {
     /*
          특정 trainer review list 조회
          review안에서 trainerId를 조회하는데, review안에는 userId/trainerId가 나뉘어 있어서 필요함
-     */
+
+    */
     @Transactional(readOnly = true)
     public Page<PtReviewResponseDto> getAllTrainerReview(Long trainerId, int page, int size){
 
@@ -159,10 +160,12 @@ public class PtReviewService {
         return review;
     }
 
+    @Transactional(readOnly = true)
     public List<PtReviewResponseDto> findAll(String keyword) {
         return PtReviewResponseDto.of(ptReviewQueryRepository.findAll(keyword));
     }
 
+    @Transactional(readOnly = true)
     public List<PtReviewResponseDto> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
         return PtReviewResponseDto.of(ptReviewQueryRepository.findAllByDate(searchStartDate, searchEndDate));
     }

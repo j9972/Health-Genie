@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface PtProcessRepository extends JpaRepository<PtProcess, Long> {
 
     Page<PtProcess> findAllByTrainerId(Long trainerId, Pageable pageable);

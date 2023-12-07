@@ -6,9 +6,11 @@ import com.example.healthgenie.base.exception.TodoErrorResult;
 import com.example.healthgenie.base.exception.TodoException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
+import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
+import com.example.healthgenie.boundedContext.todo.repository.TodoQueryRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.todo.repository.TodoRepository;
@@ -31,6 +33,7 @@ public class TodoService {
 
     private final TodoRepository todoRepository;
     private final MatchingRepository matchingRepository;
+    private final TodoQueryRepository todoQueryRepository;
 
     @Transactional
     public TodoResponseDto addTodoList(TodoRequestDto dto){
@@ -102,7 +105,7 @@ public class TodoService {
         LocalDate today = LocalDate.now();
         // LocalDate date1 = LocalDate.of(2023, 12, 13); test data
 
-        List<Todo> todos = todoRepository.findAllByMemberIdAndDate(userId, date);
+        List<Todo> todos = todoQueryRepository.findAllByMemberIdAndDate(userId, date);
 
         if (date.equals(today)) {
             // 관리페이지에 보내줄 데이터 [ 매칭 날짜랑 오늘이 같으면 데이터 보내주기 ]
