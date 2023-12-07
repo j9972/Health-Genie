@@ -161,9 +161,12 @@ class MatchingServiceTest {
     @DisplayName("정상적으로 트레이너가 PT 참석을 수락하기")
     void participateAccept() {
         // given
-        testKrUtils.login(trainer1);
+        testKrUtils.login(user1);
+        matchingService.update(matching1.getId(), MatchingState.PARTICIPATE);
 
         // when
+        testKrUtils.login(trainer1);
+
         MatchingResponse response = matchingService.update(matching1.getId(), MatchingState.PARTICIPATE_ACCEPT);
 
         // then
@@ -174,9 +177,12 @@ class MatchingServiceTest {
     @DisplayName("정상적으로 트레이너가 PT 취소를 수락하기")
     void breakup() {
         // given
-        testKrUtils.login(trainer1);
+        testKrUtils.login(user1);
+        matchingService.update(matching1.getId(), MatchingState.CANCEL);
 
         // when
+        testKrUtils.login(trainer1);
+
         MatchingResponse response = matchingService.update(matching1.getId(), MatchingState.CANCEL_ACCEPT);
 
         // then
