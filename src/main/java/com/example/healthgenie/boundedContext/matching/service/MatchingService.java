@@ -1,11 +1,13 @@
 package com.example.healthgenie.boundedContext.matching.service;
 
-import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.MatchingException;
+import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.base.utils.SecurityUtils;
-import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
+import com.example.healthgenie.boundedContext.matching.dto.MatchingCondition;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingResponse;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingQueryRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -15,11 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.healthgenie.base.exception.CommonErrorResult.USER_NOT_FOUND;
 import static com.example.healthgenie.base.exception.MatchingErrorResult.*;
+import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FOUND;
 import static com.example.healthgenie.boundedContext.matching.entity.MatchingState.*;
+import static com.example.healthgenie.boundedContext.user.entity.Role.TRAINER;
+import static com.example.healthgenie.boundedContext.user.entity.Role.USER;
 
 @Service
 @RequiredArgsConstructor
@@ -32,115 +38,87 @@ public class MatchingService {
     private final UserRepository userRepository;
 
     @Transactional
-    public MatchingResponse save(MatchingRequest request) {
-        User user = userRepository.findByNickname(request.getUserNickname())
-                .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
+    public MatchingResponse save(Long userId, Long trainerId, String date, String time, String place, String description) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        User trainer = userRepository.findByNickname(request.getTrainerNickname())
-                .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
+        User trainer = userRepository.findById(trainerId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+
+        validateSave(user, trainer);
+
+        LocalDateTime dateTime = DateUtils.toLocalDateTime(date, time);
 
         Matching matching = Matching.builder()
-                .date(request.getDate())
-                .description(request.getDescription())
+                .date(dateTime)
+                .description(description)
                 .member(user)
                 .trainer(trainer)
-                .place(request.getPlace())
-                .participateState(DEFAULT)
-                .acceptState(DEFAULT)
+                .place(place)
+                .state(DEFAULT)
                 .build();
 
-        Matching savedMatching = matchingRepository.save(matching);
-
-        return MatchingResponse.of(savedMatching);
+        return MatchingResponse.of(matchingRepository.save(matching));
     }
 
-    public MatchingResponse findOne(MatchingRequest request) {
-        Matching matching =
-                matchingQueryRepository.findOne(request.getDate(), request.getUserNickname(), request.getTrainerNickname());
+    public MatchingResponse findOne(Long matchingId) {
+        Matching matching = matchingRepository.findById(matchingId)
+                .orElseThrow(() -> new MatchingException(MATCHING_EMPTY));
 
         return MatchingResponse.of(matching);
     }
 
-    public List<MatchingResponse> findByDateAndNicknames(MatchingRequest request) {
-        List<Matching> matchings =
-                matchingQueryRepository.findAllMatchingsForOneDay(request.getDate(), request.getUserNickname(), request.getTrainerNickname());
+    public List<MatchingResponse> findAll(MatchingCondition condition) {
+        LocalDateTime dateTime = DateUtils.toLocalDateTime(condition.getDate());
+
+        List<Matching> matchings = new ArrayList<>();
+        if(condition.getDate() != null) {
+            matchings = matchingQueryRepository.findAllForOneDayByDateAndIds(dateTime, condition.getUserId(), condition.getTrainerId());
+        }
 
         return MatchingResponse.of(matchings);
     }
 
     @Transactional
-    public Long participate(MatchingRequest request) {
-        Long currentUserId = SecurityUtils.getCurrentUserId();
-
-        Matching findMatching = matchingRepository.findByDateAndMemberId(request.getDate(), currentUserId)
+    public MatchingResponse update(Long matchingId, MatchingState state) {
+        Matching matching = matchingRepository.findById(matchingId)
                 .orElseThrow(() -> new MatchingException(MATCHING_EMPTY));
 
-        if(!currentUserId.equals(findMatching.getMember().getId())) {
-            throw new MatchingException(NO_PERMISSION);
-        }
+        User currentUser = SecurityUtils.getCurrentUser();
 
-        findMatching.updateParticipateState(PARTICIPATE);
+        validatePermission(currentUser, state);
+        validateUpdate(matching);
 
-        return findMatching.getId();
-    }
-    /*
-    고민 : participate()와 cancel()을 통합해서 조건문으로 분기해야할까?
-          아니면 미래에 요구 사항이 변경으로 로직이 바뀌어서 유지 보수를 위해 이대로 나눠 놔야 할까?
-     */
+        matching.updateState(state);
 
-    @Transactional
-    public Long cancel(MatchingRequest request) {
-        Long currentUserId = SecurityUtils.getCurrentUserId();
-
-        Matching findMatching =
-                matchingQueryRepository.findOne(request.getDate(), request.getUserNickname(), request.getTrainerNickname());
-
-        if(findMatching == null) {
-            throw new MatchingException(MATCHING_EMPTY);
-        }
-
-        if(!currentUserId.equals(findMatching.getMember().getId())) {
-            throw new MatchingException(NO_PERMISSION);
-        }
-
-        findMatching.updateParticipateState(CANCEL);
-
-        return findMatching.getId();
+        return MatchingResponse.of(matching);
     }
 
-    @Transactional
-    public Long participateAccept(MatchingRequest request) {
-        Long currentUserId = SecurityUtils.getCurrentUserId();
-
-        Matching findMatching = matchingRepository.findByDateAndTrainerId(request.getDate(), currentUserId)
-                .orElseThrow(() -> new MatchingException(MATCHING_EMPTY));
-
-        if(!currentUserId.equals(findMatching.getTrainer().getId())) {
+    private void validateUpdate(Matching matching) {
+        if(matching.getState().equals(CANCEL_ACCEPT)) {
             throw new MatchingException(NO_PERMISSION);
         }
-
-        findMatching.updateAcceptState(PARTICIPATE_ACCEPT);
-
-        return findMatching.getId();
     }
 
-    @Transactional
-    public Long breakup(MatchingRequest request) {
-        Long currentUserId = SecurityUtils.getCurrentUserId();
-
-        Matching findMatching = matchingRepository.findByMemberNicknameAndTrainerNickname(request.getUserNickname(), request.getTrainerNickname())
-                .orElseThrow(() -> new MatchingException(MATCHING_EMPTY));
-
-        if(!currentUserId.equals(findMatching.getTrainer().getId())) {
+    private void validateSave(User user, User trainer) {
+        if(!user.getRole().equals(USER) || !trainer.getRole().equals(TRAINER)) {
             throw new MatchingException(NO_PERMISSION);
         }
+    }
 
-        if(!findMatching.getParticipateState().equals(CANCEL)) {
-            throw new MatchingException(NOT_CANCELED);
+    private void validatePermission(User user, MatchingState state) {
+        switch (state) {
+            case PARTICIPATE, CANCEL -> {
+                if(!user.getRole().equals(USER)) {
+                    throw new MatchingException(NO_PERMISSION);
+                }
+            }
+            case PARTICIPATE_ACCEPT, CANCEL_ACCEPT -> {
+                if(!user.getRole().equals(TRAINER)) {
+                    throw new MatchingException(NO_PERMISSION);
+                }
+            }
+            default -> throw new MatchingException(NOT_VALID_FIELD);
         }
-
-        matchingRepository.delete(findMatching);
-
-        return findMatching.getId();
     }
 }

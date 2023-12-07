@@ -1,5 +1,7 @@
 package com.example.healthgenie.boundedContext.matching.service;
 
+import com.example.healthgenie.base.utils.DateUtils;
+import com.example.healthgenie.boundedContext.matching.dto.MatchingCondition;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingResponse;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
@@ -8,7 +10,6 @@ import com.example.healthgenie.boundedContext.matching.repository.MatchingReposi
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,12 +37,10 @@ class MatchingServiceTest {
     @Autowired
     MatchingRepository matchingRepository;
 
-    @Autowired
-    EntityManager em;
-
     User user1;
     User trainer1;
-    LocalDateTime ptDate;
+    String ptDate;
+    String ptTime;
     Matching matching1;
 
     @BeforeEach
@@ -49,8 +48,14 @@ class MatchingServiceTest {
         user1 = testKrUtils.createUser("user1", Role.USER, "user1@test.com");
         trainer1 = testKrUtils.createUser("trainer1", Role.TRAINER, "trainer1@test.com");
         // 2023년 12월 12일 16시 30분
-        ptDate = LocalDateTime.of(2023, 12, 12, 16, 30);
-        matching1 = testKrUtils.createMatching(ptDate, "기본 매칭 장소", "기본 매칭 내용", user1, trainer1);
+        ptDate = "2023-12-12";
+        ptTime = "16:30:00";
+        matching1 = testKrUtils.createMatching(
+                DateUtils.toLocalDateTime(ptDate, ptTime),
+                "기본 매칭 장소",
+                "기본 매칭 내용",
+                user1,
+                trainer1);
     }
 
     @Test
@@ -60,15 +65,17 @@ class MatchingServiceTest {
         testKrUtils.login(user1);
 
         MatchingRequest request =
-                testKrUtils.createMatchingRequest(ptDate, "00대학교 체육관", "기본 PT 입니다.", user1, trainer1);
+                testKrUtils.createMatchingRequest(ptDate, ptTime, "00대학교 체육관", "기본 PT 입니다.", user1.getId(), trainer1.getId());
 
         // when
-        MatchingResponse savedMatching = matchingService.save(request);
+        MatchingResponse savedMatching =
+                matchingService.save(request.getUserId(), request.getTrainerId(), request.getDate(), request.getTime(), request.getPlace(), request.getDescription());
 
         // then
         assertThat(savedMatching.getDate()).isEqualTo(ptDate);
-        assertThat(savedMatching.getUserNickname()).isEqualTo(user1.getNickname());
-        assertThat(savedMatching.getTrainerNickname()).isEqualTo(trainer1.getNickname());
+        assertThat(savedMatching.getTime()).isEqualTo(ptTime);
+        assertThat(savedMatching.getUserId()).isEqualTo(user1.getId());
+        assertThat(savedMatching.getTrainerId()).isEqualTo(trainer1.getId());
     }
 
     @Test
@@ -77,30 +84,24 @@ class MatchingServiceTest {
         // given
         testKrUtils.login(user1);
 
+        List<Matching> matchings = new ArrayList<>();
         for(int i=1; i<=10; i++) {
             LocalDateTime date = LocalDateTime.of(2099, 1, 1, i*2, 30);
-            testKrUtils.createMatching(
-                    date,
-                    "테스트 체육관" + i,
-                    "테스트 PT 내용" + i,
-                    user1,
-                    trainer1
-            );
+            Matching savedMatching = testKrUtils.createMatching(date, "테스트 체육관" + i, "테스트 PT 내용" + i, user1, trainer1);
+            matchings.add(savedMatching);
         }
 
         // when
-        LocalDateTime date = LocalDateTime.of(2099, 1, 1, 20, 30);
-        MatchingRequest findRequest = testKrUtils.createMatchingRequest(date, user1, trainer1);
-
-        MatchingResponse response = matchingService.findOne(findRequest);
+        MatchingResponse response = matchingService.findOne(matchings.get(0).getId());
 
         // then
-        assertThat(response).isNotNull();
-        assertThat(response.getDate()).isEqualTo(date);
-        assertThat(response.getPlace()).isEqualTo("테스트 체육관10");
-        assertThat(response.getDescription()).isEqualTo("테스트 PT 내용10");
-        assertThat(response.getUserNickname()).isEqualTo(user1.getNickname());
-        assertThat(response.getTrainerNickname()).isEqualTo(trainer1.getNickname());
+        assertThat(response.getId()).isEqualTo(matchings.get(0).getId());
+        assertThat(response.getDate()).isEqualTo("2099-01-01");
+        assertThat(response.getTime()).isEqualTo("02:30:00");
+        assertThat(response.getPlace()).isEqualTo("테스트 체육관1");
+        assertThat(response.getDescription()).isEqualTo("테스트 PT 내용1");
+        assertThat(response.getUserId()).isEqualTo(user1.getId());
+        assertThat(response.getTrainerId()).isEqualTo(trainer1.getId());
     }
 
     @Test
@@ -121,10 +122,9 @@ class MatchingServiceTest {
         }
 
         // when
-        LocalDateTime date = LocalDateTime.of(2099, 1, 1, 0, 0);
-        MatchingRequest findRequest = testKrUtils.createMatchingRequest(date, user1, trainer1);
+        MatchingCondition condition = testKrUtils.createMatchingCondition("2099-01-01", user1.getId(), trainer1.getId());
 
-        List<MatchingResponse> responses = matchingService.findByDateAndNicknames(findRequest);
+        List<MatchingResponse> responses = matchingService.findAll(condition);
 
         // then
         assertThat(responses.size()).isEqualTo(10);
@@ -137,19 +137,11 @@ class MatchingServiceTest {
         // given
         testKrUtils.login(user1);
 
-        MatchingRequest participateRequest = MatchingRequest.builder()
-                .date(ptDate)
-                .userNickname(user1.getNickname())
-                .trainerNickname(trainer1.getNickname())
-                .build();
-
         // when
-        Long id = matchingService.participate(participateRequest);
-
-        Matching matching = matchingRepository.findById(id).get();
+        MatchingResponse response = matchingService.update(matching1.getId(), MatchingState.PARTICIPATE);
 
         // then
-        assertThat(matching.getParticipateState()).isEqualTo(MatchingState.PARTICIPATE);
+        assertThat(response.getState()).isEqualTo(MatchingState.PARTICIPATE);
     }
 
     @Test
@@ -158,19 +150,11 @@ class MatchingServiceTest {
         // given
         testKrUtils.login(user1);
 
-        MatchingRequest cancelRequest = MatchingRequest.builder()
-                .date(ptDate)
-                .userNickname(user1.getNickname())
-                .trainerNickname(trainer1.getNickname())
-                .build();
-
         // when
-        Long id = matchingService.cancel(cancelRequest);
-
-        Matching matching = matchingRepository.findById(id).get();
+        MatchingResponse response = matchingService.update(matching1.getId(), MatchingState.CANCEL);
 
         // then
-        assertThat(matching.getParticipateState()).isEqualTo(MatchingState.CANCEL);
+        assertThat(response.getState()).isEqualTo(MatchingState.CANCEL);
     }
 
     @Test
@@ -179,43 +163,23 @@ class MatchingServiceTest {
         // given
         testKrUtils.login(trainer1);
 
-        MatchingRequest cancelRequest = MatchingRequest.builder()
-                .date(ptDate)
-                .userNickname(user1.getNickname())
-                .trainerNickname(trainer1.getNickname())
-                .build();
-
         // when
-        Long id = matchingService.participateAccept(cancelRequest);
-
-        Matching matching = matchingRepository.findById(id).get();
+        MatchingResponse response = matchingService.update(matching1.getId(), MatchingState.PARTICIPATE_ACCEPT);
 
         // then
-        assertThat(matching.getAcceptState()).isEqualTo(MatchingState.PARTICIPATE_ACCEPT);
+        assertThat(response.getState()).isEqualTo(MatchingState.PARTICIPATE_ACCEPT);
     }
 
     @Test
-    @DisplayName("정상적으로 트레이너가 PT 취소를 수락하기 - 최종 매칭 취소")
+    @DisplayName("정상적으로 트레이너가 PT 취소를 수락하기")
     void breakup() {
         // given
-        testKrUtils.login(user1);
-
-        MatchingRequest request = MatchingRequest.builder()
-                .date(ptDate)
-                .userNickname(user1.getNickname())
-                .trainerNickname(trainer1.getNickname())
-                .build();
-
-        matchingService.cancel(request);
-
-        // when
         testKrUtils.login(trainer1);
 
-        Long id = matchingService.breakup(request);
+        // when
+        MatchingResponse response = matchingService.update(matching1.getId(), MatchingState.CANCEL_ACCEPT);
 
         // then
-        Optional<Matching> opMatching = matchingRepository.findById(id);
-
-        assertThat(opMatching.isEmpty()).isTrue();
+        assertThat(response.getState()).isEqualTo(MatchingState.CANCEL_ACCEPT);
     }
 }

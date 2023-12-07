@@ -1,6 +1,5 @@
 package com.example.healthgenie.boundedContext.matching.entity;
 
-import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
@@ -15,8 +14,8 @@ public enum MatchingState {
      */
     PARTICIPATE("PARTICIPATE", "PT 참석"),
     CANCEL("CANCEL", "PT 취소"),
-    PARTICIPATE_ACCEPT("ACCEPT", "PT 승인"),
-    CANCEL_ACCEPT("ACCEPT", "PT 승인"),
+    PARTICIPATE_ACCEPT("PARTICIPATE_ACCEPT", "PT 참석 승인"),
+    CANCEL_ACCEPT("CANCEL_ACCEPT", "PT 취소 승인"),
     DEFAULT("DEFAULT", "기본 값")
     ;
 
@@ -24,10 +23,10 @@ public enum MatchingState {
     private final String name;
 
     @JsonCreator
-    public static Role from(String code) {
-        for (Role role : Role.values()) {
-            if (role.getCode().equals(code)) {
-                return role;
+    public static MatchingState from(String code) {
+        for (MatchingState state : MatchingState.values()) {
+            if (state.getCode().equals(code)) {
+                return state;
             }
         }
         return null;

@@ -1,6 +1,8 @@
 package com.example.healthgenie.boundedContext.matching.dto;
 
+import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,20 +18,28 @@ import java.util.List;
 public class MatchingResponse {
 
     private Long id;
-    private LocalDateTime date;
+    private String date;
+    private String time;
     private String place;
-    private String userNickname;
-    private String trainerNickname;
     private String description;
+    private MatchingState state;
+    private Long userId;
+    private Long trainerId;
 
     public static MatchingResponse of(Matching matching) {
+        LocalDateTime dateTime = matching.getDate();
+        String date = DateUtils.toDate(dateTime);
+        String time = DateUtils.toTime(dateTime);
+
         return MatchingResponse.builder()
                 .id(matching.getId())
-                .date(matching.getDate())
+                .date(date)
+                .time(time)
                 .place(matching.getPlace())
-                .userNickname(matching.getMember().getNickname())
-                .trainerNickname(matching.getTrainer().getNickname())
                 .description(matching.getDescription())
+                .state(matching.getState())
+                .userId(matching.getMember().getId())
+                .trainerId(matching.getTrainer().getId())
                 .build();
     }
 

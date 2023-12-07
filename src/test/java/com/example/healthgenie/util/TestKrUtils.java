@@ -12,7 +12,7 @@ import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhot
 import com.example.healthgenie.boundedContext.community.repository.CommunityCommentRepository;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostPhotoRepository;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
-
+import com.example.healthgenie.boundedContext.matching.dto.MatchingCondition;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
@@ -25,7 +25,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -142,18 +141,23 @@ public class TestKrUtils {
         return communityPostPhotoRepository.save(postPhoto);
     }
 
-    public MatchingRequest createMatchingRequest(LocalDateTime date, String place, String description, User member, User trainer) {
+    public MatchingRequest createMatchingRequest(String date, String time, String place, String description, Long userId, Long trainerId) {
         return MatchingRequest.builder()
                 .date(date)
+                .time(time)
                 .place(place)
                 .description(description)
-                .userNickname(member.getNickname())
-                .trainerNickname(trainer.getNickname())
+                .userId(userId)
+                .trainerId(trainerId)
                 .build();
     }
 
-    public MatchingRequest createMatchingRequest(LocalDateTime date, User member, User trainer) {
-        return createMatchingRequest(date, null, null, member, trainer);
+    public MatchingRequest createMatchingRequest(String date, String time, Long userId, Long trainerId) {
+        return createMatchingRequest(date, time, "", "", userId, trainerId);
+    }
+
+    public MatchingRequest createMatchingRequest(String date, Long userId, Long trainerId) {
+        return createMatchingRequest(date, "00:00:00", "", "", userId, trainerId);
     }
 
     public Matching createMatching(LocalDateTime date, String place, String description, User member, User trainer) {
@@ -163,11 +167,26 @@ public class TestKrUtils {
                 .description(description)
                 .member(member)
                 .trainer(trainer)
-                .participateState(MatchingState.DEFAULT)
-                .acceptState(MatchingState.DEFAULT)
+                .state(MatchingState.DEFAULT)
                 .build();
 
         return matchingRepository.save(matching);
     }
 
+    public MatchingCondition createMatchingCondition(String date, String time, Long userId, Long trainerId) {
+        return MatchingCondition.builder()
+                .date(date)
+                .time(time)
+                .userId(userId)
+                .trainerId(trainerId)
+                .build();
+    }
+
+    public MatchingCondition createMatchingCondition(String date, Long userId, Long trainerId) {
+        return MatchingCondition.builder()
+                .date(date)
+                .userId(userId)
+                .trainerId(trainerId)
+                .build();
+    }
 }

@@ -30,12 +30,8 @@ public class Matching extends BaseEntity {
     private String place;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "pt_participate")
-    private MatchingState participateState; // 회원이 PT 최종 참석/취소 결정 필드
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "pt_accept")
-    private MatchingState acceptState; // 트레이너가 PT 최종 참석/취소에 대한 승인 필드
+    @Column(name = "pt_state")
+    private MatchingState state; // 매칭 상태 필드
 
     @Column(name = "pt_description")
     private String description;
@@ -48,11 +44,7 @@ public class Matching extends BaseEntity {
     @JoinColumn(name ="trainer_id")
     private User trainer;
 
-    public void updateParticipateState(MatchingState state) {
-        this.participateState = state;
-    }
-
-    public void updateAcceptState(MatchingState state) {
-        this.acceptState = state;
+    public void updateState(MatchingState state) {
+        this.state= state;
     }
 }
