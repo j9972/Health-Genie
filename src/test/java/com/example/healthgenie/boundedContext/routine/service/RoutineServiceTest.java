@@ -10,6 +10,7 @@ import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +35,9 @@ class RoutineServiceTest {
     TestSyUtils testSyUtils;
 
     @Autowired
+    TestKrUtils testKrUtils;
+
+    @Autowired
     RoutineService routineService;
 
     User user;
@@ -49,7 +53,7 @@ class RoutineServiceTest {
         List<String> parts = Arrays.asList("하체","가슴");
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
 
-        user = testSyUtils.createUser("test1",Role.USER,"jh485200@gmail.com");
+        user = testKrUtils.createUser("test1",Role.USER,"jh485200@gmail.com");
         routine = testSyUtils.writeRoutine(Day.WEDNESDAY,"test",parts,recipe,user);
 
         beginnerGenie = testSyUtils.genieRoutine(Level.BEGINNER, Day.FRIDAY, "test", parts, recipe);
@@ -67,7 +71,7 @@ class RoutineServiceTest {
     @DisplayName("루틴 작성하기")
     void writeRoutine() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         List<String> parts = Arrays.asList("하체","어꺠");
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
@@ -126,7 +130,7 @@ class RoutineServiceTest {
          */
 
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
 
         // when
@@ -165,7 +169,7 @@ class RoutineServiceTest {
     @DisplayName("나의 루틴 모두 조회하기")
     void getAllMyRoutine() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         List<String> parts = Arrays.asList("하체","어꺠");
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
@@ -191,7 +195,7 @@ class RoutineServiceTest {
     @DisplayName("나의 루틴 요일별 상세조회")
     void getMyRoutine() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
         // before에 있는 값을 가져오기
@@ -210,7 +214,7 @@ class RoutineServiceTest {
     @DisplayName("level 별 지니 루틴 모두 조회하기")
     void getAllGenieRoutine() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
         List<RoutineResponseDto> beginG = routineService.getAllGenieRoutine(Level.BEGINNER);
@@ -238,7 +242,7 @@ class RoutineServiceTest {
     @DisplayName("level이 empty면 지니 루틴 조회 실패")
     void failGenieRoutine() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
 
@@ -277,7 +281,7 @@ class RoutineServiceTest {
     @DisplayName("루틴 삭제하기")
     void deleteRoutine() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
 

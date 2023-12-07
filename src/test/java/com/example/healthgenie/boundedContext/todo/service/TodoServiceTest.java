@@ -10,6 +10,7 @@ import com.example.healthgenie.boundedContext.todo.entity.Status;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +36,9 @@ class TodoServiceTest {
     TestSyUtils testSyUtils;
 
     @Autowired
+    TestKrUtils testKrUtils;
+
+    @Autowired
     TodoService todoService;
 
     User user;
@@ -42,7 +46,7 @@ class TodoServiceTest {
 
     @BeforeEach
     void before() {
-        user = testSyUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
+        user = testKrUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
 
         LocalDate localDate = LocalDate.of(2023, 12, 15);
         LocalTime localTime = LocalTime.of(14, 30, 45); // 시, 분, 초
@@ -55,7 +59,7 @@ class TodoServiceTest {
     @DisplayName("정상적으로 todo list 작성")
     void addTodoList() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         LocalDate date = LocalDate.of(2023, 12, 15);
         LocalTime time = LocalTime.of(14, 30, 45); // 시, 분, 초
@@ -99,7 +103,7 @@ class TodoServiceTest {
     @DisplayName("정상적으로 todo list 수정하기")
     void update() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
         TodoRequestDto dto = testSyUtils.TodoRequestDto("수정한 제목", "수정한 내용", Status.DONE);
@@ -129,7 +133,7 @@ class TodoServiceTest {
     @DisplayName("정상적인 todo 삭제하기")
     void deleteTodo() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
 
@@ -155,7 +159,7 @@ class TodoServiceTest {
     @DisplayName("존재하지 않는 todo 삭제하기")
     void notExistTodoDelete() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
 
@@ -168,7 +172,7 @@ class TodoServiceTest {
     @DisplayName("정상적인 todo list 전체 조회하기")
     void getAllMyTodo() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         LocalDate date = LocalDate.of(2023, 12, 15);
         LocalTime time = LocalTime.of(14, 30, 45); // 시, 분, 초

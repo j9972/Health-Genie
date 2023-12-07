@@ -7,6 +7,7 @@ import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +30,9 @@ class PtProcessPhotoServiceTest {
     TestSyUtils testSyUtils;
 
     @Autowired
+    TestKrUtils testKrUtils;
+
+    @Autowired
     PtProcessPhotoService ptProcessPhotoService;
 
     PtProcess process;
@@ -38,8 +42,8 @@ class PtProcessPhotoServiceTest {
 
     @BeforeEach
     void before() {
-        user = testSyUtils.createUser("test1", Role.USER, "test1@test.com");
-        user2 = testSyUtils.createUser("test1", Role.TRAINER, "test1@test.com");
+        user = testKrUtils.createUser("test1", Role.USER, "test1@test.com");
+        user2 = testKrUtils.createUser("test1", Role.TRAINER, "test1@test.com");
         process = testSyUtils.createProcess("title", "content", user, user2);
         photo = testSyUtils.createProcessPhoto(process, "default-path.png");
     }

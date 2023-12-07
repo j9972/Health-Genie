@@ -52,10 +52,10 @@ class PtProcessServiceTest {
         LocalDateTime date = LocalDateTime.of(2023, 12, 5, 14, 30, 0);
         LocalDate date2 = LocalDate.of(2023,12,5);
 
-        user = testSyUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
-        user2 = testSyUtils.createUser("test2", Role.TRAINER,"test@test.com");
-        user3 = testSyUtils.createUser("test3", Role.USER,"test3@gmail.com");
-        user4 = testSyUtils.createUser("test4", Role.TRAINER,"test4@test.com");
+        user = testKrUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
+        user2 = testKrUtils.createUser("test2", Role.TRAINER,"test@test.com");
+        user3 = testKrUtils.createUser("test3", Role.USER,"test3@gmail.com");
+        user4 = testKrUtils.createUser("test4", Role.TRAINER,"test4@test.com");
 
         matching = testKrUtils.createMatching(date, "gym", "test desc", user, user2);
         process = testSyUtils.createProcess(date2,"test title", "test content", user, user2);
@@ -65,7 +65,7 @@ class PtProcessServiceTest {
     @DisplayName("트레이너가 피드백 생성 성공")
     void addPtProcess() {
         // given
-        testSyUtils.login(user2);
+        testKrUtils.login(user2);
 
         LocalDate date = LocalDate.of(2023,12,5);
 
@@ -86,7 +86,7 @@ class PtProcessServiceTest {
     @DisplayName("회원이 피드백 생성 실패")
     void failUserAddPtProcess() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         LocalDate date = LocalDate.of(2023,12,5);
 
@@ -122,7 +122,7 @@ class PtProcessServiceTest {
     @DisplayName("매칭 기록없이 리뷰 작성 실패")
     void noMatchingHistoryAddPtProcess() {
         // given
-        testSyUtils.login(user3);
+        testKrUtils.login(user3);
         LocalDate date = LocalDate.of(2023,12,5);
 
         PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", null ,"test3","test4");
@@ -137,7 +137,7 @@ class PtProcessServiceTest {
     @DisplayName("피드백 상세 조회하기")
     void getPtProcess() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
         LocalDate date = LocalDate.of(2023,12,5);
 
         // when
@@ -156,7 +156,7 @@ class PtProcessServiceTest {
     @DisplayName("트레이너나 회원 외의 다른 사람이 피드백 상세 조회 실패하기")
     void failGetPtProcess() {
         // given
-        testSyUtils.login(user3);
+        testKrUtils.login(user3);
 
         // when
 
@@ -188,7 +188,7 @@ class PtProcessServiceTest {
     @DisplayName("존재하지 않는 피드백 상세 조회 실패하기")
     void notExistGetPtProcess() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
 
@@ -201,7 +201,7 @@ class PtProcessServiceTest {
     @DisplayName("트레이너가 작성한 본인의 모든 피드백 조회하기")
     void getAllTrainerProcess() {
         // given
-        testSyUtils.login(user2);
+        testKrUtils.login(user2);
 
         // when
         Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(0, 5);
@@ -221,7 +221,7 @@ class PtProcessServiceTest {
     @DisplayName("나의 모든 피드백 조회하기")
     void getAllMyProcess() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
         Page<PtProcessResponseDto> response = processService.getAllMyProcess(0, 5);
@@ -241,7 +241,7 @@ class PtProcessServiceTest {
     @DisplayName("트레이너가 피드백 삭제하기")
     void deletePtProcess() {
         // given
-        testSyUtils.login(user2);
+        testKrUtils.login(user2);
 
         // when
 
@@ -254,7 +254,7 @@ class PtProcessServiceTest {
     @DisplayName("회원이 피드백 삭제 실패하기")
     void failUserDeletePtProcess() {
         // given
-        testSyUtils.login(user);
+        testKrUtils.login(user);
 
         // when
 
@@ -281,8 +281,8 @@ class PtProcessServiceTest {
     @Test
     @DisplayName("키워드로 조회하기")
     void findAll() {
-// given
-        testSyUtils.login(user);
+        // given
+        testKrUtils.login(user);
 
         // when
         String keyword = "test";
