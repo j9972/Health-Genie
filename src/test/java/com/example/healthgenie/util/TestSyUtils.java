@@ -196,36 +196,6 @@ public class TestSyUtils {
         return ptReviewRepository.save(review);
     }
 
-    public MatchingRequest createMatchingDto(LocalDateTime date, String place, Boolean isAccepted,
-                                             Integer price, String description,
-                                             String userNickname, String trainerNickname) {
-        return MatchingRequest.builder()
-                .date(date)
-                .place(place)
-                .isAccepted(isAccepted)
-                .price(price)
-                .description(description)
-                .userEmail(userNickname)
-                .trainerEmail(trainerNickname)
-                .build();
-    }
-
-    public Matching createMatching(LocalDateTime date, String place, Boolean isAccepted,
-                                   Integer price, String description,
-                                   User member, User trainer) {
-        Matching matching =  Matching.builder()
-                .date(date)
-                .place(place)
-                .isAccepted(isAccepted)
-                .price(price)
-                .description(description)
-                .member(member)
-                .trainer(trainer)
-                .build();
-
-        return matchingRepository.save(matching);
-    }
-
     public PtProcessRequestDto createProcessDto(LocalDate date, String title, String content,
                                         String userNickname, String trainerNickname) {
         return createProcessDto(date, title, content, null, userNickname, trainerNickname);

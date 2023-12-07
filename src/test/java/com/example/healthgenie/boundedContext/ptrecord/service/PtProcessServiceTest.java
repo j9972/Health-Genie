@@ -5,12 +5,10 @@ import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
-import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
-import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
-import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
-import com.example.healthgenie.boundedContext.ptreview.service.PtReviewService;
+
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +35,9 @@ class PtProcessServiceTest {
     TestSyUtils testSyUtils;
 
     @Autowired
+    TestKrUtils testKrUtils;
+
+    @Autowired
     PtProcessService processService;
 
     User user;
@@ -56,7 +57,7 @@ class PtProcessServiceTest {
         user3 = testSyUtils.createUser("test3", Role.USER,"test3@gmail.com");
         user4 = testSyUtils.createUser("test4", Role.TRAINER,"test4@test.com");
 
-        matching = testSyUtils.createMatching(date, "gym", true, 20000, "test", user, user2);
+        matching = testKrUtils.createMatching(date, "gym", "test desc", user, user2);
         process = testSyUtils.createProcess(date2,"test title", "test content", user, user2);
     }
 
