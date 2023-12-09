@@ -31,7 +31,7 @@ class UserMailServiceTest {
     @Autowired
     RedisService redisService;
 
-    private static final String AUTH_CODE_PREFIX = "AuthCode ";
+    String AUTH_CODE_PREFIX = "AuthCode ";
     User user;
 
     /***
