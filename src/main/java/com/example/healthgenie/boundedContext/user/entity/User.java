@@ -10,7 +10,6 @@ import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -76,47 +75,24 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "level")
     private Level level;
 
-    // 다른 메서드나 로직에서 추가적인 초기화 필요 없기에 아래 OneToMany 코드들을 초기화 하지 않음
-    // trainerInfo, RefreshToken, userProfile 부분 oneToOne 매핑 스킵 -> 한쪽에서만 참조하기에!
-    // user 2번 참조한 데이터 ( chatMessage, mathcing, PT_PROCESS_TB, PtReivew ) -> 한번만 하면 된다
-//    @Builder.Default
-//    @OneToMany(mappedBy = "user_id",fetch = FetchType.LAZY )
-//    private List<ChatMessage> chatMessages_member = new ArrayList<>(); // NullPointerException을 방지하기 위해서 초기화 해놓음
-
-//    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
-//    private List<ChatMessage> chatMessages_trainer;
-
     @Builder.Default
     @JsonIgnore
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Matching> match_user= new ArrayList<>();
-
-//    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY )
-//    private List<matching> match_trainer;
 
     @Builder.Default
     @JsonIgnore
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
     private List<PtProcess> process_user = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY )
-//    private List<PtProcess> process_trainer;
-
     @Builder.Default
     @JsonIgnore
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
     private List<PtReview> reivew_user = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
-//    private List<PtReivew> reivew_trainer;
-
     @Builder.Default
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
     private List<Todo> todo = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY )
-    private List<TrainerPhoto> trainerPhotoList = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
