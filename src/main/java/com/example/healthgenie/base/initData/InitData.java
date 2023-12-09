@@ -110,7 +110,7 @@ public class InitData {
                 CommunityPost post = CommunityPost.builder()
                         .title(title)
                         .content(content)
-                        .member(user)
+                        .writer(user)
                         .build();
 
                 return communityPostRepository.save(post);

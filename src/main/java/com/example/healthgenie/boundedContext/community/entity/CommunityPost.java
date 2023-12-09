@@ -35,7 +35,7 @@ public class CommunityPost extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User member;
+    private User writer;
 
     @Builder.Default
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)

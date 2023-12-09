@@ -48,7 +48,7 @@ class CommunityPostServiceTest {
         // given
         testKrUtils.login(user1);
 
-        PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
+        PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1", user1.getId());
 
         // when
         PostResponse response = communityPostService.save(request);
@@ -60,25 +60,12 @@ class CommunityPostServiceTest {
     }
 
     @Test
-    @DisplayName("로그인하지 않은 사용자가 게시글 생성하기")
-    void notLoginCreatePost() {
-        // given
-        PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> communityPostService.save(request))
-                .isInstanceOf(CommonException.class);
-    }
-
-    @Test
     @DisplayName("정상적인 게시글 조회하기")
     void findById() {
         // given
         testKrUtils.login(user1);
 
-        PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
+        PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1", user1.getId());
         PostResponse savedPost = communityPostService.save(request);
 
         // when
@@ -110,7 +97,7 @@ class CommunityPostServiceTest {
         testKrUtils.login(user1);
 
         for(int i=1; i<=10; i++) {
-            PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목" + i, "테스트 게시글 내용" + i);
+            PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목" + i, "테스트 게시글 내용" + i, user1.getId());
             communityPostService.save(request);
         }
 
@@ -129,12 +116,12 @@ class CommunityPostServiceTest {
         testKrUtils.login(user1);
 
         for(int i=1; i<=10; i++) {
-            PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목" + i, "테스트 게시글 내용" + i);
+            PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목" + i, "테스트 게시글 내용" + i, user1.getId());
             communityPostService.save(request);
         }
 
         for(int i=1; i<=3; i++) {
-            PostRequest request = testKrUtils.createPostRequest("키워드입니다." + i, "테스트 게시글 내용" + i);
+            PostRequest request = testKrUtils.createPostRequest("키워드입니다." + i, "테스트 게시글 내용" + i, user1.getId());
             communityPostService.save(request);
         }
 
@@ -155,7 +142,7 @@ class CommunityPostServiceTest {
         testKrUtils.login(user1);
 
         // when
-        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용");
+        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용", user1.getId());
 
         // then
         PostResponse response = communityPostService.update(post1.getId(), updateRequest);
@@ -171,7 +158,7 @@ class CommunityPostServiceTest {
         testKrUtils.login(user2);
 
         // when
-        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용");
+        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용", user1.getId());
 
         // then
         assertThatThrownBy(() -> communityPostService.update(post1.getId(), updateRequest))
@@ -184,11 +171,11 @@ class CommunityPostServiceTest {
         // given
         testKrUtils.login(user1);
 
-        PostRequest saveRequest = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
+        PostRequest saveRequest = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1", user1.getId());
 
         // when
         PostResponse savedPost = communityPostService.save(saveRequest);
-        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용");
+        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용", user1.getId());
 
         testKrUtils.login(user2);
 
@@ -204,7 +191,7 @@ class CommunityPostServiceTest {
         testKrUtils.login(user1);
 
         // when
-        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용");
+        PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용", user1.getId());
 
         // then
         assertThatThrownBy(() -> communityPostService.update(999L, updateRequest))

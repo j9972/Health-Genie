@@ -95,11 +95,11 @@ public class User extends BaseEntity implements UserDetails {
     private List<Todo> todo = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "writer",fetch = FetchType.LAZY )
     private List<CommunityPost> communityPosts = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "writer",fetch = FetchType.LAZY )
     private List<CommunityComment> communityComments = new ArrayList<>();
 
     @Builder.Default

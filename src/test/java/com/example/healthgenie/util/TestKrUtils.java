@@ -59,18 +59,17 @@ public class TestKrUtils {
 
     public CommunityPost createPost(User writer, String title, String content, List<CommunityPostPhoto> photos) {
         CommunityPost post = CommunityPost.builder()
-                .member(writer)
+                .writer(writer)
                 .title(title)
                 .content(content)
                 .communityPostPhotos(photos)
-                .communityPostPhotos(new ArrayList<>())
                 .build();
 
         return communityPostRepository.save(post);
     }
 
     public CommunityPost createPost(User writer, String title, String content) {
-        return createPost(writer, title, content, null);
+        return createPost(writer, title, content, new ArrayList<>());
     }
 
 
@@ -97,27 +96,24 @@ public class TestKrUtils {
         return chatRoomRepository.save(chatRoom);
     }
 
-    public PostRequest createPostRequest(String title, String content) {
-        return createPostRequest(title, content, null);
+    public PostRequest createPostRequest(String title, String content, Long writerId) {
+        return createPostRequest(title, content, writerId, null);
     }
 
-    public PostRequest createPostRequest(String title, String content, List<MultipartFile> photos) {
+    public PostRequest createPostRequest(String title, String content, Long writerId, List<MultipartFile> photos) {
         return PostRequest.builder()
                 .title(title)
                 .content(content)
+                .writerId(writerId)
                 .photos(photos)
                 .build();
     }
 
-    public CommentRequest createCommentRequest(String content, String writer) {
+    public CommentRequest createCommentRequest(String content, Long writerId) {
         return CommentRequest.builder()
                 .content(content)
-                .writer(writer)
+                .writerId(writerId)
                 .build();
-    }
-
-    public CommentRequest createCommentRequest(String content) {
-        return createCommentRequest(content, null);
     }
 
     public CommunityComment createComment(String content, CommunityPost post) {
@@ -125,7 +121,7 @@ public class TestKrUtils {
 
         CommunityComment comment = CommunityComment.builder()
                 .commentBody(content)
-                .member(writer)
+                .writer(writer)
                 .post(post)
                 .build();
 

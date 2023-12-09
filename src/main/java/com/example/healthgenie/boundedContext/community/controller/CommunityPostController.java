@@ -22,6 +22,13 @@ public class CommunityPostController {
     private final CommunityPostService communityPostService;
     private final CommunityPostTransactionService communityPostTransactionService;
 
+    /* TODO : API 분리
+            지금 상태는 클라이언트가 /community/posts/{postId} 만 호출해도 해당 게시글의 댓글과 사진을 모두 반환해줌
+            1. GET /community/posts/{postId}
+            2. GET /community/posts/{postId}/photos
+            3. GET /community/posts/{postId}/comments
+            또한 게시글이 삭제됐을 때, 사진이 있다면 s3에서도 삭제되어야 함
+     */
     @GetMapping
     public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
         List<PostResponse> response = communityPostService.findAll(keyword);
@@ -29,9 +36,9 @@ public class CommunityPostController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Result> findById(@PathVariable Long id) {
-        PostResponse response = communityPostService.findById(id);
+    @GetMapping("/{postId}")
+    public ResponseEntity<Result> findById(@PathVariable Long postId) {
+        PostResponse response = communityPostService.findById(postId);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -43,16 +50,16 @@ public class CommunityPostController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Result> edit(@PathVariable Long id, PostRequest request) throws IOException {
-        PostResponse response = communityPostTransactionService.update(id, request);
+    @PatchMapping("/{postId}")
+    public ResponseEntity<Result> edit(@PathVariable Long postId, PostRequest request) throws IOException {
+        PostResponse response = communityPostTransactionService.update(postId, request);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Result> delete(@PathVariable Long id) {
-        String response = communityPostService.delete(id);
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Result> delete(@PathVariable Long postId) {
+        String response = communityPostService.delete(postId);
 
         return ResponseEntity.ok(Result.of(response));
     }
