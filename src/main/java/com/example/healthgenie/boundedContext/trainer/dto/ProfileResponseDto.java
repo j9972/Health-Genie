@@ -1,10 +1,19 @@
 package com.example.healthgenie.boundedContext.trainer.dto;
 
+import com.example.healthgenie.boundedContext.community.dto.PostResponse;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
+import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileService;
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,15 +27,39 @@ public class ProfileResponseDto {
     private int cost;
     private int month; // 견적을 개월 수로 변환
     private String nickname; // 트레이너 닉네임
+    private String university;
+    private LocalTime startTime;
+    private LocalTime endTime;
+    private Double reviewAvg;
+    private List<String> photoPaths;
 
-    public static ProfileResponseDto ofProfile(TrainerInfo profile) {
+    public static ProfileResponseDto of(TrainerInfo info) {
+        List<String> paths = new ArrayList<>();
+        if(info.getTrainerPhotos() != null) {
+            paths = info.getTrainerPhotos().stream()
+                    .map(TrainerPhoto::getInfoPhotoPath)
+                    .toList();
+        }
+
+
         return ProfileResponseDto.builder()
-                .id(profile.getId())
-                .introduction(profile.getIntroduction())
-                .career(profile.getCareer())
-                .cost(profile.getCost())
-                .month(profile.getCareerMonth())
-                .nickname(profile.getMember().getNickname())
+                .id(info.getId())
+                .introduction(info.getIntroduction())
+                .career(info.getCareer())
+                .month(info.getCareerMonth())
+                .cost(info.getCost())
+                .university(info.getUniversity())
+                .startTime(info.getStartTime())
+                .endTime(info.getEndTime())
+                .reviewAvg(info.getReviewAvg())
+                .nickname(info.getMember().getNickname())
+                .photoPaths(paths)
                 .build();
+    }
+
+    public static List<ProfileResponseDto> of(List<TrainerInfo> infos) {
+        return infos.stream()
+                .map(ProfileResponseDto::of)
+                .toList();
     }
 }

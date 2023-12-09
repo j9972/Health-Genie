@@ -20,6 +20,8 @@ import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.todo.repository.TodoRepository;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
+import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -43,6 +45,7 @@ public class TestSyUtils {
     private final TodoRepository todoRepository;
     private final PtReviewRepository ptReviewRepository;
     private final TrainerProfileRepository trainerProfileRepository;
+    private final TrainerProfilePhotoRepository trainerProfilePhotoRepository;
     private final PtProcessRepository ptProcessRepository;
     private final PtProcessPhotoRepository ptProcessPhotoRepository;
 
@@ -121,29 +124,6 @@ public class TestSyUtils {
 
         return todoRepository.save(todo);
     }
-    public ProfileRequestDto createProfileDto(String introduction,String career,
-                                               int cost,int month, String nickname) {
-        return ProfileRequestDto.builder()
-                .introduction(introduction)
-                .career(career)
-                .cost(cost)
-                .month(month)
-                .nickname(nickname)
-                .build();
-    }
-
-    public TrainerInfo createProfile(String introduction,String career,
-                                     int cost,int month, User user) {
-        TrainerInfo profile = TrainerInfo.builder()
-                .introduction(introduction)
-                .career(career)
-                .cost(cost)
-                .careerMonth(month)
-                .member(user)
-                .build();
-
-        return trainerProfileRepository.save(profile);
-    }
 
     public PtReviewRequestDto createReviewDto(String content, String stopReason, Double reviewScore,
                                            String userNickname, String trainerNickname) {
@@ -219,6 +199,68 @@ public class TestSyUtils {
                 .build();
 
         return ptProcessPhotoRepository.save(processPhoto);
+    }
+
+    public ProfileRequestDto createProfileDto(String introduction,String career, String university,
+                                              LocalTime startTime, LocalTime endTime, Double reviewAvg,
+                                              int cost, int month, String nickname) {
+        return createProfileDto(introduction, career, university,startTime,endTime,reviewAvg, null,
+                cost, month,nickname);
+    }
+
+    public ProfileRequestDto createProfileDto(String introduction,String career, String university,
+                                              LocalTime startTime, LocalTime endTime, Double reviewAvg,
+                                              List<MultipartFile> photos, int cost,
+                                              int month, String nickname) {
+        return ProfileRequestDto.builder()
+                .introduction(introduction)
+                .career(career)
+                .university(university)
+                .startTime(startTime)
+                .endTime(endTime)
+                .reviewAvg(reviewAvg)
+                .photos(photos)
+                .cost(cost)
+                .month(month)
+                .nickname(nickname)
+                .build();
+    }
+
+    public TrainerInfo createProfile(String introduction, String career, String university,
+                                     LocalTime startTime, LocalTime endTime, Double reviewAvg,
+                                     int cost, int month, User user) {
+        return createProfile(introduction, career, university, startTime, endTime, reviewAvg, null, cost, month, user);
+    }
+
+    public TrainerInfo createProfile(String introduction, String career, String university,
+                                     LocalTime startTime, LocalTime endTime, Double reviewAvg,
+                                     List<TrainerPhoto> photos, int cost,
+                                     int month, User user) {
+        TrainerInfo profile = TrainerInfo.builder()
+                .introduction(introduction)
+                .career(career)
+                .cost(cost)
+                .careerMonth(month)
+                .university(university)
+                .startTime(startTime)
+                .endTime(endTime)
+                .reviewAvg(reviewAvg)
+                .trainerPhotos(photos)
+                .trainerPhotos(new ArrayList<>())
+                .member(user)
+                .build();
+
+        return trainerProfileRepository.save(profile);
+    }
+
+
+    public TrainerPhoto createProfilePhoto(TrainerInfo profile, String path) {
+        TrainerPhoto profilePhoto = TrainerPhoto.builder()
+                .info(profile)
+                .infoPhotoPath(path)
+                .build();
+
+        return trainerProfilePhotoRepository.save(profilePhoto);
     }
 
 }

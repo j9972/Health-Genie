@@ -114,9 +114,9 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
     private List<Todo> todo = new ArrayList<>();
 
-    @Builder.Default
-    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY )
-    private List<TrainerPhoto> trainerPhotoList = new ArrayList<>();
+//    @Builder.Default
+//    @OneToMany(mappedBy = "trainer",fetch = FetchType.LAZY )
+//    private List<TrainerPhoto> trainerPhotoList = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )

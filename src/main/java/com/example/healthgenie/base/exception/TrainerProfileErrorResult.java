@@ -12,6 +12,7 @@ public enum TrainerProfileErrorResult {
     DIFFERENT_USER(HttpStatus.BAD_REQUEST,"current user and trainer are different"),
     USER_EMPTY(HttpStatus.BAD_REQUEST,"user is empty"),
     WRONG_USER(HttpStatus.BAD_REQUEST,"user is wrong"),
+    NO_PERMISSION(HttpStatus.BAD_REQUEST,"user doesn't have permission"),
     UNkNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"unknown_Exception");
 
 
