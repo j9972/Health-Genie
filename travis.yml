@@ -1,0 +1,60 @@
+sudo: required
+
+language: java
+jdk:
+  - openjdk17
+
+# 도커 환경 구성
+services:
+  - docker
+
+# 빌드 전에 수행할 작업
+before_install:
+  - chmod +x mvnw
+
+# 빌드 및 테스트 수행
+script:
+  - ./mvnw clean install
+
+# 성공후 할일 -> docker image를 docker hub에 보내는 과정
+after_success:
+  - docker build -t j9972/docker-backend  ./backend
+  - docker build -t j9972/docker-nginx ./nginx
+  - docker build -t j9972/docker-mysql ./mysql
+
+  # DOCKER_HUB_PASSWORD, DOCKER_HUB_ID 을 Travis CI의 환경변수에 넣어줘야 함
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
+
+  - docker push j9972/docker-backend
+  - docker push j9972/docker-nginx
+  - docker push j9972/docker-mysql
+
+notifications:
+  email:
+    recipients:
+      - your-email@example.com
+    on_success: never # 성공 시 메일을 보내지 않음
+    on_failure: always # 실패 시 메일을 보냄
+
+# 배포하는 부분
+deploy:
+  # 외부 서비스
+  provider: elasticbeanstalk
+  # 현재 사용중인 AWS의 서비스가 위치하고 있는 물리적장소
+  region: "ap-northeast-2"
+  # 어플리케이션 이름 [ 아래 스크린샷 참고 ]
+  app: "docker-fullstack-app"
+  # 환경을 지정하지 않았기 때문에 자동으로 생성되는 파일을 넣어준다.
+  env: "DockerFullstackApp-env"
+  # elasticbeanstalk을 위한 s3 버켓이름
+  # 어떤숫자는 s3 부분에서 알수있다. [ bucket_name 아래 스크린샷 참조 ]
+  bucket_name: "elasticbeanstalk-ap-northeast-2-(어떤숫자)
+	bucket_path:"docker-fullstack-app"
+  on:
+    branch: master
+
+# Travis Ci & AWS 연결 ( IAM 인증 키 )
+access_key_id: $AWS_ACCESS_KEY
+access_access_key: $AWS_SECRET_ACCESS_KEY
+
+# AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY 값들은 TravisCI에 넣어준다
