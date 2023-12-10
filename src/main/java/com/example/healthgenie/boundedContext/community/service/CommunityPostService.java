@@ -39,7 +39,7 @@ public class CommunityPostService {
     }
 
     public List<PostResponse> findAll(String keyword) {
-        return PostResponse.of(communityPostQueryRepository.findAll(keyword));
+        return PostResponse.excludePhotosAndCommentsOf(communityPostQueryRepository.findAll(keyword));
     }
 
     @Transactional

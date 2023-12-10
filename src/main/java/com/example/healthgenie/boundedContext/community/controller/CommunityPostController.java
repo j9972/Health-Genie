@@ -22,12 +22,8 @@ public class CommunityPostController {
     private final CommunityPostService communityPostService;
     private final CommunityPostTransactionService communityPostTransactionService;
 
-    /* TODO : API 분리
-            지금 상태는 클라이언트가 /community/posts/{postId} 만 호출해도 해당 게시글의 댓글과 사진을 모두 반환해줌
-            1. GET /community/posts/{postId}
-            2. GET /community/posts/{postId}/photos
-            3. GET /community/posts/{postId}/comments
-            또한 게시글이 삭제됐을 때, 사진이 있다면 s3에서도 삭제되어야 함
+    /*
+    TODO : 게시글이 삭제됐을 때, 사진이 있다면 s3에서도 삭제되어야 함
      */
     @GetMapping
     public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {

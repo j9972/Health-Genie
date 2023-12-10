@@ -69,4 +69,25 @@ public class PostResponse {
                 .map(PostResponse::of)
                 .toList();
     }
+
+    public static PostResponse excludePhotosAndCommentsOf(CommunityPost post) {
+        LocalDateTime dateTime = post.getCreatedDate();
+        String date = DateUtils.toDate(dateTime);
+        String time = DateUtils.toTime(dateTime);
+
+        return PostResponse.builder()
+                .id(post.getId())
+                .date(date)
+                .time(time)
+                .title(post.getTitle())
+                .content(post.getContent())
+                .writer(post.getWriter().getNickname())
+                .build();
+    }
+
+    public static List<PostResponse> excludePhotosAndCommentsOf(List<CommunityPost> posts) {
+        return posts.stream()
+                .map(PostResponse::excludePhotosAndCommentsOf)
+                .toList();
+    }
 }
