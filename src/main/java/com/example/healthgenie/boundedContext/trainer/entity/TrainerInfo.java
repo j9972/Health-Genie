@@ -1,10 +1,15 @@
 package com.example.healthgenie.boundedContext.trainer.entity;
 
+import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -39,31 +44,27 @@ public class TrainerInfo extends BaseEntity {
     @Column(name = "cost")
     private int cost;
 
-    @Column(name = "uniname")
-    private String uniname;
+    @Column(name = "university")
+    private String university;
 
-    // google이나 이런데에서 처음에 어떻게 사진을 가져올 지 몰라서 혹시 몰라 만든 Col
-    @Column(name = "profile_photo")
-    private String profilePhoto;
+    @Column(name = "contact_start_time")
+    private LocalTime startTime;
 
-    @Column(name = "member_cnt")
-    private int memberCnt;
-
-    @Column(name = "start_time")
-    private int startTime;
-
-    @Column(name = "end_time")
-    private int endTime;
-
-    @Column(name = "contact_time")
-    private int contactTime;
+    @Column(name = "contact_end_time")
+    private LocalTime endTime;
 
     @Column(name = "review_avg")
     private Double reviewAvg;
 
+    // 이 사람이 trainer
     @OneToOne
     @JoinColumn(name = "user_id")
     private User member;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "info", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<TrainerPhoto> trainerPhotos = new ArrayList<>();
+
 
     public void updateIntroduction(String introduction) {
         this.introduction = introduction;
@@ -79,6 +80,29 @@ public class TrainerInfo extends BaseEntity {
 
     public void updateMonth(int month) {
         this.careerMonth = month;
+    }
+
+    public void updateStartTime(LocalTime startTime){
+        this.startTime = startTime;
+    }
+    public void updateEndTime(LocalTime endTime){
+        this.endTime = endTime;
+    }
+    public void updateUniversity(String university) {
+        this.university = university;
+    }
+
+    public void updateReviewAvg(Double reviewAvg) {
+        this.reviewAvg = reviewAvg;
+    }
+
+    public void addPhoto(TrainerPhoto photo) {
+        this.trainerPhotos.add(photo);
+        photo.setInfo(this);
+    }
+
+    public void removePhotos(List<TrainerPhoto> photos) {
+        this.trainerPhotos.removeAll(photos);
     }
 
 }

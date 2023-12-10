@@ -51,6 +51,7 @@ class PtProcessServiceTest {
     void before() {
         LocalDateTime date = LocalDateTime.of(2023, 12, 5, 14, 30, 0);
         LocalDate date2 = LocalDate.of(2023,12,5);
+        LocalDate date3 = LocalDate.of(2023,12,6);
 
         user = testKrUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
         user2 = testKrUtils.createUser("test2", Role.TRAINER,"test@test.com");
@@ -238,7 +239,31 @@ class PtProcessServiceTest {
     }
 
     @Test
-    @DisplayName("트레이너가 피드백 삭제하기")
+    @DisplayName("로그인 하지 않은 일반 회원 유저가 모든 피드백 조회 실패하기")
+    void notLoginGetAllMyProcess() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> processService.getAllMyProcess(0,5))
+                .isInstanceOf(CommonException.class);
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 트레이너 유저가 모든 피드백 조회 실패하기")
+    void notLoginGetAllTrainerProcess() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> processService.getAllTrainerProcess(0,5))
+                .isInstanceOf(CommonException.class);
+    }
+
+    @Test
+    @DisplayName("트레이너가 피드백 삭제 성공하기")
     void deletePtProcess() {
         // given
         testKrUtils.login(user2);
@@ -294,11 +319,11 @@ class PtProcessServiceTest {
     }
 
     @Test
-    @DisplayName("날짜별 필터링으로 조회하기")
+    @DisplayName("일지가 만들어진 날짜 기준으로 필터링으로 조회하기")
     void findAllByDate() {
         // given
         LocalDate searchStartDate = LocalDate.of(2023, 12, 4);
-        LocalDate searchEndDate = LocalDate.of(2023, 12, 8);
+        LocalDate searchEndDate = LocalDate.of(2024, 12, 4);
 
         // when
         List<PtProcessResponseDto> process = processService.findAllByDate(searchStartDate, searchEndDate);
@@ -306,5 +331,19 @@ class PtProcessServiceTest {
         // then
         assertThat(process).isNotNull();
         assertThat(process).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("날짜 필터링 조회 실패로 일지 조회 실패")
+    void notExistFindAllByDate() {
+        // given
+        LocalDate searchStartDate = LocalDate.of(2023, 12, 4);
+        LocalDate searchEndDate = LocalDate.of(2023, 12, 4);
+
+        // when
+        List<PtProcessResponseDto> process = processService.findAllByDate(searchStartDate, searchEndDate);
+
+        // then
+        assertThat(process).isEmpty();
     }
 }

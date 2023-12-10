@@ -3,6 +3,7 @@ package com.example.healthgenie.boundedContext.ptreview.service;
 import com.example.healthgenie.base.exception.*;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
@@ -194,7 +195,7 @@ class PtReviewServiceTest {
         assertThat(response.getContent().get(0).getUserNickName()).isEqualTo(user3.getNickname());
         assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
     }
-// review user3, user4
+
     @Test
     @DisplayName("리뷰 수정 성공")
     void updateReview() {
@@ -328,11 +329,11 @@ class PtReviewServiceTest {
     }
 
     @Test
-    @DisplayName("리뷰 날짜 필터링 성공")
+    @DisplayName("만들어진 리뷰 날짜 기준으로 필터링 성공")
     void findAllByDate() {
         // given
         LocalDate searchStartDate = LocalDate.of(2023, 12, 4);
-        LocalDate searchEndDate = LocalDate.of(2023, 12, 8);
+        LocalDate searchEndDate = LocalDate.of(2024, 12, 8);
 
         // when
         List<PtReviewResponseDto> reviews = reviewService.findAllByDate(searchStartDate, searchEndDate);
@@ -340,5 +341,19 @@ class PtReviewServiceTest {
         // then
         assertThat(reviews).isNotNull();
         assertThat(reviews).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("날짜 필터링 조회 실패로 리뷰 조회 실패")
+    void notExistFindAllByDate() {
+        // given
+        LocalDate searchStartDate = LocalDate.of(2023, 12, 4);
+        LocalDate searchEndDate = LocalDate.of(2023, 12, 4);
+
+        // when
+        List<PtReviewResponseDto> reviews = reviewService.findAllByDate(searchStartDate, searchEndDate);
+
+        // then
+        assertThat(reviews).isEmpty();
     }
 }

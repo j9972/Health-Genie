@@ -64,6 +64,7 @@ public class PostResponse {
                 .build();
     }
 
+
     public static List<PostResponse> of(List<CommunityPost> posts) {
         return posts.stream()
                 .map(PostResponse::of)

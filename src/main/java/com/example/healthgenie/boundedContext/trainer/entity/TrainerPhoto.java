@@ -1,12 +1,10 @@
 package com.example.healthgenie.boundedContext.trainer.entity;
 
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Getter
@@ -19,13 +17,15 @@ public class TrainerPhoto extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="todo_id")
+    @Column(name ="trainer_photo_id")
     private Long id;
 
-    @Column(name = "filename")
-    private String filename;
+    @ManyToOne
+    @Setter
+    @JoinColumn(name = "trainer_info_id")
+    private TrainerInfo info;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="trainer_id")
-    private User trainer;
+    // 이미지 경로
+    @Column(name = "info_photo_path")
+    private String infoPhotoPath;
 }

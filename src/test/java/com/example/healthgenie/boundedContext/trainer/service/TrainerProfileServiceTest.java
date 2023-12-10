@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -38,28 +40,41 @@ class TrainerProfileServiceTest {
 
     @BeforeEach
     void before() {
+        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
+        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
+
         user = testKrUtils.createUser("test", Role.USER,"jh485200@gmail.com");
         user2 = testKrUtils.createUser("test2", Role.TRAINER,"test@gmail.com");
-        profile = testSyUtils.createProfile("introduction", "career", 10000,20,user);
+        profile = testSyUtils.createProfile("introduction", "career", "경북대",startTime, endTime, 4.3, null,20000,20, user2);
     }
 
-    @Test
-    @DisplayName("정상적으로 profile 작성")
-    void writeProfile() {
-        // given
-        testKrUtils.login(user);
 
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", 12000, 25, "test");
+    @Test
+    @DisplayName("profile 작성")
+    void save() {
+        // given
+        testKrUtils.login(user2);
+
+        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
+        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
+
+        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none","경북대",
+                startTime,endTime,4.5,null, 12000, 25, "test2");
 
         // when
-        ProfileResponseDto response = trainerProfileService.writeProfile(dto);
+        ProfileResponseDto response = trainerProfileService.save(dto);
 
         // then
         assertThat(response.getIntroduction()).isEqualTo("test intro");
         assertThat(response.getCareer()).isEqualTo("none");
+        assertThat(response.getUniversity()).isEqualTo("경북대");
+        assertThat(response.getStartTime()).isEqualTo(startTime);
+        assertThat(response.getEndTime()).isEqualTo(endTime);
+        assertThat(response.getReviewAvg()).isEqualTo(4.5);
+        assertThat(response.getPhotoPaths()).isEmpty();
         assertThat(response.getCost()).isEqualTo(12000);
         assertThat(response.getMonth()).isEqualTo(25);
-        assertThat(response.getNickname()).isEqualTo("test");
+        assertThat(response.getNickname()).isEqualTo("test2");
 
     }
 
@@ -67,12 +82,16 @@ class TrainerProfileServiceTest {
     @DisplayName("로그인 하지 않은 유저 profile 작성")
     void notLoginWriteProfile() {
         // given
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", 12000, 25, "test");
+        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
+        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
+
+        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none","경북대",
+                startTime,endTime,4.5,null, 12000, 25, "test2");
 
         // when
 
         // then
-        assertThatThrownBy(() -> trainerProfileService.writeProfile(dto))
+        assertThatThrownBy(() -> trainerProfileService.save(dto))
                 .isInstanceOf(CommonException.class);
     }
 
@@ -80,9 +99,13 @@ class TrainerProfileServiceTest {
     @DisplayName("정상적으로 profile 수정")
     void updateProfile() {
         // given
-        testKrUtils.login(user);
+        testKrUtils.login(user2);
 
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", 12000, 25, "test");
+        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
+        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
+
+        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none","경북대",
+                startTime,endTime,4.5,null, 12000, 25, "test2");
 
         // when
         ProfileResponseDto response = trainerProfileService.updateProfile(dto, profile.getId());
@@ -90,16 +113,25 @@ class TrainerProfileServiceTest {
         // then
         assertThat(response.getIntroduction()).isEqualTo("test intro");
         assertThat(response.getCareer()).isEqualTo("none");
+        assertThat(response.getUniversity()).isEqualTo("경북대");
+        assertThat(response.getStartTime()).isEqualTo(startTime);
+        assertThat(response.getEndTime()).isEqualTo(endTime);
+        assertThat(response.getReviewAvg()).isEqualTo(4.5);
+        assertThat(response.getPhotoPaths()).isEmpty();
         assertThat(response.getCost()).isEqualTo(12000);
         assertThat(response.getMonth()).isEqualTo(25);
-        assertThat(response.getNickname()).isEqualTo("test");
+        assertThat(response.getNickname()).isEqualTo("test2");
     }
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 profile 수정")
     void notLoginUpdateProfile() {
         // given
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", 12000, 25, "test");
+        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
+        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
+
+        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none","경북대",
+                startTime,endTime,4.5,null, 12000, 25, "test2");
 
         // when
 
@@ -109,16 +141,22 @@ class TrainerProfileServiceTest {
     }
 
     @Test
-    @DisplayName("다른 유저가 profile 수정")
+    @DisplayName("해당 트레이너가 아닌 다른 트레이너 혹은 다른 회원이 profile 수정")
     void notOwnUpdateProfile() {
         // given
         testKrUtils.login(user);
 
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", 12000, 25, "test");
+        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
+        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
+
+        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none","경북대",
+                startTime,endTime,4.5,null, 12000, 25, "test");
 
         // when
-        ProfileResponseDto saved = trainerProfileService.writeProfile(dto);
-        ProfileRequestDto updatedDto = testSyUtils.createProfileDto("update intro", "update", 12000, 25, "test");
+        ProfileResponseDto saved = trainerProfileService.save(dto);
+        ProfileRequestDto updatedDto = testSyUtils.createProfileDto("updated intro", "Olympia","경북대",
+                startTime,endTime,4.5,null, 22000, 25, "test");
+
 
         testKrUtils.login(user2);
 
@@ -133,10 +171,14 @@ class TrainerProfileServiceTest {
         // given
         testKrUtils.login(user);
 
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", 12000, 25, "test");
+        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
+        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
+
+        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none","경북대",
+                startTime,endTime,4.5,null, 12000, 25, "test");
 
         // when
-        ProfileResponseDto response = trainerProfileService.writeProfile(dto);
+        ProfileResponseDto response = trainerProfileService.save(dto);
         trainerProfileService.getProfile(response.getId());
 
         // then
