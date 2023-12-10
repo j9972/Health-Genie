@@ -9,6 +9,7 @@ import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -125,6 +126,29 @@ public class CommunityPostTransactionService {
                 .writer(updatedPost.getWriter())
                 .photoPaths(updatedPost.getPhotoPaths())
                 .build();
+    }
+
+    public String delete(Long postId) throws IOException {
+        User currentUser = SecurityUtils.getCurrentUser();
+
+        CommunityPost post = communityPostRepository.findById(postId)
+                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
+
+        if(!Objects.equals(post.getWriter().getId(), currentUser.getId())) {
+            throw new CommunityPostException(NO_PERMISSION);
+        }
+
+        communityPostService.delete(postId);
+
+        List<String> paths = post.getCommunityPostPhotos().stream()
+                .map(CommunityPostPhoto::getPostPhotoPath)
+                .toList();
+
+        for (String path : paths) {
+            s3UploadUtils.deleteS3Object("post-photos", path);
+        }
+
+        return "게시글이 삭제 되었습니다.";
     }
 
     private boolean existsFile(PostRequest request) {

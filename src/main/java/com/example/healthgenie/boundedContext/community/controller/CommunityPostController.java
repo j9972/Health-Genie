@@ -22,9 +22,6 @@ public class CommunityPostController {
     private final CommunityPostService communityPostService;
     private final CommunityPostTransactionService communityPostTransactionService;
 
-    /*
-    TODO : 게시글이 삭제됐을 때, 사진이 있다면 s3에서도 삭제되어야 함
-     */
     @GetMapping
     public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
         List<PostResponse> response = communityPostService.findAll(keyword);
@@ -54,8 +51,9 @@ public class CommunityPostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Result> delete(@PathVariable Long postId) {
-        String response = communityPostService.delete(postId);
+    public ResponseEntity<Result> delete(@PathVariable Long postId) throws IOException {
+//        String response = communityPostService.delete(postId);
+        String response = communityPostTransactionService.delete(postId);
 
         return ResponseEntity.ok(Result.of(response));
     }

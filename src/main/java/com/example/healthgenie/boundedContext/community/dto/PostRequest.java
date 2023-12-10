@@ -14,7 +14,6 @@ import java.util.List;
 @Builder
 public class PostRequest {
 
-    private Long postId;
     private Long writerId;
     private String title;
     private String content;
