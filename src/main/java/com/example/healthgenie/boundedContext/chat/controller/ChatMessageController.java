@@ -26,12 +26,12 @@ public class ChatMessageController {
     private final ChatMessageService chatMessageService;
 
     // 메세지 생성 및 보내기
-    @MessageMapping("/chat/messages/{roomId}") // -> /pub/chat/message
+    @MessageMapping("/chat/messages/{roomId}") // -> /pub/chat/messages
     public void chat(@DestinationVariable Long roomId, MessageRequest request) {
         log.info("REQUEST /chat/messages/{}, request={}", roomId, request);
 
         // 메시지 생성
-        chatMessageService.sendMessage(request);
+        chatMessageService.sendMessage(roomId, request);
 
         // 메시지 보냄(+채팅방 구독)
         messagingTemplate.convertAndSend("/sub/chat/rooms/" + roomId, request); // -> /sub/chat/rooms/{roomId}

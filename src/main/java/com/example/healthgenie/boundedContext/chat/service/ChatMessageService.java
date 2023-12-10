@@ -34,11 +34,11 @@ public class ChatMessageService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void sendMessage(MessageRequest request) {
-        ChatRoom chatRoom = chatRoomRepository.findById(request.getRoomId())
+    public void sendMessage(Long roomId, MessageRequest request) {
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
 
-        User sender = userRepository.findByNickname(request.getSenderNickname())
+        User sender = userRepository.findById(request.getSenderId())
                 .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
         ChatMessage message = ChatMessage.builder()

@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.community.dto;
 
+import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,8 @@ import java.util.List;
 public class PostResponse {
 
     private Long id;
-    private LocalDateTime createdDate;
+    private String date;
+    private String time;
     private String title;
     private String content;
     private String writer;
@@ -34,20 +36,29 @@ public class PostResponse {
         }
 
         List<CommentResponse> comments = post.getCommunityComments().stream()
-                .map(comment -> CommentResponse.builder()
-                        .id(comment.getId())
-                        .createdDate(comment.getCreatedDate())
-                        .content(comment.getCommentBody())
-                        .writer(comment.getMember().getNickname())
-                        .build())
+                .map(comment -> {
+                    LocalDateTime dateTime = comment.getCreatedDate();
+                    return CommentResponse.builder()
+                            .id(comment.getId())
+                            .date(DateUtils.toDate(dateTime))
+                            .time(DateUtils.toTime(dateTime))
+                            .content(comment.getCommentBody())
+                            .writer(comment.getWriter().getNickname())
+                            .build();
+                })
                 .toList();
+
+        LocalDateTime dateTime = post.getCreatedDate();
+        String date = DateUtils.toDate(dateTime);
+        String time = DateUtils.toTime(dateTime);
 
         return PostResponse.builder()
                 .id(post.getId())
-                .createdDate(post.getCreatedDate())
+                .date(date)
+                .time(time)
                 .title(post.getTitle())
                 .content(post.getContent())
-                .writer(post.getMember().getNickname())
+                .writer(post.getWriter().getNickname())
                 .photoPaths(paths)
                 .comments(comments)
                 .build();
@@ -57,6 +68,27 @@ public class PostResponse {
     public static List<PostResponse> of(List<CommunityPost> posts) {
         return posts.stream()
                 .map(PostResponse::of)
+                .toList();
+    }
+
+    public static PostResponse excludePhotosAndCommentsOf(CommunityPost post) {
+        LocalDateTime dateTime = post.getCreatedDate();
+        String date = DateUtils.toDate(dateTime);
+        String time = DateUtils.toTime(dateTime);
+
+        return PostResponse.builder()
+                .id(post.getId())
+                .date(date)
+                .time(time)
+                .title(post.getTitle())
+                .content(post.getContent())
+                .writer(post.getWriter().getNickname())
+                .build();
+    }
+
+    public static List<PostResponse> excludePhotosAndCommentsOf(List<CommunityPost> posts) {
+        return posts.stream()
+                .map(PostResponse::excludePhotosAndCommentsOf)
                 .toList();
     }
 }

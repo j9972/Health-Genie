@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.community.dto;
 
+import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,15 +17,21 @@ import java.util.List;
 public class CommentResponse {
 
     private Long id;
-    private LocalDateTime createdDate;
+    private String date;
+    private String time;
     private String writer;
     private String content;
 
     public static CommentResponse of(CommunityComment comment) {
+        LocalDateTime dateTime = comment.getCreatedDate();
+        String date = DateUtils.toDate(dateTime);
+        String time = DateUtils.toTime(dateTime);
+
         return CommentResponse.builder()
                 .id(comment.getId())
-                .createdDate(comment.getCreatedDate())
-                .writer(comment.getMember().getNickname())
+                .date(date)
+                .time(time)
+                .writer(comment.getWriter().getNickname())
                 .content(comment.getCommentBody())
                 .build();
     }

@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.community.service;
 
 
 import com.example.healthgenie.base.exception.CommunityPostException;
+import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
@@ -9,6 +10,7 @@ import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostQueryRepository;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import java.util.Objects;
 
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
+import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -26,22 +29,28 @@ public class CommunityPostService {
 
     private final CommunityPostRepository communityPostRepository;
     private final CommunityPostQueryRepository communityPostQueryRepository;
+    private final UserRepository userRepository;
 
-    public PostResponse findById(Long id) {
-        CommunityPost post = communityPostRepository.findById(id)
+    public PostResponse findById(Long postId) {
+        CommunityPost post = communityPostRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         return PostResponse.of(post);
     }
 
+    public List<PostResponse> findAll(String keyword) {
+        return PostResponse.excludePhotosAndCommentsOf(communityPostQueryRepository.findAll(keyword));
+    }
+
     @Transactional
-    public PostResponse save(PostRequest dto) {
-        User currentUser = SecurityUtils.getCurrentUser();
+    public PostResponse save(PostRequest request) {
+        User writer = userRepository.findById(request.getWriterId())
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         CommunityPost savedPost = communityPostRepository.save(CommunityPost.builder()
-                .title(dto.getTitle())
-                .content(dto.getContent())
-                .member(currentUser)
+                .title(request.getTitle())
+                .content(request.getContent())
+                .writer(writer)
                 .build());
 
         return PostResponse.of(savedPost);
@@ -54,7 +63,7 @@ public class CommunityPostService {
         CommunityPost post = communityPostRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
-        if(!Objects.equals(currentUser.getId(), post.getMember().getId())) {
+        if(!Objects.equals(currentUser.getId(), post.getWriter().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 
@@ -70,7 +79,7 @@ public class CommunityPostService {
         CommunityPost post = communityPostRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
-        if(!Objects.equals(currentUser.getId(), post.getMember().getId())) {
+        if(!Objects.equals(currentUser.getId(), post.getWriter().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 
@@ -83,9 +92,5 @@ public class CommunityPostService {
         }
 
         return PostResponse.of(post);
-    }
-
-    public List<PostResponse> findAll(String keyword) {
-        return PostResponse.of(communityPostQueryRepository.findAll(keyword));
     }
 }

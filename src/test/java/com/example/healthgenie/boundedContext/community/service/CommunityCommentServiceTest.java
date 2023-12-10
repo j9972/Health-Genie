@@ -50,7 +50,7 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getName());
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getId());
 
         // when
         CommentResponse savedComment = communityCommentService.save(post1.getId(), request);
@@ -66,7 +66,7 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getName());
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getId());
 
         // when
 
@@ -76,25 +76,12 @@ class CommunityCommentServiceTest {
     }
 
     @Test
-    @DisplayName("로그인하지 않은 사용자가 게시글에 댓글 달기")
-    void notLoginComment() {
-        // given
-        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getName());
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> communityCommentService.save(post1.getId(), request))
-                .isInstanceOf(CommonException.class);
-    }
-
-    @Test
     @DisplayName("댓글 한개 조회하기 - 개발자용")
     void findById() {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getName());
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getId());
         CommentResponse savedComment = communityCommentService.save(post1.getId(), request);
 
         // when
@@ -124,7 +111,7 @@ class CommunityCommentServiceTest {
         testKrUtils.login(user1);
 
         for(int i=1; i<=10; i++) {
-            CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글" + i, user1.getName());
+            CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글" + i, user1.getId());
             communityCommentService.save(post1.getId(), request);
         }
 
@@ -142,13 +129,13 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest request1 = testKrUtils.createCommentRequest("테스트 댓글1", user1.getName());
+        CommentRequest request1 = testKrUtils.createCommentRequest("테스트 댓글1", user1.getId());
         CommentResponse savedComment = communityCommentService.save(post1.getId(), request1);
 
-        CommentRequest request2 = testKrUtils.createCommentRequest("테스트 댓글2", user1.getName());
+        CommentRequest request2 = testKrUtils.createCommentRequest("테스트 댓글2", user1.getId());
         communityCommentService.save(post1.getId(), request2);
 
-        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글", user1.getId());
 
         // when
         CommentResponse updatedComment = communityCommentService.update(post1.getId(), savedComment.getId(), updateRequest);
@@ -165,7 +152,7 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글", user1.getId());
 
         // when
 
@@ -180,7 +167,7 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글", user1.getId());
 
         // when
 
@@ -193,7 +180,7 @@ class CommunityCommentServiceTest {
     @DisplayName("로그인하지 않은 사용자가 댓글 수정하기")
     void notLoginEditComment() {
         // given
-        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글", user1.getId());
 
         // when
 
@@ -208,7 +195,7 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글", user1.getId());
 
         // when
 
@@ -223,7 +210,7 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getId());
         CommentResponse savedComment = communityCommentService.save(post1.getId(), request);
 
         // when

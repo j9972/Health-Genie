@@ -56,10 +56,10 @@ class ChatMessageServiceTest {
         // given
         testKrUtils.login(sender);
 
-        MessageRequest request = testKrUtils.createMessageRequest(room.getId(), "정상적으로 메세지 보내기!", sender.getNickname());
+        MessageRequest request = testKrUtils.createMessageRequest("정상적으로 메세지 보내기!", sender.getId());
 
         // when
-        chatMessageService.sendMessage(request);
+        chatMessageService.sendMessage(room.getId(), request);
 
         // then
         List<MessageResponse> messages = chatMessageService.getMessages(room.getId(), 0, 10);
@@ -73,10 +73,10 @@ class ChatMessageServiceTest {
         // given
         testKrUtils.login(sender);
 
-        MessageRequest request = testKrUtils.createMessageRequest(999L, "잘못된 채팅방으로 메세지 보내기!", sender.getNickname());
+        MessageRequest request = testKrUtils.createMessageRequest("잘못된 채팅방으로 메세지 보내기!", sender.getId());
 
         // when
-        assertThatThrownBy(() -> chatMessageService.sendMessage(request))
+        assertThatThrownBy(() -> chatMessageService.sendMessage(999L, request))
                 .isInstanceOf(ChatException.class);
 
         // then

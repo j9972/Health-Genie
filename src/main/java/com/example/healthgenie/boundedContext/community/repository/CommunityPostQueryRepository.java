@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.community.repository;
 
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -19,8 +20,12 @@ public class CommunityPostQueryRepository {
     public List<CommunityPost> findAll(String keyword) {
         return queryFactory
                 .selectFrom(communityPost)
-                .where(communityPost.title.like("%" + keyword + "%"))
+                .where(postTitleLike(keyword))
                 .orderBy(communityPost.id.desc())
                 .fetch();
+    }
+
+    private BooleanExpression postTitleLike(String keyword) {
+        return communityPost.title.like("%" + keyword + "%");
     }
 }

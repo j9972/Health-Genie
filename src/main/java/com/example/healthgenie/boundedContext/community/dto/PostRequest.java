@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class PostRequest {
 
-    private Long id;
+    private Long writerId;
     private String title;
     private String content;
     private List<MultipartFile> photos;

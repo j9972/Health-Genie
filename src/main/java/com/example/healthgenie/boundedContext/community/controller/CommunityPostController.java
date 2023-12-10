@@ -29,9 +29,9 @@ public class CommunityPostController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Result> findById(@PathVariable Long id) {
-        PostResponse response = communityPostService.findById(id);
+    @GetMapping("/{postId}")
+    public ResponseEntity<Result> findById(@PathVariable Long postId) {
+        PostResponse response = communityPostService.findById(postId);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -43,16 +43,16 @@ public class CommunityPostController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Result> edit(@PathVariable Long id, PostRequest request) throws IOException {
-        PostResponse response = communityPostTransactionService.update(id, request);
+    @PatchMapping("/{postId}")
+    public ResponseEntity<Result> edit(@PathVariable Long postId, PostRequest request) throws IOException {
+        PostResponse response = communityPostTransactionService.update(postId, request);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Result> delete(@PathVariable Long id) {
-        String response = communityPostService.delete(id);
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Result> delete(@PathVariable Long postId) throws IOException {
+        String response = communityPostTransactionService.delete(postId);
 
         return ResponseEntity.ok(Result.of(response));
     }

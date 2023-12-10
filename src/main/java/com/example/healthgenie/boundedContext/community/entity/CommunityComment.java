@@ -29,7 +29,7 @@ public class CommunityComment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User member;
+    private User writer;
 
     public void changeContent(String content) {
         this.commentBody = content;
