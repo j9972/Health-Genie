@@ -73,17 +73,17 @@ public class TestKrUtils {
     }
 
 
-    public RoomRequest createRoomRequest(String receiverNickname) {
+    public RoomRequest createRoomRequest(Long senderId, Long receiverId) {
         return RoomRequest.builder()
-                .receiverNickname(receiverNickname)
+                .senderId(senderId)
+                .receiverId(receiverId)
                 .build();
     }
 
-    public MessageRequest createMessageRequest(Long roomId, String content, String senderNickname) {
+    public MessageRequest createMessageRequest(String content, Long senderId) {
         return MessageRequest.builder()
                 .content(content)
-                .roomId(roomId)
-                .senderNickname(senderNickname)
+                .senderId(senderId)
                 .build();
     }
 

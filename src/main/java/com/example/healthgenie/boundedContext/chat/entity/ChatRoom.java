@@ -33,16 +33,22 @@ public class ChatRoom extends BaseEntity {
     @JoinColumn(name = "receiver_id")
     private User receiver;
 
+    @Column(name = "sender_out")
+    private boolean isSenderOut;
+
+    @Column(name = "receiver_out")
+    private boolean isReceiverOut;
+
     @Builder.Default
     @OneToMany(mappedBy = "chatRoom",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
     public void exitRoom(User user) {
-        if(sender != null && Objects.equals(user.getId(), sender.getId())) {
-            sender = null;
+        if(Objects.equals(user.getId(), sender.getId())) {
+            isSenderOut = true;
         }
-        if (receiver != null && Objects.equals(user.getId(), receiver.getId())) {
-            receiver = null;
+        if (Objects.equals(user.getId(), receiver.getId())) {
+            isReceiverOut = true;
         }
     }
 }

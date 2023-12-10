@@ -54,14 +54,16 @@ class ChatRoomServiceTest {
         // given
         testKrUtils.login(sender);
 
-        RoomRequest request = testKrUtils.createRoomRequest(receiver.getNickname());
+        RoomRequest request = testKrUtils.createRoomRequest(sender.getId(), receiver.getId());
 
         // when
-        Long createRoomId = chatRoomService.joinChatRoom(request);
-        ChatRoom findRoom = chatRoomRepository.findById(createRoomId).get();
+        RoomResponse response = chatRoomService.joinRoom(request);
 
         // then
-        assertThat(createRoomId).isEqualTo(findRoom.getId());
+        assertThat(response.getSenderId()).isEqualTo(sender.getId());
+        assertThat(response.getReceiverId()).isEqualTo(receiver.getId());
+        assertThat(response.isSenderOut()).isFalse();
+        assertThat(response.isReceiverOut()).isFalse();
     }
 
     @Test
@@ -70,15 +72,13 @@ class ChatRoomServiceTest {
         // given
         testKrUtils.login(sender);
 
-
-        String notExistUserNickname = "none";
-        RoomRequest request = testKrUtils.createRoomRequest(notExistUserNickname);
+        RoomRequest request = testKrUtils.createRoomRequest(sender.getId(), 999L);
 
         // when
-        assertThatThrownBy(() -> chatRoomService.joinChatRoom(request))
-                .isInstanceOf(CommonException.class);
 
         // then
+        assertThatThrownBy(() -> chatRoomService.joinRoom(request))
+                .isInstanceOf(CommonException.class);
     }
 
     @Test
@@ -87,10 +87,10 @@ class ChatRoomServiceTest {
         // given
         testKrUtils.login(sender);
 
-        RoomRequest request = testKrUtils.createRoomRequest(sender.getNickname());
+        RoomRequest request = testKrUtils.createRoomRequest(sender.getId(), sender.getId());
 
         // when
-        assertThatThrownBy(() -> chatRoomService.joinChatRoom(request))
+        assertThatThrownBy(() -> chatRoomService.joinRoom(request))
                 .isInstanceOf(ChatException.class);
 
         // then
@@ -102,14 +102,14 @@ class ChatRoomServiceTest {
         // given
         testKrUtils.login(sender);
 
-        RoomRequest request = testKrUtils.createRoomRequest(receiver.getNickname());
+        RoomRequest request = testKrUtils.createRoomRequest(sender.getId(), receiver.getId());
 
         // when
-        Long createRoomId = chatRoomService.joinChatRoom(request);
-        Long alreadyRoomId = chatRoomService.joinChatRoom(request);
+        RoomResponse response1 = chatRoomService.joinRoom(request);
+        RoomResponse response2 = chatRoomService.joinRoom(request);
 
         // then
-        assertThat(createRoomId).isEqualTo(alreadyRoomId);
+        assertThat(response1.getId()).isEqualTo(response2.getId());
     }
 
     @Test
@@ -118,52 +118,34 @@ class ChatRoomServiceTest {
         // given
         testKrUtils.login(sender);
 
-        RoomRequest request1 = testKrUtils.createRoomRequest(receiver.getNickname());
-        RoomRequest request2 = testKrUtils.createRoomRequest(other.getNickname());
+        RoomRequest request1 = testKrUtils.createRoomRequest(sender.getId(), receiver.getId());
+        RoomRequest request2 = testKrUtils.createRoomRequest(sender.getId(), other.getId());
 
-        chatRoomService.joinChatRoom(request1);
-        chatRoomService.joinChatRoom(request2);
+        chatRoomService.joinRoom(request1);
+        chatRoomService.joinRoom(request2);
 
         // when
-        List<RoomResponse> rooms = chatRoomService.getRoomList();
+        List<RoomResponse> rooms = chatRoomService.getRooms();
 
         // then
         assertThat(rooms.size()).isEqualTo(2);
     }
 
     @Test
-    @DisplayName("정상적으로 채팅방 입장 시 상세 보기")
-    void getChatRoomDetail() {
-        // given
-        testKrUtils.login(sender);
-
-        RoomRequest request = testKrUtils.createRoomRequest(receiver.getNickname());
-
-        Long roomId = chatRoomService.joinChatRoom(request);
-
-        // when
-        RoomResponse response = chatRoomService.getRoomDetail(roomId);
-
-        // then
-        assertThat(response.getSenderEmail()).isEqualTo(sender.getEmail());
-        assertThat(response.getReceiverEmail()).isEqualTo(receiver.getEmail());
-    }
-
-    @Test
-    @DisplayName("채팅방에 참여하지 않은 사용자가 채팅방 입장 시 상세 보기")
+    @DisplayName("채팅방에 참여하지 않은 사용자가 채팅방 상세 보기")
     void wrongUserChatDetail() {
         // given
         testKrUtils.login(sender);
 
-        RoomRequest request = testKrUtils.createRoomRequest(receiver.getNickname());
+        RoomRequest request = testKrUtils.createRoomRequest(sender.getId(), receiver.getId());
 
-        Long roomId = chatRoomService.joinChatRoom(request);
+        RoomResponse response = chatRoomService.joinRoom(request);
 
         // when
         testKrUtils.login(other);
 
         // then
-        assertThatThrownBy(() -> chatRoomService.getRoomDetail(roomId))
+        assertThatThrownBy(() -> chatRoomService.getRoomDetail(response.getId()))
                 .isInstanceOf(ChatException.class);
     }
 
@@ -186,18 +168,20 @@ class ChatRoomServiceTest {
         // given
         testKrUtils.login(sender);
 
-        RoomRequest request = testKrUtils.createRoomRequest(receiver.getNickname());
+        RoomRequest request = testKrUtils.createRoomRequest(sender.getId(), receiver.getId());
 
-        Long roomId = chatRoomService.joinChatRoom(request);
+        RoomResponse createResponse = chatRoomService.joinRoom(request);
 
         // when
-        chatRoomService.deleteRoom(roomId);
+        chatRoomService.deleteRoom(createResponse.getId());
 
         testKrUtils.login(receiver);
 
         // then
-        RoomResponse response = chatRoomService.getRoomDetail(roomId);
-        assertThat(response.getSenderEmail()).isNullOrEmpty();
+        RoomResponse afterSenderOutResponse = chatRoomService.joinRoom(request);
+
+        assertThat(afterSenderOutResponse.isSenderOut()).isTrue();
+        assertThat(afterSenderOutResponse.isReceiverOut()).isFalse();
     }
 
     @Test
@@ -206,18 +190,18 @@ class ChatRoomServiceTest {
         // given
         testKrUtils.login(sender);
 
-        RoomRequest request = testKrUtils.createRoomRequest(receiver.getNickname());
+        RoomRequest request = testKrUtils.createRoomRequest(sender.getId(), receiver.getId());
 
-        Long roomId = chatRoomService.joinChatRoom(request);
+        RoomResponse response = chatRoomService.joinRoom(request);
 
         // when
-        chatRoomService.deleteRoom(roomId);
+        chatRoomService.deleteRoom(response.getId());
 
         testKrUtils.login(receiver);
-        chatRoomService.deleteRoom(roomId);
+        chatRoomService.deleteRoom(response.getId());
 
         // then
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
+        ChatRoom chatRoom = chatRoomRepository.findById(response.getId()).orElse(null);
         assertThat(chatRoom).isNull();
     }
 }

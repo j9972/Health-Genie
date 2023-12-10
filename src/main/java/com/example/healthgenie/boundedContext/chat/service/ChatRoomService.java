@@ -29,19 +29,21 @@ public class ChatRoomService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long joinChatRoom(RoomRequest request) {
-        User sender = SecurityUtils.getCurrentUser();
+    public RoomResponse joinRoom(RoomRequest request) {
+        User sender = userRepository.findById(request.getSenderId())
+                .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
-        User receiver = userRepository.findByNickname(request.getReceiverNickname())
+        User receiver = userRepository.findById(request.getReceiverId())
                 .orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
         if(Objects.equals(sender.getId(), receiver.getId())) {
             throw new ChatException(SELF_CHAT);
         }
 
+        // 누가 보낸 사람인지 받은 사람인지가 중요한게 아니고, 그 두명이 확실히 포함된 채팅방들을 가져오게 해야함
         Optional<ChatRoom> opChatRoom = chatRoomRepository.findBySenderIdAndReceiverId(sender.getId(), receiver.getId());
         if(opChatRoom.isPresent()) {
-            return opChatRoom.get().getId();
+            return RoomResponse.of(opChatRoom.get());
         }
 
         ChatRoom chatRoom = ChatRoom.builder()
@@ -49,10 +51,10 @@ public class ChatRoomService {
                 .receiver(receiver)
                 .build();
 
-        return chatRoomRepository.save(chatRoom).getId();
+        return RoomResponse.of(chatRoomRepository.save(chatRoom));
     }
 
-    public List<RoomResponse> getRoomList() {
+    public List<RoomResponse> getRooms() {
         User currentUser = SecurityUtils.getCurrentUser();
 
         return chatRoomRepository.findAllBySenderIdOrReceiverId(currentUser.getId(), currentUser.getId()).stream()
@@ -86,7 +88,7 @@ public class ChatRoomService {
 
         chatRoom.exitRoom(currentUser);
 
-        if(chatRoom.getSender() == null && chatRoom.getReceiver() == null) {
+        if(chatRoom.isSenderOut() && chatRoom.isReceiverOut()) {
             chatRoomRepository.delete(chatRoom);
         }
 
