@@ -52,7 +52,6 @@ public class CommunityPostController {
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<Result> delete(@PathVariable Long postId) throws IOException {
-//        String response = communityPostService.delete(postId);
         String response = communityPostTransactionService.delete(postId);
 
         return ResponseEntity.ok(Result.of(response));
