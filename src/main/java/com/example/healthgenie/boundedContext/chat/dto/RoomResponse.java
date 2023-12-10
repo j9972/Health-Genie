@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class RoomResponse {
 
     private Long id;
-    private Long senderId;
-    private Long receiverId;
+    private String senderNickname;
+    private String receiverNickname;
     private boolean isSenderOut;
     private boolean isReceiverOut;
     private String createdDate;
@@ -26,8 +26,8 @@ public class RoomResponse {
     public static RoomResponse of(ChatRoom room) {
         return RoomResponse.builder()
                 .id(room.getId())
-                .senderId(room.getSender().getId())
-                .receiverId(room.getReceiver().getId())
+                .senderNickname(room.getSender().getNickname())
+                .receiverNickname(room.getReceiver().getNickname())
                 .isSenderOut(room.isSenderOut())
                 .isReceiverOut(room.isReceiverOut())
                 .createdDate(DateUtils.toDate(room.getCreatedDate()))

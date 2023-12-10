@@ -18,14 +18,14 @@ public class MessageResponse {
 
     private String date;
     private String time;
-    private Long senderId;
+    private String senderNickname;
     private String content;
 
     public static MessageResponse of(ChatMessage message) {
         return MessageResponse.builder()
                 .date(DateUtils.toDate(message.getCreatedDate()))
                 .time(DateUtils.toTime(message.getCreatedDate()))
-                .senderId(message.getSender().getId())
+                .senderNickname(message.getSender().getNickname())
                 .content(message.getMessageContent())
                 .build();
     }

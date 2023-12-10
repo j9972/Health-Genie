@@ -60,8 +60,8 @@ class ChatRoomServiceTest {
         RoomResponse response = chatRoomService.joinRoom(request);
 
         // then
-        assertThat(response.getSenderId()).isEqualTo(sender.getId());
-        assertThat(response.getReceiverId()).isEqualTo(receiver.getId());
+        assertThat(response.getSenderNickname()).isEqualTo(sender.getNickname());
+        assertThat(response.getReceiverNickname()).isEqualTo(receiver.getNickname());
         assertThat(response.isSenderOut()).isFalse();
         assertThat(response.isReceiverOut()).isFalse();
     }
