@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.todo.dto;
 
-import com.example.healthgenie.boundedContext.todo.entity.Status;
+
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -26,8 +26,6 @@ public class TodoResponseDto {
     private LocalTime time;
     private String title;
     private String description;
-    private Status status;
-    private String userNickname;
     private boolean pt;
 
     public static TodoResponseDto of(Todo todo) {
@@ -37,9 +35,7 @@ public class TodoResponseDto {
                 .time(todo.getTime())
                 .title(todo.getTitle())
                 .description(todo.getDescription())
-                .status(todo.getStatus())
                 .pt(todo.isPt())
-                .userNickname(todo.getMember().getNickname())
                 .build();
     }
 }

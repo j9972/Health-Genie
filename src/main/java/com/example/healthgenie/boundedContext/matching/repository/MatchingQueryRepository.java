@@ -37,6 +37,20 @@ public class MatchingQueryRepository {
                 .fetch();
     }
 
+    public List<Matching> findAllOneDayByDateAndId(LocalDateTime date, Long userId) {
+        LocalDateTime startOfDay = getStartOfDay(date);
+        LocalDateTime endOfDay = getEndOfDay(date);
+
+        return query
+                .selectFrom(matching)
+                .where(
+                        dateBetween(startOfDay, endOfDay),
+                        memberIdEq(userId)
+                )
+                .orderBy(matching.date.asc())
+                .fetch();
+    }
+
     private BooleanExpression stateNotEq(MatchingState state) {
         return matching.state.ne(state);
     }

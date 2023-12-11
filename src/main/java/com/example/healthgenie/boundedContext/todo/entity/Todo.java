@@ -42,10 +42,6 @@ public class Todo extends BaseEntity {
     @Column(name = "pt")
     private boolean pt;
 
-    @Enumerated(EnumType.STRING) // 안써주면 숫자로 DB에 반영된다.
-    @Column(name = "status")
-    private Status status;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id")
     private User member;
@@ -55,9 +51,6 @@ public class Todo extends BaseEntity {
     }
     public void updateDescription(String reason) {
         this.description = reason;
-    }
-    public void updateStatus(Status status) {
-        this.status = status;
     }
     public void updateDate(LocalDate date) {
         this.date = date;

@@ -16,10 +16,6 @@ public class SecurityUtils {
     public static User getCurrentUser() {
 
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("authentication : {}", authentication);
-        log.info("user detail getPrincipal : {}", authentication.getPrincipal());
-        log.info("user detail getDetails : {}", authentication.getDetails());
-
 
         if (authentication == null || authentication.getName() == null) {
             throw new CommonException(USER_NOT_FOUND);
