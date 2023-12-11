@@ -13,7 +13,9 @@ public enum JwtErrorResult {
     UNSUPPORTED(HttpStatus.UNAUTHORIZED, "unsupported token"),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "expired token"),
     EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "expired access token"),
-    EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "expired access token");
+    EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "expired access token"),
+    NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED, "not found token")
+    ;
 
     private final HttpStatus httpStatus;
     private final String message;

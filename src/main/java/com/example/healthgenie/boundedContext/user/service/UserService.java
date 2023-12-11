@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
 
-import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FOUND;
+import static com.example.healthgenie.base.exception.UserErrorResult.*;
 
 @Transactional(readOnly = true)
 @Service
@@ -64,6 +64,10 @@ public class UserService {
     public UserResponse updateNickname(Long userId, String nickname) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
+
+        if(userRepository.existsByNickname(nickname)) {
+            throw new UserException(DUPLICATED_NICKNAME);
+        }
 
         user.updateNickname(nickname);
 

@@ -76,9 +76,7 @@ public class CommunityCommentService {
         CommunityComment comment = communityCommentRepository.findById(commentId)
                 .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
 
-        User user = SecurityUtils.getCurrentUser();
-
-        if(!comment.getWriter().getId().equals(user.getId())) {
+        if(!comment.getWriter().getId().equals(SecurityUtils.getCurrentUserId())) {
             throw new CommunityCommentException(NO_PERMISSION);
         }
 
@@ -96,9 +94,7 @@ public class CommunityCommentService {
         CommunityComment comment = communityCommentRepository.findById(commentId)
                 .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
 
-        User user = SecurityUtils.getCurrentUser();
-
-        if(!comment.getWriter().getId().equals(user.getId())) {
+        if(!comment.getWriter().getId().equals(SecurityUtils.getCurrentUserId())) {
             throw new CommunityCommentException(NO_PERMISSION);
         }
 
