@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.Email;
+package com.example.healthgenie.boundedContext.email;
 
 import org.springframework.stereotype.Service;
 
