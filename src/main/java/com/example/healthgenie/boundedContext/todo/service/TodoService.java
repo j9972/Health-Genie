@@ -5,6 +5,7 @@ import com.example.healthgenie.base.exception.PtReviewException;
 import com.example.healthgenie.base.exception.TodoErrorResult;
 import com.example.healthgenie.base.exception.TodoException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingQueryRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,7 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final MatchingRepository matchingRepository;
     private final TodoQueryRepository todoQueryRepository;
+    private final MatchingQueryRepository matchingQueryRepository;
 
     @Transactional
     public TodoResponseDto addTodoList(TodoRequestDto dto){
@@ -45,7 +48,6 @@ public class TodoService {
                 .time(dto.getTime())
                 .title(dto.getTitle())
                 .description(dto.getDescription())
-                .status(dto.getStatus())
                 .member(user)
                 .build();
         Todo saved = todoRepository.save(todo);
@@ -70,9 +72,6 @@ public class TodoService {
         if(dto.getDescription() != null) {
             todo.updateDescription(dto.getDescription());
         }
-        if(dto.getStatus() != null) {
-            todo.updateStatus(dto.getStatus());
-        }
 
         return TodoResponseDto.of(todo);
     }
@@ -89,7 +88,7 @@ public class TodoService {
         User member = SecurityUtils.getCurrentUser();
 
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new TodoException(TodoErrorResult.NO_TODO_INFO));
-        if (!todo.getMember().equals(member)) {
+        if (!todo.getMember().getId().equals(member.getId())) {
             throw new TodoException(TodoErrorResult.WRONG_USER);
         }
         return todo;
@@ -100,24 +99,21 @@ public class TodoService {
      */
     public List<TodoResponseDto> getAllMyTodo(LocalDate date) {
 
-        Long userId = SecurityUtils.getCurrentUserId();
+        User currentUser = SecurityUtils.getCurrentUser();
 
-        LocalDate today = LocalDate.now();
-        // LocalDate date1 = LocalDate.of(2023, 12, 13); test data
+        List<Todo> todos = todoQueryRepository.findAllByMemberIdAndDate(currentUser.getId(), date);
 
-        List<Todo> todos = todoQueryRepository.findAllByMemberIdAndDate(userId, date);
+        // 관리페이지에 보내줄 데이터 [ 매칭 날짜랑 오늘이 같으면 데이터 보내주기 ]
+        LocalDateTime dateTime = date.atStartOfDay();
 
-        if (date.equals(today)) {
-            // 관리페이지에 보내줄 데이터 [ 매칭 날짜랑 오늘이 같으면 데이터 보내주기 ]
-            Optional<Matching> matching = matchingRepository.findByMemberIdAndDate(userId, date);
+        List<Matching> matching = matchingQueryRepository.findAllOneDayByDateAndId(dateTime, currentUser.getId());
 
-            // 매칭이 있으면
-            if (matching.isPresent()) {
-                // pt boolean값 업데이트 해주기
-                for(Todo todo: todos) {
-                    if(!todo.isPt()) {
-                        todo.updatePt(true);
-                    }
+        // 매칭이 있으면
+        if (!matching.isEmpty()) {
+            // pt boolean값 업데이트 해주기
+            for(Todo todo: todos) {
+                if(!todo.isPt()) {
+                    todo.updatePt(true);
                 }
             }
         }

@@ -90,7 +90,7 @@ public class PtProcessController {
     }
 
     // 트레이너만 삭제 기능이 가능
-    @DeleteMapping("/trainer/delete/{processId}") // http://localhost:1234/process/trainer/{processId}
+    @DeleteMapping("/trainer/delete/{processId}") // http://localhost:1234/process/trainer/delete/{processId}
     public ResponseEntity<Result> deleteProcess(@PathVariable Long processId) {
 
         String response = processService.deletePtProcess(processId);

@@ -26,7 +26,7 @@ import static com.example.healthgenie.boundedContext.routine.entity.Level.*;
 
 
 @Profile("dev")
-@Configuration
+//@Configuration
 public class InitData {
 
     @Bean
