@@ -4,6 +4,7 @@ package com.example.healthgenie.boundedContext.community.entity;
 import com.example.healthgenie.base.entity.BaseEntity;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -19,7 +20,7 @@ public class CommunityComment extends BaseEntity {
     @Column(name = "community_comment_id")
     private Long id;
 
-    @NonNull
+    @NotBlank
     @Column(name ="comment_body")
     private String commentBody;
 

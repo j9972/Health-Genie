@@ -9,7 +9,6 @@ import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -130,12 +129,10 @@ public class CommunityPostTransactionService {
     }
 
     public String delete(Long postId) throws IOException {
-        User currentUser = SecurityUtils.getCurrentUser();
-
         CommunityPost post = communityPostRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
-        if(!Objects.equals(post.getWriter().getId(), currentUser.getId())) {
+        if(!Objects.equals(post.getWriter().getId(), SecurityUtils.getCurrentUserId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 
