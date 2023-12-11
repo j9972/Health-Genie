@@ -38,6 +38,9 @@ public class RoutineService {
     @Transactional
     public RoutineResponseDto writeRoutine(RoutineRequestDto dto) {
         User currentUser = SecurityUtils.getCurrentUser();
+        boolean valid = dto.getWriter().equals(currentUser.getNickname());
+
+        validNickname(valid, RoutineErrorResult.DIFFERNET_NICKNAME);
 
         WorkoutRecipe recipe = new WorkoutRecipe(dto.getWorkoutName(), dto.getKg() ,dto.getSets(), dto.getReps());
 
@@ -58,6 +61,11 @@ public class RoutineService {
     @Transactional
     public RoutineResponseDto updateRoutine(RoutineRequestDto dto, Long routineId) {
         Routine routine = authorizationWriter(routineId);
+        boolean valid = routine.getMember().getNickname().equals(dto.getWriter());
+        log.info("routine.getMember().getNickname() : {}, dto.getWriter() : {}", routine.getMember().getNickname(),dto.getWriter());
+
+        validNickname(valid, RoutineErrorResult.DIFFERNET_NICKNAME);
+
         WorkoutRecipe workoutRecipe = routine.getWorkoutRecipe();
 
 
@@ -90,6 +98,11 @@ public class RoutineService {
         return RoutineResponseDto.ofOwn(routine);
     }
 
+    private static void validNickname(boolean routine, RoutineErrorResult validError) {
+        if (!routine) {
+            throw new RoutineException(validError);
+        }
+    }
 
 
     // 나의 루틴 요일 상관없이 전체 조회 [ userId 로만 구분 ]
@@ -141,9 +154,7 @@ public class RoutineService {
         User member = SecurityUtils.getCurrentUser();
 
         Routine routine = routineRepository.findById(id).orElseThrow(() -> new RoutineException(RoutineErrorResult.NO_HISTORY));
-        if (!routine.getMember().equals(member)) {
-            throw new RoutineException(RoutineErrorResult.NO_USER_INFO);
-        }
+        validNickname(routine.getMember().equals(member), RoutineErrorResult.NO_USER_INFO);
         return routine;
     }
 

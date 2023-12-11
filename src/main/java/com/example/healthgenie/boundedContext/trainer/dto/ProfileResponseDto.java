@@ -8,8 +8,10 @@ import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileService;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 /*
     트레이너 전용 - 관리페이지에 있어야 하는 내용
  */

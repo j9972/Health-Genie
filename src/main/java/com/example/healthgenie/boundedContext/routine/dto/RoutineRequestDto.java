@@ -3,13 +3,17 @@ package com.example.healthgenie.boundedContext.routine.dto;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoutineRequestDto {
     private Long id;
     private Level level; // genie에서 사용되는 난이도
@@ -20,5 +24,5 @@ public class RoutineRequestDto {
     private int kg;
     private int sets;
     private int reps;
-    private String writer; // 헬스 루틴 작성자 -> genie or 본인 이름
+    private String writer; // 헬스 루틴 작성자
 }
