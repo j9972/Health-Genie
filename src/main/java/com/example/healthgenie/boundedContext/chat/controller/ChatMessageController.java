@@ -40,7 +40,7 @@ public class ChatMessageController {
     // 메세지 가져오기
     @GetMapping("/chat/messages/{roomId}")
     public ResponseEntity<Result> getMessages(@PathVariable Long roomId,
-                                              @RequestParam(defaultValue = "1") int page,
+                                              @RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         List<MessageResponse> messages = chatMessageService.getMessages(roomId, page, size);
 

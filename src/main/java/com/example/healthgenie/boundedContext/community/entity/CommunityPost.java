@@ -1,9 +1,9 @@
 package com.example.healthgenie.boundedContext.community.entity;
 
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.entity.BaseEntity;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,11 +25,11 @@ public class CommunityPost extends BaseEntity {
     @Column(name ="community_post_id")
     private Long id;
 
-    @NotNull
+    @NotBlank
     @Column(name = "title")
     private String title;
 
-    @NotNull
+    @NotBlank
     @Column(name ="post_content")
     private String content;
 

@@ -103,6 +103,7 @@ public class CommunityPostTransactionService {
             // CommunityPostPhoto 엔티티 저장
             if (existsFile(request)) {
                 communityPostPhotoService.updateAll(updatedPost.getId(), photoPaths);
+                updatedPost.setPhotoPaths(photoPaths);
             } else {
                 updatedPost.setPhotoPaths(new ArrayList<>());
             }

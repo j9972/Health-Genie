@@ -6,6 +6,7 @@ import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.chat.dto.RoomRequest;
 import com.example.healthgenie.boundedContext.chat.dto.RoomResponse;
 import com.example.healthgenie.boundedContext.chat.entity.ChatRoom;
+import com.example.healthgenie.boundedContext.chat.repository.ChatRoomQueryRepository;
 import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -26,6 +27,7 @@ import static com.example.healthgenie.base.exception.CommonErrorResult.USER_NOT_
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomQueryRepository chatRoomQueryRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -41,7 +43,7 @@ public class ChatRoomService {
         }
 
         // 누가 보낸 사람인지 받은 사람인지가 중요한게 아니고, 그 두명이 확실히 포함된 채팅방들을 가져오게 해야함
-        Optional<ChatRoom> opChatRoom = chatRoomRepository.findBySenderIdAndReceiverId(sender.getId(), receiver.getId());
+        Optional<ChatRoom> opChatRoom = chatRoomQueryRepository.findChatRoomByUsers(sender, receiver);
         if(opChatRoom.isPresent()) {
             return RoomResponse.of(opChatRoom.get());
         }
@@ -107,6 +109,5 @@ public class ChatRoomService {
             }
         }
         return false;
-//        return Objects.equals(user.getId(), room.getSender().getId()) || Objects.equals(user.getId(), room.getReceiver().getId());
     }
 }

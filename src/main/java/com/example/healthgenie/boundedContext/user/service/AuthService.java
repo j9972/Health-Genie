@@ -2,20 +2,22 @@ package com.example.healthgenie.boundedContext.user.service;
 
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.service.RefreshTokenService;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import com.example.healthgenie.boundedContext.user.dto.SignInResponse;
 import com.example.healthgenie.boundedContext.user.dto.Token;
 import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
 import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FOUND;
 import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.GOOGLE;
 import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.KAKAO;
 
@@ -44,20 +46,22 @@ public class AuthService {
 
     @Transactional
     public SignInResponse refreshToken(TokenRequest tokenRequest) {
-        String token = tokenRequest.getRefreshToken();
+        String refreshToken = tokenRequest.getRefreshToken();
 
-        RefreshToken refreshToken = refreshTokenService.findByRefreshToken(token);
+        RefreshToken refreshTokenObj = refreshTokenService.findByRefreshToken(refreshToken);
 
-        User user = userRepository.findByEmail(refreshToken.getKeyEmail()).orElse(null);
+        User user = userRepository.findByEmail(refreshTokenObj.getKeyEmail())
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         AuthProvider authProvider = tokenRequest.getRegistrationId().equalsIgnoreCase(KAKAO.getAuthProvider()) ? KAKAO : GOOGLE;
 
         // 유효한 리프레시 토큰이면, 새로운 액세스 토큰 생성 및 반환
-        if(user != null && jwtTokenProvider.validateRefreshToken(refreshToken)) {
+        if(jwtTokenProvider.validateRefreshToken(refreshTokenObj)) {
             log.info("유효한 Refresh Token 입니다.");
             return SignInResponse.builder()
                     .authProvider(authProvider)
                     .accessToken(jwtTokenProvider.recreationAccessToken(user.getEmail(), user.getRole().getCode()))
+                    .refreshToken(refreshTokenObj.getRefreshToken())
                     .build();
         }
         // 유효하지 않은 리프레시 토큰이면, 새로운 토큰 생성 및 반환
