@@ -31,6 +31,7 @@ public class ProfileResponseDto {
     private int cost;
     private int month; // 견적을 개월 수로 변환
     private String nickname; // 트레이너 닉네임
+    private String name;
     private String university;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -56,6 +57,7 @@ public class ProfileResponseDto {
                 .startTime(info.getStartTime())
                 .endTime(info.getEndTime())
                 .reviewAvg(info.getReviewAvg())
+                .name(info.getName())
                 .nickname(info.getMember().getNickname())
                 .photoPaths(paths)
                 .build();

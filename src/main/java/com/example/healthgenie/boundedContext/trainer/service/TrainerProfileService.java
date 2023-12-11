@@ -81,20 +81,7 @@ public class TrainerProfileService {
         TrainerInfo profile = trainerProfileRepository.findById(profileId).orElseThrow(
                 () -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
-
-            throw new TrainerProfileException(TrainerProfileErrorResult.WRONG_USER);
-
-        } else {
-            Optional<User> email = userRepository.findByEmail(authentication.getName());
-            User member = userRepository.findById(email.get().getId()).orElseThrow();
-
-            if (profile.getMember().equals(member)) {
-                return ProfileResponseDto.of(profile);
-            }
-            throw new TrainerProfileException(TrainerProfileErrorResult.WRONG_USER);
-        }
+        return ProfileResponseDto.of(profile);
 
     }
 
@@ -105,7 +92,7 @@ public class TrainerProfileService {
         TrainerInfo profile = trainerProfileRepository.findById(id)
                 .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
 
-        if (!profile.getMember().equals(member)) {
+        if (!profile.getMember().getId().equals(member.getId())) {
             throw new TrainerProfileException(TrainerProfileErrorResult.NO_PERMISSION);
         }
         return profile;
@@ -124,10 +111,12 @@ public class TrainerProfileService {
                         .career(dto.getCareer())
                         .careerMonth(dto.getMonth())
                         .cost(dto.getCost())
+                        .name(dto.getName())
                         .university(dto.getUniversity())
                         .startTime(dto.getStartTime())
                         .endTime(dto.getEndTime())
                         .reviewAvg(dto.getReviewAvg())
+                        .name(dto.getName())
                         .member(currentUser)
                         .build()
                 );

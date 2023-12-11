@@ -13,6 +13,8 @@ public enum TrainerProfileErrorResult {
     USER_EMPTY(HttpStatus.BAD_REQUEST,"user is empty"),
     WRONG_USER(HttpStatus.BAD_REQUEST,"user is wrong"),
     NO_PERMISSION(HttpStatus.BAD_REQUEST,"user doesn't have permission"),
+    PROFILE_EXIST(HttpStatus.BAD_REQUEST,"trainer profile exist"),
+    USER_IS_NOT_TRAINER(HttpStatus.BAD_REQUEST,"user is not trainer"),
     UNkNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"unknown_Exception");
 
 
