@@ -20,7 +20,7 @@ public class MailController {
 
     // 이메일 코드전송,이메일유효성검사
     @PostMapping("/send") // http://localhost:1234/auth/mail/send
-    public ResponseEntity<Result> authMail(@RequestBody String email) throws MessagingException {
+    public ResponseEntity<Result> authMail(@RequestBody String email) {
 
         userMailService.sendCode(email);
 

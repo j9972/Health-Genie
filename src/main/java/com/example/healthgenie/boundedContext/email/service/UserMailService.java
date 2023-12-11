@@ -4,15 +4,10 @@ package com.example.healthgenie.boundedContext.email.service;
 
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.base.exception.UserEmailErrorResult;
-import com.example.healthgenie.base.exception.UserEmailException;
-import com.example.healthgenie.base.utils.SecurityUtils;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,13 +30,10 @@ public class UserMailService {
     private long authCodeExpirationMillis;
 
     @Transactional
-    public String sendCode(String toEmail) throws MessagingException {
+    public String sendCode(String toEmail) throws MailException {
 
         String title = "Health Genie 이메일 인증 번호";
         String authCode = this.createCode();
-
-//        JsonObject jsonObject = new Gson().fromJson(toEmail, JsonObject.class);
-//        String email = jsonObject.get("email").getAsString();
 
         mailService.sendEmail(toEmail, title, authCode);
 
