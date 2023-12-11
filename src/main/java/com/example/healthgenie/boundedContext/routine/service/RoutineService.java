@@ -61,10 +61,6 @@ public class RoutineService {
     @Transactional
     public RoutineResponseDto updateRoutine(RoutineRequestDto dto, Long routineId) {
         Routine routine = authorizationWriter(routineId);
-        boolean valid = routine.getMember().getNickname().equals(dto.getWriter());
-        log.info("routine.getMember().getNickname() : {}, dto.getWriter() : {}", routine.getMember().getNickname(),dto.getWriter());
-
-        validNickname(valid, RoutineErrorResult.DIFFERNET_NICKNAME);
 
         WorkoutRecipe workoutRecipe = routine.getWorkoutRecipe();
 
@@ -128,7 +124,6 @@ public class RoutineService {
      */
     @Transactional
     public List<RoutineResponseDto> getAllGenieRoutine(Level level) {
-
         User currentUser = SecurityUtils.getCurrentUser();
         currentUser.updateLevel(level); // 이 부분 [ 매번 level update ]
         return RoutineResponseDto.ofGenie(routineQueryRepository.findAllByLevel(level));
@@ -154,8 +149,12 @@ public class RoutineService {
         User member = SecurityUtils.getCurrentUser();
 
         Routine routine = routineRepository.findById(id).orElseThrow(() -> new RoutineException(RoutineErrorResult.NO_HISTORY));
-        validNickname(routine.getMember().equals(member), RoutineErrorResult.NO_USER_INFO);
+
+        if (!routine.getMember().getId().equals(member.getId())) {
+            throw new RoutineException(RoutineErrorResult.NO_USER_INFO);
+        }
         return routine;
+
     }
 
 }

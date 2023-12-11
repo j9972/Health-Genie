@@ -12,6 +12,7 @@ import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
@@ -42,9 +44,18 @@ public class TrainerProfileTransactionService {
     @Transactional
     public ProfileResponseDto save(ProfileRequestDto dto)  throws IOException {
         User trainer = userRepository.findByNickname(dto.getNickname())
-                .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
+                .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.USER_EMPTY));
 
         User currentUser = SecurityUtils.getCurrentUser();
+
+        Optional<TrainerInfo> profileHistory = trainerProfileRepository.findByMemberId(currentUser.getId());
+        if (profileHistory.isPresent()) {
+            throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EXIST);
+        }
+
+        if (!currentUser.getRole().equals(Role.TRAINER)) {
+            throw new TrainerProfileException(TrainerProfileErrorResult.USER_IS_NOT_TRAINER);
+        }
 
         // 작성자와 trainer이 같다면 저장 가능하다
         if (trainer.getEmail().equals(currentUser.getEmail())) {
@@ -75,6 +86,7 @@ public class TrainerProfileTransactionService {
                     .id(savedProfile.getId())
                     .month(savedProfile.getMonth())
                     .nickname(savedProfile.getNickname())
+                    .name(savedProfile.getName())
                     .cost(savedProfile.getCost())
                     .university(savedProfile.getUniversity())
                     .introduction(savedProfile.getIntroduction())
@@ -137,6 +149,7 @@ public class TrainerProfileTransactionService {
                 .startTime(updatedProfile.getStartTime())
                 .endTime(updatedProfile.getEndTime())
                 .reviewAvg(updatedProfile.getReviewAvg())
+                .name(updatedProfile.getName())
                 .career(updatedProfile.getCareer())
                 .photoPaths(photoPaths)
                 .build();

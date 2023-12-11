@@ -32,7 +32,7 @@ public class TrainerProfileController {
     }
 
     // 관리페이지에 보여줄 본인의 내용
-    @GetMapping("/{profileId}") // https://localhost:1234/trainer/profile/{profileId}
+    @GetMapping("/detail/{profileId}") // https://localhost:1234/trainer/profile/{profileId}
     public ResponseEntity<Result> getProfile(@PathVariable Long profileId){
         ProfileResponseDto response = profileService.getProfile(profileId);
         return ResponseEntity.ok(Result.of(response));
