@@ -34,7 +34,7 @@ public class MailController {
         boolean result = userMailService.verify(email, authCode);
 
         // 검증 실패시 redirect 시켜주세요.
-        return ResponseEntity.ok(Result.of(result ? "검증이 실패했습니다" : "검증이 성공했습니다"));
+        return ResponseEntity.ok(Result.of(result ? "검증이 성공했습니다" : "검증이 실패했습니다"));
 
     }
 }

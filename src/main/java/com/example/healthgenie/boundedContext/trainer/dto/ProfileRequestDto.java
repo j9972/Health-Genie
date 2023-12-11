@@ -1,7 +1,9 @@
 package com.example.healthgenie.boundedContext.trainer.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalTime;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 /*
     트레이너 전용 - 관리페이지에 있어야 하는 내용
  */

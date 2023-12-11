@@ -29,7 +29,7 @@ public class PtProcessTransactionSerivce {
         try {
             // 이미지 S3 저장
             if (existsFile(dto)) {
-                photoPaths = s3UploadUtils.upload(dto.getPhotos(), "post-photos");
+                photoPaths = s3UploadUtils.upload(dto.getPhotos(), "process-photos");
             }
 
             // CommunityPost 엔티티 저장
@@ -41,7 +41,7 @@ public class PtProcessTransactionSerivce {
             }
         } catch (Exception e) {
             for(String fileUrl : photoPaths) {
-                s3UploadUtils.deleteS3Object("post-photos", fileUrl);
+                s3UploadUtils.deleteS3Object("process-photos", fileUrl);
             }
             throw e;
         }
