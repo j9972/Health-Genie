@@ -177,5 +177,7 @@ class TodoServiceTest {
 
         // then
         assertThat(response.size()).isEqualTo(6);
+
+
     }
 }
