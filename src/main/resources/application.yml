@@ -1,0 +1,120 @@
+server:
+  port: 1234
+  error:
+    include-message: always
+    include-binding-errors : always
+
+spring:
+  profiles:
+    active: dev
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url : jdbc:mysql://localhost:3306/health_genie
+    username : ENC(vKttRgJ2yF0Hdxa5vUW5nA==)
+    password : ENC(0accFYZmXcSNkJL7l6UYEQ==)
+
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+
+  jpa:
+    open-in-view: true
+    hibernate:
+          ddl-auto: update
+    #show-sql: true -> 시스템 아웃으로 찍는건데 이렇게 하면 안되고 logger로 찍어야 한다
+    properties:
+      hibernate:
+        validator:
+          apply_to_ddl : false
+        format_sql: true
+        use_sql_comments: true
+        default_batch_fetch_size: 1000 # 배치 사이즈 조절을 통해서 N+1이 나더라도 최소화 시킨다
+    database: mysql
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ENC(mN89mzWmJjg24UA4+WAfpRWd3ouJi+ncg0L6b9vQLCM=)
+    password: ENC(OWlYfU6Qj8xrpbXmFILpeMG6/uaoOZR4fiZNb9Coov8=)
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ENC(uXj+vgUM6r5CTQSXKYFeh2SBjCbBtRlEF+HtOfRxuT0hXuA3WMH47RAVqcoD1xVrIxNqVUPOQTltOy2fHtGiHPBWcBtssTYlhEa9KFMg7qHMq0iSDImirQ==)
+            client-secret: ENC(k6Cb1xstVKOeTOX+w/GK3mni2uNZOPfKuzpIefwDhOjX3LcYegHZ5ae4Gh9/b4T+)
+            redirect-uri: "http://localhost:1234/login/oauth2/code/google"
+            authorization-grant-type: authorization_code
+            scope: profile, email
+          kakao:
+            client-id: ENC(m6aLA3pUJemYByvbSJN433+f3nyw5YOQNRDfDbMmGrvKNS3HJXQ/fhy6SYoXluG5)
+            redirect-uri: "http://localhost:1234/login/oauth2/code/kakao"
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email
+            client-name: Kakao
+
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline
+            token_uri: https://accounts.google.com/o/oauth2/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+          kakao:
+            authorization_uri: https://kauth.kakao.com/oauth/authorize
+            token_uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user_name_attribute: id
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  data:
+    redis:
+      host: localhost
+      port: 6379 # redis port
+
+
+
+# for encode of password
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+
+# hibernate logging
+logging:
+  level:
+    p6spy: info
+    org:
+      springframework:
+        security: DEBUG
+
+custom:
+  jwt:
+    secret-key: ENC(41FK0UTjSqDiw6Jv6XZCpYvXjzl3MlMtc5riXBIYD1hs6Hs0dfOQ5fLR9AbIFT6MatwpyyFYnRq0cns9KxyT/ZKzeFRpQtojkVD6DnXo0IGlrBhQjg26df4INoYBQFZpaGVeY2SofQoHZTfUGU97sONTqe8BFK/4)
+
+cloud:
+  aws:
+    credentials:
+      access-key: ENC(5Ay8uZlBohi5ulmWQ3kxar3S8aeCZRZpl6ulMDZtNK0=)
+      secret-key: ENC(lszOfIqqGfJqLh4MALezS1lLyRTSJ7+yHYgqS6S7T5P8AmSKQ4dr6FTmnsQEbPE+tUrPTR3Uwgw=)
+    s3:
+      bucket: new-health-genie
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
