@@ -1,15 +1,13 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
 
-import com.example.healthgenie.base.exception.MatchingErrorResult;
-import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.PtProcessErrorResult;
-import com.example.healthgenie.base.exception.PtProcessException;
+import com.example.healthgenie.base.exception.*;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessQueryRepository;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -59,6 +57,10 @@ public class PtProcessService {
     public PtProcessResponseDto makePtRProcess(PtProcessRequestDto dto, User user) {
 
         User currentUser = SecurityUtils.getCurrentUser();
+
+        if (!currentUser.getRole().equals(Role.TRAINER)) {
+            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
+        }
 
         PtProcess process = ptProcessRepository.save(
                 PtProcess.builder()
@@ -112,12 +114,15 @@ public class PtProcessService {
     @Transactional(readOnly = true)
     public Page<PtProcessResponseDto> getAllTrainerProcess(int page, int size){
 
-        Long trainerId = SecurityUtils.getCurrentUserId();
+        User currentUser = SecurityUtils.getCurrentUser();
+        if (!currentUser.getRole().equals(Role.TRAINER)) {
+            throw new CommonException(CommonErrorResult.UNAUTHORIZED);
+        }
 
         // 작성 시간 역순으로 정렬 (가장 최근 작성 순)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        Page<PtProcess> process = ptProcessRepository.findAllByTrainerId(trainerId, pageable);
+        Page<PtProcess> process = ptProcessRepository.findAllByTrainerId(currentUser.getId(), pageable);
         return process.map(PtProcessResponseDto::of);
 
     }
@@ -128,11 +133,14 @@ public class PtProcessService {
     @Transactional(readOnly = true)
     public Page<PtProcessResponseDto> getAllMyProcess(int page, int size){
 
-        Long userId = SecurityUtils.getCurrentUserId();
+        User currentUser = SecurityUtils.getCurrentUser();
+        if (!currentUser.getRole().equals(Role.USER)) {
+            throw new CommonException(CommonErrorResult.UNAUTHORIZED);
+        }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        Page<PtProcess> process = ptProcessRepository.findAllByMemberId(userId, pageable);
+        Page<PtProcess> process = ptProcessRepository.findAllByMemberId(currentUser.getId(), pageable);
         return process.map(PtProcessResponseDto::of);
     }
 
@@ -153,13 +161,14 @@ public class PtProcessService {
         User member = SecurityUtils.getCurrentUser();
 
         PtProcess process = ptProcessRepository.findById(id).orElseThrow(() -> new PtProcessException(PtProcessErrorResult.RECORD_EMPTY));
-        if (!process.getTrainer().equals(member)) {
+        if (!process.getTrainer().getId().equals(member.getId())) {
             throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
         }
         return process;
     }
 
     public List<PtProcessResponseDto> findAll(String keyword) {
+
         return PtProcessResponseDto.of(ptProcessQueryRepository.findAll(keyword));
     }
 

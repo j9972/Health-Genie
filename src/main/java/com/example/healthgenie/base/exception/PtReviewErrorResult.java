@@ -14,6 +14,7 @@ public enum PtReviewErrorResult {
     TRAINER_EMPTY(HttpStatus.BAD_REQUEST,"trainer is empty"),
     MEMBER_EMPTY(HttpStatus.BAD_REQUEST,"member is empty"),
     NO_USER_INFO(HttpStatus.BAD_REQUEST,"user info is empty"),
+    WRONG_USER_ROLE(HttpStatus.BAD_REQUEST,"user role is trainer not user"),
     UNkNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"unknown_Exception")
     ;
 

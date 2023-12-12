@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.todo.dto;
 
-import com.example.healthgenie.boundedContext.todo.entity.Status;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +22,4 @@ public class TodoRequestDto {
 
     private String title;
     private String description;
-    private Status status;
-    private String userNickname;
-    private boolean pt;
 }

@@ -1,14 +1,12 @@
 package com.example.healthgenie.boundedContext.ptreview.service;
 
-import com.example.healthgenie.base.exception.MatchingErrorResult;
-import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.PtReviewErrorResult;
-import com.example.healthgenie.base.exception.PtReviewException;
+import com.example.healthgenie.base.exception.*;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewQueryRepository;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -64,6 +62,10 @@ public class PtReviewService {
 
         User currentUser = SecurityUtils.getCurrentUser();
 
+        if (!currentUser.getRole().equals(Role.USER)) {
+            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
+        }
+
         PtReview ptReview = PtReview.builder()
                 .content(dto.getContent())
                 .reviewScore(dto.getReviewScore())
@@ -102,6 +104,11 @@ public class PtReviewService {
     @Transactional(readOnly = true)
     public Page<PtReviewResponseDto> getAllTrainerReview(Long trainerId, int page, int size){
 
+        Optional<User> user = userRepository.findById(trainerId);
+        if (!user.get().getRole().equals(Role.TRAINER)) {
+            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
+        }
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<PtReview> review = ptReviewRepository.findAllByTrainerId(trainerId, pageable);
@@ -114,9 +121,22 @@ public class PtReviewService {
     @Transactional(readOnly = true)
     public Page<PtReviewResponseDto> getAllReview(Long userId, int page, int size){
 
+        Optional<User> user = userRepository.findById(userId);
+        User currentUser = SecurityUtils.getCurrentUser();
+
+        // 본인만 본인의 후기모음을 볼 수 있다
+        if (!user.get().getId().equals(currentUser.getId())) {
+            throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
+        }
+
+        // 트레이너면 후기를 작성할 수 없으니 error
+        if(currentUser.getRole().equals(Role.TRAINER)) {
+            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
+        }
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
 
-        Page<PtReview> review = ptReviewRepository.findAllByMemberId(userId, pageable);
+        Page<PtReview> review = ptReviewRepository.findAllByMemberId(currentUser.getId(), pageable);
         return review.map(PtReviewResponseDto::of);
     }
 
@@ -154,7 +174,7 @@ public class PtReviewService {
         User member = SecurityUtils.getCurrentUser();
 
         PtReview review = ptReviewRepository.findById(id).orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
-        if (!review.getMember().equals(member)) {
+        if (!review.getMember().getId().equals(member.getId())) {
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         }
         return review;

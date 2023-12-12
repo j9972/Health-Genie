@@ -47,6 +47,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.makeErrorResponseEntity(exception.getPtReviewErrorResult());
     }
 
+    @ExceptionHandler({PtProcessException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final PtProcessException exception) {
+        log.warn("Exception occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getPtProcessErrorResult());
+    }
+
     @ExceptionHandler({RoutineException.class})
     public ResponseEntity<ErrorResponse> handleRestApiException(final RoutineException exception) {
         log.warn("PtReviewException occur: ", exception);
@@ -94,11 +100,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("TrainerProfileException occur: ", exception);
         return this.makeErrorResponseEntity(exception.getTrainerProfileErrorResult());
     }
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<Object> handleException(final Exception exception) {
-        log.warn("Exception occur: ", exception);
-        return this.makeErrorResponseEntity(exception.getMessage().toString());
-    }
+
 
     @ExceptionHandler({CommonException.class})
     public ResponseEntity<ErrorResponse> handleException(final CommonException exception) {
@@ -138,6 +140,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final PtReviewErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final PtProcessErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }

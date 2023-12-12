@@ -37,7 +37,7 @@ public class PtReviewController {
     }
 
     // 수정하려고 form 불러오기 -> 조회가 필요함 결국은
-    @GetMapping("/{reviewId}") // http://localhost:1234/review
+    @GetMapping("/{reviewId}") // http://localhost:1234/review/{reviewId}
     public ResponseEntity<Result> getReview(@PathVariable Long reviewId){
 
         PtReviewResponseDto response = reviewService.getPtReview(reviewId);
