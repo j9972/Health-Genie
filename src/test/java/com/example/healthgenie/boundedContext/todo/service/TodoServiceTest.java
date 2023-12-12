@@ -1,12 +1,9 @@
 package com.example.healthgenie.boundedContext.todo.service;
 
 import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.base.exception.TodoException;
-import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
-import com.example.healthgenie.boundedContext.todo.entity.Status;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -51,8 +48,7 @@ class TodoServiceTest {
         LocalDate localDate = LocalDate.of(2023, 12, 15);
         LocalTime localTime = LocalTime.of(14, 30, 45); // 시, 분, 초
 
-        todoTest = testSyUtils.createTodo(localDate, localTime, "test title", "test description",
-                Status.YET, user, false);
+        todoTest = testSyUtils.createTodo(localDate, localTime, "test title", "test description", user);
     }
 
     @Test
@@ -66,8 +62,7 @@ class TodoServiceTest {
 
 
         TodoRequestDto dto = testSyUtils.TodoRequestDto(
-                date, time, "test title", "description test",
-                Status.YET, user.getNickname(), false);
+                date, time, "test title", "description test");
 
         // when
         TodoResponseDto todo = todoService.addTodoList(dto);
@@ -77,9 +72,6 @@ class TodoServiceTest {
         assertThat(todo.getTime()).isEqualTo(time);
         assertThat(todo.getTitle()).isEqualTo("test title");
         assertThat(todo.getDescription()).isEqualTo("description test");
-        assertThat(todo.getStatus()).isEqualTo(Status.YET);
-        assertThat(todo.getUserNickname()).isEqualTo( user.getNickname());
-        assertThat(todo.isPt()).isFalse();
     }
 
     @Test
@@ -88,8 +80,7 @@ class TodoServiceTest {
         // given
 
         TodoRequestDto dto = testSyUtils.TodoRequestDto(
-                LocalDate.now(), LocalTime.now(), "test title",
-                "description test", Status.YET, user.getNickname(), false);
+                LocalDate.now(), LocalTime.now(), "test title", "description test");
 
         // when
 
@@ -106,14 +97,13 @@ class TodoServiceTest {
         testKrUtils.login(user);
 
         // when
-        TodoRequestDto dto = testSyUtils.TodoRequestDto("수정한 제목", "수정한 내용", Status.DONE);
+        TodoRequestDto dto = testSyUtils.TodoRequestDto("수정한 제목", "수정한 내용");
 
         // then
         TodoResponseDto response = todoService.update(dto, todoTest.getId());
 
         assertThat(response.getTitle()).isEqualTo("수정한 제목");
         assertThat(response.getDescription()).isEqualTo("수정한 내용");
-        assertThat(response.getStatus()).isEqualTo(Status.DONE);
     }
 
     @Test
@@ -122,7 +112,7 @@ class TodoServiceTest {
         // given
 
         // when
-        TodoRequestDto dto = testSyUtils.TodoRequestDto("수정한 제목", "수정한 내용", Status.DONE);
+        TodoRequestDto dto = testSyUtils.TodoRequestDto("수정한 제목", "수정한 내용");
 
         // then
         assertThatThrownBy(() -> todoService.update(dto, todoTest.getId()))
@@ -178,9 +168,7 @@ class TodoServiceTest {
         LocalTime time = LocalTime.of(14, 30, 45); // 시, 분, 초
 
         for(int i=1; i<=5; i++) {
-            TodoRequestDto dto = testSyUtils.TodoRequestDto(
-                    date, time, "test title",
-                    "description test", Status.YET, user.getNickname(), false);
+            TodoRequestDto dto = testSyUtils.TodoRequestDto(date, time, "test title", "description test");
             todoService.addTodoList(dto);
         }
 
