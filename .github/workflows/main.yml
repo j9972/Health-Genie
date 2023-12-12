@@ -13,7 +13,6 @@ env:
   AWS_CODE_DEPLOY_APPLICATION: cd-healthgenie    # 기억해두라고 했던 애플리케이션 이름
   AWS_CODE_DEPLOY_GROUP: deploy-health-genie      # 기억해두라고 했던 배포 그룹 이름
 
-
 jobs:
   build-with-gradle:
     runs-on: ubuntu-20.04   # ubuntu ver
