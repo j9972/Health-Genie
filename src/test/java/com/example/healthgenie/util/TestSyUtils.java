@@ -15,7 +15,6 @@ import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
-import com.example.healthgenie.boundedContext.todo.entity.Status;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.todo.repository.TodoRepository;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
@@ -23,12 +22,8 @@ import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
-import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -91,35 +86,28 @@ public class TestSyUtils {
         return routineRepository.save(routine);
     }
 
-    public TodoRequestDto TodoRequestDto(String title, String description, Status status) {
-        return TodoRequestDto(null, null, title, description, status, null, false);
+    public TodoRequestDto TodoRequestDto(String title, String description) {
+        return TodoRequestDto(null, null, title, description);
     }
 
-    public TodoRequestDto TodoRequestDto(LocalDate date, LocalTime time, String title, String description,
-                                         Status status, String userNickname, boolean pt) {
+    public TodoRequestDto TodoRequestDto(LocalDate date, LocalTime time, String title, String description) {
 
         return TodoRequestDto.builder()
                 .date(date)
                 .time(time)
                 .title(title)
                 .description(description)
-                .status(status)
-                .userNickname(userNickname)
-                .pt(pt)
                 .build();
     }
 
-    public Todo createTodo(LocalDate date, LocalTime time, String title, String description,
-                           Status status, User user, boolean pt) {
+    public Todo createTodo(LocalDate date, LocalTime time, String title, String description, User user) {
 
         Todo todo = Todo.builder()
                 .date(date)
                 .time(time)
                 .title(title)
                 .description(description)
-                .status(status)
                 .member(user)
-                .pt(pt)
                 .build();
 
         return todoRepository.save(todo);
