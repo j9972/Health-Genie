@@ -17,9 +17,6 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-**/src/main/java/com/example/healthgenie/global/constants/constant
-**/src/main/resources/application.yml
-**/src/test/resources/application.yml
 
 ### IntelliJ IDEA ###
 .idea
@@ -39,8 +36,5 @@ out/
 
 ### VS Code ###
 .vscode/
-application.yml
-Constants.java
-application.yml
 
 src/main/generated/

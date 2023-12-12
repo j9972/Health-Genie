@@ -11,6 +11,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,9 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
+    @Value("${custom.jwt.secret-key}")
+    private String SECRET_KEY;
+
     private SecretKey key;
 
     private final UserDetailsService userDetailsService;
@@ -33,7 +37,7 @@ public class JwtTokenProvider {
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
     protected void init() {
-        String secretKey = Base64.getEncoder().encodeToString(Constants.SECRET_KEY.getBytes());
+        String secretKey = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
         key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
