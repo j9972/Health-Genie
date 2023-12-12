@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - production    # production이라는 브런치로 푸쉬했을 때 실행
-      - 'releases/**'
+      - 'releases/**' 
 
 env:
   AWS_REGION: ap-northeast-2
