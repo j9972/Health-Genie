@@ -10,8 +10,8 @@ env:
   AWS_REGION: ap-northeast-2
   AWS_S3_BUCKET: app-release-files
   AWS_CODE_BUCKET_NAME : bucket-healthgenie    # 기억해두라고 했던 버킷 이름
-  AWS_CODE_DEPLOY_APPLICATION: cd-healthgenie    # 기억해두라고 했던 애플리케이션 이름
-  AWS_CODE_DEPLOY_GROUP: deploy-health-genie      # 기억해두라고 했던 배포 그룹 이름
+  AWS_CODE_DEPLOY_APPLICATION: cd-healthgenie-cicd    # 기억해두라고 했던 애플리케이션 이름
+  AWS_CODE_DEPLOY_GROUP: cd-healthgenie  # 기억해두라고 했던 배포 그룹 이름
 
 jobs:
   build-with-gradle:

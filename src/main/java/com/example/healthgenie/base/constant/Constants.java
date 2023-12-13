@@ -11,8 +11,6 @@ public class Constants {
 
     public static final String INVALID_DATA = "Invalid Data";
 
-    public static final String UNAUTHORIZED_ACCESS = "UnAuthorized access";
-
     private final static String USER_NOT_FOUND_MSG = "user with email %s not found";
 
     private static final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 5L; // 토큰 만료
