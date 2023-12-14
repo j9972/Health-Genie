@@ -74,6 +74,26 @@ public class UserService {
         return UserResponse.of(user);
     }
 
+    @Transactional
+    public UserResponse updateUniname(Long userId, String uniname) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+
+        user.updateUniname(uniname);
+
+        return UserResponse.of(user);
+    }
+
+    @Transactional
+    public UserResponse successEmailVerify(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+
+        user.updateEmailVerify(true);
+
+        return UserResponse.of(user);
+    }
+
     private String createOriginalNickname() {
         String nickname;
 

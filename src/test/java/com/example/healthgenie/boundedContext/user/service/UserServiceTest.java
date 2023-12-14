@@ -84,4 +84,32 @@ class UserServiceTest {
         assertThat(response.getId()).isEqualTo(default1.getId());
         assertThat(default1.getNickname()).isEqualTo("변경된 닉네임");
     }
+
+    @Test
+    @DisplayName("정상적인 대학교 이름 변경")
+    void updateUniname() {
+        // given
+        testKrUtils.login(default1);
+
+        // when
+        UserResponse response = userService.updateUniname(default1.getId(), "테스트대학교");
+
+        // then
+        assertThat(response.getId()).isEqualTo(default1.getId());
+        assertThat(response.getUniName()).isEqualTo("테스트대학교");
+    }
+
+    @Test
+    @DisplayName("이메일 인증 성공")
+    void successEmailVerify() {
+        // given
+        testKrUtils.login(default1);
+
+        // when
+        UserResponse response = userService.successEmailVerify(default1.getId());
+
+        // then
+        assertThat(response.getId()).isEqualTo(default1.getId());
+        assertThat(default1.isEmailVerify()).isTrue();
+    }
 }
