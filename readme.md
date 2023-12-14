@@ -114,7 +114,7 @@
 ## 🏛️ CI/CD 아키텍처 (배포 자동화)
 
 ### 1. 현재 배포의 구조 / 선택한 이유 (Github Action 배포 자동화)
-![GITHUBACTION](images/health_genie_githubaction.png)
+![img.png](images/health_genie_githubaction.png)
 
 
 <br>
