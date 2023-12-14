@@ -8,6 +8,9 @@
 https://techj9972.tistory.com/205
 ![ERD](images/health_genie_erd.png)
 
+## USER FLOW
+![USER_FLOW](images/health_genie_user_flow.png)
+
 ## ERROR 모음집
 https://techj9972.tistory.com/207 <br>
 https://techj9972.tistory.com/208 <br>
