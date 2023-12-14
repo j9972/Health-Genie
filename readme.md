@@ -114,12 +114,22 @@
 ## 🏛️ CI/CD 아키텍처 (배포 자동화)
 
 ### 1. 현재 배포의 구조 / 선택한 이유 (Github Action 배포 자동화)
-![GITHUB_ACTION](images/health_genie_githubaction.png)
+![GITHUBACTION](images/health_genie_githubaction.png)
 
 
 <br>
 
 ## 🥕프로젝트 백엔드 의사결정 및 이슈
+
+### 최적화
+
+### 프로젝트 진행 이슈
+
+### 백엔드 이슈
+
+### 인프라
+
+### 지속적인 리팩토링
 
 
 <br>
@@ -129,10 +139,16 @@
 https://techj9972.tistory.com/207 <br>
 https://techj9972.tistory.com/208 <br>
 https://techj9972.tistory.com/209 <br>
+https://techj9972.tistory.com/210 <br>
+https://techj9972.tistory.com/239 <br>
+https://techj9972.tistory.com/240 <br>
+https://techj9972.tistory.com/242 <br>
+https://techj9972.tistory.com/247 <br>
+https://techj9972.tistory.com/248 <br>
 
 <br>
 
 ## 🥃 Wireframe
 
-[📝 Figma 바로가기 ]([https://www.figma.com/file/67asFaSpQCu4s2CKAJqxac/Untitled?type=design&node-id=0-1&mode=design&t=DdRtY5ictOvnNkSn-0](https://www.figma.com/file/Vo2fqi0lJnHjly8zuGbVuX/[NEW]-Quick-UXUI-Wireframe-templates!-(기획자와-디자이너를-위한-UXUI-화면기획서%2F화면설계서-템플릿)-(Community)?type=design&node-id=103%3A2&mode=design&t=Df94wCBw8sDIe8YI-1)https://www.figma.com/file/Vo2fqi0lJnHjly8zuGbVuX/[NEW]-Quick-UXUI-Wireframe-templates!-(기획자와-디자이너를-위한-UXUI-화면기획서%2F화면설계서-템플릿)-(Community)?type=design&node-id=103%3A2&mode=design&t=Df94wCBw8sDIe8YI-1)
+[📝 Figma 바로가기 ](https://www.figma.com/file/Vo2fqi0lJnHjly8zuGbVuX/Health-Genie-기획-%2B-디자인?type=design&node-id=103-2&mode=design&t=l59LYYKYOFqaHSQJ-0)
 
