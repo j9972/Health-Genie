@@ -156,4 +156,12 @@ public class User extends BaseEntity implements UserDetails {
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public void updateUniname(String uniname) {
+        this.uniName = uniname;
+    }
+
+    public void updateEmailVerify(boolean emailVerify) {
+        this.emailVerify = emailVerify;
+    }
 }
