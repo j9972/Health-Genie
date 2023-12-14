@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,17 +52,20 @@ class RoutineServiceTest {
 
     @BeforeEach
     void before() {
-        List<String> parts = Arrays.asList("하체","가슴");
+        List<WorkoutRecipe> workoutRecipeList = new ArrayList<>();
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
+        WorkoutRecipe recipe2 = new WorkoutRecipe("페이스 풀", 3,3,3);
+        workoutRecipeList.add(recipe);
+        workoutRecipeList.add(recipe2);
 
         user = testKrUtils.createUser("test1",Role.USER,"jh485200@gmail.com");
-        routine = testSyUtils.writeRoutine(Day.WEDNESDAY,"test",parts,recipe,user);
+        routine = testSyUtils.writeRoutine(Day.WEDNESDAY,"하체,가슴",workoutRecipeList,user);
 
-        beginnerGenie = testSyUtils.genieRoutine(Level.BEGINNER, Day.FRIDAY, "test", parts, recipe);
-        intermediateGenie = testSyUtils.genieRoutine(Level.INTERMEDIATE, Day.FRIDAY, "test", parts, recipe);
-        expertGenie = testSyUtils.genieRoutine(Level.EXPERT, Day.FRIDAY, "test", parts, recipe);
+        beginnerGenie = testSyUtils.genieRoutine(Level.BEGINNER, Day.FRIDAY, "test", "하체,가슴", recipe);
+        intermediateGenie = testSyUtils.genieRoutine(Level.INTERMEDIATE, Day.FRIDAY, "test", "하체,가슴", recipe);
+        expertGenie = testSyUtils.genieRoutine(Level.EXPERT, Day.FRIDAY, "test", "하체,가슴", recipe);
 
-        failRoutine = testSyUtils.genieRoutine(Level.EMPTY, Day.FRIDAY, "test", parts, recipe);
+        failRoutine = testSyUtils.genieRoutine(Level.EMPTY, Day.FRIDAY, "test", "하체,가슴", recipe);
     }
 
     /***
@@ -73,11 +78,10 @@ class RoutineServiceTest {
         // given
         testKrUtils.login(user);
 
-        List<String> parts = Arrays.asList("하체","어꺠");
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
 
         RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
-                ,"test content", parts, recipe , user.getNickname());
+                , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
 
         // when
         RoutineResponseDto savedRoutine = routineService.writeRoutine(dto);
@@ -92,9 +96,8 @@ class RoutineServiceTest {
         // then
         assertNotNull(savedRoutine);
 
-        assertIterableEquals(savedRoutine.getParts(), parts);
+        assertThat(savedRoutine.getParts()).isEqualTo("하체, 어깨");
         assertThat(savedRoutine.getDay()).isEqualTo(Day.FRIDAY);
-        assertThat(savedRoutine.getContent()).isEqualTo("test content");
 
         assertThat(name).isEqualTo("스쿼트");
         assertThat(kg).isEqualTo(3);
@@ -107,11 +110,10 @@ class RoutineServiceTest {
     void notLoginWriteRoutine() {
         // given
 
-        List<String> parts = Arrays.asList("하체","어꺠");
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
 
         RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
-                ,"test content", parts, recipe , "user");
+                , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
 
         // when
 
@@ -134,11 +136,10 @@ class RoutineServiceTest {
 
 
         // when
-        List<String> parts = Arrays.asList("하체","어꺠");
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
 
         RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
-                ,"test content", parts, recipe , user.getNickname());
+                , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
 
 
         // then
@@ -154,9 +155,8 @@ class RoutineServiceTest {
 
         assertNotNull(savedRoutine);
 
-        assertIterableEquals(savedRoutine.getParts(), parts);
+        assertThat(savedRoutine.getParts()).isEqualTo("하체, 어깨");
         assertThat(savedRoutine.getDay()).isEqualTo(Day.FRIDAY);
-        assertThat(savedRoutine.getContent()).isEqualTo("test content");
 
         assertThat(name).isEqualTo("스쿼트");
         assertThat(kg).isEqualTo(3);
@@ -171,12 +171,12 @@ class RoutineServiceTest {
         // given
         testKrUtils.login(user);
 
-        List<String> parts = Arrays.asList("하체","어꺠");
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
+
 
         for(int i = 0; i < 5; i++) {
             RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
-                    , "test content", parts, recipe, user.getNickname());
+                    , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
             routineService.writeRoutine(dto);
         }
 
@@ -187,7 +187,7 @@ class RoutineServiceTest {
         /*
             @before에 만들어 놓은 것까지 6개다
          */
-        assertThat(response.size()).isEqualTo(6);
+        assertThat(response.size()).isEqualTo(7);
     }
 
 
@@ -202,11 +202,10 @@ class RoutineServiceTest {
         List<RoutineResponseDto> wedRoutine = routineService.getMyRoutine(Day.WEDNESDAY);
 
         // then
-        assertThat(wedRoutine.size()).isEqualTo(1);
-        assertThat(wedRoutine.get(0).getWriter()).isEqualTo(routine.getMember().getNickname());
+        assertThat(wedRoutine.size()).isEqualTo(2);
         assertThat(wedRoutine.get(0).getDay()).isEqualTo(Day.WEDNESDAY);
         assertThat(wedRoutine.get(0).getContent()).isEqualTo(routine.getContent());
-        assertThat(wedRoutine.get(0).getParts()).isEqualTo(routine.getPart());
+        assertThat(wedRoutine.get(0).getParts()).isEqualTo(routine.getParts());
         assertThat(wedRoutine.get(0).getRecipe()).isEqualTo(routine.getWorkoutRecipe());
     }
 
@@ -223,16 +222,13 @@ class RoutineServiceTest {
 
 
         // then
-        assertThat(beginnerGenie.getLevel()).isEqualTo(beginG.get(0).getLevel());
-        assertThat(beginnerGenie.getPart()).isEqualTo(beginG.get(0).getParts());
+        assertThat(beginnerGenie.getParts()).isEqualTo(beginG.get(0).getParts());
         assertThat(beginnerGenie.getWorkoutRecipe()).isEqualTo(beginG.get(0).getRecipe());
 
-        assertThat(intermediateGenie.getLevel()).isEqualTo(InterG.get(0).getLevel());
-        assertThat(intermediateGenie.getPart()).isEqualTo(InterG.get(0).getParts());
+        assertThat(intermediateGenie.getParts()).isEqualTo(InterG.get(0).getParts());
         assertThat(intermediateGenie.getWorkoutRecipe()).isEqualTo(InterG.get(0).getRecipe());
 
-        assertThat(expertGenie.getLevel()).isEqualTo(expertG.get(0).getLevel());
-        assertThat(expertGenie.getPart()).isEqualTo(expertG.get(0).getParts());
+        assertThat(expertGenie.getParts()).isEqualTo(expertG.get(0).getParts());
         assertThat(expertGenie.getWorkoutRecipe()).isEqualTo(expertG.get(0).getRecipe());
 
     }
@@ -266,14 +262,14 @@ class RoutineServiceTest {
 
         // when
 
-        // then
-        assertIterableEquals(beginnerGenie.getPart(), begin.get(0).getParts());
+        // then=
+        assertThat(beginnerGenie.getParts()).isEqualTo(begin.get(0).getParts());
         assertThat(beginnerGenie.getWorkoutRecipe()).isEqualTo(begin.get(0).getRecipe());
 
-        assertIterableEquals(intermediateGenie.getPart(), inter.get(0).getParts());
+        assertThat(intermediateGenie.getParts()).isEqualTo(begin.get(0).getParts());
         assertThat(intermediateGenie.getWorkoutRecipe()).isEqualTo(inter.get(0).getRecipe());
 
-        assertIterableEquals(expertGenie.getPart(), expert.get(0).getParts());
+        assertThat(expertGenie.getParts()).isEqualTo(begin.get(0).getParts());
         assertThat(expertGenie.getWorkoutRecipe()).isEqualTo(expert.get(0).getRecipe());
     }
 

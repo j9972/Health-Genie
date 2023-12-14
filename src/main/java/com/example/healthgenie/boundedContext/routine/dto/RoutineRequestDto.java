@@ -16,13 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 public class RoutineRequestDto {
     private Long id;
-    private Level level; // genie에서 사용되는 난이도
     private Day day;
-    private String content;
-    private List<String> parts;
-    private String workoutName; // 운동 명칭
-    private int kg;
-    private int sets;
-    private int reps;
-    private String writer; // 헬스 루틴 작성자
+    private String parts;
+    private List<WorkoutRecipe> workoutRecipes;
+    private String writer; // 헬스 루틴 작성자 닉네임
 }
