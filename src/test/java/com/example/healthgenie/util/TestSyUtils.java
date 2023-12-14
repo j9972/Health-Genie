@@ -45,41 +45,44 @@ public class TestSyUtils {
     private final PtProcessPhotoRepository ptProcessPhotoRepository;
 
 
-    public RoutineRequestDto createOwnRoutineRequest(Day day, String content,
-                                                     List<String> parts, WorkoutRecipe recipe, String writer) {
+    public RoutineRequestDto createOwnRoutineRequest(Day day, String parts, List<WorkoutRecipe> recipes, String writer) {
+
         return RoutineRequestDto.builder()
                 .day(day)
-                .content(content)
                 .parts(parts)
-                .workoutName(recipe.getName())
-                .kg(recipe.getKg())
-                .sets(recipe.getSets())
-                .reps(recipe.getReps())
+                .workoutRecipes(recipes)
                 .writer(writer)
                 .build();
     }
 
 
-    public Routine writeRoutine(Day day, String content,
-                                List<String> parts, WorkoutRecipe recipe, User writer) {
+    public Routine writeRoutine(Day day, String parts, List<WorkoutRecipe> recipes, User writer) {
 
-        Routine routine = Routine.builder()
-                .day(day)
-                .content(content)
-                .part(parts)
-                .workoutRecipe(recipe)
-                .member(writer)
-                .build();
+        Routine saved = new Routine();
 
-        return routineRepository.save(routine);
+        for (WorkoutRecipe data : recipes) {
+
+            WorkoutRecipe recipe = new WorkoutRecipe(data.getName(), data.getKg(), data.getSets(), data.getReps());
+
+            Routine routine = Routine.builder()
+                    .day(day)
+                    .parts(parts)
+                    .workoutRecipe(recipe)
+                    .member(writer)
+                    .build();
+
+            saved = routineRepository.save(routine);
+        }
+        return saved;
+
     }
 
-    public Routine genieRoutine(Level level, Day day, String content, List<String> parts, WorkoutRecipe recipe) {
+    public Routine genieRoutine(Level level, Day day, String content, String parts, WorkoutRecipe recipe) {
         Routine routine = Routine.builder()
                 .level(level)
                 .day(day)
                 .content(content)
-                .part(parts)
+                .parts(parts)
                 .workoutRecipe(recipe)
                 .build();
 

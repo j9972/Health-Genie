@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -37,25 +38,29 @@ public class RoutineService {
     // own routine 관련 해서 level 언급은 필요 없다
     @Transactional
     public RoutineResponseDto writeRoutine(RoutineRequestDto dto) {
-        User currentUser = SecurityUtils.getCurrentUser();
-        boolean valid = dto.getWriter().equals(currentUser.getNickname());
 
+        Routine saved = new Routine();
+        User currentUser = SecurityUtils.getCurrentUser();
+
+        boolean valid = dto.getWriter().equals(currentUser.getNickname());
         validNickname(valid, RoutineErrorResult.DIFFERNET_NICKNAME);
 
-        WorkoutRecipe recipe = new WorkoutRecipe(dto.getWorkoutName(), dto.getKg() ,dto.getSets(), dto.getReps());
+        for (WorkoutRecipe recipe : dto.getWorkoutRecipes()) {
 
-        Routine routine = Routine.builder()
-                .day(dto.getDay())
-                .content(dto.getContent())
-                .part(dto.getParts())
-                .workoutRecipe(recipe)
-                .member(currentUser)
-                .build();
+            WorkoutRecipe data = new WorkoutRecipe(recipe.getName(), recipe.getKg(), recipe.getSets(), recipe.getReps());
 
+            Routine routine = Routine.builder()
+                    .day(dto.getDay())
+                    .parts(dto.getParts())
+                    .workoutRecipe(data)
+                    .member(currentUser)
+                    .build();
 
-        Routine saved = routineRepository.save(routine);
+            saved = routineRepository.save(routine);
+        }
 
         return RoutineResponseDto.ofOwn(saved);
+
     }
 
     @Transactional
@@ -64,32 +69,30 @@ public class RoutineService {
 
         WorkoutRecipe workoutRecipe = routine.getWorkoutRecipe();
 
-
         if(dto.getDay() != null) {
             routine.updateDay(dto.getDay());
-        }
-        if(dto.getContent() != null) {
-            routine.updateContent(dto.getContent());
         }
         if(dto.getParts() != null) {
             routine.updatePart(dto.getParts());
         }
-        if(dto.getWorkoutName() != null) {
-            workoutRecipe.updateName(dto.getWorkoutName());
-        }
-        // 0도 유효한 값으로 처리
-        if(dto.getSets() != 0 || workoutRecipe.getSets() == 0) {
-            workoutRecipe.updateSets(dto.getSets());
-        }
-        // 0도 유효한 값으로 처리
-        if(dto.getReps() != 0 || workoutRecipe.getReps() == 0) {
-            workoutRecipe.updateReps(dto.getReps());
-        }
-        // 0도 유효한 값으로 처리
-        if(dto.getKg() != 0 || workoutRecipe.getKg() == 0) {
-            workoutRecipe.updateKg(dto.getKg());
-        }
 
+        for (WorkoutRecipe recipe : dto.getWorkoutRecipes()) {
+            if(recipe.getName() != null) {
+                workoutRecipe.updateName(recipe.getName());
+            }
+            // 0도 유효한 값으로 처리
+            if(recipe.getSets() != 0 || workoutRecipe.getSets() == 0) {
+                workoutRecipe.updateSets(recipe.getSets());
+            }
+            // 0도 유효한 값으로 처리
+            if(recipe.getReps() != 0 || workoutRecipe.getReps() == 0) {
+                workoutRecipe.updateReps(recipe.getReps());
+            }
+            // 0도 유효한 값으로 처리
+            if(recipe.getKg() != 0 || workoutRecipe.getKg() == 0) {
+                workoutRecipe.updateKg(recipe.getKg());
+            }
+        }
 
         return RoutineResponseDto.ofOwn(routine);
     }

@@ -14,8 +14,6 @@ public class WorkoutRecipe {
     private int reps;
 
     protected WorkoutRecipe() {
-        // 기본 생성자가 많이 사용되는 기술들이 많기에 만들어 주는 것이 좋다.
-        // protected로 설정해야 안전하다
     }
 
     /*
