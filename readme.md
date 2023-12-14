@@ -58,8 +58,8 @@
 <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"/>
 <img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/>
 <img src="https://img.shields.io/badge/Amazon RDS-527FFF?style=for-the-badge&logo=Amazon RDS&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon S3-#569A31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
-<img src="https://img.shields.io/badge/GitHub Actions-#2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
+<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"/>
 
 </p>
 
@@ -91,7 +91,9 @@
 
 <br>
 
-##  
+## 🧑‍💻 API 문서 보기
+
+[ 문서 보기 ] 
 
 
 ## 🐧 TEST CODE
