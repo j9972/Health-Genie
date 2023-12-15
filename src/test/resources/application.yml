@@ -23,7 +23,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     #show-sql: true -> 시스템 아웃으로 찍는건데 이렇게 하면 안되고 logger로 찍어야 한다
     properties:
       hibernate:

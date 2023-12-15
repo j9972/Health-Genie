@@ -10,24 +10,24 @@ import java.time.format.DateTimeFormatter;
 public class DateUtils {
 
     /**
-     * date format : 2023-01-01
+     * date format : 2023.01.01
      * time format : 23:59:59
      * @return 날짜와 시간 정보로 설정된 LocalDateTime 객체 반환
      */
     public static LocalDateTime toLocalDateTime(String date, String time) {
         String dateTimeString = date + " " + time;
 
-        return LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     /**
-     * date format : 2023-01-01
+     * date format : 2023.01.01
      * @return 날짜 정보만 설정된 LocalDateTime 객체 반환
      */
     public static LocalDateTime toLocalDateTime(String date) {
         String dateTimeString = date + " 00:00:00";
 
-        return LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 
     /**
@@ -43,7 +43,7 @@ public class DateUtils {
         if(day.length() == 1) {
             day = addZero(day);
         }
-        return year + "-" + month + "-" + day;
+        return year + "." + month + "." + day;
     }
 
     /**

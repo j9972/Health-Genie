@@ -1,7 +1,9 @@
 package com.example.healthgenie.boundedContext.user.dto;
 
+import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.Gender;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -26,9 +28,18 @@ public class UserResponse {
     private Role role;
     private Level level;
     private String profilePhoto;
-    private boolean emailVerify;
+    private Boolean emailVerify;
+    private Double height;
+    private String birth;
+    private Double weight;
+    private Double muscleWeight;
+    private Gender gender;
 
     public static UserResponse of(User user) {
+        String birth = "";
+        if(user.getBirth() != null) {
+            birth = DateUtils.toDate(user.getBirth());
+        }
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -39,7 +50,12 @@ public class UserResponse {
                 .role(user.getRole())
                 .level(user.getLevel())
                 .profilePhoto(user.getProfilePhoto())
-                .emailVerify(user.isEmailVerify())
+                .emailVerify(user.getEmailVerify())
+                .height(user.getHeight())
+                .birth(birth)
+                .weight(user.getWeight())
+                .muscleWeight(user.getMuscleWeight())
+                .gender(user.getGender())
                 .build();
     }
 
@@ -60,7 +76,7 @@ public class UserResponse {
                 .role(response.getRole())
                 .level(response.getLevel())
                 .profilePhoto(response.getProfilePhoto())
-                .emailVerify(response.isEmailVerify())
+                .emailVerify(response.getEmailVerify())
                 .build();
     }
 }

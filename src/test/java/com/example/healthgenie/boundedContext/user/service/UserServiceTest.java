@@ -1,18 +1,27 @@
 package com.example.healthgenie.boundedContext.user.service;
 
+import com.example.healthgenie.base.utils.DateUtils;
+import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
 import com.example.healthgenie.boundedContext.user.dto.UserResponse;
 import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.Gender;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,58 +67,50 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("정상적인 Role 변경")
-    void updateRole() {
+    @DisplayName("정상적인 프로필 변경")
+    void edit() throws IOException {
         // given
         testKrUtils.login(default1);
 
-        // when
-        UserResponse response = userService.updateRole(default1.getId(), Role.USER);
+        Path imagePath = Paths.get("images/test_code_ex.png");
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+        MultipartFile profilePhoto = new MockMultipartFile("profilePhoto", "test_code_ex.png", "image/png", imageBytes);
 
-        // then
-        assertThat(response.getId()).isEqualTo(default1.getId());
-        assertThat(default1.getRole()).isEqualTo(Role.USER);
-    }
-
-    @Test
-    @DisplayName("정상적인 닉네임 변경")
-    void updateNickname() {
-        // given
-        testKrUtils.login(default1);
-
-        // when
-        UserResponse response = userService.updateNickname(default1.getId(), "변경된 닉네임");
-
-        // then
-        assertThat(response.getId()).isEqualTo(default1.getId());
-        assertThat(default1.getNickname()).isEqualTo("변경된 닉네임");
-    }
-
-    @Test
-    @DisplayName("정상적인 대학교 이름 변경")
-    void updateUniname() {
-        // given
-        testKrUtils.login(default1);
+        UserRequest request = UserRequest.builder()
+                .email("change@test.com")
+                .uniName("변경된 대학교")
+                .name("변경된 이름")
+                .nickname("변경된 닉네임")
+                .authProvider(AuthProvider.KAKAO)
+                .role(Role.ADMIN)
+                .profilePhoto(profilePhoto)
+                .emailVerify(true)
+                .level(Level.EXPERT)
+                .height(179.9)
+                .birth("9999.12.31")
+                .weight(99.9)
+                .muscleWeight(99.99)
+                .gender(Gender.MALE)
+                .build();
 
         // when
-        UserResponse response = userService.updateUniname(default1.getId(), "테스트대학교");
+        UserResponse response = userService.edit(default1.getId(), request);
 
         // then
-        assertThat(response.getId()).isEqualTo(default1.getId());
-        assertThat(response.getUniName()).isEqualTo("테스트대학교");
-    }
+        assertThat(response.getEmail()).isEqualTo(default1.getEmail());
+        assertThat(response.getUniName()).isEqualTo(default1.getUniName());
+        assertThat(response.getName()).isEqualTo(default1.getName());
+        assertThat(response.getNickname()).isEqualTo(default1.getNickname());
+        assertThat(response.getAuthProvider()).isEqualTo(default1.getAuthProvider());
+        assertThat(response.getRole()).isEqualTo(default1.getRole());
+        assertThat(response.getProfilePhoto()).isEqualTo(default1.getProfilePhoto());
+        assertThat(response.getEmailVerify()).isEqualTo(default1.getEmailVerify());
+        assertThat(response.getLevel()).isEqualTo(default1.getLevel());
+        assertThat(response.getHeight()).isEqualTo(default1.getHeight());
+        assertThat(response.getBirth()).isEqualTo(DateUtils.toDate(default1.getBirth()));
+        assertThat(response.getWeight()).isEqualTo(default1.getWeight());
+        assertThat(response.getMuscleWeight()).isEqualTo(default1.getMuscleWeight());
+        assertThat(response.getGender()).isEqualTo(default1.getGender());
 
-    @Test
-    @DisplayName("이메일 인증 성공")
-    void successEmailVerify() {
-        // given
-        testKrUtils.login(default1);
-
-        // when
-        UserResponse response = userService.successEmailVerify(default1.getId());
-
-        // then
-        assertThat(response.getId()).isEqualTo(default1.getId());
-        assertThat(default1.isEmailVerify()).isTrue();
     }
 }
