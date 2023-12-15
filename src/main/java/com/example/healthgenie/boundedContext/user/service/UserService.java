@@ -46,21 +46,6 @@ public class UserService {
                 .level(Level.EMPTY)
                 .build();
 
-//                .email("change@test.com")
-//                .uniName("변경된 대학교")
-//                .name("변경된 이름")
-//                .nickname("변경된 닉네임")
-//                .authProvider(AuthProvider.KAKAO)
-//                .role(Role.ADMIN)
-//                .profilePhoto(profilePhoto)
-//                .emailVerify(true)
-//                .level(Level.EXPERT)
-//                .height(179.9)
-//                .birth("9999-12-31")
-//                .weight(99.9)
-//                .muscleWeight(99.99)
-//                .gender(Gender.MALE)
-
         return UserResponse.of(userRepository.save(user));
     }
 
