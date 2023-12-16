@@ -59,8 +59,15 @@ public class AuthController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PostMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/logout/oauth2/code/{registrationId}")
+    public void logout(@PathVariable String registrationId,
+                       HttpServletRequest request,
+                       HttpServletResponse response
+    ) {
+        /*
+        TODO : 카카오/구글과 함께 로그아웃 기능 구현
+               현재는 자체 서비스 로그아웃만 구현됨
+         */
         authService.logout(request, response);
     }
 }
