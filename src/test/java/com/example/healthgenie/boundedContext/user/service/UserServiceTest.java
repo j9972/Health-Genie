@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.user.service;
 
 import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
+import com.example.healthgenie.boundedContext.user.dto.DietResponse;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
 import com.example.healthgenie.boundedContext.user.dto.UserResponse;
 import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
@@ -111,6 +112,31 @@ class UserServiceTest {
         assertThat(response.getWeight()).isEqualTo(default1.getWeight());
         assertThat(response.getMuscleWeight()).isEqualTo(default1.getMuscleWeight());
         assertThat(response.getGender()).isEqualTo(default1.getGender());
+    }
 
+    @Test
+    @DisplayName("정상적인 다이어트 칼로리 계산")
+    void calculate() throws IOException {
+        // given
+        testKrUtils.login(default1);
+
+        UserRequest request = UserRequest.builder()
+                .authProvider(AuthProvider.EMPTY)
+                .role(Role.EMPTY)
+                .height(180.0)
+                .birth("1996.12.31")
+                .weight(80.0)
+                .muscleWeight(40.0)
+                .gender(Gender.MALE)
+                .build();
+
+        userService.edit(default1.getId(), request);
+
+        // when
+        DietResponse response = userService.calculate(default1.getId(), 1);
+
+        // then
+        assertThat(response.getBasicRate()).isEqualTo(1872);
+        assertThat(response.getActiveRate()).isEqualTo(2246);
     }
 }

@@ -3,9 +3,11 @@ package com.example.healthgenie.boundedContext.user.service;
 import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
+import com.example.healthgenie.boundedContext.user.dto.DietResponse;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
 import com.example.healthgenie.boundedContext.user.dto.UserResponse;
 import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.Gender;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -17,11 +19,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Random;
 
-import static com.example.healthgenie.base.exception.UserErrorResult.DUPLICATED_NICKNAME;
-import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FOUND;
+import static com.example.healthgenie.base.exception.UserErrorResult.*;
 
 @Transactional(readOnly = true)
 @Service
@@ -81,24 +83,24 @@ public class UserService {
             user.updateNickname(request.getNickname());
         }
         // 제공자
-        if(StringUtils.hasText(request.getAuthProvider().getAuthProvider())) {
+        if(request.getAuthProvider() != null && StringUtils.hasText(request.getAuthProvider().getAuthProvider())) {
             user.updateAuthProvider(request.getAuthProvider());
         }
         // 역할
-        if(StringUtils.hasText(request.getRole().getCode())) {
+        if(request.getRole() != null && StringUtils.hasText(request.getRole().getCode())) {
             user.updateRole(request.getRole());
         }
         // 프로필 사진
-        if(!request.getProfilePhoto().isEmpty()) {
+        if(request.getProfilePhoto() != null && !request.getProfilePhoto().isEmpty()) {
             String profilePhoto = uploadAndDelete(request.getProfilePhoto(), user.getProfilePhoto());
             user.updateProfilePhoto(profilePhoto);
         }
         // 이메일 인증 확인
-        if(request.getEmailVerify()) {
+        if(Objects.nonNull(request.getEmailVerify()) && request.getEmailVerify()) {
             user.updateEmailVerify(true);
         }
         // 단계
-        if(StringUtils.hasText(request.getLevel().getCode())) {
+        if(request.getLevel() != null && StringUtils.hasText(request.getLevel().getCode())) {
             user.updateLevel(request.getLevel());
         }
         // 키
@@ -118,11 +120,43 @@ public class UserService {
             user.updateMuscleWeight(request.getMuscleWeight());
         }
         // 성별
-        if(StringUtils.hasText(request.getGender().getCode())) {
+        if(request.getGender() != null && StringUtils.hasText(request.getGender().getCode())) {
             user.updateGender(request.getGender());
         }
 
         return UserResponse.of(user);
+    }
+
+    public DietResponse calculate(Long userId, Integer type) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+
+        Gender gender = user.getGender();
+        double weight = user.getWeight();
+        double height = user.getHeight();
+        int age = LocalDateTime.now().getYear() - user.getBirth().getYear() + 1;
+
+        double basic;
+        if(gender == Gender.MALE) {
+            basic = 66 + (13.7 * weight) + (5 * height) - (6.8 * age);
+        } else if(gender == Gender.FEMALE) {
+            basic = 655 + (9.6 * weight) + (1.7 * height) - (4.7 * age);
+        } else {
+            throw new UserException(NOT_VALID_FIELD);
+        }
+
+        double active = switch (type) {
+            case 1 -> basic * 1.2;
+            case 2 -> basic * 1.4;
+            case 3 -> basic * 1.6;
+            case 4 -> basic * 1.8;
+            default -> throw new UserException(NOT_VALID_FIELD);
+        };
+
+        return DietResponse.builder()
+                .basicRate((int) Math.round(basic))
+                .activeRate((int) Math.round(active))
+                .build();
     }
 
     private String createUniqueNickname() {
