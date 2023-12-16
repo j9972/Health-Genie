@@ -5,6 +5,8 @@ import com.example.healthgenie.boundedContext.user.service.AuthService;
 import com.example.healthgenie.boundedContext.user.dto.JwtResponse;
 import com.example.healthgenie.boundedContext.user.dto.SignInResponse;
 import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -57,4 +59,8 @@ public class AuthController {
         return ResponseEntity.ok(Result.of(response));
     }
 
+    @PostMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(request, response);
+    }
 }
