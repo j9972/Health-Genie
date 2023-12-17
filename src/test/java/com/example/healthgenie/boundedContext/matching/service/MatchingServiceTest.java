@@ -48,7 +48,7 @@ class MatchingServiceTest {
         user1 = testKrUtils.createUser("user1", Role.USER, "user1@test.com");
         trainer1 = testKrUtils.createUser("trainer1", Role.TRAINER, "trainer1@test.com");
         // 2023년 12월 12일 16시 30분
-        ptDate = "2023-12-12";
+        ptDate = "2023.12.12";
         ptTime = "16:30:00";
         matching1 = testKrUtils.createMatching(
                 DateUtils.toLocalDateTime(ptDate, ptTime),
@@ -96,7 +96,7 @@ class MatchingServiceTest {
 
         // then
         assertThat(response.getId()).isEqualTo(matchings.get(0).getId());
-        assertThat(response.getDate()).isEqualTo("2099-01-01");
+        assertThat(response.getDate()).isEqualTo("2099.01.01");
         assertThat(response.getTime()).isEqualTo("02:30:00");
         assertThat(response.getPlace()).isEqualTo("테스트 체육관1");
         assertThat(response.getDescription()).isEqualTo("테스트 PT 내용1");
@@ -122,7 +122,7 @@ class MatchingServiceTest {
         }
 
         // when
-        MatchingCondition condition = testKrUtils.createMatchingCondition("2099-01-01", user1.getId(), trainer1.getId());
+        MatchingCondition condition = testKrUtils.createMatchingCondition("2099.01.01", user1.getId(), trainer1.getId());
 
         List<MatchingResponse> responses = matchingService.findAll(condition);
 

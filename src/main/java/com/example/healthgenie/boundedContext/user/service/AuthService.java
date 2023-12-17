@@ -3,7 +3,9 @@ package com.example.healthgenie.boundedContext.user.service;
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.utils.CookieUtils;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
+import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.service.RefreshTokenService;
 import com.example.healthgenie.boundedContext.user.dto.SignInResponse;
@@ -12,6 +14,8 @@ import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
 import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -79,4 +83,9 @@ public class AuthService {
         }
     }
 
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        SecurityUtils.getCurrentUser();
+
+        CookieUtils.deleteCookie(request, response, "AccessToken");
+    }
 }

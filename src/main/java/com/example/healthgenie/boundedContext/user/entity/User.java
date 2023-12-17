@@ -2,15 +2,8 @@ package com.example.healthgenie.boundedContext.user.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
 import com.example.healthgenie.base.exception.UserException;
-import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.matching.entity.Matching;
-import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
-import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
+import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
-import com.example.healthgenie.boundedContext.routine.entity.Routine;
-import com.example.healthgenie.boundedContext.todo.entity.Todo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -22,7 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -68,43 +61,27 @@ public class User extends BaseEntity implements UserDetails {
     private String profilePhoto;
 
     @Column(name = "email_verify")
-    private boolean emailVerify;
+    private Boolean emailVerify;
 
     // level field 추
     @Enumerated(EnumType.STRING)
     @Column(name = "level")
     private Level level;
 
-    @Builder.Default
-    @JsonIgnore
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Matching> match_user= new ArrayList<>();
+    @Column(name = "height")
+    private Double height;
 
-    @Builder.Default
-    @JsonIgnore
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
-    private List<PtProcess> process_user = new ArrayList<>();
+    @Column(name = "birth")
+    private LocalDateTime birth;
 
-    @Builder.Default
-    @JsonIgnore
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
-    private List<PtReview> reivew_user = new ArrayList<>();
+    @Column(name = "weight")
+    private Double weight;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
-    private List<Todo> todo = new ArrayList<>();
+    @Column(name = "muscle_weight")
+    private Double muscleWeight;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "writer",fetch = FetchType.LAZY )
-    private List<CommunityPost> communityPosts = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "writer",fetch = FetchType.LAZY )
-    private List<CommunityComment> communityComments = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY )
-    private List<Routine> routine = new ArrayList<>();
+    @Column(name = "gender")
+    private Gender gender;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -163,5 +140,41 @@ public class User extends BaseEntity implements UserDetails {
 
     public void updateEmailVerify(boolean emailVerify) {
         this.emailVerify = emailVerify;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateAuthProvider(AuthProvider authProvider) {
+        this.authProvider = authProvider;
+    }
+
+    public void updateProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
+    public void updateHeight(Double height) {
+        this.height = height;
+    }
+
+    public void updateBirth(String birth) {
+        this.birth = DateUtils.toLocalDateTime(birth);
+    }
+
+    public void updateWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public void updateMuscleWeight(Double muscleWeight) {
+        this.muscleWeight = muscleWeight;
+    }
+
+    public void updateGender(Gender gender) {
+        this.gender = gender;
     }
 }
