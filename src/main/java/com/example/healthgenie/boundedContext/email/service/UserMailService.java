@@ -4,6 +4,9 @@ package com.example.healthgenie.boundedContext.email.service;
 
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.utils.SecurityUtils;
+import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,9 +60,4 @@ public class UserMailService {
         }
     }
 
-    public boolean verify(String email, String authCode) {
-        String redisAuthCode = redisService.getValues(AUTH_CODE_PREFIX + email);
-
-        return redisService.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode);
-    }
 }
