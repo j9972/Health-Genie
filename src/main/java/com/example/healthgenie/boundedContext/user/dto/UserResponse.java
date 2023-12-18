@@ -28,7 +28,7 @@ public class UserResponse {
     private Role role;
     private Level level;
     private String profilePhoto;
-    private Boolean emailVerify;
+    private boolean emailVerify;
     private Double height;
     private String birth;
     private Double weight;
@@ -50,7 +50,7 @@ public class UserResponse {
                 .role(user.getRole())
                 .level(user.getLevel())
                 .profilePhoto(user.getProfilePhoto())
-                .emailVerify(user.getEmailVerify())
+                .emailVerify(user.isEmailVerify())
                 .height(user.getHeight())
                 .birth(birth)
                 .weight(user.getWeight())
@@ -76,7 +76,7 @@ public class UserResponse {
                 .role(response.getRole())
                 .level(response.getLevel())
                 .profilePhoto(response.getProfilePhoto())
-                .emailVerify(response.getEmailVerify())
+                .emailVerify(response.isEmailVerify())
                 .build();
     }
 }

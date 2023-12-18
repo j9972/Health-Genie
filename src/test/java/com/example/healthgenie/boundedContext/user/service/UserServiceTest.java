@@ -105,7 +105,7 @@ class UserServiceTest {
         assertThat(response.getAuthProvider()).isEqualTo(default1.getAuthProvider());
         assertThat(response.getRole()).isEqualTo(default1.getRole());
         assertThat(response.getProfilePhoto()).isEqualTo(default1.getProfilePhoto());
-        assertThat(response.getEmailVerify()).isEqualTo(default1.getEmailVerify());
+        assertThat(response.isEmailVerify()).isEqualTo(default1.isEmailVerify());
         assertThat(response.getLevel()).isEqualTo(default1.getLevel());
         assertThat(response.getHeight()).isEqualTo(default1.getHeight());
         assertThat(response.getBirth()).isEqualTo(DateUtils.toDate(default1.getBirth()));
