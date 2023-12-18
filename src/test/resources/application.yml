@@ -118,3 +118,6 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+univCert:
+  key: fe7b3abd-1dd4-416e-a9cd-91ee447b8c79
