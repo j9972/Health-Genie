@@ -83,6 +83,8 @@ class UserMailServiceTest {
 
         // then
         assertThat(redisAuthCode.equals(authCode)).isEqualTo(redisService.checkExistsValue(redisAuthCode));
+        assertThat(user.isEmailVerify()).isTrue();
+
     }
 
     @Test

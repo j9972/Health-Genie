@@ -61,7 +61,7 @@ public class User extends BaseEntity implements UserDetails {
     private String profilePhoto;
 
     @Column(name = "email_verify")
-    private Boolean emailVerify;
+    private boolean emailVerify;
 
     // level field 추
     @Enumerated(EnumType.STRING)
