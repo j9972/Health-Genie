@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MailRequestDto {
-    private String email;
-    private String universityName;
+    private String univ_email;
+    private int code;
+    private String univName;
 }
