@@ -22,7 +22,9 @@ import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,7 +45,16 @@ public class TestSyUtils {
     private final TrainerProfilePhotoRepository trainerProfilePhotoRepository;
     private final PtProcessRepository ptProcessRepository;
     private final PtProcessPhotoRepository ptProcessPhotoRepository;
+    private final UserRepository userRepository;
 
+    public User createUser(String uniName, String email) {
+        User user = User.builder()
+                .uniName(uniName)
+                .email(email)
+                .build();
+
+        return userRepository.save(user);
+    }
 
     public RoutineRequestDto createOwnRoutineRequest(Day day, String parts, List<WorkoutRecipe> recipes, String writer) {
 

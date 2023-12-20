@@ -7,13 +7,17 @@ import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 
 import com.example.healthgenie.util.TestSyUtils;
+import com.univcert.api.UnivCert;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -24,6 +28,9 @@ class UserMailServiceTest {
 
     @Autowired
     TestKrUtils testUtils;
+
+    @Autowired
+    TestSyUtils testUtil;
 
     @Autowired
     UserMailService userMailService;
@@ -45,7 +52,7 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("이메일에 검증 코드 보내기")
-    void sendCode() throws MessagingException {
+    void sendCode(){
         // given
         testUtils.login(user);
 
