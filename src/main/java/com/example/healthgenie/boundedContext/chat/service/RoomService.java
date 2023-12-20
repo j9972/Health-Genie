@@ -50,35 +50,42 @@ public class RoomService {
         // roomHashCode 만들기
         int roomHashCode = createRoomHashCode(user, anotherUser);
 
-        // 방 존재 확인
+        // 기존의 채팅방이 있을 경우
         if(existsRoom(roomHashCode)) {
             ChatRoom chatRoom = chatRoomRepository.findByRoomHashCodeAndActive(roomHashCode, true).orElse(null);
 
             // 기존의 채팅방이 활성화 되어 있을 경우
-            if(chatRoom != null) {
-                saveIfAlone(chatRoom, user, anotherUser);
-            } else {
+            if(chatRoom == null){
                 // 기존의 채팅방이 비활성화 되어 있을 경우
                 chatRoom = chatRoomRepository.findByRoomHashCode(roomHashCode)
                         .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
 
                 // 기존 채팅방 활성화
-                chatRoom.active();
+                activeChatRoom(chatRoom);
 
-                // 사용자 활성화
-                ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoom.getId(), user.getId());
-                chatRoomUser.active();
+                // 상대방 활성화
+                activeChatUser(chatRoom, anotherUser);
             }
+            // 사용자 활성화
+            activeChatUser(chatRoom, user);
 
             return chatRoom.getId();
         }
 
-        // 존재하는 방 없다면 생성
-        ChatRoom newRoom = createNewRoom(roomHashCode);
+        // 기존의 채팅방이 없는 경우
+        return createNewRoom(roomHashCode, user, anotherUser).getId();
+    }
 
-        mapUsersAndRoom(user, anotherUser, newRoom);
+    private void activeChatRoom(ChatRoom chatRoom) {
+        chatRoom.active();
+    }
 
-        return newRoom.getId();
+    private void activeChatUser(ChatRoom chatRoom, User user) {
+        chatRoom.getChatRoomUsers().stream()
+                .filter(e -> e.getUser().getId().equals(user.getId()))
+                .findFirst()
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND))
+                .active();
     }
 
     public List<ChatRoomResponse> getChatRooms(ChatRoomRequest request, Pageable pageable) {
@@ -157,13 +164,15 @@ public class RoomService {
         chatRoomUserRepository.save(chatRoomAnotherUser);
     }
 
-    private ChatRoom createNewRoom(int roomHashCode) {
+    private ChatRoom createNewRoom(int roomHashCode, User user, User anotherUser) {
         ChatRoom newRoom = ChatRoom.builder()
                 .roomHashCode(roomHashCode)
                 .active(true)
                 .build();
 
         chatRoomRepository.save(newRoom);
+
+        mapUsersAndRoom(user, anotherUser, newRoom);
 
         return newRoom;
     }
