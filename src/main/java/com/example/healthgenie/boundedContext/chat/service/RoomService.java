@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.example.healthgenie.base.exception.ChatErrorResult.NO_PERMISSION;
 import static com.example.healthgenie.base.exception.ChatErrorResult.ROOM_NOT_FOUND;
@@ -53,10 +52,23 @@ public class RoomService {
 
         // 방 존재 확인
         if(existsRoom(roomHashCode)) {
-            ChatRoom chatRoom = chatRoomRepository.findByRoomHashCodeAndActive(roomHashCode, true)
-                    .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
+            ChatRoom chatRoom = chatRoomRepository.findByRoomHashCodeAndActive(roomHashCode, true).orElse(null);
 
-            saveIfAlone(chatRoom, user, anotherUser);
+            // 기존의 채팅방이 활성화 되어 있을 경우
+            if(chatRoom != null) {
+                saveIfAlone(chatRoom, user, anotherUser);
+            } else {
+                // 기존의 채팅방이 비활성화 되어 있을 경우
+                chatRoom = chatRoomRepository.findByRoomHashCode(roomHashCode)
+                        .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
+
+                // 기존 채팅방 활성화
+                chatRoom.active();
+
+                // 사용자 활성화
+                ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoom.getId(), user.getId());
+                chatRoomUser.active();
+            }
 
             return chatRoom.getId();
         }
@@ -75,7 +87,7 @@ public class RoomService {
 
         List<ChatRoomResponse> responses = new ArrayList<>();
 
-        Page<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserIdAndIsActive(user.getId(), true, pageable);
+        Page<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserIdAndActive(user.getId(), true, pageable);
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
             responses.add(ChatRoomResponse.of(chatRoomUser));
         }
@@ -83,11 +95,8 @@ public class RoomService {
         return responses;
     }
 
-    public List<GetMessageResponse> getMessages(Long roomId, ChatRoomRequest request) {
+    public List<GetMessageResponse> getMessages(Long roomId, User user) {
         List<GetMessageResponse> responses = new ArrayList<>();
-
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         ChatRoom chatRoom = chatRoomRepository.findByIdAndActive(roomId, true)
                 .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
@@ -107,35 +116,41 @@ public class RoomService {
     }
 
     @Transactional
-    public void deleteChatRoom(Long roomId, ChatRoomRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+    public void deleteChatRoom(Long roomId, User user) {
+        // TODO : 삭제 권한 체크 필요 - 다른 메서드들도 권한 체크 로직 필요
 
         ChatRoom chatRoom = chatRoomRepository.findByIdAndActive(roomId, true)
                 .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
 
-        if(chatRoom.getChatRoomUsers().size() != 1) {
-            List<ChatRoomUser> chatRoomUsers = chatRoom.getChatRoomUsers().stream()
-                    .map(ChatRoomUser::inactive)
-                    .collect(Collectors.toList());
-
-            chatRoomUserRepository.saveAll(chatRoomUsers);
-        } else if(chatRoom.getChatRoomUsers().size() == 1) {
-            chatRoomRepository.save(chatRoom.inactive());
+        boolean isAllOut = true;
+        List<ChatRoomUser> chatRoomUsers = chatRoom.getChatRoomUsers();
+        for (ChatRoomUser chatRoomUser : chatRoomUsers) {
+            // 채팅 사용자가 현재 요청한 사용자와 같다면, 비활성화
+            if(chatRoomUser.getUser().getId().equals(user.getId())) {
+                chatRoomUser.inactive();
+            }
+            // 채팅 사용자가 활성화 되어 있다면, 해당 채팅방을 모두 비활성화 하지 않은 것
+            if(chatRoomUser.isActive()) {
+                isAllOut = false;
+            }
         }
 
-        chatRoomRepository.save(chatRoom.inactive());
+        if(isAllOut) {
+            chatRoom.inactive();
+        }
     }
 
     private void mapUsersAndRoom(User user, User anotherUser, ChatRoom room) {
         ChatRoomUser chatRoomUser = ChatRoomUser.builder()
                 .user(user)
                 .chatRoom(room)
+                .active(true)
                 .build();
 
         ChatRoomUser chatRoomAnotherUser = ChatRoomUser.builder()
                 .user(anotherUser)
                 .chatRoom(room)
+                .active(true)
                 .build();
 
         chatRoomUserRepository.save(chatRoomUser);
@@ -145,6 +160,7 @@ public class RoomService {
     private ChatRoom createNewRoom(int roomHashCode) {
         ChatRoom newRoom = ChatRoom.builder()
                 .roomHashCode(roomHashCode)
+                .active(true)
                 .build();
 
         chatRoomRepository.save(newRoom);

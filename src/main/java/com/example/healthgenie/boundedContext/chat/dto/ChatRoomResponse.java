@@ -24,10 +24,10 @@ public class ChatRoomResponse {
 
     public static ChatRoomResponse of(ChatRoomUser chatRoomUser) {
         List<ChatMessage> chatMessages = chatRoomUser.getChatRoom().getChatMessages();
-        ChatMessage lastMessage = chatMessages.get(chatMessages.size() - 1);
+        String messageContent = chatMessages.isEmpty() ? "마지막 메세지가 없습니다." : chatMessages.get(chatMessages.size() - 1).getMessageContent();
         return ChatRoomResponse.builder()
                 .roomId(chatRoomUser.getChatRoom().getId()+"")
-                .lastMessage(lastMessage.getMessageContent())
+                .lastMessage(messageContent)
                 .createdAt(chatRoomUser.getChatRoom().getCreatedDate())
                 .build();
     }

@@ -36,8 +36,11 @@ public class ChatRoom extends BaseEntity {
 
     private boolean active;
 
-    public ChatRoom inactive() {
+    public void inactive() {
         this.active = false;
-        return this;
+    }
+
+    public void active() {
+        this.active = true;
     }
 }

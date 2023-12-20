@@ -7,5 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChatRoomUserRepository extends JpaRepository<ChatRoomUser, Long> {
 
-    Page<ChatRoomUser> findAllByUserIdAndIsActive(Long id, boolean isActive, Pageable pageable);
+    Page<ChatRoomUser> findAllByUserIdAndActive(Long id, boolean active, Pageable pageable);
+
+    ChatRoomUser findByChatRoomIdAndUserId(Long chatRoomId, Long userId);
 }

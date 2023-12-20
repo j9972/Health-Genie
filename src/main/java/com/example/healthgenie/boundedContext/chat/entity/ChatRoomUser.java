@@ -28,10 +28,13 @@ public class ChatRoomUser extends BaseEntity {
 
     private String name;
 
-    private boolean isActive;
+    private boolean active;
 
-    public ChatRoomUser inactive() {
-        this.isActive = false;
-        return this;
+    public void inactive() {
+        this.active = false;
+    }
+
+    public void active() {
+        this.active = true;
     }
 }
