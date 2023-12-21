@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
 import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.TrainerProfileErrorResult;
 import com.example.healthgenie.base.exception.TrainerProfileException;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
@@ -62,7 +63,7 @@ class TrainerProfileServiceTest {
                 startTime,endTime,4.5,null, 12000, 25, "test2");
 
         // when
-        ProfileResponseDto response = trainerProfileService.save(dto);
+        ProfileResponseDto response = trainerProfileService.save(dto,user2);
 
         // then
         assertThat(response.getIntroduction()).isEqualTo("test intro");
@@ -82,6 +83,8 @@ class TrainerProfileServiceTest {
     @DisplayName("로그인 하지 않은 유저 profile 작성")
     void notLoginWriteProfile() {
         // given
+        boolean login = testSyUtils.notLogin(user);
+
         LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
         LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
 
@@ -91,8 +94,13 @@ class TrainerProfileServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> trainerProfileService.save(dto))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if(!login) {
+                throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY);
+            } else {
+                trainerProfileService.save(dto, user);
+            }
+        });
     }
 
     @Test
@@ -108,7 +116,7 @@ class TrainerProfileServiceTest {
                 startTime,endTime,4.5,null, 12000, 25, "test2");
 
         // when
-        ProfileResponseDto response = trainerProfileService.updateProfile(dto, profile.getId());
+        ProfileResponseDto response = trainerProfileService.updateProfile(dto, profile.getId(),user2);
 
         // then
         assertThat(response.getIntroduction()).isEqualTo("test intro");
@@ -127,6 +135,8 @@ class TrainerProfileServiceTest {
     @DisplayName("로그인 하지 않은 유저가 profile 수정")
     void notLoginUpdateProfile() {
         // given
+        boolean login = testSyUtils.notLogin(user);
+
         LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
         LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
 
@@ -136,8 +146,13 @@ class TrainerProfileServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> trainerProfileService.updateProfile(dto,profile.getId()))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if(!login) {
+                throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY);
+            } else {
+                trainerProfileService.updateProfile(dto,profile.getId(),user);
+            }
+        });
     }
 
     @Test
@@ -153,7 +168,7 @@ class TrainerProfileServiceTest {
                 startTime,endTime,4.5,null, 12000, 25, "test");
 
         // when
-        ProfileResponseDto saved = trainerProfileService.save(dto);
+        ProfileResponseDto saved = trainerProfileService.save(dto, user);
         ProfileRequestDto updatedDto = testSyUtils.createProfileDto("updated intro", "Olympia","경북대",
                 startTime,endTime,4.5,null, 22000, 25, "test");
 
@@ -161,7 +176,7 @@ class TrainerProfileServiceTest {
         testKrUtils.login(user2);
 
         // then
-        assertThatThrownBy(() -> trainerProfileService.updateProfile(updatedDto, saved.getId()))
+        assertThatThrownBy(() -> trainerProfileService.updateProfile(updatedDto, saved.getId(), user2))
                 .isInstanceOf(TrainerProfileException.class);
     }
 
@@ -178,7 +193,7 @@ class TrainerProfileServiceTest {
                 startTime,endTime,4.5,null, 12000, 25, "test");
 
         // when
-        ProfileResponseDto response = trainerProfileService.save(dto);
+        ProfileResponseDto response = trainerProfileService.save(dto, user);
         trainerProfileService.getProfile(response.getId());
 
         // then

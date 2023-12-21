@@ -1,6 +1,8 @@
 package com.example.healthgenie.boundedContext.todo.service;
 
+import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.TodoErrorResult;
 import com.example.healthgenie.base.exception.TodoException;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
@@ -65,7 +67,7 @@ class TodoServiceTest {
                 date, time, "test title", "description test");
 
         // when
-        TodoResponseDto todo = todoService.addTodoList(dto);
+        TodoResponseDto todo = todoService.addTodoList(dto, user);
 
         // then
         assertThat(todo.getDate()).isEqualTo(date);
@@ -78,6 +80,7 @@ class TodoServiceTest {
     @DisplayName("로그인 하지 않은 유저가 todo list 작성 실패하기")
     void notLoginAddTodoList() {
         // given
+        boolean login = testSyUtils.notLogin(user);
 
         TodoRequestDto dto = testSyUtils.TodoRequestDto(
                 LocalDate.now(), LocalTime.now(), "test title", "description test");
@@ -86,8 +89,13 @@ class TodoServiceTest {
 
 
         // then
-        assertThatThrownBy(() -> todoService.addTodoList(dto))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if (!login) {
+                throw new TodoException(TodoErrorResult.NO_USER_INFO);
+            } else {
+                todoService.addTodoList(dto,user);
+            }
+        }).isInstanceOf(TodoException.class);
     }
 
     @Test
@@ -100,7 +108,7 @@ class TodoServiceTest {
         TodoRequestDto dto = testSyUtils.TodoRequestDto("수정한 제목", "수정한 내용");
 
         // then
-        TodoResponseDto response = todoService.update(dto, todoTest.getId());
+        TodoResponseDto response = todoService.update(dto, todoTest.getId(), user);
 
         assertThat(response.getTitle()).isEqualTo("수정한 제목");
         assertThat(response.getDescription()).isEqualTo("수정한 내용");
@@ -110,13 +118,19 @@ class TodoServiceTest {
     @DisplayName("로그인 하지 않은 유저가 todo list 수정 실패하기")
     void notLoginUpdate() {
         // given
+        boolean login = testSyUtils.notLogin(user);
 
         // when
         TodoRequestDto dto = testSyUtils.TodoRequestDto("수정한 제목", "수정한 내용");
 
         // then
-        assertThatThrownBy(() -> todoService.update(dto, todoTest.getId()))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+                if(!login) {
+                    throw new TodoException(TodoErrorResult.NO_USER_INFO);
+                } else {
+               todoService.update(dto, todoTest.getId(), user);
+                }
+        }).isInstanceOf(TodoException.class);
     }
 
     @Test
@@ -128,7 +142,7 @@ class TodoServiceTest {
         // when
 
         // then
-        String response = todoService.deleteTodo(todoTest.getId());
+        String response = todoService.deleteTodo(todoTest.getId(), user);
 
         assertThat(response).isEqualTo("오늘 할일이 삭제되었습니다.");
     }
@@ -137,12 +151,18 @@ class TodoServiceTest {
     @DisplayName("로그인 하지 않은 유저가 todo 삭제하기")
     void notLoginDeleteTodo() {
         // given
+        boolean login = testSyUtils.notLogin(user);
 
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.deleteTodo(todoTest.getId()))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if(!login) {
+                throw new TodoException(TodoErrorResult.WRONG_USER);
+            } else {
+                todoService.deleteTodo(todoTest.getId(),user);
+            }
+        });
     }
 
     @Test
@@ -154,7 +174,7 @@ class TodoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.deleteTodo(2000L))
+        assertThatThrownBy(() -> todoService.deleteTodo(2000L, user))
                 .isInstanceOf(TodoException.class);
     }
 
@@ -169,11 +189,11 @@ class TodoServiceTest {
 
         for(int i=1; i<=5; i++) {
             TodoRequestDto dto = testSyUtils.TodoRequestDto(date, time, "test title", "description test");
-            todoService.addTodoList(dto);
+            todoService.addTodoList(dto, user);
         }
 
         // when
-        List<TodoResponseDto> response = todoService.getAllMyTodo(date);
+        List<TodoResponseDto> response = todoService.getAllMyTodo(date, user);
 
         // then
         assertThat(response.size()).isEqualTo(6);

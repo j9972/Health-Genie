@@ -9,12 +9,14 @@ import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessPhotoSer
 import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessService;
 import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessTransactionSerivce;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,8 +35,9 @@ public class PtProcessController {
 
     // trainer가 작성
     @PostMapping("/trainer/write")// http://localhost:1234/process/trainer/write
-    public ResponseEntity<Result> addPtProcess(PtProcessRequestDto dto)  throws IOException {
-        PtProcessResponseDto response = processTransactionSerivce.addPtProcess(dto);
+    public ResponseEntity<Result> addPtProcess(PtProcessRequestDto dto,
+                                               @AuthenticationPrincipal User user)  throws IOException {
+        PtProcessResponseDto response = processTransactionSerivce.addPtProcess(dto, user);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -46,10 +49,11 @@ public class PtProcessController {
         관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
      */
     @GetMapping("/list/trainer") // http://localhost:1234/process/list/trainer
-    public ResponseEntity<Result> getAllTrainerProcess(@RequestParam(required = false, defaultValue = "0") int page){
+    public ResponseEntity<Result> getAllTrainerProcess(@RequestParam(required = false, defaultValue = "0") int page,
+                                                       @AuthenticationPrincipal User user){
         // 5개씩 페이징 처리
         int size = 5;
-        Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(page, size);
+        Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(page, size, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -58,10 +62,11 @@ public class PtProcessController {
         관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
      */
     @GetMapping("/list/my") // http://localhost:1234/process/list/my
-    public ResponseEntity<Result> getAllMyProcess(@RequestParam(required = false, defaultValue = "0") int page){
+    public ResponseEntity<Result> getAllMyProcess(@RequestParam(required = false, defaultValue = "0") int page,
+                                                  @AuthenticationPrincipal User user){
         // 5개씩 페이징 처리
         int size = 5;
-        Page<PtProcessResponseDto> response = processService.getAllMyProcess(page, size);
+        Page<PtProcessResponseDto> response = processService.getAllMyProcess(page, size, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -91,9 +96,10 @@ public class PtProcessController {
 
     // 트레이너만 삭제 기능이 가능
     @DeleteMapping("/trainer/delete/{processId}") // http://localhost:1234/process/trainer/delete/{processId}
-    public ResponseEntity<Result> deleteProcess(@PathVariable Long processId) {
+    public ResponseEntity<Result> deleteProcess(@PathVariable Long processId,
+                                                @AuthenticationPrincipal User user) {
 
-        String response = processService.deletePtProcess(processId);
+        String response = processService.deletePtProcess(processId, user);
 
         return ResponseEntity.ok(Result.of(response));
     }

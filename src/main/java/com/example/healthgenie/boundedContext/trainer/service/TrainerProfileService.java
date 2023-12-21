@@ -33,15 +33,14 @@ import static com.example.healthgenie.base.exception.CommunityPostErrorResult.PO
 @Slf4j
 public class TrainerProfileService {
     private final TrainerProfileRepository trainerProfileRepository;
-    private final UserRepository userRepository;
 
     //
     /*
         관리페이지용 API -> 수정 , 트레이너만 가능
     */
     @Transactional
-    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId) {
-        TrainerInfo profile = authorizationWriter(profileId);
+    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user) {
+        TrainerInfo profile = authorizationWriter(profileId, user);
 
         if(dto.getIntroduction() != null) {
             profile.updateIntroduction(dto.getIntroduction());
@@ -86,8 +85,7 @@ public class TrainerProfileService {
     }
 
     // review는 회원만 수정 삭제 가능
-    public TrainerInfo authorizationWriter(Long id) {
-        User member = SecurityUtils.getCurrentUser();
+    public TrainerInfo authorizationWriter(Long id , User member) {
 
         TrainerInfo profile = trainerProfileRepository.findById(id)
                 .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
@@ -102,8 +100,7 @@ public class TrainerProfileService {
 
     // 홈페이지에서 패킷에서 들어가면 보여줄 API
     @Transactional
-    public ProfileResponseDto save(ProfileRequestDto dto) {
-        User currentUser = SecurityUtils.getCurrentUser();
+    public ProfileResponseDto save(ProfileRequestDto dto, User currentUser) {
 
         TrainerInfo savedInfo = trainerProfileRepository.save(
                 TrainerInfo.builder()

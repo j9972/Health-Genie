@@ -118,3 +118,6 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+univCert:
+  key: ENC(KzaGhlaBtciQefFWMQFbhCug2P2ax7E0cU3zE5Juo6VBwZ/Gu1WiDnJWiO/saWN5)

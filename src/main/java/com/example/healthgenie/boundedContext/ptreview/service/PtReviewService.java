@@ -39,7 +39,7 @@ public class PtReviewService {
     private final PtReviewQueryRepository ptReviewQueryRepository;
 
     @Transactional
-    public PtReviewResponseDto addPtReview(PtReviewRequestDto dto){
+    public PtReviewResponseDto addPtReview(PtReviewRequestDto dto, User user){
 
         User trainer = userRepository.findByNickname(dto.getTrainerNickName())
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY));
@@ -54,13 +54,11 @@ public class PtReviewService {
             throw  new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
         }
 
-        return makePtReview(dto, trainer);
+        return makePtReview(dto, trainer, user);
     }
 
     @Transactional
-    public PtReviewResponseDto makePtReview(PtReviewRequestDto dto, User trainer){
-
-        User currentUser = SecurityUtils.getCurrentUser();
+    public PtReviewResponseDto makePtReview(PtReviewRequestDto dto, User trainer, User currentUser){
 
         if (!currentUser.getRole().equals(Role.USER)) {
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
@@ -119,10 +117,9 @@ public class PtReviewService {
         본인이 작성한 review list 조회, ]
     */
     @Transactional(readOnly = true)
-    public Page<PtReviewResponseDto> getAllReview(Long userId, int page, int size){
+    public Page<PtReviewResponseDto> getAllReview(Long userId, int page, int size, User currentUser){
 
         Optional<User> user = userRepository.findById(userId);
-        User currentUser = SecurityUtils.getCurrentUser();
 
         // 본인만 본인의 후기모음을 볼 수 있다
         if (!user.get().getId().equals(currentUser.getId())) {
@@ -141,9 +138,9 @@ public class PtReviewService {
     }
 
     @Transactional
-    public PtReviewResponseDto updateReview(PtReviewRequestDto dto, Long reviewId){
+    public PtReviewResponseDto updateReview(PtReviewRequestDto dto, Long reviewId, User user){
 
-        PtReview review = authorizationReviewWriter(reviewId);
+        PtReview review = authorizationReviewWriter(reviewId, user);
 
         if(dto.getContent() != null) {
             review.updateContent(dto.getContent());
@@ -160,9 +157,9 @@ public class PtReviewService {
 
 
     @Transactional
-    public String deletePtReview(Long reviewId) {
+    public String deletePtReview(Long reviewId, User user) {
 
-        PtReview review = authorizationReviewWriter(reviewId);
+        PtReview review = authorizationReviewWriter(reviewId, user);
         ptReviewRepository.deleteById(review.getId());
 
         return "후기가 삭제 되었습니다.";
@@ -170,10 +167,9 @@ public class PtReviewService {
 
 
     // review는 회원만 수정 삭제 가능
-    public PtReview authorizationReviewWriter(Long id) {
-        User member = SecurityUtils.getCurrentUser();
-
+    public PtReview authorizationReviewWriter(Long id, User member) {
         PtReview review = ptReviewRepository.findById(id).orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
+
         if (!review.getMember().getId().equals(member.getId())) {
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         }

@@ -5,6 +5,7 @@ import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class PtProcessTransactionSerivce {
     private final PtProcessService processService;
     private final PtProcessPhotoService ptProcessPhotoService;
 
-    public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto) throws IOException {
+    public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, User user) throws IOException {
         List<String> photoPaths = new ArrayList<>();
         PtProcessResponseDto saved = null;
         try {
@@ -33,7 +34,7 @@ public class PtProcessTransactionSerivce {
             }
 
             // CommunityPost 엔티티 저장
-            saved = processService.addPtProcess(dto);
+            saved = processService.addPtProcess(dto, user);
 
             // CommunityPostPhoto 엔티티 저장
             if (existsFile(dto)) {
