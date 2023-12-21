@@ -27,10 +27,14 @@ public class ChatRoomController {
 
     @GetMapping
     public ResponseEntity<Result> getOneToOneChatRooms(
-            @RequestBody ChatRoomRequest request,
+            @AuthenticationPrincipal User user,
             @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        List<ChatRoomResponse> responses = roomService.getChatRooms(request, pageable);
+        /*
+        TODO : Request에서 현재 사용자의 id를 받는 대신 @AuthenticationPrincipal로 대체하기
+               또한 다른 도메인도 적용해서 SecurityUtils 클래스 불필요 -> 삭제하기
+         */
+        List<ChatRoomResponse> responses = roomService.getChatRooms(user, pageable);
 
         return ResponseEntity.ok(Result.of(responses));
     }

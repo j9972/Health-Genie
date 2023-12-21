@@ -76,22 +76,7 @@ public class RoomService {
         return createNewRoom(roomHashCode, user, anotherUser).getId();
     }
 
-    private void activeChatRoom(ChatRoom chatRoom) {
-        chatRoom.active();
-    }
-
-    private void activeChatUser(ChatRoom chatRoom, User user) {
-        chatRoom.getChatRoomUsers().stream()
-                .filter(e -> e.getUser().getId().equals(user.getId()))
-                .findFirst()
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND))
-                .active();
-    }
-
-    public List<ChatRoomResponse> getChatRooms(ChatRoomRequest request, Pageable pageable) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
-
+    public List<ChatRoomResponse> getChatRooms(User user, Pageable pageable) {
         List<ChatRoomResponse> responses = new ArrayList<>();
 
         Page<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserIdAndActive(user.getId(), true, pageable);
@@ -107,6 +92,9 @@ public class RoomService {
 
         ChatRoom chatRoom = chatRoomRepository.findByIdAndActive(roomId, true)
                 .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
+
+        // 권한 체크
+        checkRelation(user, chatRoom);
 
         List<ChatRoomUser> chatRoomUsers = chatRoom.getChatRoomUsers();
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
@@ -124,10 +112,11 @@ public class RoomService {
 
     @Transactional
     public void deleteChatRoom(Long roomId, User user) {
-        // TODO : 삭제 권한 체크 필요 - 다른 메서드들도 권한 체크 로직 필요
-
         ChatRoom chatRoom = chatRoomRepository.findByIdAndActive(roomId, true)
                 .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
+
+        // 권한 체크
+        checkRelation(user, chatRoom);
 
         boolean isAllOut = true;
         List<ChatRoomUser> chatRoomUsers = chatRoom.getChatRoomUsers();
@@ -145,6 +134,13 @@ public class RoomService {
         if(isAllOut) {
             chatRoom.inactive();
         }
+    }
+
+    private void checkRelation(User user, ChatRoom chatRoom) {
+        chatRoom.getChatRoomUsers().stream()
+                .filter(e -> e.getUser().getId().equals(user.getId()))
+                .findAny()
+                .orElseThrow(() -> new ChatException(NO_PERMISSION));
     }
 
     private void mapUsersAndRoom(User user, User anotherUser, ChatRoom room) {
@@ -177,27 +173,6 @@ public class RoomService {
         return newRoom;
     }
 
-    private void saveIfAlone(ChatRoom chatRoom, User user, User anotherUser) {
-        List<ChatRoomUser> chatRoomUsers = chatRoom.getChatRoomUsers();
-        if(chatRoomUsers.size() == 1) {
-            ChatRoomUser chatRoomUser;
-            // 나만 있을 때
-            if(chatRoomUsers.get(0).getUser().getId().equals(user.getId())) {
-                chatRoomUser = ChatRoomUser.builder()
-                        .user(anotherUser)
-                        .chatRoom(chatRoom)
-                        .build();
-            } else {
-                // 상대만 있을 때
-                chatRoomUser = ChatRoomUser.builder()
-                        .user(user)
-                        .chatRoom(chatRoom)
-                        .build();
-            }
-            chatRoomUserRepository.save(chatRoomUser);
-        }
-    }
-
     private boolean existsRoom(int roomHashCode) {
         return chatRoomRepository.existsByRoomHashCode(roomHashCode);
     }
@@ -206,5 +181,17 @@ public class RoomService {
         Long userId = user.getId();
         Long anotherId = anotherUser.getId();
         return userId > anotherId ? Objects.hash(userId, anotherId) : Objects.hash(anotherId, userId);
+    }
+
+    private void activeChatRoom(ChatRoom chatRoom) {
+        chatRoom.active();
+    }
+
+    private void activeChatUser(ChatRoom chatRoom, User user) {
+        chatRoom.getChatRoomUsers().stream()
+                .filter(e -> e.getUser().getId().equals(user.getId()))
+                .findFirst()
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND))
+                .active();
     }
 }

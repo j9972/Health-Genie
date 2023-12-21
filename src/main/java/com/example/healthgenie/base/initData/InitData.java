@@ -11,27 +11,22 @@ import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import jakarta.persistence.EntityManager;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static com.example.healthgenie.boundedContext.routine.entity.Day.*;
 import static com.example.healthgenie.boundedContext.routine.entity.Level.*;
 
 
 @Profile("dev")
-//@Configuration
+@Configuration
 public class InitData {
 
     @Bean
     CommandLineRunner init(
-            EntityManager em,
             UserRepository userRepository,
             CommunityPostRepository communityPostRepository,
             RoutineRepository routineRepository
@@ -39,7 +34,7 @@ public class InitData {
         return new CommandLineRunner() {
             @Override
             @Transactional
-            public void run(String... args) throws Exception {
+            public void run(String... args) {
                 for(int i=1; i<=10; i++) {
                     User user = createUser(i + "@test.com", "test" + i);
                     CommunityPost post = createPost(i + "번째 게시글 제목", i + "번째 게시글 내용", user);
@@ -131,12 +126,4 @@ public class InitData {
         };
     }
 
-
 }
-/*
-      Book book1 = createBook("JPA1 BOOK", 10000, 100);
-            em.persist(book1);
-
-            Book book2 = createBook("JPA2 BOOK", 20000, 100);
-            em.persist(book2);
- */
