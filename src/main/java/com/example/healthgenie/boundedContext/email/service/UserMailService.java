@@ -33,19 +33,13 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class UserMailService {
 
+    @Value("${spring.mail.auth-code-expiration-millis}")
+    private long authCodeExpirationMillis;
     private static final String AUTH_CODE_PREFIX = "AuthCode ";
+
     private final MailService mailService;
     private final RedisService redisService;
     private final UserService userService;
-
-    private static final OkHttpClient client = new OkHttpClient();
-    private static final JSONParser parser = new JSONParser();
-    private static final String baseURL = "https://univcert.com/api";
-
-
-    @Value("${spring.mail.auth-code-expiration-millis}")
-    private long authCodeExpirationMillis;
-
 
     @Transactional
     public String sendCode(String toEmail) throws MailException {
@@ -76,16 +70,12 @@ public class UserMailService {
     }
 
     @Transactional
-    public void updateUniv(String univ_name) throws IOException {
-        Long userId = SecurityUtils.getCurrentUserId();
-
+    public void updateUniv(String univ_name, Long userId) throws IOException {
         userService.edit(userId, UserRequest.builder().uniName(univ_name).build());
     }
 
     @Transactional
-    public void updateUnivVerify() throws IOException {
-        Long userId = SecurityUtils.getCurrentUserId();
-
+    public void updateUnivVerify(Long userId) throws IOException {
         userService.edit(userId, UserRequest.builder().emailVerify(true).build());
     }
 }

@@ -35,14 +35,12 @@ public class RoutineService {
 
     private final RoutineQueryRepository routineQueryRepository;
 
-    // own routine 관련 해서 level 언급은 필요 없다
     @Transactional
-    public RoutineResponseDto writeRoutine(RoutineRequestDto dto) {
+    public RoutineResponseDto writeRoutine(RoutineRequestDto dto, User user) {
 
         Routine saved = new Routine();
-        User currentUser = SecurityUtils.getCurrentUser();
 
-        boolean valid = dto.getWriter().equals(currentUser.getNickname());
+        boolean valid = dto.getWriter().equals(user.getNickname());
         validNickname(valid, RoutineErrorResult.DIFFERNET_NICKNAME);
 
         for (WorkoutRecipe recipe : dto.getWorkoutRecipes()) {
@@ -53,7 +51,7 @@ public class RoutineService {
                     .day(dto.getDay())
                     .parts(dto.getParts())
                     .workoutRecipe(data)
-                    .member(currentUser)
+                    .member(user)
                     .build();
 
             saved = routineRepository.save(routine);
@@ -64,8 +62,8 @@ public class RoutineService {
     }
 
     @Transactional
-    public RoutineResponseDto updateRoutine(RoutineRequestDto dto, Long routineId) {
-        Routine routine = authorizationWriter(routineId);
+    public RoutineResponseDto updateRoutine(RoutineRequestDto dto, Long routineId, User user) {
+        Routine routine = authorizationWriter(routineId, user);
 
         WorkoutRecipe workoutRecipe = routine.getWorkoutRecipe();
 
@@ -106,18 +104,13 @@ public class RoutineService {
 
     // 나의 루틴 요일 상관없이 전체 조회 [ userId 로만 구분 ]
     @Transactional(readOnly = true)
-    public List<RoutineResponseDto> getAllMyRoutine() {
-
-        Long userId = SecurityUtils.getCurrentUserId();
-
+    public List<RoutineResponseDto> getAllMyRoutine(Long userId) {
         return RoutineResponseDto.ofOwn(routineQueryRepository.findAllByMemberId(userId));
     }
 
     // 나의 루틴 요일별 상세조회
     @Transactional(readOnly = true)
-    public List<RoutineResponseDto> getMyRoutine(Day day) {
-
-        Long userId = SecurityUtils.getCurrentUserId();
+    public List<RoutineResponseDto> getMyRoutine(Day day, Long userId) {
         return RoutineResponseDto.ofOwn(routineQueryRepository.findAllByMemberIdAndDay(userId, day));
     }
 
@@ -126,9 +119,8 @@ public class RoutineService {
         지니 레벨을 선택할 때 마다 level 변동 시키기
      */
     @Transactional
-    public List<RoutineResponseDto> getAllGenieRoutine(Level level) {
-        User currentUser = SecurityUtils.getCurrentUser();
-        currentUser.updateLevel(level); // 이 부분 [ 매번 level update ]
+    public List<RoutineResponseDto> getAllGenieRoutine(Level level, User user) {
+        user.updateLevel(level); // 이 부분 [ 매번 level update ]
         return RoutineResponseDto.ofGenie(routineQueryRepository.findAllByLevel(level));
     }
 
@@ -141,15 +133,14 @@ public class RoutineService {
 
 
     @Transactional
-    public String deleteRoutine(Long routineId) {
-        Routine own = authorizationWriter(routineId);
+    public String deleteRoutine(Long routineId, User user) {
+        Routine own = authorizationWriter(routineId, user);
         routineRepository.deleteById(own.getId());
 
         return "루틴이 삭제되었습니다.";
     }
 
-    public Routine authorizationWriter(Long id) {
-        User member = SecurityUtils.getCurrentUser();
+    public Routine authorizationWriter(Long id, User member) {
 
         Routine routine = routineRepository.findById(id).orElseThrow(() -> new RoutineException(RoutineErrorResult.NO_HISTORY));
 

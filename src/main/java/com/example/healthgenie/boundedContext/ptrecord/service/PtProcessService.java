@@ -42,7 +42,7 @@ public class PtProcessService {
 
 
     @Transactional
-    public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto){
+    public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, User currentUser){
 
         User user = userRepository.findByNickname(dto.getUserNickName())
                 .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
@@ -50,13 +50,11 @@ public class PtProcessService {
         matchingRepository.findByMemberNicknameAndTrainerNickname(user.getNickname(), dto.getTrainerNickName())
                 .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
-        return makePtRProcess(dto,user);
+        return makePtRProcess(dto,user,currentUser);
     }
 
     @Transactional
-    public PtProcessResponseDto makePtRProcess(PtProcessRequestDto dto, User user) {
-
-        User currentUser = SecurityUtils.getCurrentUser();
+    public PtProcessResponseDto makePtRProcess(PtProcessRequestDto dto, User user, User currentUser) {
 
         if (!currentUser.getRole().equals(Role.TRAINER)) {
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
@@ -112,9 +110,8 @@ public class PtProcessService {
         해당 트레이너가 작성한 모든 피드백들을 전부 모아보기
      */
     @Transactional(readOnly = true)
-    public Page<PtProcessResponseDto> getAllTrainerProcess(int page, int size){
+    public Page<PtProcessResponseDto> getAllTrainerProcess(int page, int size, User currentUser){
 
-        User currentUser = SecurityUtils.getCurrentUser();
         if (!currentUser.getRole().equals(Role.TRAINER)) {
             throw new CommonException(CommonErrorResult.UNAUTHORIZED);
         }
@@ -131,9 +128,8 @@ public class PtProcessService {
         본인의 피드백들을 전부 모아보기
     */
     @Transactional(readOnly = true)
-    public Page<PtProcessResponseDto> getAllMyProcess(int page, int size){
+    public Page<PtProcessResponseDto> getAllMyProcess(int page, int size, User currentUser){
 
-        User currentUser = SecurityUtils.getCurrentUser();
         if (!currentUser.getRole().equals(Role.USER)) {
             throw new CommonException(CommonErrorResult.UNAUTHORIZED);
         }
@@ -146,9 +142,9 @@ public class PtProcessService {
 
 
     @Transactional
-    public String deletePtProcess(Long processId) {
+    public String deletePtProcess(Long processId, User user) {
 
-        PtProcess process = authorizationProcessWriter(processId);
+        PtProcess process = authorizationProcessWriter(processId, user);
 
         ptProcessRepository.deleteById(process.getId());
 
@@ -157,8 +153,7 @@ public class PtProcessService {
     }
 
     // process는 트레이너만 수정 삭제 가능
-    public PtProcess authorizationProcessWriter(Long id) {
-        User member = SecurityUtils.getCurrentUser();
+    public PtProcess authorizationProcessWriter(Long id, User member) {
 
         PtProcess process = ptProcessRepository.findById(id).orElseThrow(() -> new PtProcessException(PtProcessErrorResult.RECORD_EMPTY));
         if (!process.getTrainer().getId().equals(member.getId())) {

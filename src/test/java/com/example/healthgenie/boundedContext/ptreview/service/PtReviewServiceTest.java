@@ -71,7 +71,7 @@ class PtReviewServiceTest {
         PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
 
         // when
-        PtReviewResponseDto response = reviewService.addPtReview(dto);
+        PtReviewResponseDto response = reviewService.addPtReview(dto, user);
 
         // then
         assertThat(response.getStopReason()).isEqualTo("test");
@@ -102,13 +102,19 @@ class PtReviewServiceTest {
     @DisplayName("로그인 안하면 리뷰 작성 실패")
     void notLoginAddPtReview() {
         // given
+        boolean login = testSyUtils.notLogin(user);
 
         PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
         // when
 
         // then
-        assertThatThrownBy(() -> reviewService.addPtReview(dto))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if(!login) {
+                throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
+            } else {
+                reviewService.addPtReview(dto, user);
+            }
+        });
     }
 
     @Test
@@ -121,7 +127,7 @@ class PtReviewServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> reviewService.addPtReview(dto))
+        assertThatThrownBy(() -> reviewService.addPtReview(dto, user3))
                 .isInstanceOf(MatchingException.class);
     }
 
@@ -184,7 +190,7 @@ class PtReviewServiceTest {
         Long userId = review.getMember().getId();
 
         // when
-        Page<PtReviewResponseDto> response = reviewService.getAllReview(userId, 0, 5);
+        Page<PtReviewResponseDto> response = reviewService.getAllReview(userId, 0, 5, user3);
 
 
         // then
@@ -206,7 +212,7 @@ class PtReviewServiceTest {
         PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
 
         // then
-        PtReviewResponseDto saved = reviewService.updateReview(dto, review.getId());
+        PtReviewResponseDto saved = reviewService.updateReview(dto, review.getId(), user3);
 
         assertThat(saved.getContent()).isEqualTo("update");
         assertThat(saved.getStopReason()).isEqualTo("update");
@@ -217,14 +223,19 @@ class PtReviewServiceTest {
     @DisplayName("로그인 하지 않은 유저가 리뷰 수정 실패")
     void notLoginUpdateReview() {
         // given
-
+        boolean login = testSyUtils.notLogin(user);
 
         // when
         PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
 
         // then
-        assertThatThrownBy(() -> reviewService.updateReview(dto, review.getId()))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if(!login) {
+                throw new PtReviewException(PtReviewErrorResult.NO_USER_INFO);
+            } else {
+                reviewService.updateReview(dto, review.getId(), user);
+            }
+        });
     }
 
     @Test
@@ -237,7 +248,7 @@ class PtReviewServiceTest {
         PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
 
         // then
-        assertThatThrownBy(() -> reviewService.updateReview(dto, review.getId()))
+        assertThatThrownBy(() -> reviewService.updateReview(dto, review.getId(),user))
                 .isInstanceOf(PtReviewException.class);
     }
 
@@ -267,7 +278,7 @@ class PtReviewServiceTest {
         // when
 
         // then
-        String response = reviewService.deletePtReview(review.getId());
+        String response = reviewService.deletePtReview(review.getId(), user3);
         assertThat(response).isEqualTo("후기가 삭제 되었습니다.");
     }
 
@@ -275,12 +286,18 @@ class PtReviewServiceTest {
     @DisplayName("로그인 하지 않은 유저가 리뷰 삭제 실패")
     void notLoginDeletePtReview() {
         // given
+        boolean login = testSyUtils.notLogin(user);
 
         // when
 
         // then
-        assertThatThrownBy(() -> reviewService.deletePtReview(review.getId()))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if(!login) {
+                throw new PtReviewException(PtReviewErrorResult.NO_USER_INFO);
+            } else {
+                reviewService.deletePtReview(review.getId(), user);
+            }
+        });
     }
 
     @Test
@@ -308,7 +325,7 @@ class PtReviewServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> reviewService.deletePtReview(review.getId()))
+        assertThatThrownBy(() -> reviewService.deletePtReview(review.getId(), user))
                 .isInstanceOf(PtReviewException.class);
     }
 

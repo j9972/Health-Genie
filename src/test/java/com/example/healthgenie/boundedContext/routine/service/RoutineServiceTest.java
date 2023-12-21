@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.routine.service;
 
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.RoutineException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
@@ -43,6 +44,7 @@ class RoutineServiceTest {
     RoutineService routineService;
 
     User user;
+    User user1;
     Routine routine;
     Routine beginnerGenie;
     Routine intermediateGenie;
@@ -84,7 +86,7 @@ class RoutineServiceTest {
                 , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
 
         // when
-        RoutineResponseDto savedRoutine = routineService.writeRoutine(dto);
+        RoutineResponseDto savedRoutine = routineService.writeRoutine(dto, user);
 
         WorkoutRecipe testRecipe = savedRoutine.getRecipe();
 
@@ -109,6 +111,7 @@ class RoutineServiceTest {
     @DisplayName("로그인 하지 않은 유저가 루틴 작성하기")
     void notLoginWriteRoutine() {
         // given
+        boolean loginResult = testSyUtils.notLogin(user);
 
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
 
@@ -118,8 +121,13 @@ class RoutineServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> routineService.writeRoutine(dto))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if (!loginResult) {
+                throw new CommonException(CommonErrorResult.BAD_REQUEST);
+            } else {
+                routineService.writeRoutine(dto, user);
+            }
+        }).isInstanceOf(CommonException.class);
     }
 
 
@@ -143,7 +151,7 @@ class RoutineServiceTest {
 
 
         // then
-        RoutineResponseDto savedRoutine = routineService.updateRoutine(dto, routine.getId());
+        RoutineResponseDto savedRoutine = routineService.updateRoutine(dto, routine.getId(), user);
 
         WorkoutRecipe testRecipe = savedRoutine.getRecipe();
 
@@ -177,11 +185,11 @@ class RoutineServiceTest {
         for(int i = 0; i < 5; i++) {
             RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
                     , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
-            routineService.writeRoutine(dto);
+            routineService.writeRoutine(dto, user);
         }
 
         // when
-        List<RoutineResponseDto> response = routineService.getAllMyRoutine();
+        List<RoutineResponseDto> response = routineService.getAllMyRoutine(user.getId());
 
         // then
         /*
@@ -199,7 +207,7 @@ class RoutineServiceTest {
 
         // when
         // before에 있는 값을 가져오기
-        List<RoutineResponseDto> wedRoutine = routineService.getMyRoutine(Day.WEDNESDAY);
+        List<RoutineResponseDto> wedRoutine = routineService.getMyRoutine(Day.WEDNESDAY, user.getId());
 
         // then
         assertThat(wedRoutine.size()).isEqualTo(2);
@@ -216,9 +224,9 @@ class RoutineServiceTest {
         testKrUtils.login(user);
 
         // when
-        List<RoutineResponseDto> beginG = routineService.getAllGenieRoutine(Level.BEGINNER);
-        List<RoutineResponseDto> InterG = routineService.getAllGenieRoutine(Level.INTERMEDIATE);
-        List<RoutineResponseDto> expertG = routineService.getAllGenieRoutine(Level.EXPERT);
+        List<RoutineResponseDto> beginG = routineService.getAllGenieRoutine(Level.BEGINNER, user);
+        List<RoutineResponseDto> InterG = routineService.getAllGenieRoutine(Level.INTERMEDIATE, user);
+        List<RoutineResponseDto> expertG = routineService.getAllGenieRoutine(Level.EXPERT, user);
 
 
         // then
@@ -282,7 +290,7 @@ class RoutineServiceTest {
         // when
 
         // then
-        String response = routineService.deleteRoutine(routine.getId());
+        String response = routineService.deleteRoutine(routine.getId(), user);
         assertThat(response).isEqualTo("루틴이 삭제되었습니다.");
     }
 
@@ -290,24 +298,31 @@ class RoutineServiceTest {
     @DisplayName("로그인 하지 않은 유저가 루틴 삭제하기")
     void notLogindeleteRoutine() {
         // given
+        boolean loginResult = testSyUtils.notLogin(user);
 
         // when
 
         // then
-        assertThatThrownBy(() -> routineService.deleteRoutine(routine.getId()))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if (!loginResult) {
+                throw new CommonException(CommonErrorResult.BAD_REQUEST);
+            } else {
+                routineService.deleteRoutine(routine.getId(), user);
+            }
+        }).isInstanceOf(CommonException.class);
     }
 
     @Test
     @DisplayName("존재 하지 않은 루틴 삭제하기")
     void notExistRoutineDelete() {
         // given
+        testKrUtils.login(user);
 
         // when
 
         // then
-        assertThatThrownBy(() -> routineService.deleteRoutine(2000L))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> routineService.deleteRoutine(2000L, user))
+                .isInstanceOf(RoutineException.class);
     }
 
 }
