@@ -16,8 +16,6 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 import static com.example.healthgenie.base.exception.ChatErrorResult.ROOM_NOT_FOUND;
 import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FOUND;
 
@@ -68,7 +66,7 @@ public class MessageService {
 
         // ChatMessageRequest에 유저정보, 현재시간 저장
         request.setNickName(user.getNickname());
-        request.setCreatedAt(LocalDateTime.now());
+        request.setCreatedDate(chatMessage.getCreatedDate());
 
         // 일대일 채팅
         redisTemplate.convertAndSend(topic, request);
