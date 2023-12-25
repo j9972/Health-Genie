@@ -93,9 +93,6 @@ public class RoomService {
         ChatRoom chatRoom = chatRoomRepository.findByIdAndActive(roomId, true)
                 .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
 
-        // 권한 체크
-        checkRelation(user, chatRoom);
-
         List<ChatRoomUser> chatRoomUsers = chatRoom.getChatRoomUsers();
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
             if(chatRoomUser.getUser().getId().equals(user.getId())) {
@@ -156,21 +153,25 @@ public class RoomService {
                 .active(true)
                 .build();
 
-        chatRoomUserRepository.save(chatRoomUser);
-        chatRoomUserRepository.save(chatRoomAnotherUser);
+        ChatRoomUser sender = chatRoomUserRepository.save(chatRoomUser);
+        ChatRoomUser receiver = chatRoomUserRepository.save(chatRoomAnotherUser);
+
+        room.getChatRoomUsers().add(sender);
+        room.getChatRoomUsers().add(receiver);
     }
 
     private ChatRoom createNewRoom(int roomHashCode, User user, User anotherUser) {
-        ChatRoom newRoom = ChatRoom.builder()
+        ChatRoom room = ChatRoom.builder()
                 .roomHashCode(roomHashCode)
+                .chatRoomUsers(new ArrayList<>())
                 .active(true)
                 .build();
 
-        chatRoomRepository.save(newRoom);
+        chatRoomRepository.save(room);
 
-        mapUsersAndRoom(user, anotherUser, newRoom);
+        mapUsersAndRoom(user, anotherUser, room);
 
-        return newRoom;
+        return room;
     }
 
     private boolean existsRoom(int roomHashCode) {

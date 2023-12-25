@@ -1,8 +1,9 @@
 package com.example.healthgenie.util;
 
-import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
-import com.example.healthgenie.boundedContext.chat.dto.RoomRequest;
+import com.example.healthgenie.boundedContext.chat.dto.ChatMessageRequest;
+import com.example.healthgenie.boundedContext.chat.dto.ChatRoomRequest;
 import com.example.healthgenie.boundedContext.chat.entity.ChatRoom;
+import com.example.healthgenie.boundedContext.chat.entity.ChatRoomUser;
 import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository;
 import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -73,24 +75,43 @@ public class TestKrUtils {
     }
 
 
-    public RoomRequest createRoomRequest(Long senderId, Long receiverId) {
-        return RoomRequest.builder()
-                .senderId(senderId)
-                .receiverId(receiverId)
+    public ChatRoomRequest createRoomRequest(Long senderId, Long receiverId) {
+        return ChatRoomRequest.builder()
+                .userId(senderId)
+                .anotherUserId(receiverId)
                 .build();
     }
 
-    public MessageRequest createMessageRequest(String content, Long senderId) {
-        return MessageRequest.builder()
-                .content(content)
-                .senderId(senderId)
+    public ChatMessageRequest createMessageRequest(Long senderId, Long roomId) {
+        return ChatMessageRequest.builder()
+                .userId(senderId)
+                .roomId(roomId)
+                .build();
+    }
+
+    public ChatMessageRequest createMessageRequest(String content, Long senderId, Long roomId) {
+        return ChatMessageRequest.builder()
+                .message(content)
+                .userId(senderId)
+                .roomId(roomId)
                 .build();
     }
 
     public ChatRoom createChatRoom(User sender, User receiver) {
+        ChatRoomUser s = ChatRoomUser.builder()
+                .user(sender)
+                .active(true)
+                .build();
+
+        ChatRoomUser r = ChatRoomUser.builder()
+                .user(receiver)
+                .active(true)
+                .build();
+
         ChatRoom chatRoom = ChatRoom.builder()
-                .sender(sender)
-                .receiver(receiver)
+                .chatRoomUsers(List.of(s, r))
+                .roomHashCode(sender.getId() > receiver.getId() ? Objects.hash(sender.getId(), receiver.getId()) : Objects.hash(receiver.getId(), sender.getId()))
+                .active(true)
                 .build();
 
         return chatRoomRepository.save(chatRoom);
