@@ -5,6 +5,7 @@ import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.service.PtReviewService;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -30,13 +32,14 @@ public class PtReviewController {
         프론트에서 트레이너에게는 후기 작성란이 없기에 작성 불가하게 막아줌.
      */
     @PostMapping("/write")// http://localhost:1234/review/write
-    public ResponseEntity<Result> addReview(@RequestBody PtReviewRequestDto dto){
+    public ResponseEntity<Result> addReview(@RequestBody PtReviewRequestDto dto,
+                                            @AuthenticationPrincipal User user){
 
-        PtReviewResponseDto response = reviewService.addPtReview(dto);
+        PtReviewResponseDto response = reviewService.addPtReview(dto, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 수정하려고 form 불러오기 -> 조회가 필요함 결국은
+    // 수정하려고 form 불러오기 -> 결국 조회가 필요함
     @GetMapping("/{reviewId}") // http://localhost:1234/review/{reviewId}
     public ResponseEntity<Result> getReview(@PathVariable Long reviewId){
 
@@ -64,10 +67,12 @@ public class PtReviewController {
         최근 작성순서로 정렬했기에 프론트에서 상위 3개씩 가져다가 사용하면 된다.
     */
     @GetMapping("/list/my/{userId}") // http://localhost:1234/review/list/{userId}
-    public ResponseEntity<Result> getAllMyReview(@PathVariable Long userId, @RequestParam(required = false, defaultValue = "0") int page){
+    public ResponseEntity<Result> getAllMyReview(@PathVariable Long userId,
+                                                 @RequestParam(required = false, defaultValue = "0") int page,
+                                                 @AuthenticationPrincipal User user){
         // 5개씩 페이징 처리
         int size = 5;
-        Page<PtReviewResponseDto> response = reviewService.getAllReview(userId, page, size);
+        Page<PtReviewResponseDto> response = reviewService.getAllReview(userId, page, size, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -90,16 +95,19 @@ public class PtReviewController {
 
     // 트레이너 말고 회원 본인만 수정 가능하기
     @PostMapping("/edit/{reviewId}")// http://localhost:1234/review/edit/{reviewId}
-    public ResponseEntity<Result> updateReview(@RequestBody PtReviewRequestDto dto, @PathVariable Long reviewId){
+    public ResponseEntity<Result> updateReview(@RequestBody PtReviewRequestDto dto,
+                                               @PathVariable Long reviewId,
+                                               @AuthenticationPrincipal User user){
 
-        PtReviewResponseDto response = reviewService.updateReview(dto,reviewId);
+        PtReviewResponseDto response = reviewService.updateReview(dto,reviewId, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
     // 트레이너 말고 회원 본인만 삭제 가능하게 하기
     @DeleteMapping("/member/delete/{reviewId}") // http://localhost:1234/review/member/delete/{reviewId}
-    public ResponseEntity<Result> deleteReview(@PathVariable Long reviewId) {
-        String response = reviewService.deletePtReview(reviewId);
+    public ResponseEntity<Result> deleteReview(@PathVariable Long reviewId,
+                                               @AuthenticationPrincipal User user) {
+        String response = reviewService.deletePtReview(reviewId, user);
 
         return ResponseEntity.ok(Result.of(response));
     }

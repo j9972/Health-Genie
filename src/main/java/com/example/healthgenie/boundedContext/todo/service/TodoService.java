@@ -34,14 +34,11 @@ import static java.util.stream.Collectors.toList;
 public class TodoService {
 
     private final TodoRepository todoRepository;
-    private final MatchingRepository matchingRepository;
     private final TodoQueryRepository todoQueryRepository;
     private final MatchingQueryRepository matchingQueryRepository;
 
     @Transactional
-    public TodoResponseDto addTodoList(TodoRequestDto dto){
-
-        User user = SecurityUtils.getCurrentUser();
+    public TodoResponseDto addTodoList(TodoRequestDto dto, User user){
 
         Todo todo = Todo.builder()
                 .date(dto.getDate())
@@ -56,9 +53,9 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoResponseDto update(TodoRequestDto dto, Long todoId){
+    public TodoResponseDto update(TodoRequestDto dto, Long todoId, User user){
 
-        Todo todo = authorizationWriter(todoId);
+        Todo todo = authorizationWriter(todoId, user);
 
         if(dto.getDate() != null) {
             todo.updateDate(dto.getDate());
@@ -76,18 +73,17 @@ public class TodoService {
         return TodoResponseDto.of(todo);
     }
 
-    public String deleteTodo(Long todoId) {
+    public String deleteTodo(Long todoId, User user) {
         // user가 해당 글을 작성한 유저인지 체크 [ DB에 많은 데이터가 쌓이기 때문에 필요 ]
-        Todo todo = authorizationWriter(todoId);
+        Todo todo = authorizationWriter(todoId, user);
         todoRepository.deleteById(todo.getId());
 
         return "오늘 할일이 삭제되었습니다.";
     }
 
-    public Todo authorizationWriter(Long id) {
-        User member = SecurityUtils.getCurrentUser();
-
+    public Todo authorizationWriter(Long id, User member) {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new TodoException(TodoErrorResult.NO_TODO_INFO));
+
         if (!todo.getMember().getId().equals(member.getId())) {
             throw new TodoException(TodoErrorResult.WRONG_USER);
         }
@@ -97,16 +93,14 @@ public class TodoService {
     /*
         todo를 전부 띄우는게 아니라 날짜 별로 띄워야 하는게 핵심
      */
-    public List<TodoResponseDto> getAllMyTodo(LocalDate date) {
+    public List<TodoResponseDto> getAllMyTodo(LocalDate date, User user) {
 
-        User currentUser = SecurityUtils.getCurrentUser();
-
-        List<Todo> todos = todoQueryRepository.findAllByMemberIdAndDate(currentUser.getId(), date);
+        List<Todo> todos = todoQueryRepository.findAllByMemberIdAndDate(user.getId(), date);
 
         // 관리페이지에 보내줄 데이터 [ 매칭 날짜랑 오늘이 같으면 데이터 보내주기 ]
         LocalDateTime dateTime = date.atStartOfDay();
 
-        List<Matching> matching = matchingQueryRepository.findAllOneDayByDateAndId(dateTime, currentUser.getId());
+        List<Matching> matching = matchingQueryRepository.findAllOneDayByDateAndId(dateTime, user.getId());
 
         // 매칭이 있으면
         if (!matching.isEmpty()) {

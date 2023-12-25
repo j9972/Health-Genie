@@ -42,11 +42,9 @@ public class TrainerProfileTransactionService {
 
 
     @Transactional
-    public ProfileResponseDto save(ProfileRequestDto dto)  throws IOException {
+    public ProfileResponseDto save(ProfileRequestDto dto, User currentUser)  throws IOException {
         User trainer = userRepository.findByNickname(dto.getNickname())
                 .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.USER_EMPTY));
-
-        User currentUser = SecurityUtils.getCurrentUser();
 
         Optional<TrainerInfo> profileHistory = trainerProfileRepository.findByMemberId(currentUser.getId());
         if (profileHistory.isPresent()) {
@@ -69,7 +67,7 @@ public class TrainerProfileTransactionService {
                 }
 
                 // TrainerInfo 엔티티 저장
-                savedProfile = trainerProfileService.save(dto);
+                savedProfile = trainerProfileService.save(dto, currentUser);
 
                 // TrainerPhoto 엔티티 저장
                 if (existsFile(dto)) {
@@ -109,11 +107,11 @@ public class TrainerProfileTransactionService {
     }
 
     @Transactional
-    public ProfileResponseDto update(Long profileId, ProfileRequestDto dto) throws IOException {
+    public ProfileResponseDto update(Long profileId, ProfileRequestDto dto, User user) throws IOException {
         TrainerInfo info = trainerProfileRepository.findById(profileId)
                 .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
 
-        if(!Objects.equals(info.getMember().getId(), SecurityUtils.getCurrentUserId())) {
+        if(!Objects.equals(info.getMember().getId(), user.getId())) {
             throw new TrainerProfileException(TrainerProfileErrorResult.NO_PERMISSION);
         }
 
@@ -126,7 +124,7 @@ public class TrainerProfileTransactionService {
             }
 
             // CommunityPost 엔티티 저장
-            updatedProfile = trainerProfileService.updateProfile(dto,profileId);
+            updatedProfile = trainerProfileService.updateProfile(dto,profileId, user);
 
             // CommunityPostPhoto 엔티티 저장
             if (existsFile(dto)) {

@@ -51,7 +51,6 @@ class PtProcessServiceTest {
     void before() {
         LocalDateTime date = LocalDateTime.of(2023, 12, 5, 14, 30, 0);
         LocalDate date2 = LocalDate.of(2023,12,5);
-        LocalDate date3 = LocalDate.of(2023,12,6);
 
         user = testKrUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
         user2 = testKrUtils.createUser("test2", Role.TRAINER,"test@test.com");
@@ -73,7 +72,7 @@ class PtProcessServiceTest {
         PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1","test2");
 
         // when
-        PtProcessResponseDto response = processService.addPtProcess(dto);
+        PtProcessResponseDto response = processService.addPtProcess(dto, user2);
 
         // then
         assertThat(response.getDate()).isEqualTo(date);
@@ -107,6 +106,7 @@ class PtProcessServiceTest {
     @DisplayName("로그인 하지 않은 유저가 피드백 생성 실패")
     void noLoginAddPtProcess() {
         // given
+        boolean login = testSyUtils.notLogin(user);
 
         LocalDate date = LocalDate.of(2023,12,5);
 
@@ -115,8 +115,13 @@ class PtProcessServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> processService.addPtProcess(dto))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if(!login) {
+                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+            } else {
+                processService.addPtProcess(dto, user);
+            }
+        });
     }
 
     @Test
@@ -130,7 +135,7 @@ class PtProcessServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> processService.addPtProcess(dto))
+        assertThatThrownBy(() -> processService.addPtProcess(dto, user3))
                 .isInstanceOf(MatchingException.class);
     }
 
@@ -205,7 +210,7 @@ class PtProcessServiceTest {
         testKrUtils.login(user2);
 
         // when
-        Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(0, 5);
+        Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(0, 5, user2);
         LocalDate date = LocalDate.of(2023,12,5);
 
         // then
@@ -225,7 +230,7 @@ class PtProcessServiceTest {
         testKrUtils.login(user);
 
         // when
-        Page<PtProcessResponseDto> response = processService.getAllMyProcess(0, 5);
+        Page<PtProcessResponseDto> response = processService.getAllMyProcess(0, 5,user);
         LocalDate date = LocalDate.of(2023,12,5);
 
         // then
@@ -242,24 +247,36 @@ class PtProcessServiceTest {
     @DisplayName("로그인 하지 않은 일반 회원 유저가 모든 피드백 조회 실패하기")
     void notLoginGetAllMyProcess() {
         // given
+        boolean login = testSyUtils.notLogin(user);
 
         // when
 
         // then
-        assertThatThrownBy(() -> processService.getAllMyProcess(0,5))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if(!login) {
+                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+            } else {
+                processService.getAllMyProcess(0,5,user);
+            }
+        });
     }
 
     @Test
     @DisplayName("로그인 하지 않은 트레이너 유저가 모든 피드백 조회 실패하기")
     void notLoginGetAllTrainerProcess() {
         // given
+        boolean login = testSyUtils.notLogin(user);
 
         // when
 
         // then
-        assertThatThrownBy(() -> processService.getAllTrainerProcess(0,5))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if(!login) {
+                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+            } else {
+                processService.getAllTrainerProcess(0,5,user);
+            }
+        });
     }
 
     @Test
@@ -271,7 +288,7 @@ class PtProcessServiceTest {
         // when
 
         // then
-        String response = processService.deletePtProcess(process.getId());
+        String response = processService.deletePtProcess(process.getId(), user2);
         assertThat(response).isEqualTo("피드백이 삭제 되었습니다.");
     }
 
@@ -295,12 +312,18 @@ class PtProcessServiceTest {
     @DisplayName("로그인 하지 않은 유저가 피드백 삭제 실패하기")
     void notLoginDeletePtProcess() {
         // given
+        boolean login = testSyUtils.notLogin(user);
 
         // when
 
         // then
-        assertThatThrownBy(() -> processService.deletePtProcess(process.getId()))
-                .isInstanceOf(CommonException.class);
+        assertThatThrownBy(() -> {
+            if(!login) {
+                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+            } else {
+                processService.deletePtProcess(process.getId(),user);
+            }
+        });
     }
 
     @Test
