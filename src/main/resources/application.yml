@@ -11,8 +11,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/health_genie
-    username : ENC(vKttRgJ2yF0Hdxa5vUW5nA==)
-    password : ENC(0accFYZmXcSNkJL7l6UYEQ==)
+    username : ENC(VpbVEAH5/jKk+WWkd9s0tg==)
+    password : ENC(0/ge8zJVToiMWCXhetqyQq2CVN+lXQrH)
 
   devtools:
     livereload:
