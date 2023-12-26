@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.example.healthgenie.base.exception.ChatErrorResult.NO_PERMISSION;
 import static com.example.healthgenie.base.exception.ChatErrorResult.ROOM_NOT_FOUND;
@@ -47,32 +48,22 @@ public class RoomService {
         User anotherUser = userRepository.findById(request.getAnotherUserId())
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        // roomHashCode 만들기
         int roomHashCode = createRoomHashCode(user, anotherUser);
 
-        // 기존의 채팅방이 있을 경우
-        if(existsRoom(roomHashCode)) {
-            ChatRoom chatRoom = chatRoomRepository.findByRoomHashCodeAndActive(roomHashCode, true).orElse(null);
+        Optional<ChatRoom> opChatRoom = chatRoomRepository.findByRoomHashCode(roomHashCode);
+        if(opChatRoom.isPresent()) {
+            ChatRoom chatRoom = opChatRoom.get();
 
-            // 기존의 채팅방이 활성화 되어 있을 경우
-            if(chatRoom == null){
-                // 기존의 채팅방이 비활성화 되어 있을 경우
-                chatRoom = chatRoomRepository.findByRoomHashCode(roomHashCode)
-                        .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
-
-                // 기존 채팅방 활성화
+            if(!chatRoom.isActive()){
                 activeChatRoom(chatRoom);
-
-                // 상대방 활성화
-                activeChatUser(chatRoom, anotherUser);
             }
-            // 사용자 활성화
+
+            activeChatUser(chatRoom, anotherUser);
             activeChatUser(chatRoom, user);
 
             return chatRoom.getId();
         }
 
-        // 기존의 채팅방이 없는 경우
         return createNewRoom(roomHashCode, user, anotherUser).getId();
     }
 
