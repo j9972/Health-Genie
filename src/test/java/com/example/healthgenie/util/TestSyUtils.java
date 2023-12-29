@@ -158,21 +158,17 @@ public class TestSyUtils {
         return ptReviewRepository.save(review);
     }
 
-    public PtProcessRequestDto createProcessDto(LocalDate date, String title, String content,
-                                        String userNickname, String trainerNickname) {
-        return createProcessDto(date, title, content, null, userNickname, trainerNickname);
+    public PtProcessRequestDto createProcessDto(LocalDate date, String title, String content) {
+        return createProcessDto(date, title, content, null);
     }
 
     public PtProcessRequestDto createProcessDto(LocalDate date, String title, String content,
-                                                List<MultipartFile> photos,
-                                                String userNickname, String trainerNickname) {
+                                                List<MultipartFile> photos) {
         return PtProcessRequestDto.builder()
                 .date(date)
                 .content(content)
                 .title(title)
                 .photos(photos)
-                .userNickName(userNickname)
-                .trainerNickName(trainerNickname)
                 .build();
     }
 
