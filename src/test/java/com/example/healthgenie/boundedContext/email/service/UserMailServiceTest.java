@@ -76,22 +76,18 @@ class UserMailServiceTest {
         }).isInstanceOf(CommonException.class);
     }
 
+
     @Test
-    @DisplayName("코드 검증")
-    void verify() throws MessagingException {
+    @DisplayName("api 코드 검증")
+    void univVerify() throws IOException {
         // given
         testUtils.login(user);
 
-        String email = "jh485200@gmail.com";
-        String authCode = userMailService.sendCode(user.getEmail());
-        String redisAuthCode = redisService.getValues(AUTH_CODE_PREFIX + email);
-
         // when
+        userMailService.updateUnivVerify(user.getId());
 
         // then
-        assertThat(redisAuthCode.equals(authCode)).isEqualTo(redisService.checkExistsValue(redisAuthCode));
         assertThat(user.isEmailVerify()).isTrue();
-
     }
 
     @Test
