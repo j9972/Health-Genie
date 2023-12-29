@@ -2,18 +2,16 @@ package com.example.healthgenie.boundedContext.ptrecord.service;
 
 
 import com.example.healthgenie.base.exception.*;
-import com.example.healthgenie.boundedContext.community.dto.PostResponse;
+import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessQueryRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessRepository;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import com.querydsl.core.types.OrderSpecifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,8 +27,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.healthgenie.boundedContext.ptrecord.entity.QPtProcess.ptProcess;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -44,11 +40,11 @@ public class PtProcessService {
     @Transactional
     public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, User currentUser){
 
-        User user = userRepository.findByNickname(dto.getUserNickName())
-                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
-
-        matchingRepository.findByMemberNicknameAndTrainerNickname(user.getNickname(), dto.getTrainerNickName())
+        Matching matching = matchingRepository.findByMemberNickname(currentUser.getNickname())
                 .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+
+        // matching에 담당된 회원
+        User user = matching.getMember();
 
         return makePtRProcess(dto,user,currentUser);
     }

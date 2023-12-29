@@ -10,6 +10,7 @@ import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ class PtProcessServiceTest {
         user4 = testKrUtils.createUser("test4", Role.TRAINER,"test4@test.com");
 
         matching = testKrUtils.createMatching(date, "gym", "test desc", user, user2);
-        process = testSyUtils.createProcess(date2,"test title", "test content", user, user2);
+        process = testSyUtils.createProcess(date2,"test title2", "test content2", user, user2);
     }
 
     @Test
@@ -69,7 +70,7 @@ class PtProcessServiceTest {
 
         LocalDate date = LocalDate.of(2023,12,5);
 
-        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1","test2");
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content");
 
         // when
         PtProcessResponseDto response = processService.addPtProcess(dto, user2);
@@ -78,8 +79,6 @@ class PtProcessServiceTest {
         assertThat(response.getDate()).isEqualTo(date);
         assertThat(response.getContent()).isEqualTo("test content");
         assertThat(response.getTitle()).isEqualTo("test title");
-        assertThat(response.getUserNickName()).isEqualTo("test1");
-        assertThat(response.getTrainerNickName()).isEqualTo("test2");
     }
 
     @Test
@@ -90,7 +89,7 @@ class PtProcessServiceTest {
 
         LocalDate date = LocalDate.of(2023,12,5);
 
-        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1","test2");
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content");
 
         // when
 
@@ -110,7 +109,7 @@ class PtProcessServiceTest {
 
         LocalDate date = LocalDate.of(2023,12,5);
 
-        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1","test2");
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content");
 
         // when
 
@@ -131,7 +130,7 @@ class PtProcessServiceTest {
         testKrUtils.login(user3);
         LocalDate date = LocalDate.of(2023,12,5);
 
-        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", null ,"test3","test4");
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", null );
         // when
 
         // then
@@ -143,7 +142,7 @@ class PtProcessServiceTest {
     @DisplayName("피드백 상세 조회하기")
     void getPtProcess() {
         // given
-        testKrUtils.login(user);
+        testKrUtils.login(user2);
         LocalDate date = LocalDate.of(2023,12,5);
 
         // when
@@ -151,11 +150,8 @@ class PtProcessServiceTest {
 
         // then
         assertThat(response.getDate()).isEqualTo(date);
-        assertThat(response.getContent()).isEqualTo("test content");
-        assertThat(response.getTitle()).isEqualTo("test title");
-        assertThat(response.getUserNickName()).isEqualTo("test1");
-        assertThat(response.getTrainerNickName()).isEqualTo("test2");
-
+        assertThat(response.getContent()).isEqualTo("test content2");
+        assertThat(response.getTitle()).isEqualTo("test title2");
     }
 
     @Test
@@ -216,8 +212,8 @@ class PtProcessServiceTest {
         // then
         assertThat(response.getTotalElements()).isEqualTo(1);
         assertThat(response.getContent().get(0).getDate()).isEqualTo(date);
-        assertThat(response.getContent().get(0).getContent()).isEqualTo("test content");
-        assertThat(response.getContent().get(0).getTitle()).isEqualTo("test title");
+        assertThat(response.getContent().get(0).getContent()).isEqualTo("test content2");
+        assertThat(response.getContent().get(0).getTitle()).isEqualTo("test title2");
         assertThat(response.getContent().get(0).getUserNickName()).isEqualTo("test1");
         assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo("test2");
         assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo(user2.getNickname());
@@ -236,8 +232,8 @@ class PtProcessServiceTest {
         // then
         assertThat(response.getTotalElements()).isEqualTo(1);
         assertThat(response.getContent().get(0).getDate()).isEqualTo(date);
-        assertThat(response.getContent().get(0).getContent()).isEqualTo("test content");
-        assertThat(response.getContent().get(0).getTitle()).isEqualTo("test title");
+        assertThat(response.getContent().get(0).getContent()).isEqualTo("test content2");
+        assertThat(response.getContent().get(0).getTitle()).isEqualTo("test title2");
         assertThat(response.getContent().get(0).getUserNickName()).isEqualTo("test1");
         assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo("test2");
         assertThat(response.getContent().get(0).getUserNickName()).isEqualTo(user.getNickname());

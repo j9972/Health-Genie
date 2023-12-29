@@ -12,6 +12,8 @@ public interface MatchingRepository extends JpaRepository<Matching, Long> {
 
     Optional<Matching> findByMemberNicknameAndTrainerNickname(String memberNickname, String trainerNickname);
 
+    Optional<Matching> findByMemberNickname(String memberNickname);
+
     Optional<Matching> findByDateAndMemberId(LocalDateTime dateTime, Long memberId);
 
     Optional<Matching> findByDateAndTrainerId(LocalDateTime dateTime, Long trainerId);
