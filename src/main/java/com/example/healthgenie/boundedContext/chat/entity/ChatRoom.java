@@ -23,6 +23,7 @@ public class ChatRoom extends BaseEntity {
     @Column(name = "chatting_room_id")
     private Long id;
 
+    @Builder.Default
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.REMOVE)
     private List<ChatRoomUser> chatRoomUsers = new ArrayList<>();
 

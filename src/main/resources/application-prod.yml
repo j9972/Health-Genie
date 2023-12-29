@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://new-health-genie-db1.cwysozrbokkx.ap-northeast-2.rds.amazonaws.com:3306/health_genie
+    username: ENC(t73nhff/1j7IxUmVnxqCkg==)
+    password: ENC(cqOISBwQJ9FHHnb97SmW/WbwDHjl7nCP)
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  data:
+    redis:
+      host: 172.18.0.1
+      port: 6379
