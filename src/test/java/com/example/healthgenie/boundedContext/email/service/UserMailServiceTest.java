@@ -5,15 +5,12 @@ import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
-
 import com.example.healthgenie.util.TestSyUtils;
-import com.univcert.api.UnivCert;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,22 +73,18 @@ class UserMailServiceTest {
         }).isInstanceOf(CommonException.class);
     }
 
+
     @Test
-    @DisplayName("코드 검증")
-    void verify() throws MessagingException {
+    @DisplayName("api 코드 검증")
+    void univVerify() throws IOException {
         // given
         testUtils.login(user);
 
-        String email = "jh485200@gmail.com";
-        String authCode = userMailService.sendCode(user.getEmail());
-        String redisAuthCode = redisService.getValues(AUTH_CODE_PREFIX + email);
-
         // when
+        userMailService.updateUnivVerify(user.getId());
 
         // then
-        assertThat(redisAuthCode.equals(authCode)).isEqualTo(redisService.checkExistsValue(redisAuthCode));
         assertThat(user.isEmailVerify()).isTrue();
-
     }
 
     @Test
