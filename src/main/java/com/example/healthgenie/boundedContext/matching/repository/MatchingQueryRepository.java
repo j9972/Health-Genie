@@ -71,10 +71,16 @@ public class MatchingQueryRepository {
     }
 
     private BooleanExpression memberIdEq(Long userId) {
+        if(userId == null) {
+            return matching.member.id.isNull();
+        }
         return matching.member.id.eq(userId);
     }
 
     private BooleanExpression trainerIdEq(Long trainerId) {
+        if(trainerId == null) {
+            return matching.trainer.id.isNull();
+        }
         return matching.trainer.id.eq(trainerId);
     }
 
