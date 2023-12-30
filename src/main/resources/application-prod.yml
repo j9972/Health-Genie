@@ -9,6 +9,15 @@ spring:
     username: ENC(t73nhff/1j7IxUmVnxqCkg==)
     password: ENC(cqOISBwQJ9FHHnb97SmW/WbwDHjl7nCP)
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            redirect-uri: "http://3.37.195.242:1234/login/oauth2/code/google"
+          kakao:
+            redirect-uri: "http://3.37.195.242:1234/login/oauth2/code/kakao"
+
   jpa:
     hibernate:
       ddl-auto: update
