@@ -34,9 +34,11 @@ public class PtProcessController {
     private final PtProcessTransactionSerivce processTransactionSerivce;
 
     // trainer가 작성
-    @PostMapping("/trainer/write")// http://localhost:1234/process/trainer/write
+    @PostMapping("/trainer")
     public ResponseEntity<Result> addPtProcess(PtProcessRequestDto dto,
                                                @AuthenticationPrincipal User user)  throws IOException {
+
+        log.info("process controller principal user : {}", user);
         PtProcessResponseDto response = processTransactionSerivce.addPtProcess(dto, user);
 
         return ResponseEntity.ok(Result.of(response));
@@ -48,11 +50,12 @@ public class PtProcessController {
         트레이너가 작성한 전체 피드백 모아보기 [ 트레이너용 관리페이지에서 사용 ]
         관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
      */
-    @GetMapping("/list/trainer") // http://localhost:1234/process/list/trainer
+    @GetMapping("/trainer/list")
     public ResponseEntity<Result> getAllTrainerProcess(@RequestParam(required = false, defaultValue = "0") int page,
                                                        @AuthenticationPrincipal User user){
-        // 5개씩 페이징 처리
-        int size = 5;
+
+        log.info("process controller -> getAllTrainer principal user : {}", user);
+        int size = 5; // 5개씩 페이징 처리
         Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(page, size, user);
         return ResponseEntity.ok(Result.of(response));
     }
@@ -61,17 +64,18 @@ public class PtProcessController {
         본인이 관련 모든 피드백 모아보기 [ 회원용 관리페이지에서 사용 ]
         관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
      */
-    @GetMapping("/list/my") // http://localhost:1234/process/list/my
+    @GetMapping("/my/list")
     public ResponseEntity<Result> getAllMyProcess(@RequestParam(required = false, defaultValue = "0") int page,
                                                   @AuthenticationPrincipal User user){
-        // 5개씩 페이징 처리
-        int size = 5;
+
+        log.info("process controller -> getAllUser principal user : {}", user);
+        int size = 5; // 5개씩 페이징 처리
         Page<PtProcessResponseDto> response = processService.getAllMyProcess(page, size, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
     // 일지를 검색으로 찾기
-    @GetMapping("/list/findAll") // http://localhost:1234/process/list/findAll
+    @GetMapping("/list/findAll")
     public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
         List<PtProcessResponseDto> response = processService.findAll(keyword);
 
@@ -79,26 +83,28 @@ public class PtProcessController {
     }
 
     // 날짜 필터링으로 일지 모아보기
-    @GetMapping("/list/dateFilter") // http://localhost:1234/process/list/dateFilter
+    @GetMapping("/list/dateFilter")
     public ResponseEntity<Result> findAll(@RequestParam(required = false, defaultValue = "1900-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate searchStartDate,
                                           @RequestParam(required = false, defaultValue = "9999-12-31") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate searchEndDate) {
+
         List<PtProcessResponseDto> response = processService.findAllByDate(searchStartDate,searchEndDate);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
 
-    @GetMapping("/detail/{processId}") // http://localhost:1234/process/detail/{processId}
+    @GetMapping("/detail/{processId}")
     public ResponseEntity<Result> getProcess(@PathVariable Long processId){
         PtProcessResponseDto response = processService.getPtProcess(processId);
         return ResponseEntity.ok(Result.of(response));
     }
 
     // 트레이너만 삭제 기능이 가능
-    @DeleteMapping("/trainer/delete/{processId}") // http://localhost:1234/process/trainer/delete/{processId}
+    @DeleteMapping("/{processId}")
     public ResponseEntity<Result> deleteProcess(@PathVariable Long processId,
                                                 @AuthenticationPrincipal User user) {
 
+        log.info("process controller -> deleteProcess principal user : {}", user);
         String response = processService.deletePtProcess(processId, user);
 
         return ResponseEntity.ok(Result.of(response));

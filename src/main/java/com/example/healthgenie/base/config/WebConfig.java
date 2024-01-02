@@ -1,11 +1,13 @@
 package com.example.healthgenie.base.config;
 
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
 
     // CORS는 프론트엔드, 백엔드개발자라면 반드시 이해!
     // CORS에 대한 설정. CORS는 Cross Origin Resource Sharing의 약자.
@@ -19,4 +21,5 @@ public class WebConfig implements WebMvcConfigurer {
 //                .allowCredentials(true)
                 .allowedMethods("GET", "POST", "PATCH", "PUT", "OPTIONS", "DELETE");
     }
+
 }
