@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor // 생성자 DI
-@RequestMapping("/auth/mail")
+@RequestMapping("/mail")
 public class MailController {
 
     private final UserMailService userMailService;
@@ -28,8 +28,10 @@ public class MailController {
     private String KEY;
 
     // 이메일 코드전송, 이메일 유효성검사 -> accessToken 필요
-    @PostMapping("/send") // http://localhost:1234/auth/mail/send
+    @PostMapping
     public ResponseEntity<Result> sendUnivCertMail(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user) throws IOException {
+
+        log.info("Email Controller Login User : {}", user);
 
         UnivCert.clear(KEY, dto.getUniv_email());
 
@@ -51,8 +53,10 @@ public class MailController {
 
 
     //이메일 코드검증  -> accessToken 필요
-    @GetMapping("/verify") // http://localhost:1234/auth/mail/verify
+    @GetMapping("/verification")
     public ResponseEntity<Result> validMailCode(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user) throws IOException {
+
+        log.info("Email Verification Login User : {}", user);
 
         Map<String, Object> response = UnivCert.certifyCode(KEY, dto.getUniv_email(), dto.getUnivName(), dto.getCode());
         boolean success = (boolean) response.get("success");

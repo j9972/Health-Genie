@@ -1,6 +1,7 @@
 package com.example.healthgenie.base.config;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableEncryptableProperties
+@Slf4j
 public class JasyptConfig {
 
     @Bean("jasyptStringEncryptor")
@@ -16,7 +18,6 @@ public class JasyptConfig {
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
         config.setPassword(System.getProperty("jasypt.encryptor.password"));
-        // "jasypt.encryptor.password" 얘는 나중에 VM 옵션에 넣기
         config.setAlgorithm("PBEWithMD5AndDES");
         config.setKeyObtentionIterations("1000");
         config.setPoolSize("1");

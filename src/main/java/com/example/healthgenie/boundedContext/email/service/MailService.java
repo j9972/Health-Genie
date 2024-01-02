@@ -26,12 +26,14 @@ public class MailService {
                           String text) throws MailException  {
 
         if (!validator.test(toEmail)) {
+            log.warn("email validateion fail");
             throw new CommonException(CommonErrorResult.WRONG_VALIDATE_EMAIL);
         }
 
         SimpleMailMessage emailForm = createEmailForm(toEmail, title, text);
 
         try {
+            log.info("email send ,emailForm : {} ", emailForm);
             emailSender.send(emailForm);
         } catch (RuntimeException e) {
             throw new CommonException(CommonErrorResult.UNABLE_TO_SEND_EMAIL);

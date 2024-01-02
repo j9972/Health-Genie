@@ -85,6 +85,7 @@ public class TodoService {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new TodoException(TodoErrorResult.NO_TODO_INFO));
 
         if (!todo.getMember().getId().equals(member.getId())) {
+            log.warn("todo 작성한 member 오류 : {}", todo.getMember());
             throw new TodoException(TodoErrorResult.WRONG_USER);
         }
         return todo;

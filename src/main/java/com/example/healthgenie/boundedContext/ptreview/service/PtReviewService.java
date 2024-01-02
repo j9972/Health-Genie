@@ -51,6 +51,7 @@ public class PtReviewService {
 
 
         if (review != null) {
+            log.warn("duplicate review : {}", review);
             throw  new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
         }
 
@@ -61,6 +62,7 @@ public class PtReviewService {
     public PtReviewResponseDto makePtReview(PtReviewRequestDto dto, User trainer, User currentUser){
 
         if (!currentUser.getRole().equals(Role.USER)) {
+            log.warn("make reivew principal currentUser : {}", currentUser);
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
         }
 
@@ -82,12 +84,9 @@ public class PtReviewService {
         PtReview review = ptReviewRepository.findById(reviewId).orElseThrow(
                 () -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
 
-        /*
-            authentication.getPrincipal() == "anonymousUser" -> 현재 사용자가 인증되지 않은 사용자다
-        */
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
+            log.warn("no validate user authentication: {}", authentication);
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         } else {
             return PtReviewResponseDto.of(review);
@@ -104,6 +103,7 @@ public class PtReviewService {
 
         Optional<User> user = userRepository.findById(trainerId);
         if (!user.get().getRole().equals(Role.TRAINER)) {
+            log.warn("wrong user role : {} ( is not trainer )", user.get().getRole());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
         }
 
@@ -123,11 +123,13 @@ public class PtReviewService {
 
         // 본인만 본인의 후기모음을 볼 수 있다
         if (!user.get().getId().equals(currentUser.getId())) {
+            log.warn("wrong user role : {} ( is not user )", user.get().getRole());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         }
 
         // 트레이너면 후기를 작성할 수 없으니 error
         if(currentUser.getRole().equals(Role.TRAINER)) {
+            log.warn("trainer can't write review ( role : {} )", user.get().getRole());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
         }
 
@@ -171,6 +173,7 @@ public class PtReviewService {
         PtReview review = ptReviewRepository.findById(id).orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
 
         if (!review.getMember().getId().equals(member.getId())) {
+            log.warn("this user doesn't have authentication : {}", review.getMember());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         }
         return review;
