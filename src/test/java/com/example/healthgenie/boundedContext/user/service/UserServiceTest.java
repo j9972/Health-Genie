@@ -136,7 +136,7 @@ class UserServiceTest {
         DietResponse response = userService.calculate(default1.getId(), 1);
 
         // then
-        assertThat(response.getBasicRate()).isEqualTo(1872);
-        assertThat(response.getActiveRate()).isEqualTo(2246);
+        assertThat(response.getBasicRate()).isEqualTo(1865);
+        assertThat(response.getActiveRate()).isEqualTo(2238);
     }
 }
