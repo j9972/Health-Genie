@@ -56,13 +56,13 @@ public class UserMailService {
     private String createCode() {
         int length = 8;
         try {
-
             Random random = SecureRandom.getInstanceStrong();
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < length; i++) {
                 builder.append(random.nextInt(10));
             }
 
+            log.info("code : {} ", builder.toString());
             return builder.toString();
         } catch (NoSuchAlgorithmException e) {
             throw new CommonException(CommonErrorResult.NO_SUCH_ALGORITHM);

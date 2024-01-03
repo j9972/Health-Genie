@@ -97,6 +97,7 @@ public class RoutineService {
 
     private static void validNickname(boolean routine, RoutineErrorResult validError) {
         if (!routine) {
+            log.warn("routine valid : false");
             throw new RoutineException(validError);
         }
     }
@@ -145,6 +146,7 @@ public class RoutineService {
         Routine routine = routineRepository.findById(id).orElseThrow(() -> new RoutineException(RoutineErrorResult.NO_HISTORY));
 
         if (!routine.getMember().getId().equals(member.getId())) {
+            log.warn("member doesn't have authentication , routine.getMember {}", routine.getMember());
             throw new RoutineException(RoutineErrorResult.NO_USER_INFO);
         }
         return routine;

@@ -48,10 +48,12 @@ public class TrainerProfileTransactionService {
 
         Optional<TrainerInfo> profileHistory = trainerProfileRepository.findByMemberId(currentUser.getId());
         if (profileHistory.isPresent()) {
+            log.warn("already profile exist , profile : {}", profileHistory);
             throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EXIST);
         }
 
         if (!currentUser.getRole().equals(Role.TRAINER)) {
+            log.warn("user is not trainer , role : {}", currentUser.getRole());
             throw new TrainerProfileException(TrainerProfileErrorResult.USER_IS_NOT_TRAINER);
         }
 
@@ -112,6 +114,7 @@ public class TrainerProfileTransactionService {
                 .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
 
         if(!Objects.equals(info.getMember().getId(), user.getId())) {
+            log.warn("user doesn't have permission member: {}", info.getMember());
             throw new TrainerProfileException(TrainerProfileErrorResult.NO_PERMISSION);
         }
 

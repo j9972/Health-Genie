@@ -45,6 +45,7 @@ public class PtProcessService {
 
         // matching에 담당된 회원
         User user = matching.getMember();
+        log.info("매칭되어 있는 user : {}", user);
 
         return makePtRProcess(dto,user,currentUser);
     }
@@ -53,6 +54,7 @@ public class PtProcessService {
     public PtProcessResponseDto makePtRProcess(PtProcessRequestDto dto, User user, User currentUser) {
 
         if (!currentUser.getRole().equals(Role.TRAINER)) {
+            log.warn("process 작성 -> 작성자가 trainer가 아님");
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
         }
 
@@ -82,7 +84,7 @@ public class PtProcessService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
-
+            log.warn("process 조회 -> 작성자가 트레이너가 아님");
             throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
 
         } else {
@@ -109,6 +111,7 @@ public class PtProcessService {
     public Page<PtProcessResponseDto> getAllTrainerProcess(int page, int size, User currentUser){
 
         if (!currentUser.getRole().equals(Role.TRAINER)) {
+            log.warn("trainer 본인이 작성한 process 조회 -> 작성자가 trainer가 아님. currentUser : {}", currentUser);
             throw new CommonException(CommonErrorResult.UNAUTHORIZED);
         }
 
@@ -127,6 +130,7 @@ public class PtProcessService {
     public Page<PtProcessResponseDto> getAllMyProcess(int page, int size, User currentUser){
 
         if (!currentUser.getRole().equals(Role.USER)) {
+            log.warn("process 조회 -> 조회자가 user 본인이 아님.  currentUser : {}", currentUser);
             throw new CommonException(CommonErrorResult.UNAUTHORIZED);
         }
 
@@ -153,6 +157,7 @@ public class PtProcessService {
 
         PtProcess process = ptProcessRepository.findById(id).orElseThrow(() -> new PtProcessException(PtProcessErrorResult.RECORD_EMPTY));
         if (!process.getTrainer().getId().equals(member.getId())) {
+            log.warn("process 소유자 user : {}", member);
             throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
         }
         return process;

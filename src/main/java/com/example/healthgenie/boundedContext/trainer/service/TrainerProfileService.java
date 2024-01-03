@@ -91,6 +91,7 @@ public class TrainerProfileService {
                 .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
 
         if (!profile.getMember().getId().equals(member.getId())) {
+            log.warn("current user doesn't have permission, member : {}", profile.getMember());
             throw new TrainerProfileException(TrainerProfileErrorResult.NO_PERMISSION);
         }
         return profile;
