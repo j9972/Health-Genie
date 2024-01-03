@@ -24,11 +24,11 @@ public class ChatRoom extends BaseEntity {
     private Long id;
 
     @Builder.Default
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ChatRoomUser> chatRoomUsers = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ChatMessage> chatMessages = new ArrayList<>();
 
     // 특정 다른 유저와 해당 유저의 채팅방 값

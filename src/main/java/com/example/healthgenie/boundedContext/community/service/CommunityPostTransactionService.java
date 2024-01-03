@@ -114,8 +114,8 @@ public class CommunityPostTransactionService {
         }
 
         LocalDateTime dateTime = post.getCreatedDate();
-        String date = DateUtils.toDate(dateTime);
-        String time = DateUtils.toTime(dateTime);
+        String date = DateUtils.toStringDate(dateTime);
+        String time = DateUtils.toStringTime(dateTime);
 
         return PostResponse.builder()
                 .id(post.getId())

@@ -40,8 +40,8 @@ public class PostResponse {
                     LocalDateTime dateTime = comment.getCreatedDate();
                     return CommentResponse.builder()
                             .id(comment.getId())
-                            .date(DateUtils.toDate(dateTime))
-                            .time(DateUtils.toTime(dateTime))
+                            .date(DateUtils.toStringDate(dateTime))
+                            .time(DateUtils.toStringTime(dateTime))
                             .content(comment.getCommentBody())
                             .writer(comment.getWriter().getNickname())
                             .build();
@@ -49,8 +49,8 @@ public class PostResponse {
                 .toList();
 
         LocalDateTime dateTime = post.getCreatedDate();
-        String date = DateUtils.toDate(dateTime);
-        String time = DateUtils.toTime(dateTime);
+        String date = DateUtils.toStringDate(dateTime);
+        String time = DateUtils.toStringTime(dateTime);
 
         return PostResponse.builder()
                 .id(post.getId())
@@ -73,8 +73,8 @@ public class PostResponse {
 
     public static PostResponse excludePhotosAndCommentsOf(CommunityPost post) {
         LocalDateTime dateTime = post.getCreatedDate();
-        String date = DateUtils.toDate(dateTime);
-        String time = DateUtils.toTime(dateTime);
+        String date = DateUtils.toStringDate(dateTime);
+        String time = DateUtils.toStringTime(dateTime);
 
         return PostResponse.builder()
                 .id(post.getId())

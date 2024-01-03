@@ -38,7 +38,7 @@ public class UserResponse {
     public static UserResponse of(User user) {
         String birth = "";
         if(user.getBirth() != null) {
-            birth = DateUtils.toDate(user.getBirth());
+            birth = DateUtils.toStringDate(user.getBirth());
         }
         return UserResponse.builder()
                 .id(user.getId())

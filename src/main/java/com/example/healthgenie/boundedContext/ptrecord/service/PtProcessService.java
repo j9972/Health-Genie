@@ -40,11 +40,13 @@ public class PtProcessService {
     @Transactional
     public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, User currentUser){
 
-        Matching matching = matchingRepository.findByMemberNickname(currentUser.getNickname())
-                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+//        Matching matching = matchingRepository.findByMemberNickname(currentUser.getNickname())
+//                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+        Matching matching = null;
 
         // matching에 담당된 회원
-        User user = matching.getMember();
+//        User user = matching.getMember();
+        User user = null;
         log.info("매칭되어 있는 user : {}", user);
 
         return makePtRProcess(dto,user,currentUser);

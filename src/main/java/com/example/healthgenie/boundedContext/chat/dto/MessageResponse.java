@@ -23,8 +23,8 @@ public class MessageResponse {
 
     public static MessageResponse of(ChatMessage message) {
         return MessageResponse.builder()
-                .date(DateUtils.toDate(message.getCreatedDate()))
-                .time(DateUtils.toTime(message.getCreatedDate()))
+                .date(DateUtils.toStringDate(message.getCreatedDate()))
+                .time(DateUtils.toStringTime(message.getCreatedDate()))
                 .senderNickname(message.getSender().getNickname())
                 .content(message.getMessageContent())
                 .build();

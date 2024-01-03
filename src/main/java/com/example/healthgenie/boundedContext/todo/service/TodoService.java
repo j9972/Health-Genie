@@ -1,21 +1,15 @@
 package com.example.healthgenie.boundedContext.todo.service;
 
-import com.example.healthgenie.base.exception.PtReviewErrorResult;
-import com.example.healthgenie.base.exception.PtReviewException;
 import com.example.healthgenie.base.exception.TodoErrorResult;
 import com.example.healthgenie.base.exception.TodoException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingQueryRepository;
-import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
-import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.todo.repository.TodoQueryRepository;
-import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.todo.repository.TodoRepository;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -101,7 +94,8 @@ public class TodoService {
         // 관리페이지에 보내줄 데이터 [ 매칭 날짜랑 오늘이 같으면 데이터 보내주기 ]
         LocalDateTime dateTime = date.atStartOfDay();
 
-        List<Matching> matching = matchingQueryRepository.findAllOneDayByDateAndId(dateTime, user.getId());
+//        List<Matching> matching = matchingQueryRepository.findAllOneDayByDateAndId(dateTime, user.getId());
+        List<Matching> matching = null;
 
         // 매칭이 있으면
         if (!matching.isEmpty()) {

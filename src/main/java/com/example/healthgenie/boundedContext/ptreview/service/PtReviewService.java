@@ -1,16 +1,15 @@
 package com.example.healthgenie.boundedContext.ptreview.service;
 
-import com.example.healthgenie.base.exception.*;
-import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
+import com.example.healthgenie.base.exception.PtReviewErrorResult;
+import com.example.healthgenie.base.exception.PtReviewException;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewQueryRepository;
+import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.base.utils.SecurityUtils;
-import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
-import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +43,8 @@ public class PtReviewService {
         User trainer = userRepository.findByNickname(dto.getTrainerNickName())
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY));
 
-        matchingRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(), dto.getTrainerNickName())
-                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+//        matchingRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(), dto.getTrainerNickName())
+//                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
         PtReview review = ptReviewRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(), dto.getTrainerNickName());
 
