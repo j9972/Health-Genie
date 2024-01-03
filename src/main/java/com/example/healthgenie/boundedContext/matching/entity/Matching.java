@@ -1,14 +1,16 @@
 package com.example.healthgenie.boundedContext.matching.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -20,11 +22,14 @@ public class Matching extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="user_pt_matching_id")
+    @Column(name ="matching_id")
     private Long id;
 
     @Column(name = "pt_date")
-    private LocalDateTime date;
+    private LocalDate date;
+
+    @Column(name = "pt_time")
+    private LocalTime time;
 
     @Column(name = "pt_place")
     private String place;
@@ -36,13 +41,9 @@ public class Matching extends BaseEntity {
     @Column(name = "pt_description")
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name ="user_id")
-    private User member;
-
-    @ManyToOne
-    @JoinColumn(name ="trainer_id")
-    private User trainer;
+    @Builder.Default
+    @OneToMany(mappedBy = "matching", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<MatchingUser> matchingUsers = new ArrayList<>();
 
     public void updateState(MatchingState state) {
         this.state= state;

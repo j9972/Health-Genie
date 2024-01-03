@@ -1,16 +1,19 @@
 package com.example.healthgenie.boundedContext.matching.repository;
 
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
-import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.example.healthgenie.boundedContext.matching.entity.QMatching.matching;
+import static com.example.healthgenie.boundedContext.matching.entity.QMatchingUser.matchingUser;
+import static com.example.healthgenie.boundedContext.user.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -18,81 +21,27 @@ public class MatchingQueryRepository {
 
     private final JPAQueryFactory query;
 
-    /**
-     *
-     */
-    public List<Matching> findAllForOneDayByDateAndIds(LocalDateTime date, Long userId, Long trainerId) {
-        LocalDateTime startOfDay = getStartOfDay(date);
-        LocalDateTime endOfDay = getEndOfDay(date);
-
+    public List<Matching> findAllByUserIdAndDate(Long userId, LocalDate date) {
         return query
                 .selectFrom(matching)
+                .join(matching.matchingUsers, matchingUser)
                 .where(
-                        dateBetween(startOfDay, endOfDay),
-                        memberIdEq(userId),
-                        trainerIdEq(trainerId),
-                        stateNotEq(MatchingState.CANCEL_ACCEPT)
+                        userIdEq(userId),
+                        matchingDateEq(date)
                 )
-                .orderBy(matching.date.asc())
+                .orderBy(matchingTimeAsc())
                 .fetch();
     }
 
-    public List<Matching> findAllOneDayByDateAndId(LocalDateTime date, Long userId) {
-        LocalDateTime startOfDay = getStartOfDay(date);
-        LocalDateTime endOfDay = getEndOfDay(date);
-
-        return query
-                .selectFrom(matching)
-                .where(
-                        dateBetween(startOfDay, endOfDay),
-                        memberIdEq(userId)
-                )
-                .orderBy(matching.date.asc())
-                .fetch();
+    private OrderSpecifier<LocalTime> matchingTimeAsc() {
+        return matching.time.asc();
     }
 
-    private BooleanExpression stateNotEq(MatchingState state) {
-        return matching.state.ne(state);
-    }
-
-    public Matching findOne(LocalDateTime date, Long userId, Long trainerId) {
-        return query
-                .selectFrom(matching)
-                .where(
-                        dateEq(date),
-                        memberIdEq(userId),
-                        trainerIdEq(trainerId)
-                )
-                .fetchOne();
-    }
-
-    private BooleanExpression dateEq(LocalDateTime date) {
+    private BooleanExpression matchingDateEq(LocalDate date) {
         return matching.date.eq(date);
     }
 
-    private BooleanExpression memberIdEq(Long userId) {
-        if(userId == null) {
-            return matching.member.id.isNull();
-        }
-        return matching.member.id.eq(userId);
-    }
-
-    private BooleanExpression trainerIdEq(Long trainerId) {
-        if(trainerId == null) {
-            return matching.trainer.id.isNull();
-        }
-        return matching.trainer.id.eq(trainerId);
-    }
-
-    private BooleanExpression dateBetween(LocalDateTime start, LocalDateTime end) {
-        return matching.date.between(start, end);
-    }
-
-    private LocalDateTime getEndOfDay(LocalDateTime date) {
-        return date.withHour(23).withMinute(59).withSecond(59).withNano(999_999_999);
-    }
-
-    private LocalDateTime getStartOfDay(LocalDateTime date) {
-        return date.withHour(0).withMinute(0).withSecond(0).withNano(0);
+    private BooleanExpression userIdEq(Long userId) {
+        return user.id.eq(userId);
     }
 }

@@ -24,8 +24,8 @@ public class CommentResponse {
 
     public static CommentResponse of(CommunityComment comment) {
         LocalDateTime dateTime = comment.getCreatedDate();
-        String date = DateUtils.toDate(dateTime);
-        String time = DateUtils.toTime(dateTime);
+        String date = DateUtils.toStringDate(dateTime);
+        String time = DateUtils.toStringTime(dateTime);
 
         return CommentResponse.builder()
                 .id(comment.getId())

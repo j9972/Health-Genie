@@ -13,6 +13,4 @@ public class MatchingCondition {
 
     private String date;
     private String time;
-    private Long userId;
-    private Long trainerId;
 }

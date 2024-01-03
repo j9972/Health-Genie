@@ -108,7 +108,7 @@ class UserServiceTest {
         assertThat(response.isEmailVerify()).isEqualTo(default1.isEmailVerify());
         assertThat(response.getLevel()).isEqualTo(default1.getLevel());
         assertThat(response.getHeight()).isEqualTo(default1.getHeight());
-        assertThat(response.getBirth()).isEqualTo(DateUtils.toDate(default1.getBirth()));
+        assertThat(response.getBirth()).isEqualTo(DateUtils.toStringDate(default1.getBirth()));
         assertThat(response.getWeight()).isEqualTo(default1.getWeight());
         assertThat(response.getMuscleWeight()).isEqualTo(default1.getMuscleWeight());
         assertThat(response.getGender()).isEqualTo(default1.getGender());
