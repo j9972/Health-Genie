@@ -1,8 +1,11 @@
 package com.example.healthgenie.boundedContext.ptreview.service;
 
-import com.example.healthgenie.base.exception.PtReviewErrorResult;
-import com.example.healthgenie.base.exception.PtReviewException;
+import com.example.healthgenie.base.exception.*;
+import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingQueryRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
@@ -35,6 +38,7 @@ public class PtReviewService {
     private final PtReviewRepository ptReviewRepository;
     private final UserRepository userRepository;
     private final MatchingRepository matchingRepository;
+    private final MatchingUserRepository matchingUserRepository;
     private final PtReviewQueryRepository ptReviewQueryRepository;
 
     @Transactional
@@ -43,18 +47,43 @@ public class PtReviewService {
         User trainer = userRepository.findByNickname(dto.getTrainerNickName())
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY));
 
-//        matchingRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(), dto.getTrainerNickName())
-//                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+        Optional<MatchingUser> userMatching = matchingUserRepository.findByUserId(user.getId());
+        List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.getId());
+
+        if(userMatching.isEmpty()) {
+            log.warn("user의 matching 기록이 없습니다");
+            throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
+        }
 
         PtReview review = ptReviewRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(), dto.getTrainerNickName());
-
 
         if (review != null) {
             log.warn("duplicate review : {}", review);
             throw  new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
         }
 
-        return makePtReview(dto, trainer, user);
+        for(MatchingUser match : trainerMatchings) {
+            // matching User안에 있는 값들중 matching id값이 같은 경우
+            if(match.getMatching().getId().equals(userMatching.get().getMatching().getId())) {
+
+                Optional<Matching> matching = matchingRepository.findById(match.getMatching().getId());
+
+                // trainer와 user사이의 매칭이 있을때 일지 작성 가능
+                log.info("해당하는 매칭이 있음 matching : {}", matching);
+
+                // 작성 날짜가 매칭날짜보다 뒤에 있어야 한다
+                if(LocalDate.now().isAfter(matching.get().getDate())) {
+                    return makePtReview(dto, trainer, user);
+                }
+
+                log.warn("일지 작성 날짜가 매칭날짜보다 뒤에 있어야 하는데 그렇지 못함");
+                throw new PtReviewException(PtReviewErrorResult.WRONG_DATE);
+
+            }
+        }
+
+        log.warn("해당하는 매칭이 없음");
+        throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
     }
 
     @Transactional

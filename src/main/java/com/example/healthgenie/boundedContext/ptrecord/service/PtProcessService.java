@@ -3,6 +3,9 @@ package com.example.healthgenie.boundedContext.ptrecord.service;
 
 import com.example.healthgenie.base.exception.*;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingQueryRepository;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
@@ -34,22 +37,51 @@ public class PtProcessService {
     private final PtProcessRepository ptProcessRepository;
     private final UserRepository userRepository;
     private final MatchingRepository matchingRepository;
+    private final MatchingUserRepository matchingUserRepository;
     private final PtProcessQueryRepository ptProcessQueryRepository;
 
 
     @Transactional
     public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, User currentUser){
 
-//        Matching matching = matchingRepository.findByMemberNickname(currentUser.getNickname())
-//                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
-        Matching matching = null;
+        Optional<User> trainer = userRepository.findByNickname(currentUser.getNickname());
+        Optional<User> user = userRepository.findByNickname(dto.getUserNickName());
 
-        // matching에 담당된 회원
-//        User user = matching.getMember();
-        User user = null;
-        log.info("매칭되어 있는 user : {}", user);
+        if (user.isEmpty() || trainer.isEmpty()) {
+            log.warn("user or trainer is not found user : {} , trainer : {}", user, trainer);
+            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+        }
 
-        return makePtRProcess(dto,user,currentUser);
+        Optional<MatchingUser> userMatching = matchingUserRepository.findByUserId(user.get().getId());
+        List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.get().getId());
+
+        if(userMatching.isEmpty()) {
+            log.warn("user의 matching 기록이 없습니다");
+            throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
+        }
+
+        for(MatchingUser match : trainerMatchings) {
+            // matching User안에 있는 값들중 matching id값이 같은 경우
+            if(match.getMatching().getId().equals(userMatching.get().getMatching().getId())) {
+
+                Optional<Matching> matching = matchingRepository.findById(match.getMatching().getId());
+
+                // trainer와 user사이의 매칭이 있을때 일지 작성 가능
+                log.info("해당하는 매칭이 있음 matching : {}", matching);
+
+                // 작성 날짜가 매칭날짜보다 뒤에 있어야 한다
+                if(dto.getDate().isAfter(matching.get().getDate())) {
+                    return makePtRProcess(dto,user.get(),currentUser);
+                }
+
+                log.warn("일지 작성 날짜가 매칭날짜보다 뒤에 있어야 하는데 그렇지 못함");
+                throw new PtProcessException(PtProcessErrorResult.WRONG_DATE);
+
+            }
+        }
+
+        log.warn("해당하는 매칭이 없음");
+        throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
     }
 
     @Transactional

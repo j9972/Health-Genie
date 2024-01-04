@@ -19,4 +19,6 @@ public class PtProcessRequestDto {
     private String title;
     private String content;
     private List<MultipartFile> photos;
+    private String userNickName;
+    private String trainerNickName;
 }
