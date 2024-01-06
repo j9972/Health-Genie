@@ -1,12 +1,16 @@
 package com.example.healthgenie.boundedContext.email.controller;
 
+import com.example.healthgenie.base.exception.CommonErrorResult;
+import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.email.dto.MailRequestDto;
+import com.example.healthgenie.boundedContext.email.service.UniDomainService;
 import com.example.healthgenie.boundedContext.email.service.UserMailService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.univcert.api.UnivCert;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,32 +26,34 @@ import java.util.Map;
 public class MailController {
 
     private final UserMailService userMailService;
+    private final UniDomainService uniDomainService;
 
     @Value("${univCert.key}")
     private String KEY;
 
     // 이메일 코드전송, 이메일 유효성검사 -> accessToken 필요
     @PostMapping
-    public ResponseEntity<Result> sendUnivCertMail(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user) throws IOException {
+    public ResponseEntity<Result> sendUnivCertMail(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user) throws IOException, ParseException {
 
         log.info("Email Controller Login User : {}", user);
 
         UnivCert.clear(KEY, dto.getUniv_email());
 
-        boolean univ_check = false;
-        Map<String,Object> check = UnivCert.check(dto.getUnivName());
-        boolean success = (boolean) check.get("success");
+        String uniDomain = uniDomainService.findUniDomain(dto.getUnivName());
 
-        if(success) univ_check = true;
+        if (uniDomainService.checkDomain(dto.getUniv_email(), uniDomain)) {
+            Map<String, Object> result = UnivCert.certify(KEY, dto.getUniv_email(), dto.getUnivName(), true);
 
-        Map<String, Object> result = UnivCert.certify(KEY, dto.getUniv_email(), dto.getUnivName(), univ_check);
+            if((boolean) result.get("success")) {
+                userMailService.updateUniv(dto.getUnivName(), user.getId());
+            }
 
-        if((boolean) result.get("success")) {
-            userMailService.updateUniv(dto.getUnivName(), user.getId());
+            return ResponseEntity.ok(Result.of("이메일이 성공적으로 보내졌습니다."));
+
+        } else {
+            log.warn("이메일의 도메인이 해당 학교 도메인과 다릅니다");
+            throw new CommonException(CommonErrorResult.WRONG_VALIDATE_EMAIL);
         }
-
-        return ResponseEntity.ok(Result.of("이메일이 성공적으로 보내졌습니다."));
-
     }
 
 
