@@ -68,7 +68,7 @@ public class TestSyUtils {
         return RoutineRequestDto.builder()
                 .day(day)
                 .parts(parts)
-                .workoutRecipes(recipes)
+                .workoutRecipe(recipes)
                 .writer(writer)
                 .build();
     }

@@ -18,6 +18,6 @@ public class RoutineRequestDto {
     private Long id;
     private Day day;
     private String parts;
-    private List<WorkoutRecipe> workoutRecipes;
+    private List<WorkoutRecipe> workoutRecipe;
     private String writer; // 헬스 루틴 작성자 닉네임
 }
