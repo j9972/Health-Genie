@@ -15,6 +15,9 @@ import java.util.List;
     공통
  */
 
+
+
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -58,4 +61,3 @@ public class Routine extends BaseEntity {
         this.parts = part;
     }
 }
-

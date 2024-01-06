@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -43,7 +44,18 @@ public class RoutineService {
         boolean valid = dto.getWriter().equals(user.getNickname());
         validNickname(valid, RoutineErrorResult.DIFFERNET_NICKNAME);
 
-        for (WorkoutRecipe recipe : dto.getWorkoutRecipes()) {
+        List<Routine> routines = routineRepository.findAllByMemberId(user.getId());
+
+        if(!routines.isEmpty()) {
+            for (Routine mine : routines) {
+                if(mine.getDay().equals(dto.getDay())) {
+                    log.warn("중복된 요일입니다.");
+                    throw new RoutineException(RoutineErrorResult.DUPLICATE_DAY);
+                }
+            }
+        }
+
+        for (WorkoutRecipe recipe : dto.getWorkoutRecipe()) {
 
             WorkoutRecipe data = new WorkoutRecipe(recipe.getName(), recipe.getKg(), recipe.getSets(), recipe.getReps());
 
@@ -58,7 +70,6 @@ public class RoutineService {
         }
 
         return RoutineResponseDto.ofOwn(saved);
-
     }
 
     @Transactional
@@ -74,7 +85,7 @@ public class RoutineService {
             routine.updatePart(dto.getParts());
         }
 
-        for (WorkoutRecipe recipe : dto.getWorkoutRecipes()) {
+        for (WorkoutRecipe recipe : dto.getWorkoutRecipe()) {
             if(recipe.getName() != null) {
                 workoutRecipe.updateName(recipe.getName());
             }

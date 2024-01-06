@@ -3,8 +3,6 @@ package com.example.healthgenie.boundedContext.ptreview.repository;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;

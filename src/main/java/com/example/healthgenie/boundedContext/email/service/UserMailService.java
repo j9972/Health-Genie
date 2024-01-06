@@ -1,31 +1,32 @@
 package com.example.healthgenie.boundedContext.email.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.*;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Random;
-
+import java.util.*;
 
 
 @Service
