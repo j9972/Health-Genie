@@ -33,4 +33,9 @@ public class UserController {
 
         return ResponseEntity.ok(Result.of(response));
     }
+
+    @GetMapping("/healthcheck")
+    public ResponseEntity healthCheck() {
+        return ResponseEntity.ok("200");
+    }
 }
