@@ -6,6 +6,7 @@ import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -58,7 +59,7 @@ class PtReviewServiceTest {
         user3 = testKrUtils.createUser("test3", Role.USER,"test3@gmail.com");
         user4 = testKrUtils.createUser("test4", Role.TRAINER,"test4@test.com");
 
-        matching = testKrUtils.createMatching(date, "gym", "test",  user, user2);
+        //matching = testKrUtils.createMatching(date, "gym", "test",  user, user2);
         review = testSyUtils.createReview("test review","stop",4.5, user3,user4);
     }
 
@@ -209,7 +210,7 @@ class PtReviewServiceTest {
         testKrUtils.login(user3);
 
         // when
-        PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
+        PtReviewUpdateRequest dto = testSyUtils.updateReviewDto("update", "update", 4.0);
 
         // then
         PtReviewResponseDto saved = reviewService.updateReview(dto, review.getId(), user3);
@@ -226,7 +227,7 @@ class PtReviewServiceTest {
         boolean login = testSyUtils.notLogin(user);
 
         // when
-        PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
+        PtReviewUpdateRequest dto = testSyUtils.updateReviewDto("update", "update", 4.0);
 
         // then
         assertThatThrownBy(() -> {
@@ -245,7 +246,7 @@ class PtReviewServiceTest {
         testKrUtils.login(user);
 
         // when
-        PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
+        PtReviewUpdateRequest dto = testSyUtils.updateReviewDto("update", "update", 4.0);
 
         // then
         assertThatThrownBy(() -> reviewService.updateReview(dto, review.getId(),user))

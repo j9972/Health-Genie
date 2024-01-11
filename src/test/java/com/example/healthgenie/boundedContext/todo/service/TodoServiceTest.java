@@ -6,6 +6,7 @@ import com.example.healthgenie.base.exception.TodoErrorResult;
 import com.example.healthgenie.base.exception.TodoException;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
+import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -105,7 +106,7 @@ class TodoServiceTest {
         testKrUtils.login(user);
 
         // when
-        TodoRequestDto dto = testSyUtils.TodoRequestDto("수정한 제목", "수정한 내용");
+        TodoUpdateRequest dto = testSyUtils.updateTodoRequest("수정한 제목", "수정한 내용");
 
         // then
         TodoResponseDto response = todoService.update(dto, todoTest.getId(), user);
@@ -121,7 +122,7 @@ class TodoServiceTest {
         boolean login = testSyUtils.notLogin(user);
 
         // when
-        TodoRequestDto dto = testSyUtils.TodoRequestDto("수정한 제목", "수정한 내용");
+        TodoUpdateRequest dto = testSyUtils.updateTodoRequest("수정한 제목", "수정한 내용");
 
         // then
         assertThatThrownBy(() -> {

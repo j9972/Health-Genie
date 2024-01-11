@@ -58,7 +58,7 @@ class PtProcessServiceTest {
         user3 = testKrUtils.createUser("test3", Role.USER,"test3@gmail.com");
         user4 = testKrUtils.createUser("test4", Role.TRAINER,"test4@test.com");
 
-        matching = testKrUtils.createMatching(date, "gym", "test desc", user, user2);
+        matching = testKrUtils.createMatching(user.getId(), user2.getId(), "2099.01.01", "11:00:00", "체육관", "pt내용");
         process = testSyUtils.createProcess(date2,"test title2", "test content2", user, user2);
     }
 

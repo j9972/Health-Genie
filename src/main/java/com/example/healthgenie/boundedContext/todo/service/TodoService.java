@@ -9,6 +9,7 @@ import com.example.healthgenie.boundedContext.matching.repository.MatchingReposi
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
+import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.todo.repository.TodoQueryRepository;
 import com.example.healthgenie.boundedContext.todo.repository.TodoRepository;
@@ -45,30 +46,32 @@ public class TodoService {
                 .description(dto.getDescription())
                 .member(user)
                 .build();
-        Todo saved = todoRepository.save(todo);
 
-        return TodoResponseDto.of(saved);
+        return TodoResponseDto.of(todoRepository.save(todo));
     }
 
     @Transactional
-    public TodoResponseDto update(TodoRequestDto dto, Long todoId, User user){
+    public TodoResponseDto update(TodoUpdateRequest dto, Long todoId, User user){
 
         Todo todo = authorizationWriter(todoId, user);
-
-        if(dto.getDate() != null) {
-            todo.updateDate(dto.getDate());
-        }
-        if(dto.getTime() != null) {
-            todo.updateTime(dto.getTime());
-        }
-        if(dto.getTitle() != null) {
-            todo.updateTitle(dto.getTitle());
-        }
-        if(dto.getDescription() != null) {
-            todo.updateDescription(dto.getDescription());
-        }
+        updateEachTodosItems(dto, todo);
 
         return TodoResponseDto.of(todo);
+    }
+
+    private void updateEachTodosItems(TodoUpdateRequest dto, Todo todo) {
+        if (dto.hasDate()){
+            todo.updateDate(dto.getDate());
+        }
+        if (dto.hasTime()){
+            todo.updateTime(dto.getTime());
+        }
+        if (dto.hasTitle()){
+            todo.updateTitle(dto.getTitle());
+        }
+        if (dto.hasDescription()){
+            todo.updateDescription(dto.getDescription());
+        }
     }
 
     public String deleteTodo(Long todoId, User user) {
@@ -79,7 +82,7 @@ public class TodoService {
         return "오늘 할일이 삭제되었습니다.";
     }
 
-    public Todo authorizationWriter(Long id, User member) {
+    private Todo authorizationWriter(Long id, User member) {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new TodoException(TodoErrorResult.NO_TODO_INFO));
 
         if (!todo.getMember().getId().equals(member.getId())) {
@@ -100,10 +103,10 @@ public class TodoService {
 
         // 매칭이 여러개 있을 수 있다.
         for(MatchingUser m: userMatchings) {
-            Optional<Matching> eachMatching = matchingRepository.findById(m.getMatching().getId());
+            Matching eachMatching = matchingRepository.findById(m.getMatching().getId()).orElseThrow();
 
             // 해당 매칭되서 pt날짜랑 특정 날짜랑 같으면 피티 있다고 알려주기
-            if (eachMatching.get().getDate().equals(date)) {
+            if (eachMatching.getDate().equals(date)) {
                 // pt boolean값 업데이트 해주기
                 for(Todo todo: todos) {
                     if(!todo.isPt()) {

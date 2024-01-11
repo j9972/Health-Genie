@@ -3,6 +3,7 @@ package com.example.healthgenie.boundedContext.todo.controller;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
+import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.healthgenie.boundedContext.todo.service.TodoService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class TodoController {
 
     // 수정
     @PatchMapping("/{todoId}")
-    public ResponseEntity<Result> updateTodo(@RequestBody TodoRequestDto dto,
+    public ResponseEntity<Result> updateTodo(@RequestBody TodoUpdateRequest dto,
                                              @PathVariable Long todoId,
                                              @AuthenticationPrincipal User user){
 

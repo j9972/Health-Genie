@@ -6,15 +6,18 @@ import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessPhotoRepository;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessRepository;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
+import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
+import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.todo.repository.TodoRepository;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
@@ -54,8 +57,10 @@ public class TestSyUtils {
         return false;
     }
 
-    public User createUser(String uniName, String email) {
+    public User createUser(String name,String nickname, String uniName, String email) {
         User user = User.builder()
+                .name(name)
+                .nickname(nickname)
                 .uniName(uniName)
                 .email(email)
                 .build();
@@ -70,6 +75,14 @@ public class TestSyUtils {
                 .parts(parts)
                 .workoutRecipe(recipes)
                 .writer(writer)
+                .build();
+    }
+
+    public RoutineUpdateRequestDto createOwnRoutineUpdateRequest(Day day, String parts, List<WorkoutRecipe> recipes) {
+        return RoutineUpdateRequestDto.builder()
+                .day(day)
+                .parts(parts)
+                .workoutRecipe(recipes)
                 .build();
     }
 
@@ -107,13 +120,23 @@ public class TestSyUtils {
         return routineRepository.save(routine);
     }
 
-    public TodoRequestDto TodoRequestDto(String title, String description) {
-        return TodoRequestDto(null, null, title, description);
+    public TodoUpdateRequest updateTodoRequest(String title, String description) {
+        return updateTodoDto(null, null, title, description);
     }
 
     public TodoRequestDto TodoRequestDto(LocalDate date, LocalTime time, String title, String description) {
 
         return TodoRequestDto.builder()
+                .date(date)
+                .time(time)
+                .title(title)
+                .description(description)
+                .build();
+    }
+
+
+    public TodoUpdateRequest updateTodoDto(LocalDate date, LocalTime time, String title, String description) {
+        return TodoUpdateRequest.builder()
                 .date(date)
                 .time(time)
                 .title(title)
@@ -144,6 +167,15 @@ public class TestSyUtils {
                 .trainerNickName(trainerNickname)
                 .build();
     }
+
+    public PtReviewUpdateRequest updateReviewDto(String content, String stopReason, Double reviewScore) {
+        return PtReviewUpdateRequest.builder()
+                .content(content)
+                .stopReason(stopReason)
+                .reviewScore(reviewScore)
+                .build();
+    }
+
 
     public PtReview createReview(String content, String stopReason, Double reviewScore,
                                  User user, User trainer) {

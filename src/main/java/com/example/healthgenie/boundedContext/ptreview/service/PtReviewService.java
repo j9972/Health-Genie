@@ -8,6 +8,7 @@ import com.example.healthgenie.boundedContext.matching.repository.MatchingReposi
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewQueryRepository;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
@@ -47,13 +48,8 @@ public class PtReviewService {
         User trainer = userRepository.findByNickname(dto.getTrainerNickName())
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY));
 
-        Optional<MatchingUser> userMatching = matchingUserRepository.findByUserId(user.getId());
+        MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId()).orElseThrow();
         List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.getId());
-
-        if(userMatching.isEmpty()) {
-            log.warn("user의 matching 기록이 없습니다");
-            throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
-        }
 
         PtReview review = ptReviewRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(), dto.getTrainerNickName());
 
@@ -64,15 +60,15 @@ public class PtReviewService {
 
         for(MatchingUser match : trainerMatchings) {
             // matching User안에 있는 값들중 matching id값이 같은 경우
-            if(match.getMatching().getId().equals(userMatching.get().getMatching().getId())) {
+            if(match.getMatching().getId().equals(userMatching.getMatching().getId())) {
 
-                Optional<Matching> matching = matchingRepository.findById(match.getMatching().getId());
+                Matching matching = matchingRepository.findById(match.getMatching().getId()).orElseThrow();
 
                 // trainer와 user사이의 매칭이 있을때 일지 작성 가능
                 log.info("해당하는 매칭이 있음 matching : {}", matching);
 
                 // 작성 날짜가 매칭날짜보다 뒤에 있어야 한다
-                if(LocalDate.now().isAfter(matching.get().getDate())) {
+                if(LocalDate.now().isAfter(matching.getDate())) {
                     return makePtReview(dto, trainer, user);
                 }
 
@@ -102,9 +98,7 @@ public class PtReviewService {
                 .trainer(trainer)
                 .build();
 
-        PtReview savedReview = ptReviewRepository.save(ptReview);
-
-        return PtReviewResponseDto.of(savedReview);
+        return PtReviewResponseDto.of(ptReviewRepository.save(ptReview));
     }
 
     @Transactional(readOnly = true)
@@ -129,9 +123,9 @@ public class PtReviewService {
     @Transactional(readOnly = true)
     public Page<PtReviewResponseDto> getAllTrainerReview(Long trainerId, int page, int size){
 
-        Optional<User> user = userRepository.findById(trainerId);
-        if (!user.get().getRole().equals(Role.TRAINER)) {
-            log.warn("wrong user role : {} ( is not trainer )", user.get().getRole());
+        User user = userRepository.findById(trainerId).orElseThrow();
+        if (!user.getRole().equals(Role.TRAINER)) {
+            log.warn("wrong user role : {} ( is not trainer )", user.getRole());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
         }
 
@@ -147,17 +141,17 @@ public class PtReviewService {
     @Transactional(readOnly = true)
     public Page<PtReviewResponseDto> getAllReview(Long userId, int page, int size, User currentUser){
 
-        Optional<User> user = userRepository.findById(userId);
+        User user = userRepository.findById(userId).orElseThrow();
 
         // 본인만 본인의 후기모음을 볼 수 있다
-        if (!user.get().getId().equals(currentUser.getId())) {
-            log.warn("wrong user role : {} ( is not user )", user.get().getRole());
+        if (!user.getId().equals(currentUser.getId())) {
+            log.warn("wrong user role : {} ( is not user )", user.getRole());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         }
 
         // 트레이너면 후기를 작성할 수 없으니 error
         if(currentUser.getRole().equals(Role.TRAINER)) {
-            log.warn("trainer can't write review ( role : {} )", user.get().getRole());
+            log.warn("trainer can't write review ( role : {} )", user.getRole());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
         }
 
@@ -168,21 +162,24 @@ public class PtReviewService {
     }
 
     @Transactional
-    public PtReviewResponseDto updateReview(PtReviewRequestDto dto, Long reviewId, User user){
+    public PtReviewResponseDto updateReview(PtReviewUpdateRequest dto, Long reviewId, User user){
 
         PtReview review = authorizationReviewWriter(reviewId, user);
-
-        if(dto.getContent() != null) {
-            review.updateContent(dto.getContent());
-        }
-        if(dto.getStopReason() != null) {
-            review.updateReason(dto.getStopReason());
-        }
-        if(dto.getReviewScore() != null) {
-            review.updateScore(dto.getReviewScore());
-        }
+        updateEachReviewItem(dto, review);
 
         return PtReviewResponseDto.of(review);
+    }
+
+    private void updateEachReviewItem(PtReviewUpdateRequest dto, PtReview review) {
+        if (dto.hasContent()){
+            review.updateContent(dto.getContent());
+        }
+        if (dto.hasReviewScore()){
+            review.updateScore(dto.getReviewScore());
+        }
+        if (dto.hasStopReason()){
+            review.updateReason(dto.getStopReason());
+        }
     }
 
 
@@ -197,7 +194,7 @@ public class PtReviewService {
 
 
     // review는 회원만 수정 삭제 가능
-    public PtReview authorizationReviewWriter(Long id, User member) {
+    private PtReview authorizationReviewWriter(Long id, User member) {
         PtReview review = ptReviewRepository.findById(id).orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
 
         if (!review.getMember().getId().equals(member.getId())) {

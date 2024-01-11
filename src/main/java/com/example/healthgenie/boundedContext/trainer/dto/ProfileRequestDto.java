@@ -29,4 +29,29 @@ public class ProfileRequestDto {
     private Double reviewAvg;
     private String nickname; // 트레이너 닉네임
     private List<MultipartFile> photos; // 트레이너 사진들
+
+    public boolean hasIntroduction(){
+        return introduction != null;
+    }
+    public boolean hasCareer(){
+        return career != null;
+    }
+    public boolean hasCost(){
+        return cost != 0;
+    }
+    public boolean hasMonth(){
+        return month != 0;
+    }
+    public boolean hasStartTime(){
+        return startTime != null;
+    }
+    public boolean hasEndTime(){
+        return endTime != null;
+    }
+    public boolean hasUniversity(){
+        return university != null;
+    }
+    public boolean hasReviewAvg(){
+        return reviewAvg != null;
+    }
 }
