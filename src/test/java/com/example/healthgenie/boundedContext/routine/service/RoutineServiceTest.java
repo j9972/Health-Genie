@@ -5,6 +5,7 @@ import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.RoutineException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
+import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
@@ -146,8 +147,8 @@ class RoutineServiceTest {
         // when
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
 
-        RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
-                , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
+        RoutineUpdateRequestDto dto = testSyUtils.createOwnRoutineUpdateRequest(Day.FRIDAY
+                , "하체, 어깨", Collections.singletonList(recipe));
 
 
         // then
@@ -183,7 +184,7 @@ class RoutineServiceTest {
 
 
         for(int i = 0; i < 5; i++) {
-            RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
+            RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.MONDAY
                     , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
             routineService.writeRoutine(dto, user);
         }

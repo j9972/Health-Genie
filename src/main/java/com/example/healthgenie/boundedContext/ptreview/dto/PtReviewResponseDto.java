@@ -7,10 +7,8 @@ import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class PtReviewResponseDto {
     private Long id;
 

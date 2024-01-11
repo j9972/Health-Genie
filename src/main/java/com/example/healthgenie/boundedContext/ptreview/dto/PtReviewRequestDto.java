@@ -2,10 +2,8 @@ package com.example.healthgenie.boundedContext.ptreview.dto;
 
 import lombok.*;
 
-@Data
+@Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class PtReviewRequestDto {
     private Long id;
 

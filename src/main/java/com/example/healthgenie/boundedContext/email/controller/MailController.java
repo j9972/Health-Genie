@@ -33,9 +33,7 @@ public class MailController {
 
     // 이메일 코드전송, 이메일 유효성검사 -> accessToken 필요
     @PostMapping
-    public ResponseEntity<Result> sendUnivCertMail(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user) throws IOException, ParseException {
-
-        log.info("Email Controller Login User : {}", user);
+    public ResponseEntity<Result> sendUnivCertMail(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user) throws IOException{
 
         UnivCert.clear(KEY, dto.getUniv_email());
 
@@ -60,8 +58,6 @@ public class MailController {
     //이메일 코드검증  -> accessToken 필요
     @GetMapping("/verification")
     public ResponseEntity<Result> validMailCode(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user) throws IOException {
-
-        log.info("Email Verification Login User : {}", user);
 
         Map<String, Object> response = UnivCert.certifyCode(KEY, dto.getUniv_email(), dto.getUnivName(), dto.getCode());
         boolean success = (boolean) response.get("success");

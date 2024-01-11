@@ -5,6 +5,7 @@ import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewQueryRepository;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
+import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
@@ -37,7 +38,7 @@ public class RoutineController {
      }
 
      @PatchMapping("/{routineId}")
-     public ResponseEntity<Result> updateRoutine(@RequestBody RoutineRequestDto dto,
+     public ResponseEntity<Result> updateRoutine(@RequestBody RoutineUpdateRequestDto dto,
                                                  @PathVariable Long routineId,
                                                  @AuthenticationPrincipal User user) {
 

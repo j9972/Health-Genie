@@ -4,6 +4,7 @@ import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
 import com.example.healthgenie.boundedContext.ptreview.service.PtReviewService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +35,6 @@ public class PtReviewController {
     @PostMapping
     public ResponseEntity<Result> addReview(@RequestBody PtReviewRequestDto dto,
                                             @AuthenticationPrincipal User user){
-
-        log.info("review controller add -> principal user : {}", user);
 
         PtReviewResponseDto response = reviewService.addPtReview(dto, user);
         return ResponseEntity.ok(Result.of(response));
@@ -99,7 +98,7 @@ public class PtReviewController {
 
     // 트레이너 말고 회원 본인만 수정 가능하기
     @PatchMapping("/{reviewId}")
-    public ResponseEntity<Result> updateReview(@RequestBody PtReviewRequestDto dto,
+    public ResponseEntity<Result> updateReview(@RequestBody PtReviewUpdateRequest dto,
                                                @PathVariable Long reviewId,
                                                @AuthenticationPrincipal User user){
 
