@@ -25,20 +25,15 @@ import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
-import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 @Component
 @RequiredArgsConstructor
@@ -57,7 +52,7 @@ public class TestSyUtils {
         return false;
     }
 
-    public User createUser(String name,String nickname, String uniName, String email) {
+    public User createUser(String name, String nickname, String uniName, String email) {
         User user = User.builder()
                 .name(name)
                 .nickname(nickname)
@@ -68,7 +63,8 @@ public class TestSyUtils {
         return userRepository.save(user);
     }
 
-    public RoutineRequestDto createOwnRoutineRequest(Day day, String parts, List<WorkoutRecipe> recipes, String writer) {
+    public RoutineRequestDto createOwnRoutineRequest(Day day, String parts, List<WorkoutRecipe> recipes,
+                                                     String writer) {
 
         return RoutineRequestDto.builder()
                 .day(day)
@@ -105,6 +101,22 @@ public class TestSyUtils {
             saved = routineRepository.save(routine);
         }
         return saved;
+
+    }
+
+    public Routine writeRoutine(Day day, String parts, WorkoutRecipe recipes, User writer) {
+
+        WorkoutRecipe recipe = new WorkoutRecipe(recipes.getName(), recipes.getKg(), recipes.getSets(),
+                recipes.getReps());
+
+        Routine routine = Routine.builder()
+                .day(day)
+                .parts(parts)
+                .workoutRecipe(recipe)
+                .member(writer)
+                .build();
+
+        return routineRepository.save(routine);
 
     }
 
@@ -158,7 +170,7 @@ public class TestSyUtils {
     }
 
     public PtReviewRequestDto createReviewDto(String content, String stopReason, Double reviewScore,
-                                           String userNickname, String trainerNickname) {
+                                              String userNickname, String trainerNickname) {
         return PtReviewRequestDto.builder()
                 .content(content)
                 .stopReason(stopReason)
@@ -179,7 +191,7 @@ public class TestSyUtils {
 
     public PtReview createReview(String content, String stopReason, Double reviewScore,
                                  User user, User trainer) {
-        PtReview review =  PtReview.builder()
+        PtReview review = PtReview.builder()
                 .content(content)
                 .stopReason(stopReason)
                 .reviewScore(reviewScore)
@@ -190,16 +202,20 @@ public class TestSyUtils {
         return ptReviewRepository.save(review);
     }
 
-    public PtProcessRequestDto createProcessDto(LocalDate date, String title, String content) {
-        return createProcessDto(date, title, content, null);
+    public PtProcessRequestDto createProcessDto(LocalDate date, String title, String content,
+                                                String userNickName, String trainerNickName) {
+        return createProcessDto(date, title, content, userNickName, trainerNickName, null);
     }
 
     public PtProcessRequestDto createProcessDto(LocalDate date, String title, String content,
+                                                String userNickName, String trainerNickName,
                                                 List<MultipartFile> photos) {
         return PtProcessRequestDto.builder()
                 .date(date)
                 .content(content)
                 .title(title)
+                .userNickName(userNickName)
+                .trainerNickName(trainerNickName)
                 .photos(photos)
                 .build();
     }
@@ -238,14 +254,14 @@ public class TestSyUtils {
         return ptProcessPhotoRepository.save(processPhoto);
     }
 
-    public ProfileRequestDto createProfileDto(String introduction,String career, String university,
+    public ProfileRequestDto createProfileDto(String introduction, String career, String university,
                                               LocalTime startTime, LocalTime endTime, Double reviewAvg,
                                               int cost, int month, String nickname) {
-        return createProfileDto(introduction, career, university,startTime,endTime,reviewAvg, null,
-                cost, month,nickname);
+        return createProfileDto(introduction, career, university, startTime, endTime, reviewAvg, null,
+                cost, month, nickname);
     }
 
-    public ProfileRequestDto createProfileDto(String introduction,String career, String university,
+    public ProfileRequestDto createProfileDto(String introduction, String career, String university,
                                               LocalTime startTime, LocalTime endTime, Double reviewAvg,
                                               List<MultipartFile> photos, int cost,
                                               int month, String nickname) {
