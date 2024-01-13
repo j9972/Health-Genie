@@ -93,7 +93,7 @@
 
 ## 🧑‍💻 API 문서 보기
 
-[ 문서 보기 ] 
+[ 문서 보기 ](https://documenter.getpostman.com/view/14933639/2s9YsNdVs4)
 
 
 ## 🐧 TEST CODE
