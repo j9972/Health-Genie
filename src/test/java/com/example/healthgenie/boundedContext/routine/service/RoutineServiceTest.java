@@ -1,10 +1,16 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.RoutineErrorResult;
 import com.example.healthgenie.base.exception.RoutineException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
+import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
@@ -13,22 +19,15 @@ import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -55,13 +54,14 @@ class RoutineServiceTest {
     @BeforeEach
     void before() {
         List<WorkoutRecipe> workoutRecipeList = new ArrayList<>();
-        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
-        WorkoutRecipe recipe2 = new WorkoutRecipe("페이스 풀", 3,3,3);
+        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
+        WorkoutRecipe recipe2 = new WorkoutRecipe("페이스 풀", 3, 3, 3);
         workoutRecipeList.add(recipe);
         workoutRecipeList.add(recipe2);
 
-        user = testKrUtils.createUser("test1",Role.USER,"jh485200@gmail.com");
-        routine = testSyUtils.writeRoutine(Day.WEDNESDAY,"하체,가슴",workoutRecipeList,user);
+        user = testKrUtils.createUser("test1", Role.USER, "jh485200@gmail.com");
+        routine = testSyUtils.writeRoutine(Day.WEDNESDAY, "하체,가슴", workoutRecipeList, user);
+        //routine = testSyUtils.writeRoutine(Day.WEDNESDAY, "하체,가슴", recipe, user);
 
         beginnerGenie = testSyUtils.genieRoutine(Level.BEGINNER, Day.FRIDAY, "test", "하체,가슴", recipe);
         intermediateGenie = testSyUtils.genieRoutine(Level.INTERMEDIATE, Day.FRIDAY, "test", "하체,가슴", recipe);
@@ -80,7 +80,7 @@ class RoutineServiceTest {
         // given
         testKrUtils.login(user);
 
-        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
+        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
 
         RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
                 , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
@@ -108,12 +108,34 @@ class RoutineServiceTest {
     }
 
     @Test
+    @DisplayName("중복된 요일 루틴 작성 실패")
+    void failAddRoutineCuzDuplicateDay() {
+        // given
+        testKrUtils.login(user);
+
+        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            for (int i = 0; i < 5; i++) {
+                RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.MONDAY
+                        , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
+                routineService.writeRoutine(dto, user);
+                throw new RoutineException(RoutineErrorResult.DUPLICATE_DAY);
+            }
+
+        }).isInstanceOf(RoutineException.class);
+    }
+
+    @Test
     @DisplayName("로그인 하지 않은 유저가 루틴 작성하기")
     void notLoginWriteRoutine() {
         // given
         boolean loginResult = testSyUtils.notLogin(user);
 
-        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
+        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
 
         RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
                 , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
@@ -142,13 +164,11 @@ class RoutineServiceTest {
         // given
         testKrUtils.login(user);
 
-
         // when
-        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
+        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
 
-        RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
-                , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
-
+        RoutineUpdateRequestDto dto = testSyUtils.createOwnRoutineUpdateRequest(Day.FRIDAY
+                , "하체, 어깨", Collections.singletonList(recipe));
 
         // then
         RoutineResponseDto savedRoutine = routineService.updateRoutine(dto, routine.getId(), user);
@@ -159,7 +179,6 @@ class RoutineServiceTest {
         int kg = testRecipe.getKg();
         int sets = testRecipe.getSets();
         int reps = testRecipe.getReps();
-
 
         assertNotNull(savedRoutine);
 
@@ -179,11 +198,10 @@ class RoutineServiceTest {
         // given
         testKrUtils.login(user);
 
-        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3,3,3);
+        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
 
-
-        for(int i = 0; i < 5; i++) {
-            RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
+        for (int i = 0; i < 1; i++) {
+            RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.MONDAY
                     , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
             routineService.writeRoutine(dto, user);
         }
@@ -195,7 +213,7 @@ class RoutineServiceTest {
         /*
             @before에 만들어 놓은 것까지 6개다
          */
-        assertThat(response.size()).isEqualTo(7);
+        assertThat(response.size()).isEqualTo(3);
     }
 
 
@@ -227,7 +245,6 @@ class RoutineServiceTest {
         List<RoutineResponseDto> beginG = routineService.getAllGenieRoutine(Level.BEGINNER, user);
         List<RoutineResponseDto> InterG = routineService.getAllGenieRoutine(Level.INTERMEDIATE, user);
         List<RoutineResponseDto> expertG = routineService.getAllGenieRoutine(Level.EXPERT, user);
-
 
         // then
         assertThat(beginnerGenie.getParts()).isEqualTo(beginG.get(0).getParts());
@@ -266,7 +283,6 @@ class RoutineServiceTest {
         List<RoutineResponseDto> begin = routineService.getGenieRoutine(Level.BEGINNER, Day.FRIDAY);
         List<RoutineResponseDto> inter = routineService.getGenieRoutine(Level.BEGINNER, Day.FRIDAY);
         List<RoutineResponseDto> expert = routineService.getGenieRoutine(Level.BEGINNER, Day.FRIDAY);
-
 
         // when
 

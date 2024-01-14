@@ -93,7 +93,8 @@
 
 ## 🧑‍💻 API 문서 보기
 
-[ 문서 보기 ] 
+
+HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.com/view/14933639/2s9YsNdVs4)
 
 
 ## 🐧 TEST CODE
@@ -150,6 +151,7 @@ https://techj9972.tistory.com/251 <br>
 https://techj9972.tistory.com/252 <br>
 https://techj9972.tistory.com/253 <br>
 https://techj9972.tistory.com/256 <br>
+https://techj9972.tistory.com/258 <br>
 
 <br>
 

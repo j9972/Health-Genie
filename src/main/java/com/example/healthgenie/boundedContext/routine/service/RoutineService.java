@@ -4,8 +4,12 @@ import com.example.healthgenie.base.exception.RoutineErrorResult;
 import com.example.healthgenie.base.exception.RoutineException;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
+import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
+import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;
 import com.example.healthgenie.boundedContext.routine.entity.*;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
@@ -73,15 +77,20 @@ public class RoutineService {
     }
 
     @Transactional
-    public RoutineResponseDto updateRoutine(RoutineRequestDto dto, Long routineId, User user) {
+    public RoutineResponseDto updateRoutine(RoutineUpdateRequestDto dto, Long routineId, User user) {
         Routine routine = authorizationWriter(routineId, user);
+        updateEachRoutineItems(dto, routine);
 
+        return RoutineResponseDto.ofOwn(routine);
+    }
+
+    private void updateEachRoutineItems(RoutineUpdateRequestDto dto, Routine routine) {
         WorkoutRecipe workoutRecipe = routine.getWorkoutRecipe();
 
-        if(dto.getDay() != null) {
+        if (dto.hasDay()){
             routine.updateDay(dto.getDay());
         }
-        if(dto.getParts() != null) {
+        if (dto.hasParts()){
             routine.updatePart(dto.getParts());
         }
 
@@ -102,8 +111,6 @@ public class RoutineService {
                 workoutRecipe.updateKg(recipe.getKg());
             }
         }
-
-        return RoutineResponseDto.ofOwn(routine);
     }
 
     private static void validNickname(boolean routine, RoutineErrorResult validError) {
@@ -152,7 +159,7 @@ public class RoutineService {
         return "루틴이 삭제되었습니다.";
     }
 
-    public Routine authorizationWriter(Long id, User member) {
+    private Routine authorizationWriter(Long id, User member) {
 
         Routine routine = routineRepository.findById(id).orElseThrow(() -> new RoutineException(RoutineErrorResult.NO_HISTORY));
 

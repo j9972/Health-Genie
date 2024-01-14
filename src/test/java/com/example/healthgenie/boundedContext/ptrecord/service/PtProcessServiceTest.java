@@ -1,16 +1,27 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
-import com.example.healthgenie.base.exception.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.example.healthgenie.base.exception.MatchingErrorResult;
+import com.example.healthgenie.base.exception.MatchingException;
+import com.example.healthgenie.base.exception.PtProcessErrorResult;
+import com.example.healthgenie.base.exception.PtProcessException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
-
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,15 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -41,6 +43,12 @@ class PtProcessServiceTest {
     @Autowired
     PtProcessService processService;
 
+    @Autowired
+    MatchingUserRepository matchingUserRepository;
+
+    @Autowired
+    MatchingRepository matchingRepository;
+
     User user;
     User user2;
     User user3;
@@ -51,15 +59,15 @@ class PtProcessServiceTest {
     @BeforeEach
     void before() {
         LocalDateTime date = LocalDateTime.of(2023, 12, 5, 14, 30, 0);
-        LocalDate date2 = LocalDate.of(2023,12,5);
+        LocalDate date2 = LocalDate.of(2023, 12, 5);
 
-        user = testKrUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
-        user2 = testKrUtils.createUser("test2", Role.TRAINER,"test@test.com");
-        user3 = testKrUtils.createUser("test3", Role.USER,"test3@gmail.com");
-        user4 = testKrUtils.createUser("test4", Role.TRAINER,"test4@test.com");
+        user = testKrUtils.createUser("test1", Role.USER, "jh485200@gmail.com");
+        user2 = testKrUtils.createUser("test2", Role.TRAINER, "test@test.com");
+        user3 = testKrUtils.createUser("test3", Role.USER, "test3@gmail.com");
+        user4 = testKrUtils.createUser("test4", Role.TRAINER, "test4@test.com");
 
-        matching = testKrUtils.createMatching(date, "gym", "test desc", user, user2);
-        process = testSyUtils.createProcess(date2,"test title2", "test content2", user, user2);
+        matching = testKrUtils.createMatching(user.getId(), user2.getId(), "2024.01.01", "11:00:00", "체육관", "pt내용");
+        process = testSyUtils.createProcess(date2, "test title2", "test content2", user, user2);
     }
 
     @Test
@@ -68,9 +76,9 @@ class PtProcessServiceTest {
         // given
         testKrUtils.login(user2);
 
-        LocalDate date = LocalDate.of(2023,12,5);
+        LocalDate date = LocalDate.of(2030, 2, 5);
 
-        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content");
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1", "test2");
 
         // when
         PtProcessResponseDto response = processService.addPtProcess(dto, user2);
@@ -79,6 +87,45 @@ class PtProcessServiceTest {
         assertThat(response.getDate()).isEqualTo(date);
         assertThat(response.getContent()).isEqualTo("test content");
         assertThat(response.getTitle()).isEqualTo("test title");
+        assertThat(response.getUserNickName()).isEqualTo("test1");
+        assertThat(response.getTrainerNickName()).isEqualTo("test2");
+    }
+
+    @Test
+    @DisplayName("피드백 작성 날짜가 매칭 날짜보다 이른 경우")
+    void failAddPtProcessCuzDate() {
+        // given
+        testKrUtils.login(user2);
+
+        LocalDate date = LocalDate.of(2023, 2, 5);
+
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1", "test2");
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            if (matching.getDate().isAfter(dto.getDate())) {
+                throw new MatchingException(MatchingErrorResult.TOO_EARLY_TO_WRITE_FEEDBACK);
+            }
+        }).isInstanceOf(MatchingException.class);
+    }
+
+    @Test
+    @DisplayName("매칭이 없어서 실패")
+    void failProcessByMatching() {
+        // given
+        testKrUtils.login(user4);
+
+        // when
+        List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(user4.getId());
+
+        // then
+        assertThatThrownBy(() -> {
+            if (trainerMatchings.isEmpty()) {
+                throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
+            }
+        }).isInstanceOf(MatchingException.class);
     }
 
     @Test
@@ -87,15 +134,16 @@ class PtProcessServiceTest {
         // given
         testKrUtils.login(user);
 
-        LocalDate date = LocalDate.of(2023,12,5);
+        LocalDate date = LocalDate.of(2023, 12, 5);
 
-        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content");
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1", "test2",
+                null);
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            if(!user.getRole().equals(Role.TRAINER)) {
+            if (!user.getRole().equals(Role.TRAINER)) {
                 throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
             }
         }).isInstanceOf(PtProcessException.class);
@@ -107,15 +155,16 @@ class PtProcessServiceTest {
         // given
         boolean login = testSyUtils.notLogin(user);
 
-        LocalDate date = LocalDate.of(2023,12,5);
+        LocalDate date = LocalDate.of(2023, 12, 5);
 
-        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content");
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1", "test2",
+                null);
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            if(!login) {
+            if (!login) {
                 throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
             } else {
                 processService.addPtProcess(dto, user);
@@ -128,9 +177,10 @@ class PtProcessServiceTest {
     void noMatchingHistoryAddPtProcess() {
         // given
         testKrUtils.login(user3);
-        LocalDate date = LocalDate.of(2023,12,5);
+        LocalDate date = LocalDate.of(2023, 12, 5);
 
-        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", null );
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1", "test2",
+                null);
         // when
 
         // then
@@ -143,7 +193,7 @@ class PtProcessServiceTest {
     void getPtProcess() {
         // given
         testKrUtils.login(user2);
-        LocalDate date = LocalDate.of(2023,12,5);
+        LocalDate date = LocalDate.of(2023, 12, 5);
 
         // when
         PtProcessResponseDto response = processService.getPtProcess(process.getId());
@@ -152,6 +202,8 @@ class PtProcessServiceTest {
         assertThat(response.getDate()).isEqualTo(date);
         assertThat(response.getContent()).isEqualTo("test content2");
         assertThat(response.getTitle()).isEqualTo("test title2");
+        assertThat(response.getUserNickName()).isEqualTo("test1");
+        assertThat(response.getTrainerNickName()).isEqualTo("test2");
     }
 
     @Test
@@ -164,8 +216,8 @@ class PtProcessServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if(!user3.getNickname().equals(process.getMember().getNickname())
-                & !user3.getNickname().equals(process.getTrainer().getNickname())
+            if (!user3.getNickname().equals(process.getMember().getNickname())
+                    & !user3.getNickname().equals(process.getTrainer().getNickname())
             ) {
                 throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
             } else {
@@ -207,7 +259,7 @@ class PtProcessServiceTest {
 
         // when
         Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(0, 5, user2);
-        LocalDate date = LocalDate.of(2023,12,5);
+        LocalDate date = LocalDate.of(2023, 12, 5);
 
         // then
         assertThat(response.getTotalElements()).isEqualTo(1);
@@ -226,8 +278,8 @@ class PtProcessServiceTest {
         testKrUtils.login(user);
 
         // when
-        Page<PtProcessResponseDto> response = processService.getAllMyProcess(0, 5,user);
-        LocalDate date = LocalDate.of(2023,12,5);
+        Page<PtProcessResponseDto> response = processService.getAllMyProcess(0, 5, user);
+        LocalDate date = LocalDate.of(2023, 12, 5);
 
         // then
         assertThat(response.getTotalElements()).isEqualTo(1);
@@ -249,10 +301,10 @@ class PtProcessServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if(!login) {
+            if (!login) {
                 throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
             } else {
-                processService.getAllMyProcess(0,5,user);
+                processService.getAllMyProcess(0, 5, user);
             }
         });
     }
@@ -267,10 +319,10 @@ class PtProcessServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if(!login) {
+            if (!login) {
                 throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
             } else {
-                processService.getAllTrainerProcess(0,5,user);
+                processService.getAllTrainerProcess(0, 5, user);
             }
         });
     }
@@ -298,7 +350,7 @@ class PtProcessServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if(!user.getRole().equals(Role.TRAINER)) {
+            if (!user.getRole().equals(Role.TRAINER)) {
                 throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
             }
         }).isInstanceOf(PtProcessException.class);
@@ -314,10 +366,10 @@ class PtProcessServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if(!login) {
+            if (!login) {
                 throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
             } else {
-                processService.deletePtProcess(process.getId(),user);
+                processService.deletePtProcess(process.getId(), user);
             }
         });
     }

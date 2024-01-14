@@ -1,16 +1,32 @@
 package com.example.healthgenie.boundedContext.ptreview.service;
 
-import com.example.healthgenie.base.exception.*;
-import com.example.healthgenie.boundedContext.community.dto.PostResponse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.example.healthgenie.base.exception.CommonErrorResult;
+import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.MatchingErrorResult;
+import com.example.healthgenie.base.exception.MatchingException;
+import com.example.healthgenie.base.exception.PtReviewErrorResult;
+import com.example.healthgenie.base.exception.PtReviewException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
-import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
+import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,14 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -40,26 +48,41 @@ class PtReviewServiceTest {
     @Autowired
     PtReviewService reviewService;
 
+    @Autowired
+    MatchingUserRepository matchingUserRepository;
+
+    @Autowired
+    MatchingRepository matchingRepository;
+
+    @Autowired
+    PtReviewRepository ptReviewRepository;
+
     User user;
     User user2;
     User user3;
     User user4;
+    User user5;
+    User user6;
     PtReview review;
 
     Matching matching;
+    Matching matching2;
 
 
     @BeforeEach
     void before() {
         LocalDateTime date = LocalDateTime.of(2023, 12, 5, 14, 30, 0);
 
-        user = testKrUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
-        user2 = testKrUtils.createUser("test2", Role.TRAINER,"test@test.com");
-        user3 = testKrUtils.createUser("test3", Role.USER,"test3@gmail.com");
-        user4 = testKrUtils.createUser("test4", Role.TRAINER,"test4@test.com");
+        user = testKrUtils.createUser("test1", Role.USER, "jh485200@gmail.com");
+        user2 = testKrUtils.createUser("test2", Role.TRAINER, "test@test.com");
+        user3 = testKrUtils.createUser("test3", Role.USER, "test3@gmail.com");
+        user4 = testKrUtils.createUser("test4", Role.TRAINER, "test4@test.com");
+        user5 = testKrUtils.createUser("test5", Role.USER, "test5@gmail.com");
+        user6 = testKrUtils.createUser("test6", Role.TRAINER, "test6@test.com");
 
-        matching = testKrUtils.createMatching(date, "gym", "test",  user, user2);
-        review = testSyUtils.createReview("test review","stop",4.5, user3,user4);
+        matching = testKrUtils.createMatching(user.getId(), user2.getId(), "2024.01.01", "11:00:00", "체육관", "pt내용");
+        matching2 = testKrUtils.createMatching(user5.getId(), user6.getId(), "2030.01.01", "11:00:00", "체육관", "pt내용");
+        review = testSyUtils.createReview("test review", "stop", 4.5, user3, user4);
     }
 
     @Test
@@ -82,6 +105,61 @@ class PtReviewServiceTest {
     }
 
     @Test
+    @DisplayName("리뷰 작성 날짜가 매칭 이전이여서 실패")
+    void failAddPtReviewCuzDate() {
+        // given
+        testKrUtils.login(user);
+
+        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test5", "test6");
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            if (LocalDate.now().isAfter(matching.getDate())) {
+                throw new MatchingException(MatchingErrorResult.TOO_EARLY_TO_WRITE_FEEDBACK);
+            }
+        }).isInstanceOf(MatchingException.class);
+    }
+
+    @Test
+    @DisplayName("매칭 기록없이 리뷰 작성 실패")
+    void noMatchingHistoryAddPtReview() {
+        // given
+        testKrUtils.login(user3);
+
+        Optional<MatchingUser> userMatching = matchingUserRepository.findByUserId(user3.getId());
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            if (userMatching.isEmpty()) {
+                throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
+            }
+        }).isInstanceOf(MatchingException.class);
+    }
+
+    @Test
+    @DisplayName("리뷰 중복으로 작성 실패")
+    void duplicateReview() {
+        // given
+        testKrUtils.login(user3);
+
+        PtReview review = ptReviewRepository.findByMemberNicknameAndTrainerNickname("test3",
+                "test4");
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            if (review.getId() != null) {
+                throw new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
+            }
+        }).isInstanceOf(PtReviewException.class);
+    }
+
+    @Test
     @DisplayName("회원이 아닌 트레이너면 리뷰 작성 실패")
     void failAddPtReview() {
         // given
@@ -92,7 +170,7 @@ class PtReviewServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if(!user2.getRole().equals(Role.USER)) {
+            if (!user2.getRole().equals(Role.USER)) {
                 throw new CommonException(CommonErrorResult.BAD_REQUEST);
             }
         }).isInstanceOf(CommonException.class);
@@ -109,26 +187,12 @@ class PtReviewServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if(!login) {
+            if (!login) {
                 throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
             } else {
                 reviewService.addPtReview(dto, user);
             }
         });
-    }
-
-    @Test
-    @DisplayName("매칭 기록없이 리뷰 작성 실패")
-    void noMatchingHistoryAddPtReview() {
-        // given
-        testKrUtils.login(user3);
-
-        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test3", "test4");
-        // when
-
-        // then
-        assertThatThrownBy(() -> reviewService.addPtReview(dto, user3))
-                .isInstanceOf(MatchingException.class);
     }
 
 
@@ -171,7 +235,7 @@ class PtReviewServiceTest {
         Long trainerId = review.getTrainer().getId();
 
         // when
-        Page<PtReviewResponseDto> response = reviewService.getAllTrainerReview(trainerId,0, 5);
+        Page<PtReviewResponseDto> response = reviewService.getAllTrainerReview(trainerId, 0, 5);
 
         // then
         assertThat(response.getTotalElements()).isEqualTo(1);
@@ -192,7 +256,6 @@ class PtReviewServiceTest {
         // when
         Page<PtReviewResponseDto> response = reviewService.getAllReview(userId, 0, 5, user3);
 
-
         // then
         assertThat(response.getTotalElements()).isEqualTo(1);
         assertThat(response.getContent().get(0).getContent()).isEqualTo("test review");
@@ -209,7 +272,7 @@ class PtReviewServiceTest {
         testKrUtils.login(user3);
 
         // when
-        PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
+        PtReviewUpdateRequest dto = testSyUtils.updateReviewDto("update", "update", 4.0);
 
         // then
         PtReviewResponseDto saved = reviewService.updateReview(dto, review.getId(), user3);
@@ -226,11 +289,11 @@ class PtReviewServiceTest {
         boolean login = testSyUtils.notLogin(user);
 
         // when
-        PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
+        PtReviewUpdateRequest dto = testSyUtils.updateReviewDto("update", "update", 4.0);
 
         // then
         assertThatThrownBy(() -> {
-            if(!login) {
+            if (!login) {
                 throw new PtReviewException(PtReviewErrorResult.NO_USER_INFO);
             } else {
                 reviewService.updateReview(dto, review.getId(), user);
@@ -245,10 +308,10 @@ class PtReviewServiceTest {
         testKrUtils.login(user);
 
         // when
-        PtReviewRequestDto dto = testSyUtils.createReviewDto("update", "update", 4.0, "test3", "test4");
+        PtReviewUpdateRequest dto = testSyUtils.updateReviewDto("update", "update", 4.0);
 
         // then
-        assertThatThrownBy(() -> reviewService.updateReview(dto, review.getId(),user))
+        assertThatThrownBy(() -> reviewService.updateReview(dto, review.getId(), user))
                 .isInstanceOf(PtReviewException.class);
     }
 
@@ -263,7 +326,7 @@ class PtReviewServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if(!user2.getRole().equals(Role.USER)) {
+            if (!user2.getRole().equals(Role.USER)) {
                 throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
             }
         }).isInstanceOf(PtReviewException.class);
@@ -292,7 +355,7 @@ class PtReviewServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if(!login) {
+            if (!login) {
                 throw new PtReviewException(PtReviewErrorResult.NO_USER_INFO);
             } else {
                 reviewService.deletePtReview(review.getId(), user);
@@ -310,7 +373,7 @@ class PtReviewServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if(!user2.getRole().equals(Role.USER)) {
+            if (!user2.getRole().equals(Role.USER)) {
                 throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
             }
         }).isInstanceOf(PtReviewException.class);

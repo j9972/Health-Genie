@@ -15,8 +15,6 @@ import java.util.List;
 
 @Data
 @Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor
 public class PtProcessResponseDto {
     private Long id;
     private LocalDate date; // 내가 작성한 날짜가 필요하다.

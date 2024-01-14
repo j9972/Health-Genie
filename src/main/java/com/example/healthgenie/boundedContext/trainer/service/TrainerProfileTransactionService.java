@@ -46,11 +46,7 @@ public class TrainerProfileTransactionService {
         User trainer = userRepository.findByNickname(dto.getNickname())
                 .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.USER_EMPTY));
 
-        Optional<TrainerInfo> profileHistory = trainerProfileRepository.findByMemberId(currentUser.getId());
-        if (profileHistory.isPresent()) {
-            log.warn("already profile exist , profile : {}", profileHistory);
-            throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EXIST);
-        }
+        trainerProfileRepository.findByMemberId(currentUser.getId()).orElseThrow();
 
         if (!currentUser.getRole().equals(Role.TRAINER)) {
             log.warn("user is not trainer , role : {}", currentUser.getRole());

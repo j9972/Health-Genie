@@ -44,34 +44,24 @@ public class PtProcessService {
     @Transactional
     public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, User currentUser){
 
-        Optional<User> trainer = userRepository.findByNickname(currentUser.getNickname());
-        Optional<User> user = userRepository.findByNickname(dto.getUserNickName());
+        User trainer = userRepository.findByNickname(currentUser.getNickname()).orElseThrow();
+        User user = userRepository.findByNickname(dto.getUserNickName()).orElseThrow();
 
-        if (user.isEmpty() || trainer.isEmpty()) {
-            log.warn("user or trainer is not found user : {} , trainer : {}", user, trainer);
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
-
-        Optional<MatchingUser> userMatching = matchingUserRepository.findByUserId(user.get().getId());
-        List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.get().getId());
-
-        if(userMatching.isEmpty()) {
-            log.warn("user의 matching 기록이 없습니다");
-            throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
-        }
+        MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId()).orElseThrow();
+        List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.getId());
 
         for(MatchingUser match : trainerMatchings) {
             // matching User안에 있는 값들중 matching id값이 같은 경우
-            if(match.getMatching().getId().equals(userMatching.get().getMatching().getId())) {
+            if(match.getMatching().getId().equals(userMatching.getMatching().getId())) {
 
-                Optional<Matching> matching = matchingRepository.findById(match.getMatching().getId());
+                Matching matching = matchingRepository.findById(match.getMatching().getId()).orElseThrow();
 
                 // trainer와 user사이의 매칭이 있을때 일지 작성 가능
                 log.info("해당하는 매칭이 있음 matching : {}", matching);
 
                 // 작성 날짜가 매칭날짜보다 뒤에 있어야 한다
-                if(dto.getDate().isAfter(matching.get().getDate())) {
-                    return makePtRProcess(dto,user.get(),currentUser);
+                if(dto.getDate().isAfter(matching.getDate())) {
+                    return makePtRProcess(dto,user,currentUser);
                 }
 
                 log.warn("일지 작성 날짜가 매칭날짜보다 뒤에 있어야 하는데 그렇지 못함");
@@ -123,8 +113,8 @@ public class PtProcessService {
 
         } else {
 
-            Optional<User> email = userRepository.findByEmail(authentication.getName());
-            User member = userRepository.findById(email.get().getId()).orElseThrow();
+            User email = userRepository.findByEmail(authentication.getName()).orElseThrow();
+            User member = userRepository.findById(email.getId()).orElseThrow();
 
             boolean user_result = process.getMember().equals(member);
             boolean trainer_result = process.getTrainer().equals(member);
@@ -187,7 +177,7 @@ public class PtProcessService {
     }
 
     // process는 트레이너만 수정 삭제 가능
-    public PtProcess authorizationProcessWriter(Long id, User member) {
+    private PtProcess authorizationProcessWriter(Long id, User member) {
 
         PtProcess process = ptProcessRepository.findById(id).orElseThrow(() -> new PtProcessException(PtProcessErrorResult.RECORD_EMPTY));
         if (!process.getTrainer().getId().equals(member.getId())) {
@@ -197,11 +187,13 @@ public class PtProcessService {
         return process;
     }
 
+    @Transactional(readOnly = true)
     public List<PtProcessResponseDto> findAll(String keyword) {
 
         return PtProcessResponseDto.of(ptProcessQueryRepository.findAll(keyword));
     }
 
+    @Transactional(readOnly = true)
     public List<PtProcessResponseDto> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
         return PtProcessResponseDto.of(ptProcessQueryRepository.findAllByDate(searchStartDate, searchEndDate));
     }
