@@ -14,7 +14,7 @@ spring:
       client:
         registration:
           google:
-            redirect-uri: "https://health.xn--9w3b15cw7a.xn--3e0b707e:1234/login/oauth2/code/google"
+            redirect-uri: "https://xn--9w3b15cw7a.xn--3e0b707e:1234/login/oauth2/code/google"
           kakao:
             redirect-uri: "http://3.37.195.242:1234/login/oauth2/code/kakao"
 
@@ -24,5 +24,5 @@ spring:
 
   data:
     redis:
-      host: 172.18.0.1
+      host: 172.31.46.108
       port: 6379

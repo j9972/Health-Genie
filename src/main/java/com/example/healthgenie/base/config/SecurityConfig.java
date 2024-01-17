@@ -32,7 +32,7 @@ public class SecurityConfig {
             };
     private final String[] GET_WHITE_LIST = new String[]
             {
-                    "/community/posts/**", "/trainer/profile/detail/**"
+                    "/community/posts/**", "/trainer/profile/detail/**", "/healthcheck"
             };
 
     @Bean
