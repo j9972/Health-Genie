@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum UserErrorResult {
 
+    NO_PERMISSION(HttpStatus.BAD_REQUEST, "don't have any permissions"),
     DUPLICATED_NICKNAME(HttpStatus.BAD_REQUEST, "duplicated nickname"),
     NOT_VALID_FIELD(HttpStatus.BAD_REQUEST, "field is not valid"),
     ALREADY_EXISTS_ROLE(HttpStatus.BAD_REQUEST, "already role exists"),
