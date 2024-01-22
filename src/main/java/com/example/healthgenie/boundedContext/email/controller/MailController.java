@@ -8,16 +8,18 @@ import com.example.healthgenie.boundedContext.email.service.UniDomainService;
 import com.example.healthgenie.boundedContext.email.service.UserMailService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.univcert.api.UnivCert;
+import java.io.IOException;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -33,16 +35,17 @@ public class MailController {
 
     // 이메일 코드전송, 이메일 유효성검사 -> accessToken 필요
     @PostMapping
-    public ResponseEntity<Result> sendUnivCertMail(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user) throws IOException{
+    public ResponseEntity<Result> sendUnivCertMail(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user)
+            throws IOException {
 
         UnivCert.clear(KEY, dto.getUniv_email());
 
         String uniDomain = uniDomainService.findUniDomain(dto.getUnivName());
 
         if (uniDomainService.checkDomain(dto.getUniv_email(), uniDomain)) {
-            Map<String, Object> result = UnivCert.certify(KEY, dto.getUniv_email(), dto.getUnivName(), true);
+            Map<String, Object> result = UnivCert.certify(KEY, dto.getUniv_email(), dto.getUnivName(), false);
 
-            if((boolean) result.get("success")) {
+            if ((boolean) result.get("success")) {
                 userMailService.updateUniv(dto.getUnivName(), user.getId());
             }
 
@@ -57,12 +60,13 @@ public class MailController {
 
     //이메일 코드검증  -> accessToken 필요
     @GetMapping("/verification")
-    public ResponseEntity<Result> validMailCode(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user) throws IOException {
+    public ResponseEntity<Result> validMailCode(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user)
+            throws IOException {
 
         Map<String, Object> response = UnivCert.certifyCode(KEY, dto.getUniv_email(), dto.getUnivName(), dto.getCode());
         boolean success = (boolean) response.get("success");
 
-        if(success) {
+        if (success) {
             userMailService.updateUnivVerify(user.getId());
         }
 
