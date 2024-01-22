@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.community.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +15,11 @@ import java.util.List;
 @Builder
 public class PostRequest {
 
+    @NotBlank
     private Long writerId;
+    @NotBlank
     private String title;
+    @NotBlank
     private String content;
     private List<MultipartFile> photos;
 }

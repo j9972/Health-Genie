@@ -87,8 +87,8 @@ public class UserService {
             user.updateAuthProvider(request.getAuthProvider());
         }
         // 역할
-        if(request.getRole() != null && StringUtils.hasText(request.getRole().getCode())) {
-            user.updateRole(request.getRole());
+        if(request.getRole() != null && StringUtils.hasText(request.getRole())) {
+            user.updateRole(Role.valueOf(request.getRole()));
         }
         // 프로필 사진
         if(request.getProfilePhoto() != null && !request.getProfilePhoto().isEmpty()) {

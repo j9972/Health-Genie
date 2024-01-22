@@ -8,6 +8,7 @@ import com.example.healthgenie.boundedContext.user.dto.UserRequest;
 import com.example.healthgenie.boundedContext.user.dto.UserResponse;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class UserController {
     private final UserService userService;
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<Result> update(@AuthenticationPrincipal User currentUser, @PathVariable Long userId, @RequestBody UserRequest request) throws IOException {
+    public ResponseEntity<Result> update(@AuthenticationPrincipal User currentUser, @PathVariable Long userId, @RequestBody @Valid UserRequest request) throws IOException {
         if(!Objects.equals(currentUser.getId(), userId)) {
             throw new UserException(UserErrorResult.NO_PERMISSION);
         }
