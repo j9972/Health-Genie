@@ -2,7 +2,6 @@ package com.example.healthgenie.base.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +39,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> makeErrorResponseEntity(final String errorDescription) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), errorDescription));
+    }
+
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final Exception exception) {
+        log.warn("ConstraintViolationException occur: ", exception);
+        return ResponseEntity.badRequest().body(new ErrorResponse("ERROR", "some errors occurred"));
     }
 
     @ExceptionHandler({PtReviewException.class})
@@ -92,7 +97,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({UserException.class})
     public ResponseEntity<ErrorResponse> handleRestApiException(final UserException exception) {
-        log.warn("JwtException occur: ", exception);
+        log.warn("UserException occur: ", exception);
         return this.makeErrorResponseEntity(exception.getUserErrorResult());
     }
 
@@ -101,7 +106,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("TrainerProfileException occur: ", exception);
         return this.makeErrorResponseEntity(exception.getTrainerProfileErrorResult());
     }
-
 
     @ExceptionHandler({CommonException.class})
     public ResponseEntity<ErrorResponse> handleException(final CommonException exception) {
@@ -185,12 +189,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
 
-
     @Getter
     @RequiredArgsConstructor
     static class ErrorResponse {
         private final String code;
         private final String message;
     }
-
 }
