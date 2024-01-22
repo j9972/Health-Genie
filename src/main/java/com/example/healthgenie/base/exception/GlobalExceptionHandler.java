@@ -43,8 +43,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorResponse> handleRestApiException(final Exception exception) {
-        log.warn("ConstraintViolationException occur: ", exception);
-        return ResponseEntity.badRequest().body(new ErrorResponse("ERROR", "some errors occurred"));
+        log.warn("Exception occur: ", exception);
+        return ResponseEntity.badRequest().body(new ErrorResponse("UNEXPECTED_ERROR", "some errors occurred : " + exception.getMessage()));
     }
 
     @ExceptionHandler({PtReviewException.class})
