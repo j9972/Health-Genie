@@ -10,8 +10,8 @@ env:
   AWS_REGION: ap-northeast-2
   AWS_S3_BUCKET: app-release-files
   AWS_CODE_BUCKET_NAME : bucket-healthgenie
-  AWS_CODE_DEPLOY_APPLICATION: cd-application-cicd
-  AWS_CODE_DEPLOY_GROUP: cd-health-genie      
+  AWS_CODE_DEPLOY_APPLICATION: cd-healthgenie-cicd
+  AWS_CODE_DEPLOY_GROUP: cd-healthgenie
 
 jobs:
   build-with-gradle:
