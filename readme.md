@@ -107,8 +107,6 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 - 또한 각각의 테스트 클래스마다 중복되는 작업들은 테스트 유틸 클래스를 만들고 메서드 네이밍을 명확히 하여 사용 및 유지 보수하고 있습니다.
 ![TEST_CODE](images/test_code_ex.png)
 
-### INTEGRATION TEST
-- 통합 테스트는 아직 진행하지 않았습니다.
 
 <br>
 
@@ -152,6 +150,8 @@ https://techj9972.tistory.com/252 <br>
 https://techj9972.tistory.com/253 <br>
 https://techj9972.tistory.com/256 <br>
 https://techj9972.tistory.com/258 <br>
+https://techj9972.tistory.com/260 <br>
+https://techj9972.tistory.com/261 <br>
 
 <br>
 
