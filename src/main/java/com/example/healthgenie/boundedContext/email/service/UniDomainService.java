@@ -1,10 +1,9 @@
 package com.example.healthgenie.boundedContext.email.service;
 
+import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
 
 @Service
 @Slf4j
@@ -17,7 +16,7 @@ public class UniDomainService {
         schoolDomains.put("가톨릭대학교", "catholic.ac.kr");
         schoolDomains.put("가야대학교", "gaya.ac.kr");
         schoolDomains.put("가천대학교", "gachon.ac.kr");
-        schoolDomains.put("가톨릭대학교", "catholic.ac.kr");
+        schoolDomains.put("가톨릭관동대학교", "cku.ac.kr");
         schoolDomains.put("감리교신학대학교", "gks.ac.kr");
         schoolDomains.put("강릉원주대학교", "gwnu.ac.kr");
         schoolDomains.put("건국대학교", "konkuk.ac.kr");
