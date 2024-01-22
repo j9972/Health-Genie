@@ -51,7 +51,21 @@ public class S3UploadUtils {
         return paths;
     }
 
-    // S3로 파일 업로드하기
+    /**
+     * S3에서 파일 삭제
+     *
+     * @param fileUrl 삭제할 파일의 S3 URL
+     */
+    public void deleteS3Object(String dirName, String fileUrl) {
+        String fileName = extractFileNameFromUrl(fileUrl);
+        try {
+            amazonS3Client.deleteObject(bucket, dirName + "/" + fileName);
+            log.info("File delete from S3 success");
+        } catch (AmazonServiceException e) {
+            log.error("Error occurred while deleting file from S3", e);
+        }
+    }
+
     private String upload(File uploadFile, String dirName) {
         String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName(); // S3에 저장된 파일 이름
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
@@ -59,13 +73,12 @@ public class S3UploadUtils {
 
         return uploadImageUrl;
     }
-    // S3로 업로드
+
     private String putS3(File uploadFile, String fileName) {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
-    // 로컬에 저장된 이미지 지우기
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
             log.info("File delete success");
@@ -88,22 +101,6 @@ public class S3UploadUtils {
 
     }
 
-    /**
-     * S3에서 파일 삭제
-     *
-     * @param fileUrl 삭제할 파일의 S3 URL
-     */
-    public void deleteS3Object(String dirName, String fileUrl) {
-        String fileName = extractFileNameFromUrl(fileUrl);
-        try {
-            amazonS3Client.deleteObject(bucket, dirName + "/" + fileName);
-            log.info("File delete from S3 success");
-        } catch (AmazonServiceException e) {
-            log.error("Error occurred while deleting file from S3", e);
-        }
-    }
-
-    // S3 URL에서 파일 이름 추출
     private String extractFileNameFromUrl(String fileUrl) {
         String urlEncodedFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
 

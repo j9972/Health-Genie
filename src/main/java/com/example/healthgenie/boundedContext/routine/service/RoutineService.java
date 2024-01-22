@@ -4,8 +4,12 @@ import com.example.healthgenie.base.exception.RoutineErrorResult;
 import com.example.healthgenie.base.exception.RoutineException;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
+import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
+import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;
 import com.example.healthgenie.boundedContext.routine.entity.*;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
@@ -21,6 +25,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -34,68 +40,82 @@ public class RoutineService {
 
     private final RoutineQueryRepository routineQueryRepository;
 
-    // own routine 관련 해서 level 언급은 필요 없다
     @Transactional
-    public RoutineResponseDto writeRoutine(RoutineRequestDto dto) {
-        User currentUser = SecurityUtils.getCurrentUser();
-        boolean valid = dto.getWriter().equals(currentUser.getNickname());
+    public RoutineResponseDto writeRoutine(RoutineRequestDto dto, User user) {
 
+        Routine saved = new Routine();
+
+        boolean valid = dto.getWriter().equals(user.getNickname());
         validNickname(valid, RoutineErrorResult.DIFFERNET_NICKNAME);
 
-        WorkoutRecipe recipe = new WorkoutRecipe(dto.getWorkoutName(), dto.getKg() ,dto.getSets(), dto.getReps());
+        List<Routine> routines = routineRepository.findAllByMemberId(user.getId());
 
-        Routine routine = Routine.builder()
-                .day(dto.getDay())
-                .content(dto.getContent())
-                .part(dto.getParts())
-                .workoutRecipe(recipe)
-                .member(currentUser)
-                .build();
+        if(!routines.isEmpty()) {
+            for (Routine mine : routines) {
+                if(mine.getDay().equals(dto.getDay())) {
+                    log.warn("중복된 요일입니다.");
+                    throw new RoutineException(RoutineErrorResult.DUPLICATE_DAY);
+                }
+            }
+        }
 
+        for (WorkoutRecipe recipe : dto.getWorkoutRecipe()) {
 
-        Routine saved = routineRepository.save(routine);
+            WorkoutRecipe data = new WorkoutRecipe(recipe.getName(), recipe.getKg(), recipe.getSets(), recipe.getReps());
+
+            Routine routine = Routine.builder()
+                    .day(dto.getDay())
+                    .parts(dto.getParts())
+                    .workoutRecipe(data)
+                    .member(user)
+                    .build();
+
+            saved = routineRepository.save(routine);
+        }
 
         return RoutineResponseDto.ofOwn(saved);
     }
 
     @Transactional
-    public RoutineResponseDto updateRoutine(RoutineRequestDto dto, Long routineId) {
-        Routine routine = authorizationWriter(routineId);
-
-        WorkoutRecipe workoutRecipe = routine.getWorkoutRecipe();
-
-
-        if(dto.getDay() != null) {
-            routine.updateDay(dto.getDay());
-        }
-        if(dto.getContent() != null) {
-            routine.updateContent(dto.getContent());
-        }
-        if(dto.getParts() != null) {
-            routine.updatePart(dto.getParts());
-        }
-        if(dto.getWorkoutName() != null) {
-            workoutRecipe.updateName(dto.getWorkoutName());
-        }
-        // 0도 유효한 값으로 처리
-        if(dto.getSets() != 0 || workoutRecipe.getSets() == 0) {
-            workoutRecipe.updateSets(dto.getSets());
-        }
-        // 0도 유효한 값으로 처리
-        if(dto.getReps() != 0 || workoutRecipe.getReps() == 0) {
-            workoutRecipe.updateReps(dto.getReps());
-        }
-        // 0도 유효한 값으로 처리
-        if(dto.getKg() != 0 || workoutRecipe.getKg() == 0) {
-            workoutRecipe.updateKg(dto.getKg());
-        }
-
+    public RoutineResponseDto updateRoutine(RoutineUpdateRequestDto dto, Long routineId, User user) {
+        Routine routine = authorizationWriter(routineId, user);
+        updateEachRoutineItems(dto, routine);
 
         return RoutineResponseDto.ofOwn(routine);
     }
 
+    private void updateEachRoutineItems(RoutineUpdateRequestDto dto, Routine routine) {
+        WorkoutRecipe workoutRecipe = routine.getWorkoutRecipe();
+
+        if (dto.hasDay()){
+            routine.updateDay(dto.getDay());
+        }
+        if (dto.hasParts()){
+            routine.updatePart(dto.getParts());
+        }
+
+        for (WorkoutRecipe recipe : dto.getWorkoutRecipe()) {
+            if(recipe.getName() != null) {
+                workoutRecipe.updateName(recipe.getName());
+            }
+            // 0도 유효한 값으로 처리
+            if(recipe.getSets() != 0 || workoutRecipe.getSets() == 0) {
+                workoutRecipe.updateSets(recipe.getSets());
+            }
+            // 0도 유효한 값으로 처리
+            if(recipe.getReps() != 0 || workoutRecipe.getReps() == 0) {
+                workoutRecipe.updateReps(recipe.getReps());
+            }
+            // 0도 유효한 값으로 처리
+            if(recipe.getKg() != 0 || workoutRecipe.getKg() == 0) {
+                workoutRecipe.updateKg(recipe.getKg());
+            }
+        }
+    }
+
     private static void validNickname(boolean routine, RoutineErrorResult validError) {
         if (!routine) {
+            log.warn("routine valid : false");
             throw new RoutineException(validError);
         }
     }
@@ -103,18 +123,13 @@ public class RoutineService {
 
     // 나의 루틴 요일 상관없이 전체 조회 [ userId 로만 구분 ]
     @Transactional(readOnly = true)
-    public List<RoutineResponseDto> getAllMyRoutine() {
-
-        Long userId = SecurityUtils.getCurrentUserId();
-
+    public List<RoutineResponseDto> getAllMyRoutine(Long userId) {
         return RoutineResponseDto.ofOwn(routineQueryRepository.findAllByMemberId(userId));
     }
 
     // 나의 루틴 요일별 상세조회
     @Transactional(readOnly = true)
-    public List<RoutineResponseDto> getMyRoutine(Day day) {
-
-        Long userId = SecurityUtils.getCurrentUserId();
+    public List<RoutineResponseDto> getMyRoutine(Day day, Long userId) {
         return RoutineResponseDto.ofOwn(routineQueryRepository.findAllByMemberIdAndDay(userId, day));
     }
 
@@ -123,9 +138,8 @@ public class RoutineService {
         지니 레벨을 선택할 때 마다 level 변동 시키기
      */
     @Transactional
-    public List<RoutineResponseDto> getAllGenieRoutine(Level level) {
-        User currentUser = SecurityUtils.getCurrentUser();
-        currentUser.updateLevel(level); // 이 부분 [ 매번 level update ]
+    public List<RoutineResponseDto> getAllGenieRoutine(Level level, User user) {
+        user.updateLevel(level); // 이 부분 [ 매번 level update ]
         return RoutineResponseDto.ofGenie(routineQueryRepository.findAllByLevel(level));
     }
 
@@ -138,19 +152,19 @@ public class RoutineService {
 
 
     @Transactional
-    public String deleteRoutine(Long routineId) {
-        Routine own = authorizationWriter(routineId);
+    public String deleteRoutine(Long routineId, User user) {
+        Routine own = authorizationWriter(routineId, user);
         routineRepository.deleteById(own.getId());
 
         return "루틴이 삭제되었습니다.";
     }
 
-    public Routine authorizationWriter(Long id) {
-        User member = SecurityUtils.getCurrentUser();
+    private Routine authorizationWriter(Long id, User member) {
 
         Routine routine = routineRepository.findById(id).orElseThrow(() -> new RoutineException(RoutineErrorResult.NO_HISTORY));
 
         if (!routine.getMember().getId().equals(member.getId())) {
+            log.warn("member doesn't have authentication , routine.getMember {}", routine.getMember());
             throw new RoutineException(RoutineErrorResult.NO_USER_INFO);
         }
         return routine;

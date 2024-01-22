@@ -1,27 +1,22 @@
-#version: '3.8'
-#services:
-#  app:
-#    image: health_genie
-#    build:
-#      context: ./
-#      target: dev
-#      dockerfile: Dockerfile
-#    volumes:
-#      - .:/app
-#    ports:
-#      - "8080:8080"
-#  db:
-#    image: mysql:8.0
-#    environment:
-#      MYSQL_ROOT_PASSWORD: root_password
-#      MYSQL_DATABASE: springdb
-#      MYSQL_USER: springuser
-#      MYSQL_PASSWORD: spring_password
-#    ports:
-#      - "3306:3306" # MySQL 포트
-##    environment:
-##      MYSQL_HOST: mysql
-##      MYSQL_USER: root
-##      MYSQL_ROOT_PASSWORD: password적기
-##      MYSQL_DATABASE: health_genie
-##      MYSQL_PORT:3306
+version: '3'
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - mynetwork  # 동일한 네트워크 명을 사용
+
+  health_genie:
+    image: rlarudfuf802/health_genie
+    environment:
+      - SPRING_REDIS_HOST=redis  # Redis 서비스의 이름을 사용
+    ports:
+      - "8080:1234"
+    depends_on:
+      - redis
+    networks:
+      - mynetwork  # 동일한 네트워크 명을 사용
+
+networks:
+  mynetwork:

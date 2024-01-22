@@ -27,6 +27,7 @@ public class RedisService {
     public String getValues(String key) {
         ValueOperations<String, Object> values = redisTemplate.opsForValue();
         if (values.get(key) == null) {
+            log.warn(" redis -> values.get(key) is null ");
             return "false";
         }
         return (String) values.get(key);

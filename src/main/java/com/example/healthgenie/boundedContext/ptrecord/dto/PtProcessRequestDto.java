@@ -1,17 +1,12 @@
 package com.example.healthgenie.boundedContext.ptrecord.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 @Builder
 public class PtProcessRequestDto {
     //private Long id;
@@ -20,5 +15,5 @@ public class PtProcessRequestDto {
     private String content;
     private List<MultipartFile> photos;
     private String userNickName;
-    private String trainerNickName; // 작성하는 사람
+    private String trainerNickName;
 }

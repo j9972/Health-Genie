@@ -1,76 +1,61 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
 import com.example.healthgenie.base.exception.*;
-import com.example.healthgenie.base.utils.SecurityUtils;
-import com.example.healthgenie.boundedContext.community.dto.PostRequest;
-import com.example.healthgenie.boundedContext.community.dto.PostResponse;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
-import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
-import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
-import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
-import java.util.Optional;
-
-import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
-import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class TrainerProfileService {
     private final TrainerProfileRepository trainerProfileRepository;
-    private final UserRepository userRepository;
 
     //
     /*
         관리페이지용 API -> 수정 , 트레이너만 가능
     */
     @Transactional
-    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId) {
-        TrainerInfo profile = authorizationWriter(profileId);
+    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user) {
+        TrainerInfo profile = authorizationWriter(profileId, user);
 
-        if(dto.getIntroduction() != null) {
-            profile.updateIntroduction(dto.getIntroduction());
-        }
-        if(dto.getCost() != 0 || profile.getCost() == 0) {
-            profile.updateCost(dto.getCost());
-        }
-        if(dto.getCareer() != null) {
-            profile.updateCareer(dto.getCareer());
-        }
-        if(dto.getMonth() != 0 || profile.getCareerMonth() == 0) {
-            profile.updateMonth(dto.getMonth());
-        }
-        if(dto.getStartTime() != null) {
-            profile.updateStartTime(dto.getStartTime());
-        }
-        if(dto.getEndTime() != null) {
-            profile.updateEndTime(dto.getEndTime());
-        }
-        if(dto.getUniversity() != null) {
-            profile.updateUniversity(dto.getUniversity());
-        }
-        if(dto.getReviewAvg() != 0 || profile.getReviewAvg() == 0 ) {
-            profile.updateReviewAvg(dto.getReviewAvg());
-        }
-
+        updateEachProfile(dto, profile);
 
         return ProfileResponseDto.of(profile);
 
+    }
+
+    private void updateEachProfile(ProfileRequestDto dto, TrainerInfo profile) {
+        if (dto.hasCost()){
+            profile.updateCost(dto.getCost());
+        }
+        if (dto.hasCareer()){
+            profile.updateCareer(dto.getCareer());
+        }
+        if (dto.hasMonth()){
+            profile.updateMonth(dto.getMonth());
+        }
+        if (dto.hasEndTime()){
+            profile.updateEndTime(dto.getEndTime());
+        }
+        if (dto.hasStartTime()){
+            profile.updateStartTime(dto.getStartTime());
+        }
+        if (dto.hasReviewAvg()){
+            profile.updateReviewAvg(dto.getReviewAvg());
+        }
+        if (dto.hasUniversity()){
+            profile.updateUniversity(dto.getUniversity());
+        }
+        if (dto.hasIntroduction()){
+            profile.updateIntroduction(dto.getIntroduction());
+        }
     }
 
     /*
@@ -78,21 +63,17 @@ public class TrainerProfileService {
     */
     @Transactional(readOnly = true)
     public ProfileResponseDto getProfile(Long profileId) {
-        TrainerInfo profile = trainerProfileRepository.findById(profileId).orElseThrow(
-                () -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
-
-        return ProfileResponseDto.of(profile);
-
+        return ProfileResponseDto.of(trainerProfileRepository.findById(profileId).orElseThrow());
     }
 
     // review는 회원만 수정 삭제 가능
-    public TrainerInfo authorizationWriter(Long id) {
-        User member = SecurityUtils.getCurrentUser();
+    private TrainerInfo authorizationWriter(Long id , User member) {
 
         TrainerInfo profile = trainerProfileRepository.findById(id)
                 .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
 
         if (!profile.getMember().getId().equals(member.getId())) {
+            log.warn("current user doesn't have permission, member : {}", profile.getMember());
             throw new TrainerProfileException(TrainerProfileErrorResult.NO_PERMISSION);
         }
         return profile;
@@ -102,8 +83,7 @@ public class TrainerProfileService {
 
     // 홈페이지에서 패킷에서 들어가면 보여줄 API
     @Transactional
-    public ProfileResponseDto save(ProfileRequestDto dto) {
-        User currentUser = SecurityUtils.getCurrentUser();
+    public ProfileResponseDto save(ProfileRequestDto dto, User currentUser) {
 
         TrainerInfo savedInfo = trainerProfileRepository.save(
                 TrainerInfo.builder()

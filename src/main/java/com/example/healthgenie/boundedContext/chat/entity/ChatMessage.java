@@ -33,9 +33,4 @@ public class ChatMessage extends BaseEntity {
     @ManyToOne
     @JoinColumn(name ="room_id")
     private ChatRoom chatRoom;
-
-//    @Builder.Default
-//    @OneToMany(mappedBy = "chatMessage",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-//    private List<ChatMessagePhoto> chatMessagePhotoList = new ArrayList<>();
-
 }

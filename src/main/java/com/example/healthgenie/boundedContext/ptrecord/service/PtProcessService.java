@@ -2,18 +2,19 @@ package com.example.healthgenie.boundedContext.ptrecord.service;
 
 
 import com.example.healthgenie.base.exception.*;
-import com.example.healthgenie.boundedContext.community.dto.PostResponse;
+import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingQueryRepository;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessQueryRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessRepository;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import com.querydsl.core.types.OrderSpecifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,8 +30,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.healthgenie.boundedContext.ptrecord.entity.QPtProcess.ptProcess;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -38,27 +37,48 @@ public class PtProcessService {
     private final PtProcessRepository ptProcessRepository;
     private final UserRepository userRepository;
     private final MatchingRepository matchingRepository;
+    private final MatchingUserRepository matchingUserRepository;
     private final PtProcessQueryRepository ptProcessQueryRepository;
 
 
     @Transactional
-    public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto){
+    public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, User currentUser){
 
-        User user = userRepository.findByNickname(dto.getUserNickName())
-                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_USER_INFO));
+        User trainer = userRepository.findByNickname(currentUser.getNickname()).orElseThrow();
+        User user = userRepository.findByNickname(dto.getUserNickName()).orElseThrow();
 
-        matchingRepository.findByMemberNicknameAndTrainerNickname(user.getNickname(), dto.getTrainerNickName())
-                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+        MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId()).orElseThrow();
+        List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.getId());
 
-        return makePtRProcess(dto,user);
+        for(MatchingUser match : trainerMatchings) {
+            // matching User안에 있는 값들중 matching id값이 같은 경우
+            if(match.getMatching().getId().equals(userMatching.getMatching().getId())) {
+
+                Matching matching = matchingRepository.findById(match.getMatching().getId()).orElseThrow();
+
+                // trainer와 user사이의 매칭이 있을때 일지 작성 가능
+                log.info("해당하는 매칭이 있음 matching : {}", matching);
+
+                // 작성 날짜가 매칭날짜보다 뒤에 있어야 한다
+                if(dto.getDate().isAfter(matching.getDate())) {
+                    return makePtRProcess(dto,user,currentUser);
+                }
+
+                log.warn("일지 작성 날짜가 매칭날짜보다 뒤에 있어야 하는데 그렇지 못함");
+                throw new PtProcessException(PtProcessErrorResult.WRONG_DATE);
+
+            }
+        }
+
+        log.warn("해당하는 매칭이 없음");
+        throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
     }
 
     @Transactional
-    public PtProcessResponseDto makePtRProcess(PtProcessRequestDto dto, User user) {
-
-        User currentUser = SecurityUtils.getCurrentUser();
+    public PtProcessResponseDto makePtRProcess(PtProcessRequestDto dto, User user, User currentUser) {
 
         if (!currentUser.getRole().equals(Role.TRAINER)) {
+            log.warn("process 작성 -> 작성자가 trainer가 아님");
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
         }
 
@@ -88,13 +108,13 @@ public class PtProcessService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
-
+            log.warn("process 조회 -> 작성자가 트레이너가 아님");
             throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
 
         } else {
 
-            Optional<User> email = userRepository.findByEmail(authentication.getName());
-            User member = userRepository.findById(email.get().getId()).orElseThrow();
+            User email = userRepository.findByEmail(authentication.getName()).orElseThrow();
+            User member = userRepository.findById(email.getId()).orElseThrow();
 
             boolean user_result = process.getMember().equals(member);
             boolean trainer_result = process.getTrainer().equals(member);
@@ -112,10 +132,10 @@ public class PtProcessService {
         해당 트레이너가 작성한 모든 피드백들을 전부 모아보기
      */
     @Transactional(readOnly = true)
-    public Page<PtProcessResponseDto> getAllTrainerProcess(int page, int size){
+    public Page<PtProcessResponseDto> getAllTrainerProcess(int page, int size, User currentUser){
 
-        User currentUser = SecurityUtils.getCurrentUser();
         if (!currentUser.getRole().equals(Role.TRAINER)) {
+            log.warn("trainer 본인이 작성한 process 조회 -> 작성자가 trainer가 아님. currentUser : {}", currentUser);
             throw new CommonException(CommonErrorResult.UNAUTHORIZED);
         }
 
@@ -131,10 +151,10 @@ public class PtProcessService {
         본인의 피드백들을 전부 모아보기
     */
     @Transactional(readOnly = true)
-    public Page<PtProcessResponseDto> getAllMyProcess(int page, int size){
+    public Page<PtProcessResponseDto> getAllMyProcess(int page, int size, User currentUser){
 
-        User currentUser = SecurityUtils.getCurrentUser();
         if (!currentUser.getRole().equals(Role.USER)) {
+            log.warn("process 조회 -> 조회자가 user 본인이 아님.  currentUser : {}", currentUser);
             throw new CommonException(CommonErrorResult.UNAUTHORIZED);
         }
 
@@ -146,9 +166,9 @@ public class PtProcessService {
 
 
     @Transactional
-    public String deletePtProcess(Long processId) {
+    public String deletePtProcess(Long processId, User user) {
 
-        PtProcess process = authorizationProcessWriter(processId);
+        PtProcess process = authorizationProcessWriter(processId, user);
 
         ptProcessRepository.deleteById(process.getId());
 
@@ -157,21 +177,23 @@ public class PtProcessService {
     }
 
     // process는 트레이너만 수정 삭제 가능
-    public PtProcess authorizationProcessWriter(Long id) {
-        User member = SecurityUtils.getCurrentUser();
+    private PtProcess authorizationProcessWriter(Long id, User member) {
 
         PtProcess process = ptProcessRepository.findById(id).orElseThrow(() -> new PtProcessException(PtProcessErrorResult.RECORD_EMPTY));
         if (!process.getTrainer().getId().equals(member.getId())) {
+            log.warn("process 소유자 user : {}", member);
             throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
         }
         return process;
     }
 
+    @Transactional(readOnly = true)
     public List<PtProcessResponseDto> findAll(String keyword) {
 
         return PtProcessResponseDto.of(ptProcessQueryRepository.findAll(keyword));
     }
 
+    @Transactional(readOnly = true)
     public List<PtProcessResponseDto> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
         return PtProcessResponseDto.of(ptProcessQueryRepository.findAllByDate(searchStartDate, searchEndDate));
     }

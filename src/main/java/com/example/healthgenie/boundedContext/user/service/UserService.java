@@ -1,11 +1,13 @@
 package com.example.healthgenie.boundedContext.user.service;
 
-import com.example.healthgenie.base.exception.CommonErrorResult;
-import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
+import com.example.healthgenie.boundedContext.user.dto.DietResponse;
+import com.example.healthgenie.boundedContext.user.dto.UserRequest;
 import com.example.healthgenie.boundedContext.user.dto.UserResponse;
 import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.Gender;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -13,7 +15,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Random;
 
 import static com.example.healthgenie.base.exception.UserErrorResult.*;
@@ -25,10 +32,11 @@ import static com.example.healthgenie.base.exception.UserErrorResult.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final S3UploadUtils s3UploadUtils;
 
     @Transactional
     public UserResponse signUp(String email, String name, AuthProvider authProvider) {
-        String defaultNickname = createOriginalNickname();
+        String defaultNickname = createUniqueNickname();
 
         User user = User.builder()
                 .email(email)
@@ -51,30 +59,107 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateRole(Long userId, Role role) {
+    public UserResponse edit(Long userId, UserRequest request) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        user.updateRole(role);
-
-        return UserResponse.of(user);
-    }
-
-    @Transactional
-    public UserResponse updateNickname(Long userId, String nickname) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
-
-        if(userRepository.existsByNickname(nickname)) {
-            throw new UserException(DUPLICATED_NICKNAME);
+        // 이메일
+        if(StringUtils.hasText(request.getEmail())) {
+            user.updateEmail(request.getEmail());
+        }
+        // 학교 이름
+        if(StringUtils.hasText(request.getUniName())) {
+            user.updateUniname(request.getUniName());
+        }
+        // 이름
+        if(StringUtils.hasText(request.getName())) {
+            user.updateName(request.getName());
+        }
+        // 닉네임
+        if(StringUtils.hasText(request.getNickname())) {
+            if(userRepository.existsByNickname(request.getNickname())) {
+                throw new UserException(DUPLICATED_NICKNAME);
+            }
+            user.updateNickname(request.getNickname());
+        }
+        // 제공자
+        if(request.getAuthProvider() != null && StringUtils.hasText(request.getAuthProvider().getAuthProvider())) {
+            user.updateAuthProvider(request.getAuthProvider());
+        }
+        // 역할
+        if(request.getRole() != null && StringUtils.hasText(request.getRole().getCode())) {
+            user.updateRole(request.getRole());
+        }
+        // 프로필 사진
+        if(request.getProfilePhoto() != null && !request.getProfilePhoto().isEmpty()) {
+            String profilePhoto = uploadAndDelete(request.getProfilePhoto(), user.getProfilePhoto());
+            user.updateProfilePhoto(profilePhoto);
+        }
+        // 이메일 인증 확인
+        if(Objects.nonNull(request.getEmailVerify()) && request.getEmailVerify()) {
+            user.updateEmailVerify(true);
+        }
+        // 단계
+        if(request.getLevel() != null && StringUtils.hasText(request.getLevel().getCode())) {
+            user.updateLevel(request.getLevel());
+        }
+        // 키
+        if(Objects.nonNull(request.getHeight())) {
+            user.updateHeight(request.getHeight());
+        }
+        // 생년월일
+        if(StringUtils.hasText(request.getBirth())) {
+            user.updateBirth(request.getBirth());
+        }
+        // 몸무게
+        if(Objects.nonNull(request.getWeight())) {
+            user.updateWeight(request.getWeight());
+        }
+        // 골격근량
+        if(Objects.nonNull(request.getMuscleWeight())) {
+            user.updateMuscleWeight(request.getMuscleWeight());
+        }
+        // 성별
+        if(request.getGender() != null && StringUtils.hasText(request.getGender().getCode())) {
+            user.updateGender(request.getGender());
         }
 
-        user.updateNickname(nickname);
-
         return UserResponse.of(user);
     }
 
-    private String createOriginalNickname() {
+    public DietResponse calculate(Long userId, Integer type) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+
+        Gender gender = user.getGender();
+        double weight = user.getWeight();
+        double height = user.getHeight();
+        int age = LocalDateTime.now().getYear() - user.getBirth().getYear() + 1;
+
+        double basic;
+        if(gender == Gender.MALE) {
+            basic = 66 + (13.7 * weight) + (5 * height) - (6.8 * age);
+        } else if(gender == Gender.FEMALE) {
+            basic = 655 + (9.6 * weight) + (1.7 * height) - (4.7 * age);
+        } else {
+            throw new UserException(NOT_VALID_FIELD);
+        }
+
+        double active = switch (type) {
+            case 1 -> basic * 1.2;
+            case 2 -> basic * 1.4;
+            case 3 -> basic * 1.6;
+            case 4 -> basic * 1.8;
+            default -> throw new UserException(NOT_VALID_FIELD);
+        };
+
+        return DietResponse.builder()
+                .basicRate((int) Math.round(basic))
+                .activeRate((int) Math.round(active))
+                .build();
+    }
+
+    private String createUniqueNickname() {
         String nickname;
 
         Random random = new Random();
@@ -88,5 +173,15 @@ public class UserService {
         }
 
         return nickname;
+    }
+
+    private String uploadAndDelete(MultipartFile uploadPhoto, String deletePhotoPath) throws IOException {
+        String uploadedPath = s3UploadUtils.upload(uploadPhoto, "profile-photo");
+
+        if(StringUtils.hasText(deletePhotoPath)) {
+            s3UploadUtils.deleteS3Object("profile-photo", deletePhotoPath);
+        }
+
+        return uploadedPath;
     }
 }

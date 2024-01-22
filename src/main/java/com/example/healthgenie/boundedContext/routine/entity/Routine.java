@@ -15,6 +15,9 @@ import java.util.List;
     공통
  */
 
+
+
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -39,10 +42,8 @@ public class Routine extends BaseEntity {
     @Column(name = "content")
     private String content;
 
-    // 피그마보면 운동 부위를 한번에 가져온다.
-    @ElementCollection
-    @Builder.Default
-    private List<String> part = new ArrayList<>();
+    @Column(name = "parts")
+    private String parts;
 
     @Embedded // 내장타입이다.
     private WorkoutRecipe workoutRecipe;
@@ -56,13 +57,7 @@ public class Routine extends BaseEntity {
         this.day = day;
     }
 
-
-    public void updateContent(String content) {
-        this.content = content;
-    }
-
-    public void updatePart(List<String> part) {
-        this.part = part;
+    public void updatePart(String part) {
+        this.parts = part;
     }
 }
-

@@ -1,7 +1,9 @@
 package com.example.healthgenie.boundedContext.user.dto;
 
+import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.Gender;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -27,8 +29,17 @@ public class UserResponse {
     private Level level;
     private String profilePhoto;
     private boolean emailVerify;
+    private Double height;
+    private String birth;
+    private Double weight;
+    private Double muscleWeight;
+    private Gender gender;
 
     public static UserResponse of(User user) {
+        String birth = "";
+        if(user.getBirth() != null) {
+            birth = DateUtils.toStringDate(user.getBirth());
+        }
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -40,6 +51,11 @@ public class UserResponse {
                 .level(user.getLevel())
                 .profilePhoto(user.getProfilePhoto())
                 .emailVerify(user.isEmailVerify())
+                .height(user.getHeight())
+                .birth(birth)
+                .weight(user.getWeight())
+                .muscleWeight(user.getMuscleWeight())
+                .gender(user.getGender())
                 .build();
     }
 

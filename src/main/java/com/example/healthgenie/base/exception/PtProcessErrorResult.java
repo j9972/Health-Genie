@@ -10,6 +10,7 @@ public enum PtProcessErrorResult {
     TRAINER_EMPTY(HttpStatus.BAD_REQUEST,"trainer is empty Request"),
     USER_EMPTY(HttpStatus.BAD_REQUEST,"user is empty Request"),
     WRONG_USER(HttpStatus.BAD_REQUEST,"user is wrong Request"),
+    WRONG_DATE(HttpStatus.BAD_REQUEST,"process have to write after matching date"),
     RECORD_EMPTY(HttpStatus.BAD_REQUEST,"record is empty Request"),
     WRONG_USER_ROLE(HttpStatus.BAD_REQUEST,"role is trainer not user"),
     NO_USER_INFO(HttpStatus.BAD_REQUEST,"user info is empty Request"),

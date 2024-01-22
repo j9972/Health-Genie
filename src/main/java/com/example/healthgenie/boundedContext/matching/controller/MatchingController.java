@@ -5,9 +5,11 @@ import com.example.healthgenie.boundedContext.matching.dto.MatchingCondition;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingResponse;
 import com.example.healthgenie.boundedContext.matching.service.MatchingService;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,8 +40,8 @@ public class MatchingController {
     }
 
     @GetMapping
-    public ResponseEntity<Result> findAll(MatchingCondition condition) {
-        List<MatchingResponse> responses = matchingService.findAll(condition);
+    public ResponseEntity<Result> findAll(@AuthenticationPrincipal User user, MatchingCondition condition) {
+        List<MatchingResponse> responses = matchingService.findAll(user, condition);
 
         return ResponseEntity.ok(Result.of(responses));
     }

@@ -1,0 +1,28 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://new-health-genie-db1.cwysozrbokkx.ap-northeast-2.rds.amazonaws.com:3306/health_genie
+    username: ENC(t73nhff/1j7IxUmVnxqCkg==)
+    password: ENC(cqOISBwQJ9FHHnb97SmW/WbwDHjl7nCP)
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            redirect-uri: "https://xn--9w3b15cw7a.xn--3e0b707e/login/oauth2/code/google"
+          kakao:
+            redirect-uri: "https://xn--9w3b15cw7a.xn--3e0b707e/login/oauth2/code/kakao"
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  data:
+    redis:
+      host: 172.31.46.108
+      port: 6379

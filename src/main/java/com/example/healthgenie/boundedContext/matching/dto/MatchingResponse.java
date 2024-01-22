@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,23 +23,18 @@ public class MatchingResponse {
     private String place;
     private String description;
     private MatchingState state;
-    private Long userId;
-    private Long trainerId;
+    @Builder.Default
+    private List<Long> matchingUsers = new ArrayList<>();
 
     public static MatchingResponse of(Matching matching) {
-        LocalDateTime dateTime = matching.getDate();
-        String date = DateUtils.toDate(dateTime);
-        String time = DateUtils.toTime(dateTime);
-
         return MatchingResponse.builder()
                 .id(matching.getId())
-                .date(date)
-                .time(time)
+                .date(DateUtils.toStringDate(matching.getDate()))
+                .time(DateUtils.toStringTime(matching.getTime()))
                 .place(matching.getPlace())
                 .description(matching.getDescription())
                 .state(matching.getState())
-                .userId(matching.getMember().getId())
-                .trainerId(matching.getTrainer().getId())
+                .matchingUsers(matching.getMatchingUsers().stream().map(e -> e.getUser().getId()).toList())
                 .build();
     }
 

@@ -11,8 +11,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/health_genie
-    username : ENC(vKttRgJ2yF0Hdxa5vUW5nA==)
-    password : ENC(0accFYZmXcSNkJL7l6UYEQ==)
+    username : ENC(YRdY+LUGkMey+Qmv6nq+HQ==)
+    password : ENC(LRJ5u1ya+4nqNzAQVmpSPw==)
 
   devtools:
     livereload:
@@ -23,8 +23,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-          ddl-auto: update
-    #show-sql: true -> 시스템 아웃으로 찍는건데 이렇게 하면 안되고 logger로 찍어야 한다
+      ddl-auto: update
     properties:
       hibernate:
         validator:
@@ -118,3 +117,6 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+univCert:
+  key: ENC(KzaGhlaBtciQefFWMQFbhCug2P2ax7E0cU3zE5Juo6VBwZ/Gu1WiDnJWiO/saWN5)

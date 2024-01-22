@@ -2,14 +2,17 @@ package com.example.healthgenie.boundedContext.matching.service;
 
 import com.example.healthgenie.base.exception.MatchingException;
 import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.utils.CustomValidator.CommonValidator;
 import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingCondition;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingResponse;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingQueryRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.healthgenie.base.exception.MatchingErrorResult.*;
@@ -34,6 +35,7 @@ import static com.example.healthgenie.boundedContext.user.entity.Role.USER;
 public class MatchingService {
 
     private final MatchingRepository matchingRepository;
+    private final MatchingUserRepository matchingUserRepository;
     private final MatchingQueryRepository matchingQueryRepository;
     private final UserRepository userRepository;
 
@@ -47,16 +49,29 @@ public class MatchingService {
 
         validateSave(user, trainer);
 
-        LocalDateTime dateTime = DateUtils.toLocalDateTime(date, time);
-
         Matching matching = Matching.builder()
-                .date(dateTime)
+                .date(DateUtils.toLocalDate(date))
+                .time(DateUtils.toLocalTime(time))
                 .description(description)
-                .member(user)
-                .trainer(trainer)
                 .place(place)
                 .state(DEFAULT)
                 .build();
+
+        MatchingUser matchingUser1 = MatchingUser.builder()
+                .matching(matching)
+                .user(user)
+                .build();
+
+        MatchingUser matchingUser2 = MatchingUser.builder()
+                .matching(matching)
+                .user(trainer)
+                .build();
+
+        matchingUserRepository.save(matchingUser1);
+        matchingUserRepository.save(matchingUser2);
+
+        matching.getMatchingUsers().add(matchingUser1);
+        matching.getMatchingUsers().add(matchingUser2);
 
         return MatchingResponse.of(matchingRepository.save(matching));
     }
@@ -68,13 +83,13 @@ public class MatchingService {
         return MatchingResponse.of(matching);
     }
 
-    public List<MatchingResponse> findAll(MatchingCondition condition) {
-        LocalDateTime dateTime = DateUtils.toLocalDateTime(condition.getDate());
-
-        List<Matching> matchings = new ArrayList<>();
-        if(condition.getDate() != null) {
-            matchings = matchingQueryRepository.findAllForOneDayByDateAndIds(dateTime, condition.getUserId(), condition.getTrainerId());
+    public List<MatchingResponse> findAll(User user, MatchingCondition condition) {
+        if(!CommonValidator.isValid(condition.getDate())) {
+            throw new MatchingException(NOT_VALID_FIELD);
         }
+
+        List<Matching> matchings =
+                matchingQueryRepository.findAllByUserIdAndDate(user.getId(), DateUtils.toLocalDate(condition.getDate()));
 
         return MatchingResponse.of(matchings);
     }

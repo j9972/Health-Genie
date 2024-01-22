@@ -1,40 +1,76 @@
 package com.example.healthgenie.boundedContext.email.controller;
 
+import com.example.healthgenie.base.exception.CommonErrorResult;
+import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.email.dto.MailRequestDto;
+import com.example.healthgenie.boundedContext.email.service.UniDomainService;
 import com.example.healthgenie.boundedContext.email.service.UserMailService;
-import com.example.healthgenie.boundedContext.email.service.MailService;
-import jakarta.mail.MessagingException;
+import com.example.healthgenie.boundedContext.user.entity.User;
+import com.univcert.api.UnivCert;
+import java.io.IOException;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor // 생성자 DI
-@RequestMapping("/auth/mail")
+@RequestMapping("/mail")
 public class MailController {
 
     private final UserMailService userMailService;
-    private final MailService mailService;
+    private final UniDomainService uniDomainService;
 
-    // 이메일 코드전송,이메일유효성검사
-    @PostMapping("/send") // http://localhost:1234/auth/mail/send
-    public ResponseEntity<Result> authMail(@RequestBody String email) {
+    @Value("${univCert.key}")
+    private String KEY;
 
-        userMailService.sendCode(email);
+    // 이메일 코드전송, 이메일 유효성검사 -> accessToken 필요
+    @PostMapping
+    public ResponseEntity<Result> sendUnivCertMail(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user)
+            throws IOException {
 
-        return ResponseEntity.ok(Result.of("이메일이 성공적으로 보내졌습니다."));
+        UnivCert.clear(KEY, dto.getUniv_email());
+
+        String uniDomain = uniDomainService.findUniDomain(dto.getUnivName());
+
+        if (uniDomainService.checkDomain(dto.getUniv_email(), uniDomain)) {
+            Map<String, Object> result = UnivCert.certify(KEY, dto.getUniv_email(), dto.getUnivName(), false);
+
+            if ((boolean) result.get("success")) {
+                userMailService.updateUniv(dto.getUnivName(), user.getId());
+            }
+
+            return ResponseEntity.ok(Result.of("이메일이 성공적으로 보내졌습니다."));
+
+        } else {
+            log.warn("이메일의 도메인이 해당 학교 도메인과 다릅니다");
+            throw new CommonException(CommonErrorResult.WRONG_VALIDATE_EMAIL);
+        }
     }
 
-    //이메일 코드검증
-    @GetMapping("/verify") // http://localhost:1234/auth/mail/verify
-    public ResponseEntity<Result> validMailCode(@RequestParam("email") String email,
-                                        @RequestParam("authCode") String authCode){
-        boolean result = userMailService.verify(email, authCode);
 
-        // 검증 실패시 redirect 시켜주세요.
-        return ResponseEntity.ok(Result.of(result ? "검증이 성공했습니다" : "검증이 실패했습니다"));
+    //이메일 코드검증  -> accessToken 필요
+    @GetMapping("/verification")
+    public ResponseEntity<Result> validMailCode(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user)
+            throws IOException {
+
+        Map<String, Object> response = UnivCert.certifyCode(KEY, dto.getUniv_email(), dto.getUnivName(), dto.getCode());
+        boolean success = (boolean) response.get("success");
+
+        if (success) {
+            userMailService.updateUnivVerify(user.getId());
+        }
+
+        return ResponseEntity.ok(Result.of(success ? "검증이 성공했습니다" : "검증이 실패했습니다"));
 
     }
 }
