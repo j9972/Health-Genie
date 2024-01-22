@@ -12,4 +12,5 @@ public class HealthGenieApplication {
         SpringApplication.run(HealthGenieApplication.class, args);
     }
 
+    // cicd test주석
 }
