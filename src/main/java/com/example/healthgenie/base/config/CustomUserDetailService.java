@@ -14,7 +14,7 @@ import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FO
 @RequiredArgsConstructor
 @Slf4j
 @Component
-public class  CustomUserDetailService implements UserDetailsService {
+public class CustomUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
 

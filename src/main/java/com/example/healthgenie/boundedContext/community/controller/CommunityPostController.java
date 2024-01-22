@@ -5,6 +5,7 @@ import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.service.CommunityPostService;
 import com.example.healthgenie.boundedContext.community.service.CommunityPostTransactionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class CommunityPostController {
     }
 
     @PostMapping
-    public ResponseEntity<Result> save(PostRequest request) throws IOException {
+    public ResponseEntity<Result> save(@Valid PostRequest request) throws IOException {
         PostResponse response = communityPostTransactionService.save(request);
 
         return ResponseEntity.ok(Result.of(response));
