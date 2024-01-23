@@ -83,7 +83,7 @@ class UserServiceTest {
                 .name("변경된 이름")
                 .nickname("변경된 닉네임")
                 .authProvider(AuthProvider.KAKAO)
-                .role(Role.ADMIN)
+                .role("ADMIN")
                 .profilePhoto(profilePhoto)
                 .emailVerify(true)
                 .level(Level.EXPERT)
@@ -122,7 +122,7 @@ class UserServiceTest {
 
         UserRequest request = UserRequest.builder()
                 .authProvider(AuthProvider.EMPTY)
-                .role(Role.EMPTY)
+                .role("EMPTY")
                 .height(180.0)
                 .birth("1996.12.31")
                 .weight(80.0)
