@@ -21,22 +21,58 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: production
+
       - name: JDK 17 설치
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'corretto'
+
       - name: gradlew에 실행 권한 부여
         run: chmod +x ./gradlew
+
       - name: 프로젝트 빌드
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build -Pjasypt.encryptor.password=${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
+
       - name: AWS credential 설정
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: ${{ env.AWS_REGION }}
           aws-access-key-id: ${{ secrets.HEALTH_GENIE_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.HEALTH_GENIE_SECRET_KEY }}
+
       - name: S3에 업로드
         run: aws deploy push --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --ignore-hidden-files --s3-location s3://${{ env.AWS_CODE_BUCKET_NAME }}/cicdDir/$GITHUB_SHA.zip --source .
+
       - name: EC2에 배포
         run: aws deploy create-deployment --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} --s3-location bucket=${{ env.AWS_CODE_BUCKET_NAME }},key=cicdDir/$GITHUB_SHA.zip,bundleType=zip
+
+      - name: Docker build
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/health_genie .
+          docker push ${{ secrets.DOCKER_USERNAME }}/health_genie
+
+      # AWS EC2 Server Connect & Docker 명령어 실행 (8)
+      - name: AWS EC2 Connection
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          password: ${{ secrets.EC2_PASSWORD }}
+          port: ${{ secrets.EC2_SSH_PORT }}
+          timeout: 60s
+          script: |
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/health_genie
+            sudo docker stop server
+            docker network create --driver bridge mybridge
+            docker run -p 6379:6379 --name redis_1 -d --net mybridge redis:latest
+            docker run \
+            --name=health_genie_1 \
+            --restart unless-stopped \
+            -e JAVA_OPTS="-Djasypt.encryptor.password=${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}" \
+            -e TZ=Asia/Seoul \
+            -p 1234:1234 \
+            -d \
+            --net mybridge \
+            ${{ secrets.DOCKER_USERNAME }}/health_genie

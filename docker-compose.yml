@@ -8,7 +8,7 @@ services:
       - mynetwork  # 동일한 네트워크 명을 사용
 
   health_genie:
-    image: rlarudfuf802/health_genie
+    image: ${{secret.DOCKER_USERNAME}}/health_genie
     environment:
       - SPRING_REDIS_HOST=redis  # Redis 서비스의 이름을 사용
     ports:
