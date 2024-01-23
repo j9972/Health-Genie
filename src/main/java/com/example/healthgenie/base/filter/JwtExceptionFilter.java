@@ -37,7 +37,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             response.getWriter().print(objectMapper.writeValueAsString(map));
         } catch (UserException e) {
             Map<String, String> map = new HashMap<>();
-            map.put("code", "USER_NOT_FOUND!!!");
+            map.put("code", "USER_NOT_FOUND!!!!!");
             map.put("message", "user not found!!!");
 
             response.setContentType("application/json;charset=UTF-8");
