@@ -1,5 +1,7 @@
 package com.example.healthgenie.boundedContext.user.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.dto.DietResponse;
@@ -10,6 +12,10 @@ import com.example.healthgenie.boundedContext.user.entity.Gender;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,13 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -83,7 +82,7 @@ class UserServiceTest {
                 .name("변경된 이름")
                 .nickname("변경된 닉네임")
                 .authProvider(AuthProvider.KAKAO)
-                .role(Role.ADMIN)
+                .role("ADMIN")
                 .profilePhoto(profilePhoto)
                 .emailVerify(true)
                 .level(Level.EXPERT)
@@ -122,7 +121,7 @@ class UserServiceTest {
 
         UserRequest request = UserRequest.builder()
                 .authProvider(AuthProvider.EMPTY)
-                .role(Role.EMPTY)
+                .role("EMPTY")
                 .height(180.0)
                 .birth("1996.12.31")
                 .weight(80.0)
