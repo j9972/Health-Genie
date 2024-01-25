@@ -33,7 +33,7 @@ jobs:
 
       - name: 프로젝트 빌드
         #run: ./gradlew clean build -x test
-        run: ./gradlew build -Pjasypt.encryptor.password=${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
+        run: ./gradlew clean build -Pjasypt.encryptor.password=${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
 
       - name: AWS credential 설정
         uses: aws-actions/configure-aws-credentials@v1
