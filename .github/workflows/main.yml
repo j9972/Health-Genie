@@ -32,8 +32,8 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: 프로젝트 빌드
-        run: ./gradlew clean build -x test
-        #run: ./gradlew clean build -Pjasypt.encryptor.password=${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
+        #run: ./gradlew clean build -x test
+        run: ./gradlew clean build -Pjasypt.encryptor.password=${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
 
       - name: AWS credential 설정
         uses: aws-actions/configure-aws-credentials@v1
@@ -65,9 +65,8 @@ jobs:
           timeout: 60s
           script: |
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/health_genie
-            sudo docker stop server
-            docker network create --driver bridge mybridge
-            docker run -p 6379:6379 --name redis_1 -d --net mybridge redis:latest
+            sudo docker stop health_genie_1
+            docker rm -f health_genie_1
             docker run \
             --name=health_genie_1 \
             --restart unless-stopped \
