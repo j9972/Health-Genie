@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class JwtResponse {
 
-    private Long userId;
+    private Long userIdasdf;
     private Role role;
     private String accessToken;
     private String refreshToken;
