@@ -65,7 +65,8 @@ jobs:
           timeout: 60s
           script: |
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/health_genie
-            sudo docker stop server
+            sudo docker stop health_genie_1
+            docker rm -f health_genie_1
             docker run \
             --name=health_genie_1 \
             --restart unless-stopped \
