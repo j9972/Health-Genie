@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ROOT_PATH="/home/ubuntu/cicd"
-JAR="$ROOT_PATH/application.jar"
+JAR="$ROOT_PATH/app.jar"
 
 APP_LOG="$ROOT_PATH/application.log"
 ERROR_LOG="$ROOT_PATH/error.log"
