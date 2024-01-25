@@ -2,17 +2,16 @@ server:
   port: 1234
   error:
     include-message: always
-    include-binding-errors : always
+    include-binding-errors: always
 
 spring:
   profiles:
     active: test
 
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url : jdbc:mysql://localhost:3306/health_genie
-    username : ENC(vKttRgJ2yF0Hdxa5vUW5nA==)
-    password : ENC(jvtB+DTzfmD3+mtvttb69Q==)
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
 
   devtools:
     livereload:
@@ -28,7 +27,7 @@ spring:
     properties:
       hibernate:
         validator:
-          apply_to_ddl : false
+          apply_to_ddl: false
         format_sql: true
         use_sql_comments: true
         default_batch_fetch_size: 1000 # 배치 사이즈 조절을 통해서 N+1이 나더라도 최소화 시킨다
