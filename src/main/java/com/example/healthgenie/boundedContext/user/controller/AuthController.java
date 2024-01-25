@@ -34,7 +34,6 @@ public class AuthController {
         log.info("registrationId={}", registrationId);
         log.info("code={}", code);
         log.info("state={}", state);
-        log.info("test test test ------------------");
 
         SignInResponse result = authService.redirect(
                 TokenRequest.builder()
