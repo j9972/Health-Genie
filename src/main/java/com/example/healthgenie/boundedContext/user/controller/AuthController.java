@@ -1,16 +1,21 @@
 package com.example.healthgenie.boundedContext.user.controller;
 
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.user.service.AuthService;
 import com.example.healthgenie.boundedContext.user.dto.JwtResponse;
 import com.example.healthgenie.boundedContext.user.dto.SignInResponse;
 import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
+import com.example.healthgenie.boundedContext.user.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -29,6 +34,7 @@ public class AuthController {
         log.info("registrationId={}", registrationId);
         log.info("code={}", code);
         log.info("state={}", state);
+        log.info("test test test ------------------");
 
         SignInResponse result = authService.redirect(
                 TokenRequest.builder()
@@ -49,7 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<Result> refreshToken(@RequestBody TokenRequest tokenRequest){
+    public ResponseEntity<Result> refreshToken(@RequestBody TokenRequest tokenRequest) {
         log.info("----- AuthController refreshToken -----");
         log.info("TokenRequest.registrationId={}", tokenRequest.getRegistrationId());
         log.info("TokenRequest.refreshToken={}", tokenRequest.getRefreshToken());
