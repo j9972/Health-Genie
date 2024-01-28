@@ -135,7 +135,7 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 
 
 ## 🥲 ERROR 모음집
-https://techj9972.tistory.com/207 <br> https://techj9972.tistory.com/208 <br>
+https://techj9972.tistory.com/207 https://techj9972.tistory.com/208 <br>
 
 https://techj9972.tistory.com/209 <br> https://techj9972.tistory.com/210 <br>
 
