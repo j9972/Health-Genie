@@ -134,6 +134,8 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 [ 이메일 인증 전략 고민 [2] - Api 사용 ](https://techj9972.tistory.com/253) <br>
 
 ### 백엔드 이슈
+[ 변경 감지를 통한 회원 정보 수정이 되지 않던 문제 ](https://kyeongryeol.notion.site/User-update-8eba600469ea49c8a4e01bcc7e4a4e6a?pvs=4) <br>
+
 
 ### 인프라
 
