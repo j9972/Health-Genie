@@ -135,26 +135,26 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 
 
 ## 🥲 ERROR 모음집
-[ 문서 보기 ](https://techj9972.tistory.com/207) <br>
-https://techj9972.tistory.com/208 <br>
-https://techj9972.tistory.com/209 <br> 
-https://techj9972.tistory.com/210 <br>
-https://techj9972.tistory.com/239 <br> 
-https://techj9972.tistory.com/240 <br>
-https://techj9972.tistory.com/242 <br>
-https://techj9972.tistory.com/247 <br>
-https://techj9972.tistory.com/248 <br>
-https://techj9972.tistory.com/250 <br>
-https://techj9972.tistory.com/251 <br>
-https://techj9972.tistory.com/252 <br>
-https://techj9972.tistory.com/253 <br>
-https://techj9972.tistory.com/256 <br>
-https://techj9972.tistory.com/258 <br>
-https://techj9972.tistory.com/260 <br>
-https://techj9972.tistory.com/261 <br>
-https://techj9972.tistory.com/262 <br>
-https://techj9972.tistory.com/263 <br>
-https://techj9972.tistory.com/264 <br>
+[ MySQL - Failed to add the foreign key constraint ](https://techj9972.tistory.com/207) <br>
+[ Mail - Authenticatioin Fail ](https://techj9972.tistory.com/208) <br>
+[ UserDetail - InternalAuthenticationServiceException ](https://techj9972.tistory.com/209) <br> 
+[ Symbol - error : cannot find symbol log.info ](https://techj9972.tistory.com/210) <br>
+[ Json - Infinite recursion ( stackOverFlow ) ](https://techj9972.tistory.com/239) <br> 
+[ Enum - No enum constant enum name.value ](https://techj9972.tistory.com/240) <br>
+[ Data - Data truncation: Datta too long for column ](https://techj9972.tistory.com/242) <br>
+[ Http - HTTP method names must be token ](https://techj9972.tistory.com/247) <br>
+[ @Value - @Value cannot find method 'value' ](https://techj9972.tistory.com/248) <br>
+[ Field type - entity 정수 타입 고민 ](https://techj9972.tistory.com/250) <br>
+[ Postman - Api 문서 만들기 ](https://techj9972.tistory.com/251) <br>
+[ Pipe - broken pipe error ](https://techj9972.tistory.com/252) <br>
+[ API - univCert Api 를 사용해서 이메일 인증 ](https://techj9972.tistory.com/253) <br>
+[ Json - JSON parse error ](https://techj9972.tistory.com/256) <br>
+[ Deserialize - cannot deserialize from Object value ](https://techj9972.tistory.com/258) <br>
+[ Branch - git push error ](https://techj9972.tistory.com/260) <br>
+[ CodeDeploy - github action 배포 오류 ](https://techj9972.tistory.com/261) <br>
+[ CICD - action 배포 성공 후 s3 zip 파일 안열림 오류 ](https://techj9972.tistory.com/262) <br>
+[ CICD - github actioin CD ssh 연결 오류 ](https://techj9972.tistory.com/263) <br>
+[ CICD - 프로젝트 빌드 오류 ](https://techj9972.tistory.com/264) <br>
 
 <br>
 
