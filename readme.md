@@ -135,12 +135,12 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 
 
 ## 🥲 ERROR 모음집
-https://techj9972.tistory.com/207 https://techj9972.tistory.com/208 <br>
-
-https://techj9972.tistory.com/209 <br> https://techj9972.tistory.com/210 <br>
-
-https://techj9972.tistory.com/239 <br> https://techj9972.tistory.com/240 <br>
-
+[ 문서 보기 ](https://techj9972.tistory.com/207) <br>
+https://techj9972.tistory.com/208 <br>
+https://techj9972.tistory.com/209 <br> 
+https://techj9972.tistory.com/210 <br>
+https://techj9972.tistory.com/239 <br> 
+https://techj9972.tistory.com/240 <br>
 https://techj9972.tistory.com/242 <br>
 https://techj9972.tistory.com/247 <br>
 https://techj9972.tistory.com/248 <br>
