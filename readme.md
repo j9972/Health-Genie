@@ -143,7 +143,7 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 <br>
 
 
-## 🥲 ERROR 모음집
+## 🥲 시행착오들
 [ 🐛MySQL - Failed to add the foreign key constraint ](https://techj9972.tistory.com/207) <br>
 [ 🪱Mail - Authenticatioin Fail ](https://techj9972.tistory.com/208) <br>
 [ 🐝UserDetail - InternalAuthenticationServiceException ](https://techj9972.tistory.com/209) <br> 
