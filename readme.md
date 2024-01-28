@@ -1,7 +1,7 @@
 # 🏋️Health-Genie
 
 
-### 📢 [배포 사이트 바로가기 - [ 바로가기 ]] [ 미정 ]
+### 📢 [배포 사이트 바로가기 - [ 바로가기 - 미정( 프론트 연동 중 ) ]]
 
 
 ## ✨ 프로젝트 소개
@@ -80,7 +80,7 @@
 
 ## 🎨 ERD Diagram
 ![ERD](images/health_genie_erd.png)
-1차 ERD 설계 > https://techj9972.tistory.com/205
+[1차 ERD 설계](https://techj9972.tistory.com/205)
 
 <br>
 
@@ -115,6 +115,10 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 ### 1. 현재 배포의 구조 / 선택한 이유 (Github Action 배포 자동화)
 ![img.png](images/health_genie_githubaction.png)
 
+1. 무료입니다! 
+2. 코드 저장소와 직접 연동되기 때문에 워크플로우를 쉽게 작성하고 관리가 쉽습니다.
+3. YAML 기반의 워크플로우 파일을 작성하여 필요한 작업을 정의할 수 있으며, 버전 관리도 손쉽게 할 수 있습니다.
+4. 무엇보다 구글에서 찾아볼 수 있는 리소스가 많아서 이기도 합니다!
 
 <br>
 
