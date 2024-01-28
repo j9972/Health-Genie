@@ -121,6 +121,9 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 ## 🥕프로젝트 백엔드 의사결정 및 이슈
 
 ### 최적화
+[ Field type - entity 정수 타입 고민 ](https://techj9972.tistory.com/250) <br>
+[ method 선택 - ParseInt() vs valueOf() ](https://techj9972.tistory.com/246) <br>
+[ Annotation - 컬렉션 타입 형태의 데이터 저장 고민 ](https://techj9972.tistory.com/243) <br>
 
 ### 프로젝트 진행 이슈
 
@@ -141,10 +144,12 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 [ Symbol - error : cannot find symbol log.info ](https://techj9972.tistory.com/210) <br>
 [ Json - Infinite recursion ( stackOverFlow ) ](https://techj9972.tistory.com/239) <br> 
 [ Enum - No enum constant enum name.value ](https://techj9972.tistory.com/240) <br>
+[ PortNumber - Port Number was already in use ](https://techj9972.tistory.com/241) <br>
 [ Data - Data truncation: Datta too long for column ](https://techj9972.tistory.com/242) <br>
+[ IntelliJ - build.gradle 오류 ](https://techj9972.tistory.com/244) <br>
+[ Dirty Checking - 변경감지 적용시 유의점 ](https://techj9972.tistory.com/245) <br>
 [ Http - HTTP method names must be token ](https://techj9972.tistory.com/247) <br>
 [ @Value - @Value cannot find method 'value' ](https://techj9972.tistory.com/248) <br>
-[ Field type - entity 정수 타입 고민 ](https://techj9972.tistory.com/250) <br>
 [ Postman - Api 문서 만들기 ](https://techj9972.tistory.com/251) <br>
 [ Pipe - broken pipe error ](https://techj9972.tistory.com/252) <br>
 [ API - univCert Api 를 사용해서 이메일 인증 ](https://techj9972.tistory.com/253) <br>
