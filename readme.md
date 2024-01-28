@@ -1,7 +1,7 @@
 # 🏋️Health-Genie
 
 
-### 📢 [배포 사이트 바로가기 - [ 바로가기 ]] [ 미정 ]
+### 📢 [배포 사이트 바로가기 - [ 바로가기 - 미정( 프론트 연동 중 ) ]]
 
 
 ## ✨ 프로젝트 소개
@@ -80,7 +80,7 @@
 
 ## 🎨 ERD Diagram
 ![ERD](images/health_genie_erd.png)
-1차 ERD 설계 > https://techj9972.tistory.com/205
+[1차 ERD 설계](https://techj9972.tistory.com/205)
 
 <br>
 
@@ -115,14 +115,23 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 ### 1. 현재 배포의 구조 / 선택한 이유 (Github Action 배포 자동화)
 ![img.png](images/health_genie_githubaction.png)
 
+1. 무료입니다! 
+2. 코드 저장소와 직접 연동되기 때문에 워크플로우를 쉽게 작성하고 관리가 쉽습니다.
+3. YAML 기반의 워크플로우 파일을 작성하여 필요한 작업을 정의할 수 있으며, 버전 관리도 손쉽게 할 수 있습니다.
+4. 무엇보다 구글에서 찾아볼 수 있는 리소스가 많아서 이기도 합니다!
 
 <br>
 
 ## 🥕프로젝트 백엔드 의사결정 및 이슈
 
 ### 최적화
+[ Field type - entity 정수 타입 고민 ](https://techj9972.tistory.com/250) <br>
+[ method 선택 - ParseInt() vs valueOf() ](https://techj9972.tistory.com/246) <br>
+[ Annotation - 컬렉션 타입 형태의 데이터 저장 고민 ](https://techj9972.tistory.com/243) <br>
 
 ### 프로젝트 진행 이슈
+[ 이메일 인증 전략 고민 [1] - Redis 사용 ](https://techj9972.tistory.com/238) <br>
+[ 이메일 인증 전략 고민 [2] - Api 사용 ](https://techj9972.tistory.com/253) <br>
 
 ### 백엔드 이슈
 
@@ -134,27 +143,29 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 <br>
 
 
-## 🥲 ERROR 모음집
-https://techj9972.tistory.com/207 <br>
-https://techj9972.tistory.com/208 <br>
-https://techj9972.tistory.com/209 <br>
-https://techj9972.tistory.com/210 <br>
-https://techj9972.tistory.com/239 <br>
-https://techj9972.tistory.com/240 <br>
-https://techj9972.tistory.com/242 <br>
-https://techj9972.tistory.com/247 <br>
-https://techj9972.tistory.com/248 <br>
-https://techj9972.tistory.com/250 <br>
-https://techj9972.tistory.com/251 <br>
-https://techj9972.tistory.com/252 <br>
-https://techj9972.tistory.com/253 <br>
-https://techj9972.tistory.com/256 <br>
-https://techj9972.tistory.com/258 <br>
-https://techj9972.tistory.com/260 <br>
-https://techj9972.tistory.com/261 <br>
-https://techj9972.tistory.com/262 <br>
-https://techj9972.tistory.com/263 <br>
-https://techj9972.tistory.com/264 <br>
+## 🥲 시행착오들
+[ 🐛MySQL - Failed to add the foreign key constraint ](https://techj9972.tistory.com/207) <br>
+[ 🪱Mail - Authenticatioin Fail ](https://techj9972.tistory.com/208) <br>
+[ 🐝UserDetail - InternalAuthenticationServiceException ](https://techj9972.tistory.com/209) <br> 
+[ 🫎Symbol - error : cannot find symbol log.info ](https://techj9972.tistory.com/210) <br>
+[ 🦄Json - Infinite recursion ( stackOverFlow ) ](https://techj9972.tistory.com/239) <br> 
+[ 🐴Enum - No enum constant enum name.value ](https://techj9972.tistory.com/240) <br>
+[ 🦅PortNumber - Port Number was already in use ](https://techj9972.tistory.com/241) <br>
+[ 🦆Data - Data truncation: Datta too long for column ](https://techj9972.tistory.com/242) <br>
+[ 🪿IntelliJ - build.gradle 오류 ](https://techj9972.tistory.com/244) <br>
+[ 🐶Dirty Checking - 변경감지 적용시 유의점 ](https://techj9972.tistory.com/245) <br>
+[ 🐱Http - HTTP method names must be token ](https://techj9972.tistory.com/247) <br>
+[ 🐭@Value - @Value cannot find method 'value' ](https://techj9972.tistory.com/248) <br>
+[ 🐹Postman - Api 문서 만들기 ](https://techj9972.tistory.com/251) <br>
+[ 🦊Pipe - broken pipe error ](https://techj9972.tistory.com/252) <br>
+[ 🐻API - univCert Api 를 사용해서 이메일 인증 ](https://techj9972.tistory.com/253) <br>
+[ 🐼Json - JSON parse error ](https://techj9972.tistory.com/256) <br>
+[ 🐔Deserialize - cannot deserialize from Object value ](https://techj9972.tistory.com/258) <br>
+[ 🐧Branch - git push error ](https://techj9972.tistory.com/260) <br>
+[ 🐦CodeDeploy - github action 배포 오류 ](https://techj9972.tistory.com/261) <br>
+[ 🐤CICD - action 배포 성공 후 s3 zip 파일 안열림 오류 ](https://techj9972.tistory.com/262) <br>
+[ 🐣CICD - github actioin CD ssh 연결 오류 ](https://techj9972.tistory.com/263) <br>
+[ 🐥CICD - 프로젝트 빌드 오류 ](https://techj9972.tistory.com/264) <br>
 
 <br>
 
