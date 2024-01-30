@@ -63,7 +63,7 @@ jobs:
           aws deploy create-deployment \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} \
-          --deployment-group-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} \
+          --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} \
           --s3-location bucket=${{ env.AWS_CODE_BUCKET_NAME }},bundleType=zip,key=$GITHUB_SHA.zip
 
       # AWS EC2 Server Connect & Docker 명령어 실행
