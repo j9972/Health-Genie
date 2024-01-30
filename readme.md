@@ -60,6 +60,7 @@
 <img src="https://img.shields.io/badge/Amazon RDS-527FFF?style=for-the-badge&logo=Amazon RDS&logoColor=white"/>
 <img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
 <img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon CloudWatch-2088FF?style=for-the-badge&logo=Amazon CloudWatch&logoColor=white"/>
 
 </p>
 
@@ -140,6 +141,7 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 ### 인프라
 
 ### 지속적인 리팩토링
+[ 모니터링 - cloud watch ](https://techj9972.tistory.com/265)
 
 
 <br>
