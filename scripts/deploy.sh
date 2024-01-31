@@ -32,6 +32,7 @@ else
   sudo docker stop ${CONTAINER_ID}
   echo "> docker rm ${CONTAINER_ID}"
   sudo docker rm ${CONTAINER_ID}
+  sudo docker rmi -f j9972/health_genie
   echo "> else 안 ----------------" >> /home/ubuntu/cicd/start.log
   sleep 5
 fi
