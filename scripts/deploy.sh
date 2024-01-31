@@ -21,7 +21,7 @@
 #!/bin/bash
 CONTAINER_ID=$(docker container ls -f "name=health_genie_1" -q)
 
-echo "> 컨테이너 ID: ${CONTAINER_ID}"
+echo "> 컨테이너 ID: ${CONTAINER_ID}" >> /home/ubuntu/cicd/start.log
 
 if [ -z ${CONTAINER_ID} ]
 then
