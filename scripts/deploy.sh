@@ -1,39 +1,22 @@
-##!/bin/bash
-#
-#ROOT_PATH="/home/ubuntu/cicd"
-#JAR="$ROOT_PATH/app.jar"
-#
-#APP_LOG="$ROOT_PATH/application.log"
-#ERROR_LOG="$ROOT_PATH/error.log"
-#START_LOG="$ROOT_PATH/start.log"
-#
-#NOW=$(date +%c)
-#
-#echo "[$NOW] $JAR 복사" >> $START_LOG
-#cp $ROOT_PATH/build/libs/*.jar $JAR
-#
-#echo "[$NOW] > $JAR 실행" >> $START_LOG
-#nohup java -jar $JAR > $APP_LOG 2> $ERROR_LOG &
-#
-#SERVICE_PID=$(pgrep -f $JAR)
-#echo "[$NOW] > 서비스 PID: $SERVICE_PID" >> $START_LOG
-
 #!/bin/bash
+export TZ="Asia/Seoul"
+
+NOW=$(date +%c)
+
 CONTAINER_ID=$(docker container ls -f "name=health_genie_1" -q)
 
-echo "> 컨테이너 ID: ${CONTAINER_ID}" >> /home/ubuntu/cicd/start.log
+echo "[$NOW] > 컨테이너 ID: ${CONTAINER_ID}" >> /home/ubuntu/cicd/start.log
 
 if [ -z ${CONTAINER_ID} ]
 then
-  echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다." >> /home/ubuntu/cicd/deploy.log
-  echo "> if 안 ----------------" >> /home/ubuntu/cicd/start.log
+  echo "[$NOW] > 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다." >> /home/ubuntu/cicd/deploy.log
 else
-  echo "> docker stop ${CONTAINER_ID}"
+  echo "[$NOW] > docker stop ${CONTAINER_ID}"
   sudo docker stop ${CONTAINER_ID}
-  echo "> docker rm ${CONTAINER_ID}"
+  echo "[$NOW] > docker rm ${CONTAINER_ID}"
   sudo docker rm ${CONTAINER_ID}
+  echo "[$NOW] > docker rmi -f j9972/health_genie "
   sudo docker rmi -f j9972/health_genie
-  echo "> else 안 ----------------" >> /home/ubuntu/cicd/start.log
   sleep 5
 fi
 
@@ -48,3 +31,5 @@ docker run \
   -d \
   --net mybridge \
   j9972/health_genie
+
+echo "[$NOW] > health genie server start!! welcome to Health- Genie "

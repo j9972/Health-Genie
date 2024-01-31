@@ -58,7 +58,7 @@ jobs:
         run: aws deploy create-deployment --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} --s3-location bucket=${{ env.AWS_CODE_BUCKET_NAME }},key=cicdDir/$GITHUB_SHA.zip,bundleType=zip
       
 
-      #AWS EC2 Server Connect & Docker 명령어 실행
+      #AWS EC2 Server Connect
       - name: AWS EC2 Connection
         uses: appleboy/ssh-action@master
         with:
@@ -67,16 +67,3 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_SSH_PORT }}
           timeout: 60s
-#          script: |
-#            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/health_genie
-#            sudo docker stop health_genie_1
-#            docker rm -f health_genie_1
-#            docker run \
-#            --name=health_genie_1 \
-#            --restart unless-stopped \
-#            -e JAVA_OPTS="-Djasypt.encryptor.password=${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}" \
-#            -e TZ=Asia/Seoul \
-#            -p 1234:1234 \
-#            -d \
-#            --net mybridge \
-#            ${{ secrets.DOCKER_USERNAME }}/health_genie
