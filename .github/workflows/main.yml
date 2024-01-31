@@ -56,25 +56,25 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_USERNAME }}/health_genie .
           docker push ${{ secrets.DOCKER_USERNAME }}/health_genie
+      
 
+      #      - name: Code Deploy
+      #        run: |
+      #          aws deploy create-deployment \
+      #          --deployment-config-name CodeDeployDefault.AllAtOnce \
+      #          --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} \
+      #          --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} \
+      #          --s3-location bucket=${{ env.AWS_CODE_BUCKET_NAME }},bundleType=zip,key=$GITHUB_SHA.zip
 
-      - name: Code Deploy
-        run: |
-          aws deploy create-deployment \
-          --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} \
-          --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} \
-          --s3-location bucket=${{ env.AWS_CODE_BUCKET_NAME }},bundleType=zip,key=$GITHUB_SHA.zip
-
-      # AWS EC2 Server Connect & Docker 명령어 실행
-#      - name: AWS EC2 Connection
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.EC2_HOST }}
-#          username: ubuntu
-#          key: ${{ secrets.EC2_KEY }}
-#          port: ${{ secrets.EC2_SSH_PORT }}
-#          timeout: 60s
+      #AWS EC2 Server Connect & Docker 명령어 실행
+      - name: AWS EC2 Connection
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_KEY }}
+          port: ${{ secrets.EC2_SSH_PORT }}
+          timeout: 60s
 #          script: |
 #            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/health_genie
 #            sudo docker stop health_genie_1
