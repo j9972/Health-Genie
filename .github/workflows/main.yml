@@ -45,26 +45,18 @@ jobs:
           aws-access-key-id: ${{ secrets.HEALTH_GENIE_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.HEALTH_GENIE_SECRET_KEY }}
 
-      - name: S3에 업로드
-        run: aws deploy push --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --ignore-hidden-files --s3-location s3://${{ env.AWS_CODE_BUCKET_NAME }}/cicdDir/$GITHUB_SHA.zip --source .
-
-      - name: EC2에 배포
-        run: aws deploy create-deployment --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} --s3-location bucket=${{ env.AWS_CODE_BUCKET_NAME }},key=cicdDir/$GITHUB_SHA.zip,bundleType=zip
-
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_USERNAME }}/health_genie .
           docker push ${{ secrets.DOCKER_USERNAME }}/health_genie
 
+      - name: S3에 업로드
+        run: aws deploy push --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --ignore-hidden-files --s3-location s3://${{ env.AWS_CODE_BUCKET_NAME }}/cicdDir/$GITHUB_SHA.zip --source .
 
-      - name: Code Deploy
-        run: |
-          aws deploy create-deployment \
-          --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} \
-          --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} \
-          --s3-location bucket=${{ env.AWS_CODE_BUCKET_NAME }},bundleType=zip,key=$GITHUB_SHA.zip
+      - name: EC2에 배포
+        run: aws deploy create-deployment --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} --s3-location bucket=${{ env.AWS_CODE_BUCKET_NAME }},key=cicdDir/$GITHUB_SHA.zip,bundleType=zip
+      
 
       #AWS EC2 Server Connect & Docker 명령어 실행
       - name: AWS EC2 Connection
