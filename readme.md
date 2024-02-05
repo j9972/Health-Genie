@@ -85,7 +85,10 @@
 
 <br>
 
+## 🔎 Project Architecture
+![Architecture](images/architecture.png)
 
+<br>
 
 ## 📕 Health-Genie의 여정 소개
 ![USER_FLOW](images/health_genie_user_flow.png)
@@ -114,6 +117,14 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 ## 🏛️ CI/CD 아키텍처 (배포 자동화)
 
 ### 1. 현재 배포의 구조 / 선택한 이유 (Github Action 배포 자동화)
+
+### CI Flow
+> Github 'production' Branch Push  → Github Actions → Project Build → Docker Image Build → <br>
+Docker Hub Image Upload → AWS S3 Project File Upload
+
+### CD Flow
+> AWS CodeDeploy → Docker Container Stop -> Docker Image Pull -> Docker Run
+
 ![img.png](images/health_genie_githubaction.png)
 
 1. 무료입니다! 
