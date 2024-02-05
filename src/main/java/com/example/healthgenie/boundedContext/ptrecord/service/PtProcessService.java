@@ -7,8 +7,8 @@ import com.example.healthgenie.base.exception.MatchingErrorResult;
 import com.example.healthgenie.base.exception.MatchingException;
 import com.example.healthgenie.base.exception.PtProcessErrorResult;
 import com.example.healthgenie.base.exception.PtProcessException;
-import com.example.healthgenie.base.exception.PtReviewErrorResult;
-import com.example.healthgenie.base.exception.PtReviewException;
+import com.example.healthgenie.base.exception.UserErrorResult;
+import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -26,8 +26,6 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,10 +43,15 @@ public class PtProcessService {
     @Transactional
     public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, User currentUser) {
 
-        User trainer = userRepository.findByNickname(currentUser.getNickname()).orElseThrow();
-        User user = userRepository.findByNickname(dto.getUserNickName()).orElseThrow();
+        User trainer = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId()).orElseThrow();
+        User user = userRepository.findByNickname(dto.getUserNickName())
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+
+        MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+
         List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.getId());
 
         for (MatchingUser match : trainerMatchings) {
@@ -78,22 +81,20 @@ public class PtProcessService {
     @Transactional
     public PtProcessResponseDto makePtRProcess(PtProcessRequestDto dto, User user, User currentUser) {
 
-        if (!currentUser.getRole().equals(Role.TRAINER)) {
-            log.warn("process 작성 -> 작성자가 trainer가 아님");
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
-        }
+        checkRole(currentUser, Role.TRAINER);
 
-        PtProcess process = ptProcessRepository.save(
-                PtProcess.builder()
-                        .date(dto.getDate())
-                        .content(dto.getContent())
-                        .title(dto.getTitle())
-                        .member(user)
-                        .trainer(currentUser)
-                        .build()
-        );
+        PtProcess process = PtProcess.builder()
+                .date(dto.getDate())
+                .content(dto.getContent())
+                .title(dto.getTitle())
+                .member(user)
+                .trainer(currentUser)
+                .build();
 
-        return PtProcessResponseDto.of(process);
+        //PtProcess process = dto.toEntity(user, currentUser);
+
+        return PtProcessResponseDto.of(ptProcessRepository.save(process));
+
     }
 
     /*
@@ -103,29 +104,14 @@ public class PtProcessService {
         해당 trainer, user만 확인 가능
     */
     @Transactional(readOnly = true)
-    public PtProcessResponseDto getPtProcess(Long processId) {
-        PtProcess process = ptProcessRepository.findById(processId).orElseThrow(
-                () -> new PtProcessException(PtProcessErrorResult.NO_PROCESS_HISTORY));
+    public PtProcessResponseDto getPtProcess(Long processId, User user) {
+        PtProcess process = ptProcessRepository.findById(processId)
+                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_PROCESS_HISTORY));
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
-            log.warn("process 조회 -> 작성자가 트레이너가 아님");
-            throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
+        // 권한 체크
+        checkRole(user, Role.TRAINER);
 
-        } else {
-
-            User email = userRepository.findByEmail(authentication.getName()).orElseThrow();
-            User member = userRepository.findById(email.getId()).orElseThrow();
-
-            boolean user_result = process.getMember().equals(member);
-            boolean trainer_result = process.getTrainer().equals(member);
-
-            if (user_result || trainer_result) {
-                return PtProcessResponseDto.of(process);
-            }
-            throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
-
-        }
+        return PtProcessResponseDto.of(process);
     }
 
 
@@ -139,7 +125,6 @@ public class PtProcessService {
 
         // 페이징 처리
         List<PtProcess> process = ptProcessQueryRepository.findAllByTrainerId(currentUser.getId(), page, size);
-
         return PtProcessResponseDto.of(process);
 
     }
@@ -185,11 +170,16 @@ public class PtProcessService {
 
         PtProcess process = ptProcessRepository.findById(id)
                 .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.RECORD_EMPTY));
+        authCheck(member, process);
+
+        return process;
+    }
+
+    private void authCheck(User member, PtProcess process) {
         if (!process.getTrainer().getId().equals(member.getId())) {
             log.warn("process 소유자 user : {}", member);
             throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
         }
-        return process;
     }
 
     private void checkRole(User currentUser, Role role) {

@@ -195,7 +195,7 @@ class PtProcessServiceTest {
         LocalDate date = LocalDate.of(2023, 12, 5);
 
         // when
-        PtProcessResponseDto response = processService.getPtProcess(process.getId());
+        PtProcessResponseDto response = processService.getPtProcess(process.getId(), user2);
 
         // then
         assertThat(response.getDate()).isEqualTo(date);
@@ -220,7 +220,7 @@ class PtProcessServiceTest {
             ) {
                 throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
             } else {
-                processService.getPtProcess(process.getId());
+                processService.getPtProcess(process.getId(), user3);
             }
         }).isInstanceOf(PtProcessException.class);
     }
@@ -233,8 +233,8 @@ class PtProcessServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> processService.getPtProcess(process.getId()))
-                .isInstanceOf(PtProcessException.class);
+        assertThatThrownBy(() -> processService.getPtProcess(process.getId(), null))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -246,7 +246,7 @@ class PtProcessServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> processService.getPtProcess(999L))
+        assertThatThrownBy(() -> processService.getPtProcess(999L, user))
                 .isInstanceOf(PtProcessException.class);
     }
 

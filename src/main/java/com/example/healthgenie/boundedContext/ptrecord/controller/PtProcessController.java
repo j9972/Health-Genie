@@ -89,8 +89,9 @@ public class PtProcessController {
 
 
     @GetMapping("/detail/{processId}")
-    public ResponseEntity<Result> getProcess(@PathVariable Long processId) {
-        PtProcessResponseDto response = processService.getPtProcess(processId);
+    public ResponseEntity<Result> getProcess(@PathVariable Long processId,
+                                             @AuthenticationPrincipal User user) {
+        PtProcessResponseDto response = processService.getPtProcess(processId, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
