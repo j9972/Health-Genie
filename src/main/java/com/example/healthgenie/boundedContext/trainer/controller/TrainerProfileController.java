@@ -1,28 +1,27 @@
 package com.example.healthgenie.boundedContext.trainer.controller;
 
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.community.dto.PostRequest;
-import com.example.healthgenie.boundedContext.community.dto.PostResponse;
-import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileService;
 import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileTransactionService;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/trainer/profile")
+@RequestMapping("/trainer/profiles")
 public class TrainerProfileController {
 
     private final TrainerProfileService profileService;
@@ -30,7 +29,7 @@ public class TrainerProfileController {
 
     // 트레이너 패킷 세부 내용 작성 API
     @PostMapping
-    public ResponseEntity<Result> save(ProfileRequestDto dto,@AuthenticationPrincipal User user) throws IOException {
+    public ResponseEntity<Result> save(ProfileRequestDto dto, @AuthenticationPrincipal User user) throws IOException {
         log.info("trainer profile controller add -> principal user : {}", user);
 
         ProfileResponseDto response = trainerProfileTransactionService.save(dto, user);
@@ -39,7 +38,7 @@ public class TrainerProfileController {
 
     // 관리페이지에 보여줄 본인의 내용
     @GetMapping("/detail/{profileId}")
-    public ResponseEntity<Result> getProfile(@PathVariable Long profileId){
+    public ResponseEntity<Result> getProfile(@PathVariable Long profileId) {
         ProfileResponseDto response = profileService.getProfile(profileId);
         return ResponseEntity.ok(Result.of(response));
     }
