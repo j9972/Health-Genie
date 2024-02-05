@@ -53,7 +53,7 @@ public class PtProcessController {
                                                        @AuthenticationPrincipal User user) {
 
         int size = 5; // 5개씩 페이징 처리
-        Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(page, size, user);
+        List<PtProcessResponseDto> response = processService.getAllTrainerProcess(page, size, user);
         return ResponseEntity.ok(Result.of(response));
     }
 

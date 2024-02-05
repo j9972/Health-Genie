@@ -136,15 +136,19 @@ public class PtProcessService {
         해당 트레이너가 작성한 모든 피드백들을 전부 모아보기
      */
     @Transactional(readOnly = true)
-    public Page<PtProcessResponseDto> getAllTrainerProcess(int page, int size, User currentUser) {
+    public List<PtProcessResponseDto> getAllTrainerProcess(int page, int size, User currentUser) {
 
         checkRole(currentUser, Role.TRAINER);
 
-        // 작성 시간 역순으로 정렬 (가장 최근 작성 순)
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        // 페이징 처리
+        List<PtProcess> process = ptProcessQueryRepository.findAllByTrainerId(currentUser.getId(), page, size);
 
-        Page<PtProcess> process = ptProcessRepository.findAllByTrainerId(currentUser.getId(), pageable);
-        return process.map(PtProcessResponseDto::of);
+        // 작성 시간 역순으로 정렬 (가장 최근 작성 순)
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+//
+//        Page<PtProcess> process = ptProcessRepository.findAllByTrainerId(currentUser.getId(), pageable);
+        //return process.map(PtProcessResponseDto::of);
+        return PtProcessResponseDto.of(process);
 
     }
 

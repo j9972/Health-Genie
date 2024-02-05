@@ -258,17 +258,16 @@ class PtProcessServiceTest {
         testKrUtils.login(user2);
 
         // when
-        Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(0, 5, user2);
+        List<PtProcessResponseDto> response = processService.getAllTrainerProcess(0, 5, user2);
         LocalDate date = LocalDate.of(2023, 12, 5);
 
         // then
-        assertThat(response.getTotalElements()).isEqualTo(1);
-        assertThat(response.getContent().get(0).getDate()).isEqualTo(date);
-        assertThat(response.getContent().get(0).getContent()).isEqualTo("test content2");
-        assertThat(response.getContent().get(0).getTitle()).isEqualTo("test title2");
-        assertThat(response.getContent().get(0).getUserNickName()).isEqualTo("test1");
-        assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo("test2");
-        assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo(user2.getNickname());
+        assertThat(response.get(0).getDate()).isEqualTo(date);
+        assertThat(response.get(0).getContent()).isEqualTo("test content2");
+        assertThat(response.get(0).getTitle()).isEqualTo("test title2");
+        assertThat(response.get(0).getUserNickName()).isEqualTo("test1");
+        assertThat(response.get(0).getTrainerNickName()).isEqualTo("test2");
+        assertThat(response.get(0).getTrainerNickName()).isEqualTo(user2.getNickname());
     }
 
     @Test
