@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.ptrecord.controller;
 
 
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessDeleteResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessService;
@@ -98,11 +99,9 @@ public class PtProcessController {
     public ResponseEntity<Result> deleteProcess(@PathVariable Long processId,
                                                 @AuthenticationPrincipal User user) {
 
-        log.info("process controller -> deleteProcess principal user : {}", user);
-        String response = processService.deletePtProcess(processId, user);
+        PtProcessDeleteResponseDto response = processService.deletePtProcess(processId, user);
 
         return ResponseEntity.ok(Result.of(response));
     }
-
 
 }

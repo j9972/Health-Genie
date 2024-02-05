@@ -13,6 +13,7 @@ import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
+import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessDeleteResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
@@ -158,18 +159,19 @@ public class PtProcessService {
 
 
     @Transactional
-    public String deletePtProcess(Long processId, User user) {
+    public PtProcessDeleteResponseDto deletePtProcess(Long processId, User user) {
 
         PtProcess process = authorizationProcessWriter(processId, user);
 
         ptProcessRepository.deleteById(process.getId());
 
-        return "피드백이 삭제 되었습니다.";
+        return PtProcessDeleteResponseDto.builder()
+                .id(process.getId())
+                .build();
     }
 
     @Transactional(readOnly = true)
     public List<PtProcessResponseDto> findAll(String keyword) {
-
         return PtProcessResponseDto.of(ptProcessQueryRepository.findAll(keyword));
     }
 

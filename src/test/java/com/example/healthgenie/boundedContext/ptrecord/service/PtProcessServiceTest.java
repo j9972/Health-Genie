@@ -331,10 +331,11 @@ class PtProcessServiceTest {
         testKrUtils.login(user2);
 
         // when
+        processService.deletePtProcess(process.getId(), user2);
 
         // then
-        String response = processService.deletePtProcess(process.getId(), user2);
-        assertThat(response).isEqualTo("피드백이 삭제 되었습니다.");
+        assertThatThrownBy(() -> processService.deletePtProcess(process.getId(), user2))
+                .isInstanceOf(PtProcessException.class);
     }
 
     @Test
