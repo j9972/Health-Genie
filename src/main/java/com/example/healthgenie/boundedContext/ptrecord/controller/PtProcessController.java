@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -52,8 +51,7 @@ public class PtProcessController {
     public ResponseEntity<Result> getAllTrainerProcess(@RequestParam(required = false, defaultValue = "0") int page,
                                                        @AuthenticationPrincipal User user) {
 
-        int size = 5; // 5개씩 페이징 처리
-        List<PtProcessResponseDto> response = processService.getAllTrainerProcess(page, size, user);
+        List<PtProcessResponseDto> response = processService.getAllTrainerProcess(page, 5, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -65,9 +63,7 @@ public class PtProcessController {
     public ResponseEntity<Result> getAllMyProcess(@RequestParam(required = false, defaultValue = "0") int page,
                                                   @AuthenticationPrincipal User user) {
 
-        log.info("process controller -> getAllUser principal user : {}", user);
-        int size = 5; // 5개씩 페이징 처리
-        Page<PtProcessResponseDto> response = processService.getAllMyProcess(page, size, user);
+        List<PtProcessResponseDto> response = processService.getAllMyProcess(page, 5, user);
         return ResponseEntity.ok(Result.of(response));
     }
 

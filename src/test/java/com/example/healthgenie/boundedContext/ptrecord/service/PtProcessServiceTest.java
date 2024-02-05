@@ -27,7 +27,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -277,17 +276,16 @@ class PtProcessServiceTest {
         testKrUtils.login(user);
 
         // when
-        Page<PtProcessResponseDto> response = processService.getAllMyProcess(0, 5, user);
+        List<PtProcessResponseDto> response = processService.getAllMyProcess(0, 5, user);
         LocalDate date = LocalDate.of(2023, 12, 5);
 
         // then
-        assertThat(response.getTotalElements()).isEqualTo(1);
-        assertThat(response.getContent().get(0).getDate()).isEqualTo(date);
-        assertThat(response.getContent().get(0).getContent()).isEqualTo("test content2");
-        assertThat(response.getContent().get(0).getTitle()).isEqualTo("test title2");
-        assertThat(response.getContent().get(0).getUserNickName()).isEqualTo("test1");
-        assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo("test2");
-        assertThat(response.getContent().get(0).getUserNickName()).isEqualTo(user.getNickname());
+        assertThat(response.get(0).getDate()).isEqualTo(date);
+        assertThat(response.get(0).getContent()).isEqualTo("test content2");
+        assertThat(response.get(0).getTitle()).isEqualTo("test title2");
+        assertThat(response.get(0).getUserNickName()).isEqualTo("test1");
+        assertThat(response.get(0).getTrainerNickName()).isEqualTo("test2");
+        assertThat(response.get(0).getUserNickName()).isEqualTo(user.getNickname());
     }
 
     @Test

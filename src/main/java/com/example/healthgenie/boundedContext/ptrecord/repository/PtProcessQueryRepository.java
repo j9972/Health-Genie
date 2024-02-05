@@ -42,4 +42,14 @@ public class PtProcessQueryRepository {
                 .limit(size)
                 .fetch();
     }
+
+    public List<PtProcess> findAllByMemberId(Long memberId, int page, int size) {
+        return query
+                .selectFrom(ptProcess)
+                .where(ptProcess.member.id.eq(memberId))
+                .orderBy(ptProcess.id.desc())
+                .offset(page)
+                .limit(size)
+                .fetch();
+    }
 }

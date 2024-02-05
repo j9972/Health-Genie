@@ -25,10 +25,6 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -143,11 +139,6 @@ public class PtProcessService {
         // 페이징 처리
         List<PtProcess> process = ptProcessQueryRepository.findAllByTrainerId(currentUser.getId(), page, size);
 
-        // 작성 시간 역순으로 정렬 (가장 최근 작성 순)
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
-//
-//        Page<PtProcess> process = ptProcessRepository.findAllByTrainerId(currentUser.getId(), pageable);
-        //return process.map(PtProcessResponseDto::of);
         return PtProcessResponseDto.of(process);
 
     }
@@ -156,14 +147,13 @@ public class PtProcessService {
         본인의 피드백들을 전부 모아보기
     */
     @Transactional(readOnly = true)
-    public Page<PtProcessResponseDto> getAllMyProcess(int page, int size, User currentUser) {
+    public List<PtProcessResponseDto> getAllMyProcess(int page, int size, User currentUser) {
 
         checkRole(currentUser, Role.USER);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
-
-        Page<PtProcess> process = ptProcessRepository.findAllByMemberId(currentUser.getId(), pageable);
-        return process.map(PtProcessResponseDto::of);
+        // 페이징 처리
+        List<PtProcess> process = ptProcessQueryRepository.findAllByMemberId(currentUser.getId(), page, size);
+        return PtProcessResponseDto.of(process);
     }
 
 
