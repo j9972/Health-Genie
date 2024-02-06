@@ -10,6 +10,7 @@ import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewDeleteResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
@@ -138,7 +139,7 @@ public class PtReviewService {
     }
 
     /*
-        본인이 작성한 review list 조회, ]
+        본인이 작성한 review list 조회
     */
     @Transactional(readOnly = true)
     public List<PtReviewResponseDto> getAllReview(int page, int size, User currentUser) {
@@ -173,12 +174,14 @@ public class PtReviewService {
 
 
     @Transactional
-    public String deletePtReview(Long reviewId, User user) {
+    public PtReviewDeleteResponseDto deletePtReview(Long reviewId, User user) {
 
         PtReview review = authorizationReviewWriter(reviewId, user);
         ptReviewRepository.deleteById(review.getId());
 
-        return "후기가 삭제 되었습니다.";
+        return PtReviewDeleteResponseDto.builder()
+                .id(review.getId())
+                .build();
     }
 
     @Transactional(readOnly = true)

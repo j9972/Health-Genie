@@ -336,10 +336,11 @@ class PtReviewServiceTest {
         testKrUtils.login(user3);
 
         // when
+        reviewService.deletePtReview(review.getId(), user3);
 
         // then
-        String response = reviewService.deletePtReview(review.getId(), user3);
-        assertThat(response).isEqualTo("후기가 삭제 되었습니다.");
+        assertThatThrownBy(() -> reviewService.deletePtReview(review.getId(), user3))
+                .isInstanceOf(PtReviewException.class);
     }
 
     @Test

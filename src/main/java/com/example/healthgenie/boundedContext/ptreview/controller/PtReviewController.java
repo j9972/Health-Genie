@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.ptreview.controller;
 
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewDeleteResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
@@ -108,9 +109,8 @@ public class PtReviewController {
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Result> deleteReview(@PathVariable Long reviewId,
                                                @AuthenticationPrincipal User user) {
-        log.info("review controller delete -> principal user : {}", user);
 
-        String response = reviewService.deletePtReview(reviewId, user);
+        PtReviewDeleteResponseDto response = reviewService.deletePtReview(reviewId, user);
         return ResponseEntity.ok(Result.of(response));
     }
 }
