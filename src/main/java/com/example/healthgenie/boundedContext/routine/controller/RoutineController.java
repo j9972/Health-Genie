@@ -1,24 +1,27 @@
 package com.example.healthgenie.boundedContext.routine.controller;
 
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
-import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewQueryRepository;
+import com.example.healthgenie.boundedContext.routine.dto.RoutineDeleteResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
-import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
 import com.example.healthgenie.boundedContext.routine.service.RoutineService;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -26,27 +29,27 @@ import java.util.List;
 @RequestMapping("/routine")
 public class RoutineController {
 
-     private final RoutineService routineService;
+    private final RoutineService routineService;
 
-     @PostMapping
-     public ResponseEntity<Result> writeRoutine(@RequestBody RoutineRequestDto dto, @AuthenticationPrincipal User user) {
+    @PostMapping
+    public ResponseEntity<Result> writeRoutine(@RequestBody RoutineRequestDto dto, @AuthenticationPrincipal User user) {
 
-         log.info("routine controller write -> principal user : {}", user);
+        log.info("routine controller write -> principal user : {}", user);
 
-         RoutineResponseDto response = routineService.writeRoutine(dto, user);
-         return ResponseEntity.ok(Result.of(response));
-     }
+        RoutineResponseDto response = routineService.writeRoutine(dto, user);
+        return ResponseEntity.ok(Result.of(response));
+    }
 
-     @PatchMapping("/{routineId}")
-     public ResponseEntity<Result> updateRoutine(@RequestBody RoutineUpdateRequestDto dto,
-                                                 @PathVariable Long routineId,
-                                                 @AuthenticationPrincipal User user) {
+    @PatchMapping("/{routineId}")
+    public ResponseEntity<Result> updateRoutine(@RequestBody RoutineUpdateRequestDto dto,
+                                                @PathVariable Long routineId,
+                                                @AuthenticationPrincipal User user) {
 
-         log.info("routine controller update -> principal user : {}", user);
+        log.info("routine controller update -> principal user : {}", user);
 
-         RoutineResponseDto response = routineService.updateRoutine(dto,routineId, user);
-         return ResponseEntity.ok(Result.of(response));
-     }
+        RoutineResponseDto response = routineService.updateRoutine(dto, routineId, user);
+        return ResponseEntity.ok(Result.of(response));
+    }
 
 
     // 개인 루틴 전체조회 -> currentUser 사용하면 userId 필요없다
@@ -64,7 +67,7 @@ public class RoutineController {
         회원용/트레이너용 관리페이지에서 조회할때 사용할 API
      */
     @GetMapping("/detail/{day}")
-    public ResponseEntity<Result> getRoutine(@PathVariable Day day, @AuthenticationPrincipal User user){
+    public ResponseEntity<Result> getRoutine(@PathVariable Day day, @AuthenticationPrincipal User user) {
 
         log.info("routine controller get by day -> principal user : {}", user);
 
@@ -94,13 +97,12 @@ public class RoutineController {
     }
 
 
-
     // 본인만 삭제 가능하게 하기 -> 프론트에서 기능을 숨기면 되어서 구별 로직뺌
     @DeleteMapping("/{routineId}")
     public ResponseEntity<Result> deleteRoutine(@PathVariable Long routineId,
                                                 @AuthenticationPrincipal User user) {
         log.info("routine controller delete -> principal user : {}", user);
-        String response = routineService.deleteRoutine(routineId, user);
+        RoutineDeleteResponseDto response = routineService.deleteRoutine(routineId, user);
 
         return ResponseEntity.ok(Result.of(response));
     }

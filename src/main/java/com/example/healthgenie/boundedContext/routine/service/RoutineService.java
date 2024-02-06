@@ -2,34 +2,22 @@ package com.example.healthgenie.boundedContext.routine.service;
 
 import com.example.healthgenie.base.exception.RoutineErrorResult;
 import com.example.healthgenie.base.exception.RoutineException;
-import com.example.healthgenie.base.utils.SecurityUtils;
-import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
-import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
-import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
-import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
+import com.example.healthgenie.boundedContext.routine.dto.RoutineDeleteResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;
-import com.example.healthgenie.boundedContext.routine.entity.*;
+import com.example.healthgenie.boundedContext.routine.entity.Day;
+import com.example.healthgenie.boundedContext.routine.entity.Level;
+import com.example.healthgenie.boundedContext.routine.entity.Routine;
+import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import com.example.healthgenie.boundedContext.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
@@ -50,9 +38,9 @@ public class RoutineService {
 
         List<Routine> routines = routineRepository.findAllByMemberId(user.getId());
 
-        if(!routines.isEmpty()) {
+        if (!routines.isEmpty()) {
             for (Routine mine : routines) {
-                if(mine.getDay().equals(dto.getDay())) {
+                if (mine.getDay().equals(dto.getDay())) {
                     log.warn("중복된 요일입니다.");
                     throw new RoutineException(RoutineErrorResult.DUPLICATE_DAY);
                 }
@@ -61,7 +49,8 @@ public class RoutineService {
 
         for (WorkoutRecipe recipe : dto.getWorkoutRecipe()) {
 
-            WorkoutRecipe data = new WorkoutRecipe(recipe.getName(), recipe.getKg(), recipe.getSets(), recipe.getReps());
+            WorkoutRecipe data = new WorkoutRecipe(recipe.getName(), recipe.getKg(), recipe.getSets(),
+                    recipe.getReps());
 
             Routine routine = Routine.builder()
                     .day(dto.getDay())
@@ -87,27 +76,27 @@ public class RoutineService {
     private void updateEachRoutineItems(RoutineUpdateRequestDto dto, Routine routine) {
         WorkoutRecipe workoutRecipe = routine.getWorkoutRecipe();
 
-        if (dto.hasDay()){
+        if (dto.hasDay()) {
             routine.updateDay(dto.getDay());
         }
-        if (dto.hasParts()){
+        if (dto.hasParts()) {
             routine.updatePart(dto.getParts());
         }
 
         for (WorkoutRecipe recipe : dto.getWorkoutRecipe()) {
-            if(recipe.getName() != null) {
+            if (recipe.getName() != null) {
                 workoutRecipe.updateName(recipe.getName());
             }
             // 0도 유효한 값으로 처리
-            if(recipe.getSets() != 0 || workoutRecipe.getSets() == 0) {
+            if (recipe.getSets() != 0 || workoutRecipe.getSets() == 0) {
                 workoutRecipe.updateSets(recipe.getSets());
             }
             // 0도 유효한 값으로 처리
-            if(recipe.getReps() != 0 || workoutRecipe.getReps() == 0) {
+            if (recipe.getReps() != 0 || workoutRecipe.getReps() == 0) {
                 workoutRecipe.updateReps(recipe.getReps());
             }
             // 0도 유효한 값으로 처리
-            if(recipe.getKg() != 0 || workoutRecipe.getKg() == 0) {
+            if (recipe.getKg() != 0 || workoutRecipe.getKg() == 0) {
                 workoutRecipe.updateKg(recipe.getKg());
             }
         }
@@ -146,22 +135,24 @@ public class RoutineService {
 
     @Transactional(readOnly = true)
     public List<RoutineResponseDto> getGenieRoutine(Level level, Day day) {
-        return RoutineResponseDto.ofGenie(routineQueryRepository.findAllByLevelAndDay(level,day));
+        return RoutineResponseDto.ofGenie(routineQueryRepository.findAllByLevelAndDay(level, day));
     }
 
 
-
     @Transactional
-    public String deleteRoutine(Long routineId, User user) {
+    public RoutineDeleteResponseDto deleteRoutine(Long routineId, User user) {
         Routine own = authorizationWriter(routineId, user);
         routineRepository.deleteById(own.getId());
 
-        return "루틴이 삭제되었습니다.";
+        return RoutineDeleteResponseDto.builder()
+                .id(own.getId())
+                .build();
     }
 
     private Routine authorizationWriter(Long id, User member) {
 
-        Routine routine = routineRepository.findById(id).orElseThrow(() -> new RoutineException(RoutineErrorResult.NO_HISTORY));
+        Routine routine = routineRepository.findById(id)
+                .orElseThrow(() -> new RoutineException(RoutineErrorResult.NO_HISTORY));
 
         if (!routine.getMember().getId().equals(member.getId())) {
             log.warn("member doesn't have authentication , routine.getMember {}", routine.getMember());
