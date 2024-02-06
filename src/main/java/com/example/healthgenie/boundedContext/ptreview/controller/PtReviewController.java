@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.ptreview.controller;
 
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewDeleteResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
@@ -45,9 +46,10 @@ public class PtReviewController {
 
     // 수정하려고 form 불러오기 -> 결국 조회가 필요함
     @GetMapping("/{reviewId}")
-    public ResponseEntity<Result> getReview(@PathVariable Long reviewId) {
+    public ResponseEntity<Result> getReview(@PathVariable Long reviewId,
+                                            @AuthenticationPrincipal User user) {
 
-        PtReviewResponseDto response = reviewService.getPtReview(reviewId);
+        PtReviewResponseDto response = reviewService.getPtReview(reviewId, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -108,9 +110,8 @@ public class PtReviewController {
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Result> deleteReview(@PathVariable Long reviewId,
                                                @AuthenticationPrincipal User user) {
-        log.info("review controller delete -> principal user : {}", user);
 
-        String response = reviewService.deletePtReview(reviewId, user);
+        PtReviewDeleteResponseDto response = reviewService.deletePtReview(reviewId, user);
         return ResponseEntity.ok(Result.of(response));
     }
 }

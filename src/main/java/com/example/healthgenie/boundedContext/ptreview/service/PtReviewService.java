@@ -10,6 +10,7 @@ import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewDeleteResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
@@ -23,8 +24,6 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,10 +57,7 @@ public class PtReviewService {
         PtReview review = ptReviewRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(),
                 dto.getTrainerNickName());
 
-        if (review != null) {
-            log.warn("duplicate review : {}", review);
-            throw new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
-        }
+        duplicateReview(review);
 
         for (MatchingUser match : trainerMatchings) {
             // matching User안에 있는 값들중 matching id값이 같은 경우
@@ -90,10 +86,7 @@ public class PtReviewService {
     @Transactional
     public PtReviewResponseDto makePtReview(PtReviewRequestDto dto, User trainer, User currentUser) {
 
-        if (!currentUser.getRole().equals(Role.USER)) {
-            log.warn("make reivew principal currentUser : {}", currentUser);
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
-        }
+        ShouldNotBeTrainer(currentUser, Role.TRAINER);
 
         PtReview ptReview = PtReview.builder()
                 .content(dto.getContent())
@@ -107,17 +100,12 @@ public class PtReviewService {
     }
 
     @Transactional(readOnly = true)
-    public PtReviewResponseDto getPtReview(Long reviewId) {
+    public PtReviewResponseDto getPtReview(Long reviewId, User user) {
         PtReview review = ptReviewRepository.findById(reviewId).orElseThrow(
                 () -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
-            log.warn("no validate user authentication: {}", authentication);
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
-        } else {
-            return PtReviewResponseDto.of(review);
-        }
+        reviewWriter(user, review);
+        return PtReviewResponseDto.of(review);
     }
 
     /*
@@ -138,7 +126,7 @@ public class PtReviewService {
     }
 
     /*
-        본인이 작성한 review list 조회, ]
+        본인이 작성한 review list 조회
     */
     @Transactional(readOnly = true)
     public List<PtReviewResponseDto> getAllReview(int page, int size, User currentUser) {
@@ -173,12 +161,14 @@ public class PtReviewService {
 
 
     @Transactional
-    public String deletePtReview(Long reviewId, User user) {
+    public PtReviewDeleteResponseDto deletePtReview(Long reviewId, User user) {
 
         PtReview review = authorizationReviewWriter(reviewId, user);
         ptReviewRepository.deleteById(review.getId());
 
-        return "후기가 삭제 되었습니다.";
+        return PtReviewDeleteResponseDto.builder()
+                .id(review.getId())
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -196,11 +186,15 @@ public class PtReviewService {
         PtReview review = ptReviewRepository.findById(id)
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
 
+        reviewWriter(member, review);
+        return review;
+    }
+
+    private void reviewWriter(User member, PtReview review) {
         if (!review.getMember().getId().equals(member.getId())) {
             log.warn("this user doesn't have authentication : {}", review.getMember());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         }
-        return review;
     }
 
     private void ShouldNotBeTrainer(User currentUser, Role role) {
@@ -214,6 +208,13 @@ public class PtReviewService {
         if (!trainer.getRole().equals(role)) {
             log.warn("wrong user role : {} ( is not trainer )", trainer.getRole());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
+        }
+    }
+
+    private void duplicateReview(PtReview review) {
+        if (review != null) {
+            log.warn("duplicate review : {}", review);
+            throw new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
         }
     }
 }
