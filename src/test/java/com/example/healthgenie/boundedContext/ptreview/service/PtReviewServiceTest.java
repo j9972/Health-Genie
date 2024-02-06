@@ -203,7 +203,7 @@ class PtReviewServiceTest {
         testKrUtils.login(user);
 
         // when
-        PtReviewResponseDto response = reviewService.getPtReview(review.getId());
+        PtReviewResponseDto response = reviewService.getPtReview(review.getId(), user);
 
         // then
         assertThat(response.getStopReason()).isEqualTo("stop");
@@ -222,7 +222,7 @@ class PtReviewServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> reviewService.getPtReview(999L))
+        assertThatThrownBy(() -> reviewService.getPtReview(999L, user))
                 .isInstanceOf(PtReviewException.class);
     }
 

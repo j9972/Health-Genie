@@ -24,8 +24,6 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,10 +57,7 @@ public class PtReviewService {
         PtReview review = ptReviewRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(),
                 dto.getTrainerNickName());
 
-        if (review != null) {
-            log.warn("duplicate review : {}", review);
-            throw new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
-        }
+        duplicateReview(review);
 
         for (MatchingUser match : trainerMatchings) {
             // matching User안에 있는 값들중 matching id값이 같은 경우
@@ -91,10 +86,7 @@ public class PtReviewService {
     @Transactional
     public PtReviewResponseDto makePtReview(PtReviewRequestDto dto, User trainer, User currentUser) {
 
-        if (!currentUser.getRole().equals(Role.USER)) {
-            log.warn("make reivew principal currentUser : {}", currentUser);
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
-        }
+        ShouldNotBeTrainer(currentUser, Role.TRAINER);
 
         PtReview ptReview = PtReview.builder()
                 .content(dto.getContent())
@@ -108,17 +100,12 @@ public class PtReviewService {
     }
 
     @Transactional(readOnly = true)
-    public PtReviewResponseDto getPtReview(Long reviewId) {
+    public PtReviewResponseDto getPtReview(Long reviewId, User user) {
         PtReview review = ptReviewRepository.findById(reviewId).orElseThrow(
                 () -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
-            log.warn("no validate user authentication: {}", authentication);
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
-        } else {
-            return PtReviewResponseDto.of(review);
-        }
+        reviewWriter(user, review);
+        return PtReviewResponseDto.of(review);
     }
 
     /*
@@ -199,11 +186,15 @@ public class PtReviewService {
         PtReview review = ptReviewRepository.findById(id)
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
 
+        reviewWriter(member, review);
+        return review;
+    }
+
+    private void reviewWriter(User member, PtReview review) {
         if (!review.getMember().getId().equals(member.getId())) {
             log.warn("this user doesn't have authentication : {}", review.getMember());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
         }
-        return review;
     }
 
     private void ShouldNotBeTrainer(User currentUser, Role role) {
@@ -217,6 +208,13 @@ public class PtReviewService {
         if (!trainer.getRole().equals(role)) {
             log.warn("wrong user role : {} ( is not trainer )", trainer.getRole());
             throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
+        }
+    }
+
+    private void duplicateReview(PtReview review) {
+        if (review != null) {
+            log.warn("duplicate review : {}", review);
+            throw new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
         }
     }
 }

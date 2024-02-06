@@ -46,9 +46,10 @@ public class PtReviewController {
 
     // 수정하려고 form 불러오기 -> 결국 조회가 필요함
     @GetMapping("/{reviewId}")
-    public ResponseEntity<Result> getReview(@PathVariable Long reviewId) {
+    public ResponseEntity<Result> getReview(@PathVariable Long reviewId,
+                                            @AuthenticationPrincipal User user) {
 
-        PtReviewResponseDto response = reviewService.getPtReview(reviewId);
+        PtReviewResponseDto response = reviewService.getPtReview(reviewId, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
