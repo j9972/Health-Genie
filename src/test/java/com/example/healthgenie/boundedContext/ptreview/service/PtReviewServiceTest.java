@@ -145,8 +145,7 @@ class PtReviewServiceTest {
         // given
         testKrUtils.login(user3);
 
-        PtReview review = ptReviewRepository.findByMemberNicknameAndTrainerNickname("test3",
-                "test4");
+        PtReview review = ptReviewRepository.findByMemberIdAndTrainerId(user3.getId(), user4.getId());
 
         // when
 
@@ -200,10 +199,10 @@ class PtReviewServiceTest {
     void getPtReview() {
         // given
         // review 작성한 사람 아니여도 조회 가능
-        testKrUtils.login(user);
+        testKrUtils.login(user3);
 
         // when
-        PtReviewResponseDto response = reviewService.getPtReview(review.getId(), user);
+        PtReviewResponseDto response = reviewService.getPtReview(review.getId(), user3);
 
         // then
         assertThat(response.getStopReason()).isEqualTo("stop");
