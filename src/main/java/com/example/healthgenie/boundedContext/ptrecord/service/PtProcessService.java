@@ -58,7 +58,8 @@ public class PtProcessService {
             // matching User안에 있는 값들중 matching id값이 같은 경우
             if (match.getMatching().getId().equals(userMatching.getMatching().getId())) {
 
-                Matching matching = matchingRepository.findById(match.getMatching().getId()).orElseThrow();
+                Matching matching = matchingRepository.findById(match.getMatching().getId())
+                        .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
                 // trainer와 user사이의 매칭이 있을때 일지 작성 가능
                 log.info("해당하는 매칭이 있음 matching : {}", matching);

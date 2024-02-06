@@ -4,6 +4,8 @@ import com.example.healthgenie.base.exception.MatchingErrorResult;
 import com.example.healthgenie.base.exception.MatchingException;
 import com.example.healthgenie.base.exception.PtReviewErrorResult;
 import com.example.healthgenie.base.exception.PtReviewException;
+import com.example.healthgenie.base.exception.UserErrorResult;
+import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -21,10 +23,6 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -128,44 +126,28 @@ public class PtReviewService {
 
     */
     @Transactional(readOnly = true)
-    public Page<PtReviewResponseDto> getAllTrainerReview(Long trainerId, int page, int size) {
+    public List<PtReviewResponseDto> getAllTrainerReview(Long trainerId, int page, int size) {
 
-        User user = userRepository.findById(trainerId).orElseThrow();
-        if (!user.getRole().equals(Role.TRAINER)) {
-            log.warn("wrong user role : {} ( is not trainer )", user.getRole());
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
-        }
+        User trainer = userRepository.findById(trainerId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        ShouldBeTrainer(trainer, trainer.getRole());
 
-        Page<PtReview> review = ptReviewRepository.findAllByTrainerId(trainerId, pageable);
-        return review.map(PtReviewResponseDto::of);
+        List<PtReview> review = ptReviewQueryRepository.findAllByTrainerId(trainerId, page, size);
+        return PtReviewResponseDto.of(review);
     }
 
     /*
         본인이 작성한 review list 조회, ]
     */
     @Transactional(readOnly = true)
-    public Page<PtReviewResponseDto> getAllReview(Long userId, int page, int size, User currentUser) {
-
-        User user = userRepository.findById(userId).orElseThrow();
-
-        // 본인만 본인의 후기모음을 볼 수 있다
-        if (!user.getId().equals(currentUser.getId())) {
-            log.warn("wrong user role : {} ( is not user )", user.getRole());
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
-        }
+    public List<PtReviewResponseDto> getAllReview(int page, int size, User currentUser) {
 
         // 트레이너면 후기를 작성할 수 없으니 error
-        if (currentUser.getRole().equals(Role.TRAINER)) {
-            log.warn("trainer can't write review ( role : {} )", user.getRole());
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
-        }
+        ShouldNotBeTrainer(currentUser, Role.TRAINER);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
-
-        Page<PtReview> review = ptReviewRepository.findAllByMemberId(currentUser.getId(), pageable);
-        return review.map(PtReviewResponseDto::of);
+        List<PtReview> review = ptReviewQueryRepository.findAllByMemberId(currentUser.getId(), page, size);
+        return PtReviewResponseDto.of(review);
     }
 
     @Transactional
@@ -199,6 +181,15 @@ public class PtReviewService {
         return "후기가 삭제 되었습니다.";
     }
 
+    @Transactional(readOnly = true)
+    public List<PtReviewResponseDto> findAll(String keyword) {
+        return PtReviewResponseDto.of(ptReviewQueryRepository.findAll(keyword));
+    }
+
+    @Transactional(readOnly = true)
+    public List<PtReviewResponseDto> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
+        return PtReviewResponseDto.of(ptReviewQueryRepository.findAllByDate(searchStartDate, searchEndDate));
+    }
 
     // review는 회원만 수정 삭제 가능
     private PtReview authorizationReviewWriter(Long id, User member) {
@@ -212,13 +203,17 @@ public class PtReviewService {
         return review;
     }
 
-    @Transactional(readOnly = true)
-    public List<PtReviewResponseDto> findAll(String keyword) {
-        return PtReviewResponseDto.of(ptReviewQueryRepository.findAll(keyword));
+    private void ShouldNotBeTrainer(User currentUser, Role role) {
+        if (currentUser.getRole().equals(role)) {
+            log.warn("trainer can't write review ( role : {} )", currentUser.getRole());
+            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
+        }
     }
 
-    @Transactional(readOnly = true)
-    public List<PtReviewResponseDto> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
-        return PtReviewResponseDto.of(ptReviewQueryRepository.findAllByDate(searchStartDate, searchEndDate));
+    private void ShouldBeTrainer(User trainer, Role role) {
+        if (!trainer.getRole().equals(role)) {
+            log.warn("wrong user role : {} ( is not trainer )", trainer.getRole());
+            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
+        }
     }
 }

@@ -32,7 +32,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -235,15 +234,14 @@ class PtReviewServiceTest {
         Long trainerId = review.getTrainer().getId();
 
         // when
-        Page<PtReviewResponseDto> response = reviewService.getAllTrainerReview(trainerId, 0, 5);
+        List<PtReviewResponseDto> response = reviewService.getAllTrainerReview(trainerId, 0, 5);
 
         // then
-        assertThat(response.getTotalElements()).isEqualTo(1);
-        assertThat(response.getContent().get(0).getContent()).isEqualTo("test review");
-        assertThat(response.getContent().get(0).getReviewScore()).isEqualTo(4.5);
-        assertThat(response.getContent().get(0).getStopReason()).isEqualTo("stop");
-        assertThat(response.getContent().get(0).getUserNickName()).isEqualTo(user3.getNickname());
-        assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
+        assertThat(response.get(0).getContent()).isEqualTo("test review");
+        assertThat(response.get(0).getReviewScore()).isEqualTo(4.5);
+        assertThat(response.get(0).getStopReason()).isEqualTo("stop");
+        assertThat(response.get(0).getUserNickName()).isEqualTo(user3.getNickname());
+        assertThat(response.get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
     }
 
     @Test
@@ -254,15 +252,14 @@ class PtReviewServiceTest {
         Long userId = review.getMember().getId();
 
         // when
-        Page<PtReviewResponseDto> response = reviewService.getAllReview(userId, 0, 5, user3);
+        List<PtReviewResponseDto> response = reviewService.getAllReview(0, 5, user3);
 
         // then
-        assertThat(response.getTotalElements()).isEqualTo(1);
-        assertThat(response.getContent().get(0).getContent()).isEqualTo("test review");
-        assertThat(response.getContent().get(0).getReviewScore()).isEqualTo(4.5);
-        assertThat(response.getContent().get(0).getStopReason()).isEqualTo("stop");
-        assertThat(response.getContent().get(0).getUserNickName()).isEqualTo(user3.getNickname());
-        assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
+        assertThat(response.get(0).getContent()).isEqualTo("test review");
+        assertThat(response.get(0).getReviewScore()).isEqualTo(4.5);
+        assertThat(response.get(0).getStopReason()).isEqualTo("stop");
+        assertThat(response.get(0).getUserNickName()).isEqualTo(user3.getNickname());
+        assertThat(response.get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
     }
 
     @Test
