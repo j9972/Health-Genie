@@ -45,17 +45,17 @@ public class PtReviewService {
         User trainer = userRepository.findByNickname(dto.getTrainerNickName())
                 .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY));
 
-        User matchingUser = userRepository.findByNickname(dto.getUserNickName()).orElseThrow();
-        if (matchingUser.getRole().equals(Role.TRAINER)) {
-            log.warn("지금 작성하는 유저는 trainer입니다.");
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
-        }
+        User matchingUser = userRepository.findByNickname(dto.getUserNickName())
+                .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.WRONG_USER));
 
-        MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId()).orElseThrow();
+        ShouldNotBeTrainer(matchingUser, Role.TRAINER);
+
+        MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+
         List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.getId());
 
-        PtReview review = ptReviewRepository.findByMemberNicknameAndTrainerNickname(dto.getUserNickName(),
-                dto.getTrainerNickName());
+        PtReview review = ptReviewRepository.findByMemberIdAndTrainerId(trainer.getId(), matchingUser.getId());
 
         duplicateReview(review);
 
@@ -63,10 +63,8 @@ public class PtReviewService {
             // matching User안에 있는 값들중 matching id값이 같은 경우
             if (match.getMatching().getId().equals(userMatching.getMatching().getId())) {
 
-                Matching matching = matchingRepository.findById(match.getMatching().getId()).orElseThrow();
-
-                // trainer와 user사이의 매칭이 있을때 일지 작성 가능
-                log.info("해당하는 매칭이 있음 matching : {}", matching);
+                Matching matching = matchingRepository.findById(match.getMatching().getId())
+                        .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
                 // 작성 날짜가 매칭날짜보다 뒤에 있어야 한다
                 if (LocalDate.now().isAfter(matching.getDate())) {
