@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class TrainerProfileService {
     private final TrainerProfileRepository trainerProfileRepository;
 
-    //
     /*
         관리페이지용 API -> 수정 , 트레이너만 가능
     */
@@ -79,8 +78,6 @@ public class TrainerProfileService {
         }
         return profile;
     }
-
-    // 홈페이지에 보여줄 패킷용 API
 
     // 홈페이지에서 패킷에서 들어가면 보여줄 API
     @Transactional
