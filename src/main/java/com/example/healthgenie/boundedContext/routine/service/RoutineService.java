@@ -52,12 +52,7 @@ public class RoutineService {
             WorkoutRecipe data = new WorkoutRecipe(recipe.getName(), recipe.getKg(), recipe.getSets(),
                     recipe.getReps());
 
-            Routine routine = Routine.builder()
-                    .day(dto.getDay())
-                    .parts(dto.getParts())
-                    .workoutRecipe(data)
-                    .member(user)
-                    .build();
+            Routine routine = dto.toEntity(user, data);
 
             saved = routineRepository.save(routine);
         }
@@ -84,6 +79,7 @@ public class RoutineService {
         }
 
         for (WorkoutRecipe recipe : dto.getWorkoutRecipe()) {
+
             if (recipe.getName() != null) {
                 workoutRecipe.updateName(recipe.getName());
             }
@@ -99,13 +95,6 @@ public class RoutineService {
             if (recipe.getKg() != 0 || workoutRecipe.getKg() == 0) {
                 workoutRecipe.updateKg(recipe.getKg());
             }
-        }
-    }
-
-    private static void validNickname(boolean routine, RoutineErrorResult validError) {
-        if (!routine) {
-            log.warn("routine valid : false");
-            throw new RoutineException(validError);
         }
     }
 
@@ -160,6 +149,13 @@ public class RoutineService {
         }
         return routine;
 
+    }
+
+    private void validNickname(boolean routine, RoutineErrorResult validError) {
+        if (!routine) {
+            log.warn("routine valid : false");
+            throw new RoutineException(validError);
+        }
     }
 
 }

@@ -86,15 +86,9 @@ public class PtReviewService {
 
         ShouldNotBeTrainer(currentUser, Role.TRAINER);
 
-        PtReview ptReview = PtReview.builder()
-                .content(dto.getContent())
-                .reviewScore(dto.getReviewScore())
-                .stopReason(dto.getStopReason())
-                .member(currentUser)
-                .trainer(trainer)
-                .build();
+        PtReview review = dto.toEntity(trainer, currentUser);
 
-        return PtReviewResponseDto.of(ptReviewRepository.save(ptReview));
+        return PtReviewResponseDto.of(ptReviewRepository.save(review));
     }
 
     @Transactional(readOnly = true)

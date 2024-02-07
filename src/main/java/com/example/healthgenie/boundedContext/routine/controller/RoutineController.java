@@ -34,8 +34,6 @@ public class RoutineController {
     @PostMapping
     public ResponseEntity<Result> writeRoutine(@RequestBody RoutineRequestDto dto, @AuthenticationPrincipal User user) {
 
-        log.info("routine controller write -> principal user : {}", user);
-
         RoutineResponseDto response = routineService.writeRoutine(dto, user);
         return ResponseEntity.ok(Result.of(response));
     }
@@ -45,8 +43,6 @@ public class RoutineController {
                                                 @PathVariable Long routineId,
                                                 @AuthenticationPrincipal User user) {
 
-        log.info("routine controller update -> principal user : {}", user);
-
         RoutineResponseDto response = routineService.updateRoutine(dto, routineId, user);
         return ResponseEntity.ok(Result.of(response));
     }
@@ -55,8 +51,6 @@ public class RoutineController {
     // 개인 루틴 전체조회 -> currentUser 사용하면 userId 필요없다
     @GetMapping
     public ResponseEntity<Result> getAllRoutines(@AuthenticationPrincipal User user) {
-
-        log.info("routine controller own get all -> principal user : {}", user);
 
         List<RoutineResponseDto> response = routineService.getAllMyRoutine(user.getId());
         return ResponseEntity.ok(Result.of(response));
@@ -69,8 +63,6 @@ public class RoutineController {
     @GetMapping("/detail/{day}")
     public ResponseEntity<Result> getRoutine(@PathVariable Day day, @AuthenticationPrincipal User user) {
 
-        log.info("routine controller get by day -> principal user : {}", user);
-
         List<RoutineResponseDto> response = routineService.getMyRoutine(day, user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
@@ -78,8 +70,6 @@ public class RoutineController {
     // 지니 - 초/중/고 급자 전체 조회
     @GetMapping("/genie/{level}")
     public ResponseEntity<Result> getAllGenieRoutines(@PathVariable Level level, @AuthenticationPrincipal User user) {
-
-        log.info("routine controller get genie by level -> principal user : {}", user);
 
         List<RoutineResponseDto> response = routineService.getAllGenieRoutine(level, user);
         return ResponseEntity.ok(Result.of(response));
@@ -101,7 +91,7 @@ public class RoutineController {
     @DeleteMapping("/{routineId}")
     public ResponseEntity<Result> deleteRoutine(@PathVariable Long routineId,
                                                 @AuthenticationPrincipal User user) {
-        log.info("routine controller delete -> principal user : {}", user);
+
         RoutineDeleteResponseDto response = routineService.deleteRoutine(routineId, user);
 
         return ResponseEntity.ok(Result.of(response));

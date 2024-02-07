@@ -3,8 +3,6 @@ package com.example.healthgenie.boundedContext.routine.entity;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 
-import java.util.List;
-
 @Embeddable // 내장 타입
 @Getter
 public class WorkoutRecipe {
@@ -25,16 +23,21 @@ public class WorkoutRecipe {
         this.sets = sets;
         this.reps = reps;
     }
+
     public void updateName(String name) {
         this.name = name;
     }
+
     public void updateSets(int sets) {
         this.sets = sets;
     }
+
     public void updateKg(int kg) {
         this.kg = kg;
     }
+
     public void updateReps(int reps) {
         this.reps = reps;
     }
+
 }
