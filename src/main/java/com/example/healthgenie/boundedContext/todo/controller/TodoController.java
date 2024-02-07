@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.todo.controller;
 
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.todo.dto.TodoDeleteResponseDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
@@ -60,7 +61,7 @@ public class TodoController {
     public ResponseEntity<Result> deleteTodo(@PathVariable Long todoId,
                                              @AuthenticationPrincipal User user) {
 
-        String response = todoService.deleteTodo(todoId, user);
+        TodoDeleteResponseDto response = todoService.deleteTodo(todoId, user);
 
         return ResponseEntity.ok(Result.of(response));
     }
