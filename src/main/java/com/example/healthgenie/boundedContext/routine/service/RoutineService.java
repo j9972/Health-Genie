@@ -79,6 +79,7 @@ public class RoutineService {
         }
 
         for (WorkoutRecipe recipe : dto.getWorkoutRecipe()) {
+
             if (recipe.getName() != null) {
                 workoutRecipe.updateName(recipe.getName());
             }
