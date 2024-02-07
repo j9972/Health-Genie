@@ -2,6 +2,8 @@ package com.example.healthgenie.boundedContext.todo.service;
 
 import static java.util.stream.Collectors.toList;
 
+import com.example.healthgenie.base.exception.MatchingErrorResult;
+import com.example.healthgenie.base.exception.MatchingException;
 import com.example.healthgenie.base.exception.TodoErrorResult;
 import com.example.healthgenie.base.exception.TodoException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
@@ -36,13 +38,7 @@ public class TodoService {
     @Transactional
     public TodoResponseDto addTodoList(TodoRequestDto dto, User user) {
 
-        Todo todo = Todo.builder()
-                .date(dto.getDate())
-                .time(dto.getTime())
-                .title(dto.getTitle())
-                .description(dto.getDescription())
-                .member(user)
-                .build();
+        Todo todo = dto.toEntity(user);
 
         return TodoResponseDto.of(todoRepository.save(todo));
     }
@@ -102,7 +98,8 @@ public class TodoService {
 
         // 매칭이 여러개 있을 수 있다.
         for (MatchingUser m : userMatchings) {
-            Matching eachMatching = matchingRepository.findById(m.getMatching().getId()).orElseThrow();
+            Matching eachMatching = matchingRepository.findById(m.getMatching().getId())
+                    .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
             // 해당 매칭되서 pt날짜랑 특정 날짜랑 같으면 피티 있다고 알려주기
             if (eachMatching.getDate().equals(date)) {
@@ -113,7 +110,6 @@ public class TodoService {
                     }
                 }
             }
-
         }
 
         // 오늘 날짜와 cli에서 보내준 날짜가 다르다면 Todo list 반환
