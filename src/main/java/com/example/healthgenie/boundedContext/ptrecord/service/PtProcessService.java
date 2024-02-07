@@ -84,15 +84,7 @@ public class PtProcessService {
 
         checkRole(currentUser, Role.TRAINER);
 
-        PtProcess process = PtProcess.builder()
-                .date(dto.getDate())
-                .content(dto.getContent())
-                .title(dto.getTitle())
-                .member(user)
-                .trainer(currentUser)
-                .build();
-
-        //PtProcess process = dto.toEntity(user, currentUser);
+        PtProcess process = dto.toEntity(user, currentUser);
 
         return PtProcessResponseDto.of(ptProcessRepository.save(process));
 
@@ -189,4 +181,6 @@ public class PtProcessService {
             throw new CommonException(CommonErrorResult.UNAUTHORIZED);
         }
     }
+
+
 }
