@@ -30,7 +30,6 @@ public class TrainerProfileController {
     // 트레이너 패킷 세부 내용 작성 API
     @PostMapping
     public ResponseEntity<Result> save(ProfileRequestDto dto, @AuthenticationPrincipal User user) throws IOException {
-        log.info("trainer profile controller add -> principal user : {}", user);
 
         ProfileResponseDto response = trainerProfileTransactionService.save(dto, user);
         return ResponseEntity.ok(Result.of(response));
@@ -48,7 +47,7 @@ public class TrainerProfileController {
     public ResponseEntity<Result> updateProfile(@PathVariable Long profileId,
                                                 ProfileRequestDto dto,
                                                 @AuthenticationPrincipal User user) throws IOException {
-        log.info("trainer profile controller update -> principal user : {}", user);
+
         ProfileResponseDto response = trainerProfileTransactionService.update(profileId, dto, user);
 
         return ResponseEntity.ok(Result.of(response));

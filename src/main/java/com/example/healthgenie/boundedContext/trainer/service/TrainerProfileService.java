@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
-import com.example.healthgenie.base.exception.*;
+import com.example.healthgenie.base.exception.TrainerProfileErrorResult;
+import com.example.healthgenie.base.exception.TrainerProfileException;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
@@ -32,28 +33,28 @@ public class TrainerProfileService {
     }
 
     private void updateEachProfile(ProfileRequestDto dto, TrainerInfo profile) {
-        if (dto.hasCost()){
+        if (dto.hasCost()) {
             profile.updateCost(dto.getCost());
         }
-        if (dto.hasCareer()){
+        if (dto.hasCareer()) {
             profile.updateCareer(dto.getCareer());
         }
-        if (dto.hasMonth()){
+        if (dto.hasMonth()) {
             profile.updateMonth(dto.getMonth());
         }
-        if (dto.hasEndTime()){
+        if (dto.hasEndTime()) {
             profile.updateEndTime(dto.getEndTime());
         }
-        if (dto.hasStartTime()){
+        if (dto.hasStartTime()) {
             profile.updateStartTime(dto.getStartTime());
         }
-        if (dto.hasReviewAvg()){
+        if (dto.hasReviewAvg()) {
             profile.updateReviewAvg(dto.getReviewAvg());
         }
-        if (dto.hasUniversity()){
+        if (dto.hasUniversity()) {
             profile.updateUniversity(dto.getUniversity());
         }
-        if (dto.hasIntroduction()){
+        if (dto.hasIntroduction()) {
             profile.updateIntroduction(dto.getIntroduction());
         }
     }
@@ -67,7 +68,7 @@ public class TrainerProfileService {
     }
 
     // review는 회원만 수정 삭제 가능
-    private TrainerInfo authorizationWriter(Long id , User member) {
+    private TrainerInfo authorizationWriter(Long id, User member) {
 
         TrainerInfo profile = trainerProfileRepository.findById(id)
                 .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
@@ -85,23 +86,9 @@ public class TrainerProfileService {
     @Transactional
     public ProfileResponseDto save(ProfileRequestDto dto, User currentUser) {
 
-        TrainerInfo savedInfo = trainerProfileRepository.save(
-                TrainerInfo.builder()
-                        .introduction(dto.getIntroduction())
-                        .career(dto.getCareer())
-                        .careerMonth(dto.getMonth())
-                        .cost(dto.getCost())
-                        .name(dto.getName())
-                        .university(dto.getUniversity())
-                        .startTime(dto.getStartTime())
-                        .endTime(dto.getEndTime())
-                        .reviewAvg(dto.getReviewAvg())
-                        .name(dto.getName())
-                        .member(currentUser)
-                        .build()
-                );
+        TrainerInfo info = dto.toEntity(currentUser);
 
-        return ProfileResponseDto.of(savedInfo);
+        return ProfileResponseDto.of(trainerProfileRepository.save(info));
     }
 
 }
