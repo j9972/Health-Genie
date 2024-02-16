@@ -32,7 +32,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -146,8 +145,7 @@ class PtReviewServiceTest {
         // given
         testKrUtils.login(user3);
 
-        PtReview review = ptReviewRepository.findByMemberNicknameAndTrainerNickname("test3",
-                "test4");
+        PtReview review = ptReviewRepository.findByMemberIdAndTrainerId(user3.getId(), user4.getId());
 
         // when
 
@@ -201,10 +199,10 @@ class PtReviewServiceTest {
     void getPtReview() {
         // given
         // review 작성한 사람 아니여도 조회 가능
-        testKrUtils.login(user);
+        testKrUtils.login(user3);
 
         // when
-        PtReviewResponseDto response = reviewService.getPtReview(review.getId());
+        PtReviewResponseDto response = reviewService.getPtReview(review.getId(), user3);
 
         // then
         assertThat(response.getStopReason()).isEqualTo("stop");
@@ -223,7 +221,7 @@ class PtReviewServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> reviewService.getPtReview(999L))
+        assertThatThrownBy(() -> reviewService.getPtReview(999L, user))
                 .isInstanceOf(PtReviewException.class);
     }
 
@@ -235,15 +233,14 @@ class PtReviewServiceTest {
         Long trainerId = review.getTrainer().getId();
 
         // when
-        Page<PtReviewResponseDto> response = reviewService.getAllTrainerReview(trainerId, 0, 5);
+        List<PtReviewResponseDto> response = reviewService.getAllTrainerReview(trainerId, 0, 5);
 
         // then
-        assertThat(response.getTotalElements()).isEqualTo(1);
-        assertThat(response.getContent().get(0).getContent()).isEqualTo("test review");
-        assertThat(response.getContent().get(0).getReviewScore()).isEqualTo(4.5);
-        assertThat(response.getContent().get(0).getStopReason()).isEqualTo("stop");
-        assertThat(response.getContent().get(0).getUserNickName()).isEqualTo(user3.getNickname());
-        assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
+        assertThat(response.get(0).getContent()).isEqualTo("test review");
+        assertThat(response.get(0).getReviewScore()).isEqualTo(4.5);
+        assertThat(response.get(0).getStopReason()).isEqualTo("stop");
+        assertThat(response.get(0).getUserNickName()).isEqualTo(user3.getNickname());
+        assertThat(response.get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
     }
 
     @Test
@@ -254,15 +251,14 @@ class PtReviewServiceTest {
         Long userId = review.getMember().getId();
 
         // when
-        Page<PtReviewResponseDto> response = reviewService.getAllReview(userId, 0, 5, user3);
+        List<PtReviewResponseDto> response = reviewService.getAllReview(0, 5, user3);
 
         // then
-        assertThat(response.getTotalElements()).isEqualTo(1);
-        assertThat(response.getContent().get(0).getContent()).isEqualTo("test review");
-        assertThat(response.getContent().get(0).getReviewScore()).isEqualTo(4.5);
-        assertThat(response.getContent().get(0).getStopReason()).isEqualTo("stop");
-        assertThat(response.getContent().get(0).getUserNickName()).isEqualTo(user3.getNickname());
-        assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
+        assertThat(response.get(0).getContent()).isEqualTo("test review");
+        assertThat(response.get(0).getReviewScore()).isEqualTo(4.5);
+        assertThat(response.get(0).getStopReason()).isEqualTo("stop");
+        assertThat(response.get(0).getUserNickName()).isEqualTo(user3.getNickname());
+        assertThat(response.get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
     }
 
     @Test
@@ -339,10 +335,11 @@ class PtReviewServiceTest {
         testKrUtils.login(user3);
 
         // when
+        reviewService.deletePtReview(review.getId(), user3);
 
         // then
-        String response = reviewService.deletePtReview(review.getId(), user3);
-        assertThat(response).isEqualTo("후기가 삭제 되었습니다.");
+        assertThatThrownBy(() -> reviewService.deletePtReview(review.getId(), user3))
+                .isInstanceOf(PtReviewException.class);
     }
 
     @Test
