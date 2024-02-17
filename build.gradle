@@ -101,7 +101,8 @@ dependencies {
     // jackson
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-
+    // open feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.3'
 }
 
 tasks.named('test') {

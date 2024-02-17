@@ -6,14 +6,13 @@ import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTok
 import com.example.healthgenie.boundedContext.user.dto.*;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.example.healthgenie.boundedContext.user.service.feign.GoogleInfoClient;
+import com.example.healthgenie.boundedContext.user.service.feign.GoogleTokenClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.GOOGLE;
 
@@ -21,13 +20,14 @@ import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.GO
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class GoogleRequestService implements RequestService {
+public class GoogleRequestService {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final WebClient webClient;
     private final UserService userService;
+    private final GoogleTokenClient googleTokenClient;
+    private final GoogleInfoClient googleInfoClient;
 
     @Value("${spring.security.oauth2.client.registration.google.authorization-grant-type}")
     private String GRANT_TYPE;
@@ -35,20 +35,13 @@ public class GoogleRequestService implements RequestService {
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String CLIENT_ID;
 
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String CLIENT_SECRET;
-
-    @Value("${spring.security.oauth2.client.provider.google.token_uri}")
-    private String TOKEN_URI;
-
-    @Value("${spring.security.oauth2.client.provider.google.user-info-uri}")
-    private String USER_INFO_URI;
-
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String REDIRECT_URI;
 
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    private String CLIENT_SECRET;
+
     @Transactional
-    @Override
     public SignInResponse redirect(TokenRequest tokenRequest) {
         // 구글에서 넘겨준 엑세스 토큰
         TokenResponse tokenResponse = getToken(tokenRequest);
@@ -85,45 +78,11 @@ public class GoogleRequestService implements RequestService {
                 .build();
     }
 
-    @Override
     public TokenResponse getToken(TokenRequest tokenRequest) {
-        return webClient.post()
-                .uri(TOKEN_URI)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters
-                        .fromFormData("client_id", CLIENT_ID)
-                        .with("client_secret", CLIENT_SECRET)
-                        .with("code", tokenRequest.getCode())
-                        .with("redirect_uri", REDIRECT_URI)
-                        .with("grant_type", GRANT_TYPE))
-                .retrieve()
-                .bodyToMono(TokenResponse.class)
-                .block();
-
+        return googleTokenClient.getToken(GRANT_TYPE, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, tokenRequest.getCode());
     }
 
-    @Override
     public GoogleUserInfo getUserInfo(String accessToken) {
-        return webClient.get()
-                .uri(USER_INFO_URI)
-                .headers(h -> h.setBearerAuth(accessToken))
-                .retrieve()
-                .bodyToMono(GoogleUserInfo.class)
-                .block();
-    }
-
-    @Override
-    public TokenResponse getRefreshToken(String provider, String refreshToken) {
-        return webClient.post()
-                .uri(TOKEN_URI)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters
-                        .fromFormData("client_id", CLIENT_ID)
-                        .with("client_secret", CLIENT_SECRET)
-                        .with("refresh_token", refreshToken)
-                        .with("grant_type", "refresh_token"))
-                .retrieve()
-                .bodyToMono(TokenResponse.class)
-                .block();
+        return googleInfoClient.getUserInfo("Bearer " + accessToken);
     }
 }
