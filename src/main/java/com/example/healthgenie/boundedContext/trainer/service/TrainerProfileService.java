@@ -6,7 +6,9 @@ import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
+import com.example.healthgenie.boundedContext.trainer.repository.TrainerQueryRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class TrainerProfileService {
     private final TrainerProfileRepository trainerProfileRepository;
+    private final TrainerQueryRepository trainerQueryRepository;
 
     /*
         관리페이지용 API -> 수정 , 트레이너만 가능
@@ -86,6 +89,18 @@ public class TrainerProfileService {
         TrainerInfo info = dto.toEntity(currentUser);
 
         return ProfileResponseDto.of(trainerProfileRepository.save(info));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProfileResponseDto> getAllProfile(int page, int size) {
+        List<TrainerInfo> profiles = trainerQueryRepository.findAllProfiles(page, size);
+
+        return ProfileResponseDto.of(profiles);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProfileResponseDto> findAll(String name) {
+        return ProfileResponseDto.of(trainerQueryRepository.findAll(name));
     }
 
 }
