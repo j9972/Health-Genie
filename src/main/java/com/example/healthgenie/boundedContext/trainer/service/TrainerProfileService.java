@@ -97,4 +97,10 @@ public class TrainerProfileService {
 
         return ProfileResponseDto.of(profiles);
     }
+
+    @Transactional(readOnly = true)
+    public List<ProfileResponseDto> findAll(String name) {
+        return ProfileResponseDto.of(trainerQueryRepository.findAll(name));
+    }
+
 }

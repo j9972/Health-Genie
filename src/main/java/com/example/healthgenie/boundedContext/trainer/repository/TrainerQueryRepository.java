@@ -21,4 +21,12 @@ public class TrainerQueryRepository {
                 .limit(size)
                 .fetch();
     }
+
+    public List<TrainerInfo> findAll(String name) {
+        return query
+                .selectFrom(trainerInfo)
+                .where(trainerInfo.name.like("%" + name + "%"))
+                .orderBy(trainerInfo.id.desc())
+                .fetch();
+    }
 }
