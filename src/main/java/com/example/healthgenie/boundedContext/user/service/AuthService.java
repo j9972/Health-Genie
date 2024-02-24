@@ -1,8 +1,6 @@
 package com.example.healthgenie.boundedContext.user.service;
 
-import com.example.healthgenie.base.exception.CommonErrorResult;
-import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.exception.*;
 import com.example.healthgenie.base.utils.CookieUtils;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
 import com.example.healthgenie.base.utils.SecurityUtils;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FOUND;
-import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.GOOGLE;
 import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.KAKAO;
 
 @Slf4j
@@ -49,34 +46,29 @@ public class AuthService {
     }
 
     @Transactional
-    public SignInResponse refreshToken(TokenRequest tokenRequest) {
-        String refreshToken = tokenRequest.getRefreshToken();
+    public SignInResponse refreshToken(String accessToken, String refreshToken) {
+        if(!jwtTokenProvider.isExpired(accessToken)) {
+            throw new JwtException(JwtErrorResult.NOT_EXPIRED_TOKEN);
+        }
 
         RefreshToken refreshTokenObj = refreshTokenService.findByRefreshToken(refreshToken);
 
         User user = userRepository.findByEmail(refreshTokenObj.getKeyEmail())
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        AuthProvider authProvider = tokenRequest.getRegistrationId().equalsIgnoreCase(KAKAO.getAuthProvider()) ? KAKAO : GOOGLE;
-
-        // 유효한 리프레시 토큰이면, 새로운 액세스 토큰 생성 및 반환
-        if(jwtTokenProvider.validateRefreshToken(refreshTokenObj)) {
-            log.info("유효한 Refresh Token 입니다.");
+        if(!jwtTokenProvider.isExpired(refreshToken)) {
             return SignInResponse.builder()
-                    .authProvider(authProvider)
-                    .accessToken(jwtTokenProvider.recreationAccessToken(user.getEmail(), user.getRole().getCode()))
-                    .refreshToken(refreshTokenObj.getRefreshToken())
+                    .authProvider(user.getAuthProvider())
+                    .accessToken(jwtTokenProvider.createToken(user.getEmail(), user.getRole().getCode()).getAccessToken())
+                    .refreshToken(refreshToken)
                     .build();
-        }
-        // 유효하지 않은 리프레시 토큰이면, 새로운 토큰 생성 및 반환
-        else {
-            log.info("유효하지 않은 Refresh Token 입니다.");
+        } else {
             Token newToken = jwtTokenProvider.createToken(user.getEmail(), user.getRole().getCode());
 
             refreshTokenService.save(newToken.getRefreshToken(), user.getEmail());
 
             return SignInResponse.builder()
-                    .authProvider(authProvider)
+                    .authProvider(user.getAuthProvider())
                     .accessToken(newToken.getAccessToken())
                     .refreshToken(newToken.getRefreshToken())
                     .build();
