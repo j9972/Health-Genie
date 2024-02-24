@@ -10,12 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -54,12 +49,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<Result> refreshToken(@RequestBody TokenRequest tokenRequest) {
-        log.info("----- AuthController refreshToken -----");
-        log.info("TokenRequest.registrationId={}", tokenRequest.getRegistrationId());
-        log.info("TokenRequest.refreshToken={}", tokenRequest.getRefreshToken());
-
-        SignInResponse response = authService.refreshToken(tokenRequest);
+    public ResponseEntity<Result> refreshToken(HttpServletRequest request) {
+        SignInResponse response = authService.refreshToken(request.getHeader("AccessToken"), request.getHeader("RefreshToken"));
 
         return ResponseEntity.ok(Result.of(response));
     }
