@@ -1,14 +1,13 @@
 package com.example.healthgenie.boundedContext.trainer.dto;
 
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
-import com.example.healthgenie.boundedContext.user.entity.User;
-import java.time.LocalTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -31,53 +30,28 @@ public class ProfileRequestDto {
     private String nickname; // 트레이너 닉네임
     private List<MultipartFile> photos; // 트레이너 사진들
 
-    public boolean hasIntroduction() {
+    public boolean hasIntroduction(){
         return introduction != null;
     }
-
-    public boolean hasCareer() {
+    public boolean hasCareer(){
         return career != null;
     }
-
-    public boolean hasCost() {
+    public boolean hasCost(){
         return cost != 0;
     }
-
-    public boolean hasMonth() {
+    public boolean hasMonth(){
         return month != 0;
     }
-
-    public boolean hasStartTime() {
+    public boolean hasStartTime(){
         return startTime != null;
     }
-
-    public boolean hasEndTime() {
+    public boolean hasEndTime(){
         return endTime != null;
     }
-
-    public boolean hasUniversity() {
+    public boolean hasUniversity(){
         return university != null;
     }
-
-    public boolean hasReviewAvg() {
+    public boolean hasReviewAvg(){
         return reviewAvg != null;
     }
-
-    public TrainerInfo toEntity(User user) {
-        return TrainerInfo.builder()
-                .introduction(this.introduction)
-                .career(this.career)
-                .careerMonth(this.month)
-                .cost(this.cost)
-                .name(this.name)
-                .university(this.university)
-                .startTime(this.startTime)
-                .endTime(this.endTime)
-                .reviewAvg(this.reviewAvg)
-                .name(this.name)
-                .member(user)
-                .build();
-
-    }
-
 }

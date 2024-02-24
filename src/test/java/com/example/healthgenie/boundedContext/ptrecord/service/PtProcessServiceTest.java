@@ -27,6 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -195,7 +196,7 @@ class PtProcessServiceTest {
         LocalDate date = LocalDate.of(2023, 12, 5);
 
         // when
-        PtProcessResponseDto response = processService.getPtProcess(process.getId(), user2);
+        PtProcessResponseDto response = processService.getPtProcess(process.getId());
 
         // then
         assertThat(response.getDate()).isEqualTo(date);
@@ -220,7 +221,7 @@ class PtProcessServiceTest {
             ) {
                 throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
             } else {
-                processService.getPtProcess(process.getId(), user3);
+                processService.getPtProcess(process.getId());
             }
         }).isInstanceOf(PtProcessException.class);
     }
@@ -233,8 +234,8 @@ class PtProcessServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> processService.getPtProcess(process.getId(), null))
-                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> processService.getPtProcess(process.getId()))
+                .isInstanceOf(PtProcessException.class);
     }
 
     @Test
@@ -246,7 +247,7 @@ class PtProcessServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> processService.getPtProcess(999L, user))
+        assertThatThrownBy(() -> processService.getPtProcess(999L))
                 .isInstanceOf(PtProcessException.class);
     }
 
@@ -257,16 +258,17 @@ class PtProcessServiceTest {
         testKrUtils.login(user2);
 
         // when
-        List<PtProcessResponseDto> response = processService.getAllTrainerProcess(0, 5, user2);
+        Page<PtProcessResponseDto> response = processService.getAllTrainerProcess(0, 5, user2);
         LocalDate date = LocalDate.of(2023, 12, 5);
 
         // then
-        assertThat(response.get(0).getDate()).isEqualTo(date);
-        assertThat(response.get(0).getContent()).isEqualTo("test content2");
-        assertThat(response.get(0).getTitle()).isEqualTo("test title2");
-        assertThat(response.get(0).getUserNickName()).isEqualTo("test1");
-        assertThat(response.get(0).getTrainerNickName()).isEqualTo("test2");
-        assertThat(response.get(0).getTrainerNickName()).isEqualTo(user2.getNickname());
+        assertThat(response.getTotalElements()).isEqualTo(1);
+        assertThat(response.getContent().get(0).getDate()).isEqualTo(date);
+        assertThat(response.getContent().get(0).getContent()).isEqualTo("test content2");
+        assertThat(response.getContent().get(0).getTitle()).isEqualTo("test title2");
+        assertThat(response.getContent().get(0).getUserNickName()).isEqualTo("test1");
+        assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo("test2");
+        assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo(user2.getNickname());
     }
 
     @Test
@@ -276,16 +278,17 @@ class PtProcessServiceTest {
         testKrUtils.login(user);
 
         // when
-        List<PtProcessResponseDto> response = processService.getAllMyProcess(0, 5, user);
+        Page<PtProcessResponseDto> response = processService.getAllMyProcess(0, 5, user);
         LocalDate date = LocalDate.of(2023, 12, 5);
 
         // then
-        assertThat(response.get(0).getDate()).isEqualTo(date);
-        assertThat(response.get(0).getContent()).isEqualTo("test content2");
-        assertThat(response.get(0).getTitle()).isEqualTo("test title2");
-        assertThat(response.get(0).getUserNickName()).isEqualTo("test1");
-        assertThat(response.get(0).getTrainerNickName()).isEqualTo("test2");
-        assertThat(response.get(0).getUserNickName()).isEqualTo(user.getNickname());
+        assertThat(response.getTotalElements()).isEqualTo(1);
+        assertThat(response.getContent().get(0).getDate()).isEqualTo(date);
+        assertThat(response.getContent().get(0).getContent()).isEqualTo("test content2");
+        assertThat(response.getContent().get(0).getTitle()).isEqualTo("test title2");
+        assertThat(response.getContent().get(0).getUserNickName()).isEqualTo("test1");
+        assertThat(response.getContent().get(0).getTrainerNickName()).isEqualTo("test2");
+        assertThat(response.getContent().get(0).getUserNickName()).isEqualTo(user.getNickname());
     }
 
     @Test
@@ -331,11 +334,10 @@ class PtProcessServiceTest {
         testKrUtils.login(user2);
 
         // when
-        processService.deletePtProcess(process.getId(), user2);
 
         // then
-        assertThatThrownBy(() -> processService.deletePtProcess(process.getId(), user2))
-                .isInstanceOf(PtProcessException.class);
+        String response = processService.deletePtProcess(process.getId(), user2);
+        assertThat(response).isEqualTo("피드백이 삭제 되었습니다.");
     }
 
     @Test

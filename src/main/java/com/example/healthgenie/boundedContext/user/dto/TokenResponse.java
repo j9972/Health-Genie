@@ -12,9 +12,9 @@ public class TokenResponse {
 
     private String tokenType;
     private String accessToken;
-    private String idToken;
     private Integer expiresIn;
     private String refreshToken;
-    private String refreshTokenExpiresIn;
-    private String scope;
+    private Integer refreshTokenExpiresIn;
+    private String error;
+    private String errorDescription;
 }

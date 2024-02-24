@@ -50,9 +50,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     // jwt 를 위한 dependency 추가
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     implementation 'com.auth0:java-jwt:3.18.3'
     implementation 'com.auth0:auth0-spring-security-api:1.5.2'
 
@@ -101,8 +101,7 @@ dependencies {
     // jackson
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-    // open feign
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.3'
+
 }
 
 tasks.named('test') {

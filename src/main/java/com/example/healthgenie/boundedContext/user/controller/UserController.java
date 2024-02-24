@@ -6,8 +6,6 @@ import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.user.dto.DietResponse;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
 import com.example.healthgenie.boundedContext.user.dto.UserResponse;
-import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import jakarta.validation.Valid;
@@ -42,13 +40,6 @@ public class UserController {
     @GetMapping("/{userId}/calculator")
     public ResponseEntity<Result> calculate(@PathVariable Long userId, @RequestParam Integer type) {
         DietResponse response = userService.calculate(userId, type);
-
-        return ResponseEntity.ok(Result.of(response));
-    }
-
-    @PostMapping("/admin")
-    public ResponseEntity<Result> admin() {
-        UserResponse response = userService.signUp("admin@admin.com", "admin", AuthProvider.EMPTY, Role.ADMIN);
 
         return ResponseEntity.ok(Result.of(response));
     }

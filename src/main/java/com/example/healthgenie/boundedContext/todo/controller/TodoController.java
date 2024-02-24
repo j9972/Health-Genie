@@ -1,26 +1,20 @@
 package com.example.healthgenie.boundedContext.todo.controller;
 
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.todo.dto.TodoDeleteResponseDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.healthgenie.boundedContext.todo.service.TodoService;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +26,8 @@ public class TodoController {
 
     @PostMapping
     public ResponseEntity<Result> addTodo(@RequestBody TodoRequestDto dto,
-                                          @AuthenticationPrincipal User user) {
+                                          @AuthenticationPrincipal User user){
+        log.info("todo controller add -> principal user : {}", user);
 
         TodoResponseDto response = todoService.addTodoList(dto, user);
         return ResponseEntity.ok(Result.of(response));
@@ -42,6 +37,7 @@ public class TodoController {
     public ResponseEntity<Result> getTodos(@PathVariable LocalDate date,
                                            @AuthenticationPrincipal User user) {
 
+        log.info("todo controller get -> principal user : {}", user);
         List<TodoResponseDto> response = todoService.getAllMyTodo(date, user);
         return ResponseEntity.ok(Result.of(response));
     }
@@ -50,8 +46,9 @@ public class TodoController {
     @PatchMapping("/{todoId}")
     public ResponseEntity<Result> updateTodo(@RequestBody TodoUpdateRequest dto,
                                              @PathVariable Long todoId,
-                                             @AuthenticationPrincipal User user) {
+                                             @AuthenticationPrincipal User user){
 
+        log.info("todo controller update -> principal user : {}", user);
         TodoResponseDto response = todoService.update(dto, todoId, user);
         return ResponseEntity.ok(Result.of(response));
     }
@@ -61,7 +58,8 @@ public class TodoController {
     public ResponseEntity<Result> deleteTodo(@PathVariable Long todoId,
                                              @AuthenticationPrincipal User user) {
 
-        TodoDeleteResponseDto response = todoService.deleteTodo(todoId, user);
+        log.info("todo controller delete -> principal user : {}", user);
+        String response = todoService.deleteTodo(todoId, user);
 
         return ResponseEntity.ok(Result.of(response));
     }

@@ -35,7 +35,7 @@ public class UserService {
     private final S3UploadUtils s3UploadUtils;
 
     @Transactional
-    public UserResponse signUp(String email, String name, AuthProvider authProvider, Role role) {
+    public UserResponse signUp(String email, String name, AuthProvider authProvider) {
         String defaultNickname = createUniqueNickname();
 
         User user = User.builder()
@@ -44,16 +44,11 @@ public class UserService {
                 .nickname(defaultNickname)
                 .authProvider(authProvider)
                 .uniName("")
-                .role(role)
+                .role(Role.EMPTY)
                 .level(Level.EMPTY)
                 .build();
 
         return UserResponse.of(userRepository.save(user));
-    }
-
-    @Transactional
-    public UserResponse signUp(String email, String name, AuthProvider authProvider) {
-        return signUp(email, name, authProvider, Role.EMPTY);
     }
 
     public UserResponse findById(Long userId) {

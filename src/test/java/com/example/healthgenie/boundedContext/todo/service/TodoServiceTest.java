@@ -1,8 +1,7 @@
 package com.example.healthgenie.boundedContext.todo.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
+import com.example.healthgenie.base.exception.CommonErrorResult;
+import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.TodoErrorResult;
 import com.example.healthgenie.base.exception.TodoException;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
@@ -13,15 +12,21 @@ import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -41,7 +46,7 @@ class TodoServiceTest {
 
     @BeforeEach
     void before() {
-        user = testKrUtils.createUser("test1", Role.USER, "jh485200@gmail.com");
+        user = testKrUtils.createUser("test1", Role.USER,"jh485200@gmail.com");
 
         LocalDate localDate = LocalDate.of(2023, 12, 15);
         LocalTime localTime = LocalTime.of(14, 30, 45); // 시, 분, 초
@@ -57,6 +62,7 @@ class TodoServiceTest {
 
         LocalDate date = LocalDate.of(2023, 12, 15);
         LocalTime time = LocalTime.of(14, 30, 45); // 시, 분, 초
+
 
         TodoRequestDto dto = testSyUtils.TodoRequestDto(
                 date, time, "test title", "description test");
@@ -82,12 +88,13 @@ class TodoServiceTest {
 
         // when
 
+
         // then
         assertThatThrownBy(() -> {
             if (!login) {
                 throw new TodoException(TodoErrorResult.NO_USER_INFO);
             } else {
-                todoService.addTodoList(dto, user);
+                todoService.addTodoList(dto,user);
             }
         }).isInstanceOf(TodoException.class);
     }
@@ -119,11 +126,11 @@ class TodoServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if (!login) {
-                throw new TodoException(TodoErrorResult.NO_USER_INFO);
-            } else {
-                todoService.update(dto, todoTest.getId(), user);
-            }
+                if(!login) {
+                    throw new TodoException(TodoErrorResult.NO_USER_INFO);
+                } else {
+               todoService.update(dto, todoTest.getId(), user);
+                }
         }).isInstanceOf(TodoException.class);
     }
 
@@ -136,10 +143,9 @@ class TodoServiceTest {
         // when
 
         // then
-        todoService.deleteTodo(todoTest.getId(), user);
+        String response = todoService.deleteTodo(todoTest.getId(), user);
 
-        assertThatThrownBy(() -> todoService.deleteTodo(todoTest.getId(), user))
-                .isInstanceOf(TodoException.class);
+        assertThat(response).isEqualTo("오늘 할일이 삭제되었습니다.");
     }
 
     @Test
@@ -152,10 +158,10 @@ class TodoServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if (!login) {
+            if(!login) {
                 throw new TodoException(TodoErrorResult.WRONG_USER);
             } else {
-                todoService.deleteTodo(todoTest.getId(), user);
+                todoService.deleteTodo(todoTest.getId(),user);
             }
         });
     }
@@ -182,7 +188,7 @@ class TodoServiceTest {
         LocalDate date = LocalDate.of(2023, 12, 15);
         LocalTime time = LocalTime.of(14, 30, 45); // 시, 분, 초
 
-        for (int i = 1; i <= 5; i++) {
+        for(int i=1; i<=5; i++) {
             TodoRequestDto dto = testSyUtils.TodoRequestDto(date, time, "test title", "description test");
             todoService.addTodoList(dto, user);
         }

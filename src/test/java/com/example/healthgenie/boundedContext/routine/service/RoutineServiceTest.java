@@ -304,11 +304,10 @@ class RoutineServiceTest {
         testKrUtils.login(user);
 
         // when
-        routineService.deleteRoutine(routine.getId(), user);
 
         // then
-        assertThatThrownBy(() -> routineService.deleteRoutine(routine.getId(), user))
-                .isInstanceOf(RoutineException.class);
+        String response = routineService.deleteRoutine(routine.getId(), user);
+        assertThat(response).isEqualTo("루틴이 삭제되었습니다.");
     }
 
     @Test

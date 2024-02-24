@@ -4,6 +4,7 @@ import com.example.healthgenie.base.filter.JwtAuthenticationFilter;
 import com.example.healthgenie.base.filter.JwtExceptionFilter;
 import com.example.healthgenie.base.handler.JwtAccessDeniedHandler;
 import com.example.healthgenie.base.handler.JwtAuthenticationEntryPoint;
+import com.example.healthgenie.base.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,15 +20,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
 
     private final String[] COMMON_WHITE_LIST = new String[]
             {
                     "/login/**", "/oauth2/**", "/h2-console/**", "/refresh", "/error/**", "/ws/**",
-                    "/routine/genie/**", "/routine/genie/detail/**", "/auth/mail/**", "/auth/user/admin"
+                    "/routine/genie/**", "/routine/genie/detail/**", "/auth/mail/**",
             };
     private final String[] GET_WHITE_LIST = new String[]
             {
@@ -65,7 +66,7 @@ public class SecurityConfig {
         ;
 
         http
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
         return http.build();
