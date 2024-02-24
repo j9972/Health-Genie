@@ -57,7 +57,7 @@ public class GoogleRequestService {
 
         // 회원 가입이 되어있는 경우
         // 서버에서 생성한 jwt 토큰
-        Token token = jwtTokenProvider.createToken(googleUserInfo.getEmail(), user.getRole().getCode());
+        Token token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().getCode());
 
         // 서버에 해당 이메일로 저장된 리프레시 토큰이 없으면 저장(== 첫 회원가입 시 -> 이후에는 리프레시 토큰 검증을 통해 재발급 및 저장함)
         if(!refreshTokenRepository.existsByKeyEmail(user.getEmail())) {
