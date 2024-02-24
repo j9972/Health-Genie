@@ -9,13 +9,17 @@ import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import com.example.healthgenie.boundedContext.user.service.feign.KakaoInfoClient;
 import com.example.healthgenie.boundedContext.user.service.feign.KakaoTokenClient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.KAKAO;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class KakaoRequestService {
 
     private final UserService userService;
@@ -34,6 +38,7 @@ public class KakaoRequestService {
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String REDIRECT_URI;
 
+    @Transactional
     public SignInResponse redirect(TokenRequest tokenRequest) {
         TokenResponse tokenResponse = getToken(tokenRequest.getCode());
 
@@ -73,11 +78,11 @@ public class KakaoRequestService {
         }
     }
 
-    public TokenResponse getToken(String authorizationCode) {
+    private TokenResponse getToken(String authorizationCode) {
         return kakaoTokenClient.getToken(GRANT_TYPE, CLIENT_ID, REDIRECT_URI, authorizationCode);
     }
 
-    public KakaoUserInfo getUserInfo(String accessToken) {
+    private KakaoUserInfo getUserInfo(String accessToken) {
         return kakaoInfoClient.getUserInfo("Bearer " + accessToken);
     }
 }

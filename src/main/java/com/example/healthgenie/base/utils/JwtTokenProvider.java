@@ -11,6 +11,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -23,6 +27,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
+
+    private final UserDetailsService userDetailsService;
 
     @Value("${custom.jwt.secret-key}")
     private String SECRET_KEY;
@@ -74,11 +80,7 @@ public class JwtTokenProvider {
     }
 
     public boolean isExpired(String token) {
-        long exp = Long.parseLong(decodeToken(token).get("exp")) * 1000;
-        long now = new Date().getTime();
-        log.info("exp = {}", exp);
-        log.info("now = {}", now);
-        return new Date(exp).before(new Date());
+        return new Date(Long.parseLong(decodeToken(token).get("exp")) * 1000).before(new Date());
     }
 
     public boolean validateToken(String token){
@@ -96,7 +98,12 @@ public class JwtTokenProvider {
         }
     }
 
-    public Map<String, String> decodeToken(String token) {
+    public Authentication getAuthentication(String email) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    private Map<String, String> decodeToken(String token) {
         String[] split = token.split("\\.");
 
         Base64.Decoder decoder = Base64.getUrlDecoder();

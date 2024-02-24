@@ -22,10 +22,10 @@ import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.GO
 @Transactional(readOnly = true)
 public class GoogleRequestService {
 
+    private final UserService userService;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserService userService;
     private final GoogleTokenClient googleTokenClient;
     private final GoogleInfoClient googleInfoClient;
 
@@ -43,46 +43,49 @@ public class GoogleRequestService {
 
     @Transactional
     public SignInResponse redirect(TokenRequest tokenRequest) {
-        // 구글에서 넘겨준 엑세스 토큰
         TokenResponse tokenResponse = getToken(tokenRequest);
-        // 구글에서 넘겨준 유저 정보
+
         GoogleUserInfo googleUserInfo = getUserInfo(tokenResponse.getAccessToken());
 
         User user = userRepository.findByEmail(googleUserInfo.getEmail()).orElse(null);
 
         // 회원 가입이 안되어있는 경우(최초 로그인 시)
-        if(user == null){
+        if(user == null) {
             user = UserResponse.toEntity(userService.signUp(googleUserInfo.getEmail(), googleUserInfo.getName(), GOOGLE));
-        }
 
-        // 회원 가입이 되어있는 경우
-        // 서버에서 생성한 jwt 토큰
-        Token token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().getCode());
+            Token token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().getCode());
 
-        // 서버에 해당 이메일로 저장된 리프레시 토큰이 없으면 저장(== 첫 회원가입 시 -> 이후에는 리프레시 토큰 검증을 통해 재발급 및 저장함)
-        if(!refreshTokenRepository.existsByKeyEmail(user.getEmail())) {
-            RefreshToken newRefreshToken = RefreshToken.builder()
-                    .keyEmail(user.getEmail())
+            RefreshToken refreshToken = RefreshToken.builder().keyEmail(user.getEmail()).refreshToken(token.getRefreshToken()).build();
+
+            refreshTokenRepository.save(refreshToken);
+
+            return SignInResponse.builder()
+                    .authProvider(GOOGLE)
+                    .accessToken(token.getAccessToken())
                     .refreshToken(token.getRefreshToken())
+                    .userId(user.getId())
+                    .role(user.getRole())
                     .build();
+        } else {
+            RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail()).get();
 
-            refreshTokenRepository.save(newRefreshToken);
+            Token token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().getCode());
+
+            return SignInResponse.builder()
+                    .authProvider(GOOGLE)
+                    .accessToken(token.getAccessToken())
+                    .refreshToken(refreshToken.getRefreshToken())
+                    .userId(user.getId())
+                    .role(user.getRole())
+                    .build();
         }
-
-        return SignInResponse.builder()
-                .authProvider(GOOGLE)
-                .accessToken(token.getAccessToken())
-                .refreshToken(token.getRefreshToken())
-                .userId(user.getId())
-                .role(user.getRole())
-                .build();
     }
 
-    public TokenResponse getToken(TokenRequest tokenRequest) {
+    private TokenResponse getToken(TokenRequest tokenRequest) {
         return googleTokenClient.getToken(GRANT_TYPE, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, tokenRequest.getCode());
     }
 
-    public GoogleUserInfo getUserInfo(String accessToken) {
+    private GoogleUserInfo getUserInfo(String accessToken) {
         return googleInfoClient.getUserInfo("Bearer " + accessToken);
     }
 }
