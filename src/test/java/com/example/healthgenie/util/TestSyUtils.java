@@ -25,6 +25,7 @@ import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -50,6 +51,18 @@ public class TestSyUtils {
 
     public boolean notLogin(User user) {
         return false;
+    }
+
+    public User createUser(String name, String nickname, Role role, String uniName, String email) {
+        User user = User.builder()
+                .name(name)
+                .nickname(nickname)
+                .role(role)
+                .uniName(uniName)
+                .email(email)
+                .build();
+
+        return userRepository.save(user);
     }
 
     public User createUser(String name, String nickname, String uniName, String email) {
