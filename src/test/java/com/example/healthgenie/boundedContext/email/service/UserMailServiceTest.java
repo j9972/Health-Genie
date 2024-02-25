@@ -1,5 +1,8 @@
 package com.example.healthgenie.boundedContext.email.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.boundedContext.user.entity.Role;
@@ -8,6 +11,9 @@ import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import com.univcert.api.UnivCert;
 import jakarta.mail.MessagingException;
+import java.io.IOException;
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,14 +22,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 @SpringBootTest
 @Transactional
+@Slf4j
 class UserMailServiceTest {
 
     @Autowired
@@ -55,9 +56,9 @@ class UserMailServiceTest {
      */
     @BeforeEach
     void before() {
-        user = testUtils.createUser("test1", Role.EMPTY, "jsy9972@knu.ac.kr.com");
-        user2 = testUtil.createUser("test1","test1", "경북대학교" , "jsy9972@knu.ac.kr");
-        user3 = testUtil.createUser("test1", "test1","가나다대학교" , "jsy9972@knu.ac.kr");
+        user = testUtils.createUser("test1", Role.EMPTY, "jsy9972@knu.ac.kr");
+        user2 = testUtil.createUser("test1", "test1", Role.TRAINER, "경북대학교", "jsy9972@knu.ac.kr");
+        user3 = testUtil.createUser("test1", "test1", "가나다대학교", "jsy9972@knu.ac.kr");
     }
 
 
@@ -65,17 +66,18 @@ class UserMailServiceTest {
     @DisplayName("이메일에 검증 코드 보내기")
     void sendCode() throws IOException {
         // given
-        testUtils.login(user);
+        testUtils.login(user2);
         String uniDomain = uniDomainService.findUniDomain(user2.getUniName());
         Map<String, Object> result = null;
 
         // when
-        if (uniDomainService.checkDomain(user2.getEmail(), uniDomain)) {
-            result = UnivCert.certify(KEY,user2.getEmail(), user2.getUniName(), true);
-        }
 
+        if (uniDomainService.checkDomain(user2.getEmail(), uniDomain)) {
+
+            result = UnivCert.certify(KEY, user2.getEmail(), user2.getUniName(), true);
+        }
         // then
-        assertThat(result).isNotEmpty();
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -97,7 +99,7 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("로그인을 안한 경우 검증 코드 안보내기")
-    void dontSendCode(){
+    void dontSendCode() {
         // given
 
         // when ,then
@@ -144,7 +146,7 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("코드가 존재하지 않아서 검증 실패")
-    void failVerify(){
+    void failVerify() {
         // given
         testUtils.login(user);
         String email = "jh485200@gmail.com";
