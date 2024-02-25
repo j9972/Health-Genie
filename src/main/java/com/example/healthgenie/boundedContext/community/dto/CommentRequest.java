@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class CommentRequest {
 
     private String content;
-    private Long writerId;
 }

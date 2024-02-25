@@ -1,6 +1,5 @@
 package com.example.healthgenie.boundedContext.community.service;
 
-import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.CommunityCommentException;
 import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
@@ -50,10 +49,10 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getId());
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
 
         // when
-        CommentResponse savedComment = communityCommentService.save(post1.getId(), request);
+        CommentResponse savedComment = communityCommentService.save(post1.getId(), user1.getId(), request);
 
         // then
         assertThat(savedComment.getContent()).isEqualTo("테스트 댓글1");
@@ -66,12 +65,12 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getId());
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
 
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.save(999L, request))
+        assertThatThrownBy(() -> communityCommentService.save(999L, user1.getId(), request))
                 .isInstanceOf(CommunityPostException.class);
     }
 
@@ -81,8 +80,8 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getId());
-        CommentResponse savedComment = communityCommentService.save(post1.getId(), request);
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
+        CommentResponse savedComment = communityCommentService.save(post1.getId(), user1.getId(), request);
 
         // when
         CommentResponse findComment = communityCommentService.findById(savedComment.getId());
@@ -111,8 +110,8 @@ class CommunityCommentServiceTest {
         testKrUtils.login(user1);
 
         for(int i=1; i<=10; i++) {
-            CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글" + i, user1.getId());
-            communityCommentService.save(post1.getId(), request);
+            CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글" + i);
+            communityCommentService.save(post1.getId(), user1.getId(), request);
         }
 
         // when
@@ -129,16 +128,16 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest request1 = testKrUtils.createCommentRequest("테스트 댓글1", user1.getId());
-        CommentResponse savedComment = communityCommentService.save(post1.getId(), request1);
+        CommentRequest request1 = testKrUtils.createCommentRequest("테스트 댓글1");
+        CommentResponse savedComment = communityCommentService.save(post1.getId(), user1.getId(), request1);
 
-        CommentRequest request2 = testKrUtils.createCommentRequest("테스트 댓글2", user1.getId());
-        communityCommentService.save(post1.getId(), request2);
+        CommentRequest request2 = testKrUtils.createCommentRequest("테스트 댓글2");
+        communityCommentService.save(post1.getId(), user1.getId(), request2);
 
-        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글", user1.getId());
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
-        CommentResponse updatedComment = communityCommentService.update(post1.getId(), savedComment.getId(), updateRequest);
+        CommentResponse updatedComment = communityCommentService.update(post1.getId(), savedComment.getId(), user1.getId(), updateRequest);
         List<CommentResponse> allComments = communityCommentService.findAllByPostId(post1.getId());
 
         // then
@@ -152,12 +151,12 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글", user1.getId());
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.update(999L, 999L, updateRequest))
+        assertThatThrownBy(() -> communityCommentService.update(999L, 999L, user1.getId(), updateRequest))
                 .isInstanceOf(CommunityPostException.class);
     }
 
@@ -167,26 +166,13 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글", user1.getId());
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.update(post1.getId(), 999L, updateRequest))
+        assertThatThrownBy(() -> communityCommentService.update(post1.getId(), 999L, user1.getId(), updateRequest))
                 .isInstanceOf(CommunityCommentException.class);
-    }
-
-    @Test
-    @DisplayName("로그인하지 않은 사용자가 댓글 수정하기")
-    void notLoginEditComment() {
-        // given
-        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글", user1.getId());
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> communityCommentService.update(post1.getId(), comment1.getId(), updateRequest))
-                .isInstanceOf(CommonException.class);
     }
 
     @Test
@@ -195,12 +181,12 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글", user1.getId());
+        CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.update(post1.getId(), comment1.getId(), updateRequest))
+        assertThatThrownBy(() -> communityCommentService.update(post1.getId(), comment1.getId(), user1.getId(), updateRequest))
                 .isInstanceOf(CommunityCommentException.class);
     }
 
@@ -210,11 +196,11 @@ class CommunityCommentServiceTest {
         // given
         testKrUtils.login(user1);
 
-        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1", user1.getId());
-        CommentResponse savedComment = communityCommentService.save(post1.getId(), request);
+        CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
+        CommentResponse savedComment = communityCommentService.save(post1.getId(), user1.getId(), request);
 
         // when
-        communityCommentService.deleteById(post1.getId(), savedComment.getId());
+        communityCommentService.deleteById(post1.getId(), savedComment.getId(), user1.getId());
 
         // then
         List<CommentResponse> allComments = communityCommentService.findAllByPostId(post1.getId());
@@ -231,7 +217,7 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.deleteById(999L, 999L))
+        assertThatThrownBy(() -> communityCommentService.deleteById(999L, 999L, user1.getId()))
                 .isInstanceOf(CommunityPostException.class);
     }
 
@@ -244,20 +230,8 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.deleteById(post1.getId(), 999L))
+        assertThatThrownBy(() -> communityCommentService.deleteById(post1.getId(), 999L, user1.getId()))
                 .isInstanceOf(CommunityCommentException.class);
-    }
-
-    @Test
-    @DisplayName("로그인하지 않은 사용자가 댓글 삭제하기")
-    void notLoginRemoveComment() {
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> communityCommentService.deleteById(post1.getId(), comment1.getId()))
-                .isInstanceOf(CommonException.class);
     }
 
     @Test
@@ -269,7 +243,7 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.deleteById(post1.getId(), comment1.getId()))
+        assertThatThrownBy(() -> communityCommentService.deleteById(post1.getId(), comment1.getId(), user1.getId()))
                 .isInstanceOf(CommunityCommentException.class);
     }
 }

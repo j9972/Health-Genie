@@ -3,7 +3,6 @@ package com.example.healthgenie.boundedContext.community.service;
 import com.example.healthgenie.base.exception.CommunityCommentException;
 import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.base.exception.UserException;
-import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.dto.CommentResponse;
 import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
@@ -16,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -34,11 +34,11 @@ public class CommunityCommentService {
     private final CommunityPostRepository communityPostRepository;
     private final UserRepository userRepository;
 
-    public CommentResponse save(Long postId, CommentRequest request) {
+    public CommentResponse save(Long postId, Long userId, CommentRequest request) {
         CommunityPost post = communityPostRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
-        User writer = userRepository.findById(request.getWriterId())
+        User writer = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         CommunityComment comment = CommunityComment.builder()
@@ -69,32 +69,32 @@ public class CommunityCommentService {
         return CommentResponse.of(communityCommentRepository.findAllByPostIdOrderByIdDesc(postId));
     }
 
-    public CommentResponse update(Long postId, Long commentId, CommentRequest request) {
+    public CommentResponse update(Long postId, Long commentId, Long userId, CommentRequest request) {
         communityPostRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         CommunityComment comment = communityCommentRepository.findById(commentId)
                 .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
 
-        if(!comment.getWriter().getId().equals(SecurityUtils.getCurrentUserId())) {
+        if(!comment.getWriter().getId().equals(userId)) {
             throw new CommunityCommentException(NO_PERMISSION);
         }
 
-        if(request.getContent() != null) {
+        if(StringUtils.hasText(request.getContent())) {
             comment.changeContent(request.getContent());
         }
 
         return CommentResponse.of(comment);
     }
 
-    public void deleteById(Long postId, Long commentId) {
+    public void deleteById(Long postId, Long commentId, Long userId) {
         CommunityPost post = communityPostRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         CommunityComment comment = communityCommentRepository.findById(commentId)
                 .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
 
-        if(!comment.getWriter().getId().equals(SecurityUtils.getCurrentUserId())) {
+        if(!comment.getWriter().getId().equals(userId)) {
             throw new CommunityCommentException(NO_PERMISSION);
         }
 

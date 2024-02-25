@@ -120,23 +120,21 @@ public class TestKrUtils {
         return chatRoomRepository.save(chatRoom);
     }
 
-    public PostRequest createPostRequest(String title, String content, Long writerId) {
-        return createPostRequest(title, content, writerId, null);
+    public PostRequest createPostRequest(String title, String content) {
+        return createPostRequest(title, content, null);
     }
 
-    public PostRequest createPostRequest(String title, String content, Long writerId, List<MultipartFile> photos) {
+    public PostRequest createPostRequest(String title, String content, List<MultipartFile> photos) {
         return PostRequest.builder()
                 .title(title)
                 .content(content)
-                .writerId(writerId)
                 .photos(photos)
                 .build();
     }
 
-    public CommentRequest createCommentRequest(String content, Long writerId) {
+    public CommentRequest createCommentRequest(String content) {
         return CommentRequest.builder()
                 .content(content)
-                .writerId(writerId)
                 .build();
     }
 
