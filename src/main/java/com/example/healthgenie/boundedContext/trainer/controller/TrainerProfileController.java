@@ -44,7 +44,7 @@ public class TrainerProfileController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 관리페이지에 보여줄 본인의 내용
+    // 관리페이지에 보여줄 본인 내용
     @GetMapping("/detail/{profileId}")
     public ResponseEntity<Result> getProfile(@PathVariable Long profileId) {
         ProfileResponseDto response = profileService.getProfile(profileId);
