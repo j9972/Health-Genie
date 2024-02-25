@@ -1,7 +1,6 @@
 package com.example.healthgenie.boundedContext.community.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +15,6 @@ import java.util.List;
 @Builder
 public class PostRequest {
 
-    @NotNull
-    private Long writerId;
     @NotBlank
     private String title;
     @NotBlank

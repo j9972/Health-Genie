@@ -43,8 +43,8 @@ public class CommunityPostService {
     }
 
     @Transactional
-    public PostResponse save(PostRequest request) {
-        User writer = userRepository.findById(request.getWriterId())
+    public PostResponse save(Long userId, PostRequest request) {
+        User writer = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         CommunityPost savedPost = communityPostRepository.save(CommunityPost.builder()
@@ -73,13 +73,11 @@ public class CommunityPostService {
     }
 
     @Transactional
-    public PostResponse update(Long id, PostRequest request) {
-        User currentUser = SecurityUtils.getCurrentUser();
-
-        CommunityPost post = communityPostRepository.findById(id)
+    public PostResponse update(Long postId, Long userId, PostRequest request) {
+        CommunityPost post = communityPostRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
-        if(!Objects.equals(currentUser.getId(), post.getWriter().getId())) {
+        if(!Objects.equals(userId, post.getWriter().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 

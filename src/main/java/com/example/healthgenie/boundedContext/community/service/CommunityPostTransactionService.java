@@ -38,7 +38,7 @@ public class CommunityPostTransactionService {
     private final CommunityPostRepository communityPostRepository;
     private final CommunityPostPhotoService communityPostPhotoService;
 
-    public PostResponse save(PostRequest request) throws IOException {
+    public PostResponse save(Long userId, PostRequest request) throws IOException {
         List<String> photoPaths = new ArrayList<>();
         PostResponse savedPost = null;
         try {
@@ -48,7 +48,7 @@ public class CommunityPostTransactionService {
             }
 
             // CommunityPost 엔티티 저장
-            savedPost = communityPostService.save(request);
+            savedPost = communityPostService.save(userId, request);
 
             // CommunityPostPhoto 엔티티 저장
             if (existsFile(request)) {
@@ -72,7 +72,7 @@ public class CommunityPostTransactionService {
                 .build();
     }
 
-    public PostResponse update(Long postId, PostRequest request) throws IOException {
+    public PostResponse update(Long postId, Long userId, PostRequest request) throws IOException {
         CommunityPost post = communityPostRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
@@ -97,7 +97,7 @@ public class CommunityPostTransactionService {
             }
 
             // CommunityPost 엔티티 저장
-            updatedPost = communityPostService.update(postId, request);
+            updatedPost = communityPostService.update(postId, userId, request);
 
             // CommunityPostPhoto 엔티티 저장
             if (existsFile(request)) {
@@ -128,11 +128,11 @@ public class CommunityPostTransactionService {
                 .build();
     }
 
-    public String delete(Long postId) throws IOException {
+    public String delete(Long postId, Long userId) throws IOException {
         CommunityPost post = communityPostRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
-        if(!Objects.equals(post.getWriter().getId(), SecurityUtils.getCurrentUserId())) {
+        if(!Objects.equals(userId, post.getWriter().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 
