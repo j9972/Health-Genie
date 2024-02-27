@@ -31,11 +31,9 @@ public class PostService {
     private final PostQueryRepository postQueryRepository;
     private final UserRepository userRepository;
 
-    public PostResponse findById(Long postId) {
-        Post post = postRepository.findById(postId)
+    public Post findById(Long postId) {
+        return postRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
-
-        return PostResponse.of(post);
     }
 
     public List<PostResponse> findAll(String keyword) {

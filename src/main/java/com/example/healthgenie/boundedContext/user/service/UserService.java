@@ -56,11 +56,9 @@ public class UserService {
         return signUp(email, name, authProvider, Role.EMPTY);
     }
 
-    public UserResponse findById(Long userId) {
-        User user = userRepository.findById(userId)
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
-
-        return UserResponse.of(user);
     }
 
     @Transactional

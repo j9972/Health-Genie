@@ -3,6 +3,7 @@ package com.example.healthgenie.boundedContext.community.post.controller;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
 import com.example.healthgenie.boundedContext.community.post.service.PostTransactionService;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -34,7 +35,9 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<Result> findById(@PathVariable Long postId) {
-        PostResponse response = postService.findById(postId);
+        Post post = postService.findById(postId);
+
+        PostResponse response = PostResponse.of(post);
 
         return ResponseEntity.ok(Result.of(response));
     }

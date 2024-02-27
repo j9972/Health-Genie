@@ -70,7 +70,8 @@ class PostServiceTest {
         PostResponse savedPost = postService.save(user1.getId(), request);
 
         // when
-        PostResponse response = postService.findById(savedPost.getId());
+        Post post = postService.findById(savedPost.getId());
+        PostResponse response = PostResponse.of(post);
 
         // then
         assertThat(response.getTitle()).isEqualTo("테스트 게시글 제목1");
