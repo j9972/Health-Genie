@@ -1,14 +1,14 @@
-package com.example.healthgenie.boundedContext.community.service;
+package com.example.healthgenie.boundedContext.community.comment.service;
 
 import com.example.healthgenie.base.exception.CommunityCommentException;
 import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.base.exception.UserException;
-import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
-import com.example.healthgenie.boundedContext.community.dto.CommentResponse;
-import com.example.healthgenie.boundedContext.community.entity.Comment;
-import com.example.healthgenie.boundedContext.community.entity.Post;
-import com.example.healthgenie.boundedContext.community.repository.CommentRepository;
-import com.example.healthgenie.boundedContext.community.repository.PostRepository;
+import com.example.healthgenie.boundedContext.community.comment.repository.CommentRepository;
+import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
+import com.example.healthgenie.boundedContext.community.comment.dto.CommentResponse;
+import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
+import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

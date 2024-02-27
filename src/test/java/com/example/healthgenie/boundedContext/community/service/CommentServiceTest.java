@@ -2,10 +2,11 @@ package com.example.healthgenie.boundedContext.community.service;
 
 import com.example.healthgenie.base.exception.CommunityCommentException;
 import com.example.healthgenie.base.exception.CommunityPostException;
-import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
-import com.example.healthgenie.boundedContext.community.dto.CommentResponse;
-import com.example.healthgenie.boundedContext.community.entity.Comment;
-import com.example.healthgenie.boundedContext.community.entity.Post;
+import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
+import com.example.healthgenie.boundedContext.community.comment.dto.CommentResponse;
+import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
+import com.example.healthgenie.boundedContext.community.comment.service.CommentService;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;

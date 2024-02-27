@@ -1,6 +1,6 @@
-package com.example.healthgenie.boundedContext.community.repository;
+package com.example.healthgenie.boundedContext.community.photo.repository;
 
-import com.example.healthgenie.boundedContext.community.entity.Photo;
+import com.example.healthgenie.boundedContext.community.photo.entity.Photo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

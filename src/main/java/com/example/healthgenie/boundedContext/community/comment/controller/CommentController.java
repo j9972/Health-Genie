@@ -1,9 +1,9 @@
-package com.example.healthgenie.boundedContext.community.controller;
+package com.example.healthgenie.boundedContext.community.comment.controller;
 
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
-import com.example.healthgenie.boundedContext.community.dto.CommentResponse;
-import com.example.healthgenie.boundedContext.community.service.CommentService;
+import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
+import com.example.healthgenie.boundedContext.community.comment.dto.CommentResponse;
+import com.example.healthgenie.boundedContext.community.comment.service.CommentService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

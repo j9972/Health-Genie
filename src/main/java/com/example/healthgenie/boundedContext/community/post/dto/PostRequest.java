@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.community.dto;
+package com.example.healthgenie.boundedContext.community.post.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

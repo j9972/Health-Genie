@@ -1,6 +1,7 @@
-package com.example.healthgenie.boundedContext.community.entity;
+package com.example.healthgenie.boundedContext.community.photo.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,8 +1,9 @@
-package com.example.healthgenie.boundedContext.community.dto;
+package com.example.healthgenie.boundedContext.community.post.dto;
 
 import com.example.healthgenie.base.utils.DateUtils;
-import com.example.healthgenie.boundedContext.community.entity.Post;
-import com.example.healthgenie.boundedContext.community.entity.Photo;
+import com.example.healthgenie.boundedContext.community.comment.dto.CommentResponse;
+import com.example.healthgenie.boundedContext.community.photo.entity.Photo;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

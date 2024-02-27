@@ -1,7 +1,7 @@
 package com.example.healthgenie.base.initData;
 
-import com.example.healthgenie.boundedContext.community.entity.Post;
-import com.example.healthgenie.boundedContext.community.repository.PostRepository;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
+import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;

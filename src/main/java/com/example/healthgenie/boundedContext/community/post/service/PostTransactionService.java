@@ -1,14 +1,15 @@
-package com.example.healthgenie.boundedContext.community.service;
+package com.example.healthgenie.boundedContext.community.post.service;
 
 import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.base.utils.SecurityUtils;
-import com.example.healthgenie.boundedContext.community.dto.PostRequest;
-import com.example.healthgenie.boundedContext.community.dto.PostResponse;
-import com.example.healthgenie.boundedContext.community.entity.Post;
-import com.example.healthgenie.boundedContext.community.entity.Photo;
-import com.example.healthgenie.boundedContext.community.repository.PostRepository;
+import com.example.healthgenie.boundedContext.community.photo.entity.Photo;
+import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
+import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
+import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
+import com.example.healthgenie.boundedContext.community.photo.service.PhotoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,10 @@
-package com.example.healthgenie.boundedContext.community.controller;
+package com.example.healthgenie.boundedContext.community.post.controller;
 
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.community.dto.PostRequest;
-import com.example.healthgenie.boundedContext.community.dto.PostResponse;
-import com.example.healthgenie.boundedContext.community.service.PostService;
-import com.example.healthgenie.boundedContext.community.service.PostTransactionService;
+import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
+import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
+import com.example.healthgenie.boundedContext.community.post.service.PostService;
+import com.example.healthgenie.boundedContext.community.post.service.PostTransactionService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

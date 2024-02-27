@@ -1,10 +1,10 @@
-package com.example.healthgenie.boundedContext.community.service;
+package com.example.healthgenie.boundedContext.community.photo.service;
 
-import com.example.healthgenie.boundedContext.community.entity.Post;
-import com.example.healthgenie.boundedContext.community.entity.Photo;
+import com.example.healthgenie.boundedContext.community.photo.entity.Photo;
+import com.example.healthgenie.boundedContext.community.photo.repository.PhotoRepository;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.base.exception.CommunityPostException;
-import com.example.healthgenie.boundedContext.community.repository.PhotoRepository;
-import com.example.healthgenie.boundedContext.community.repository.PostRepository;
+import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,6 @@
-package com.example.healthgenie.boundedContext.community.repository;
+package com.example.healthgenie.boundedContext.community.post.repository;
 
-import com.example.healthgenie.boundedContext.community.entity.Post;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.example.healthgenie.boundedContext.community.entity.QPost.post;
+import static com.example.healthgenie.boundedContext.community.post.entity.QPost.post;
 
 @RequiredArgsConstructor
 @Repository

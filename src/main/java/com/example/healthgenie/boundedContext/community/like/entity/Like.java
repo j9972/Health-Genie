@@ -1,5 +1,6 @@
-package com.example.healthgenie.boundedContext.community.entity;
+package com.example.healthgenie.boundedContext.community.like.entity;
 
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.entity.BaseEntity;
 import jakarta.persistence.*;

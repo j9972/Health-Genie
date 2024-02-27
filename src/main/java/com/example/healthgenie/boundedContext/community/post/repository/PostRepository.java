@@ -1,6 +1,6 @@
-package com.example.healthgenie.boundedContext.community.repository;
+package com.example.healthgenie.boundedContext.community.post.repository;
 
-import com.example.healthgenie.boundedContext.community.entity.Post;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

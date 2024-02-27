@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.community.dto;
+package com.example.healthgenie.boundedContext.community.photo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentRequest {
+public class PhotoRequest {
 
-    private String content;
+    private Long postId;
+    private String photoPath;
 }
