@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommunityPostPhotoRequest {
+public class PhotoRequest {
 
     private Long postId;
     private String photoPath;

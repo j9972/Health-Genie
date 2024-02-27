@@ -3,8 +3,8 @@ package com.example.healthgenie.boundedContext.community.controller;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
-import com.example.healthgenie.boundedContext.community.service.CommunityPostService;
-import com.example.healthgenie.boundedContext.community.service.CommunityPostTransactionService;
+import com.example.healthgenie.boundedContext.community.service.PostService;
+import com.example.healthgenie.boundedContext.community.service.PostTransactionService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,42 +20,42 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/community/posts")
-public class CommunityPostController {
+public class PostController {
 
-    private final CommunityPostService communityPostService;
-    private final CommunityPostTransactionService communityPostTransactionService;
+    private final PostService postService;
+    private final PostTransactionService postTransactionService;
 
     @GetMapping
     public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
-        List<PostResponse> response = communityPostService.findAll(keyword);
+        List<PostResponse> response = postService.findAll(keyword);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping("/{postId}")
     public ResponseEntity<Result> findById(@PathVariable Long postId) {
-        PostResponse response = communityPostService.findById(postId);
+        PostResponse response = postService.findById(postId);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @PostMapping
     public ResponseEntity<Result> save(@AuthenticationPrincipal User user, @Valid PostRequest request) throws IOException {
-        PostResponse response = communityPostTransactionService.save(user.getId(), request);
+        PostResponse response = postTransactionService.save(user.getId(), request);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @PatchMapping("/{postId}")
     public ResponseEntity<Result> edit(@PathVariable Long postId, @AuthenticationPrincipal User user, PostRequest request) throws IOException {
-        PostResponse response = communityPostTransactionService.update(postId, user.getId(), request);
+        PostResponse response = postTransactionService.update(postId, user.getId(), request);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<Result> delete(@PathVariable Long postId, @AuthenticationPrincipal User user) throws IOException {
-        String response = communityPostTransactionService.delete(postId, user.getId());
+        String response = postTransactionService.delete(postId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

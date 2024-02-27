@@ -10,7 +10,7 @@ import lombok.*;
 @Entity
 @Table(name ="COMMUNITY_POST_PHOTO_TB")
 @Builder
-public class CommunityPostPhoto extends BaseEntity {
+public class Photo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public class CommunityPostPhoto extends BaseEntity {
     @ManyToOne
     @Setter
     @JoinColumn(name = "community_post_id")
-    private CommunityPost post;
+    private Post post;
 
     // 이미지 경로
     @Column(name = "post_photo_path")

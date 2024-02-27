@@ -1,8 +1,6 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
-import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.base.exception.PtProcessException;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
 import com.example.healthgenie.boundedContext.user.entity.Role;
@@ -16,12 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

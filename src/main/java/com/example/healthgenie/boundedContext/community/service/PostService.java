@@ -6,9 +6,9 @@ import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.community.repository.CommunityPostQueryRepository;
-import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
+import com.example.healthgenie.boundedContext.community.entity.Post;
+import com.example.healthgenie.boundedContext.community.repository.PostQueryRepository;
+import com.example.healthgenie.boundedContext.community.repository.PostRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,21 +25,21 @@ import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FO
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CommunityPostService {
+public class PostService {
 
-    private final CommunityPostRepository communityPostRepository;
-    private final CommunityPostQueryRepository communityPostQueryRepository;
+    private final PostRepository postRepository;
+    private final PostQueryRepository postQueryRepository;
     private final UserRepository userRepository;
 
     public PostResponse findById(Long postId) {
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         return PostResponse.of(post);
     }
 
     public List<PostResponse> findAll(String keyword) {
-        return PostResponse.excludePhotosAndCommentsOf(communityPostQueryRepository.findAll(keyword));
+        return PostResponse.excludePhotosAndCommentsOf(postQueryRepository.findAll(keyword));
     }
 
     @Transactional
@@ -47,7 +47,7 @@ public class CommunityPostService {
         User writer = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        CommunityPost savedPost = communityPostRepository.save(CommunityPost.builder()
+        Post savedPost = postRepository.save(Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .writer(writer)
@@ -60,21 +60,21 @@ public class CommunityPostService {
     public String delete(Long id) {
         User currentUser = SecurityUtils.getCurrentUser();
 
-        CommunityPost post = communityPostRepository.findById(id)
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         if(!Objects.equals(currentUser.getId(), post.getWriter().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 
-        communityPostRepository.delete(post);
+        postRepository.delete(post);
 
         return "게시글이 삭제 되었습니다.";
     }
 
     @Transactional
     public PostResponse update(Long postId, Long userId, PostRequest request) {
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         if(!Objects.equals(userId, post.getWriter().getId())) {

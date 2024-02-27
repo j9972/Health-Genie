@@ -1,8 +1,8 @@
 package com.example.healthgenie.boundedContext.community.dto;
 
 import com.example.healthgenie.base.utils.DateUtils;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
+import com.example.healthgenie.boundedContext.community.entity.Post;
+import com.example.healthgenie.boundedContext.community.entity.Photo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,15 +27,15 @@ public class PostResponse {
     private List<String> photoPaths;
     private List<CommentResponse> comments;
 
-    public static PostResponse of(CommunityPost post) {
+    public static PostResponse of(Post post) {
         List<String> paths = new ArrayList<>();
-        if(post.getCommunityPostPhotos() != null) {
-            paths = post.getCommunityPostPhotos().stream()
-                    .map(CommunityPostPhoto::getPostPhotoPath)
+        if(post.getPhotos() != null) {
+            paths = post.getPhotos().stream()
+                    .map(Photo::getPostPhotoPath)
                     .toList();
         }
 
-        List<CommentResponse> comments = post.getCommunityComments().stream()
+        List<CommentResponse> comments = post.getComments().stream()
                 .map(comment -> {
                     LocalDateTime dateTime = comment.getCreatedDate();
                     return CommentResponse.builder()
@@ -65,13 +65,13 @@ public class PostResponse {
     }
 
 
-    public static List<PostResponse> of(List<CommunityPost> posts) {
+    public static List<PostResponse> of(List<Post> posts) {
         return posts.stream()
                 .map(PostResponse::of)
                 .toList();
     }
 
-    public static PostResponse excludePhotosAndCommentsOf(CommunityPost post) {
+    public static PostResponse excludePhotosAndCommentsOf(Post post) {
         LocalDateTime dateTime = post.getCreatedDate();
         String date = DateUtils.toStringDate(dateTime);
         String time = DateUtils.toStringTime(dateTime);
@@ -86,7 +86,7 @@ public class PostResponse {
                 .build();
     }
 
-    public static List<PostResponse> excludePhotosAndCommentsOf(List<CommunityPost> posts) {
+    public static List<PostResponse> excludePhotosAndCommentsOf(List<Post> posts) {
         return posts.stream()
                 .map(PostResponse::excludePhotosAndCommentsOf)
                 .toList();

@@ -1,8 +1,8 @@
 package com.example.healthgenie.boundedContext.community.service;
 
 import com.example.healthgenie.base.exception.CommunityPostException;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
+import com.example.healthgenie.boundedContext.community.entity.Post;
+import com.example.healthgenie.boundedContext.community.entity.Photo;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
@@ -20,17 +20,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
-class CommunityPostPhotoServiceTest {
+class PhotoServiceTest {
 
     @Autowired
     TestKrUtils testKrUtils;
 
     @Autowired
-    CommunityPostPhotoService communityPostPhotoService;
+    PhotoService photoService;
 
-    CommunityPost post1;
+    Post post1;
     User user1;
-    CommunityPostPhoto photo1;
+    Photo photo1;
 
     @BeforeEach
     void before() {
@@ -45,7 +45,7 @@ class CommunityPostPhotoServiceTest {
         // given
 
         // when
-        CommunityPostPhoto savedPhoto = communityPostPhotoService.save(post1.getId(), "test-path1.png");
+        Photo savedPhoto = photoService.save(post1.getId(), "test-path1.png");
 
         // then
         assertThat(savedPhoto.getPost().getId()).isEqualTo(post1.getId());
@@ -60,7 +60,7 @@ class CommunityPostPhotoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityPostPhotoService.save(999L, "test-path1.png"))
+        assertThatThrownBy(() -> photoService.save(999L, "test-path1.png"))
                 .isInstanceOf(CommunityPostException.class);
     }
 
@@ -70,12 +70,12 @@ class CommunityPostPhotoServiceTest {
         // given
 
         // when
-        List<CommunityPostPhoto> savedPhotos =
-                communityPostPhotoService.saveAll(post1.getId(), List.of("test-path1.png", "test-path2.png", "test-path3.png"));
+        List<Photo> savedPhotos =
+                photoService.saveAll(post1.getId(), List.of("test-path1.png", "test-path2.png", "test-path3.png"));
 
         // then
         assertThat(savedPhotos.size()).isEqualTo(3);
-        assertThat(savedPhotos).extracting(CommunityPostPhoto::getPostPhotoPath)
+        assertThat(savedPhotos).extracting(Photo::getPostPhotoPath)
                 .containsExactly("test-path1.png", "test-path2.png", "test-path3.png");
     }
 
@@ -83,14 +83,14 @@ class CommunityPostPhotoServiceTest {
     @DisplayName("게시글의 모든 사진(경로) 가져오기")
     void findAll() {
         // given
-        communityPostPhotoService.saveAll(post1.getId(), List.of("test-path1.png", "test-path2.png", "test-path3.png"));
+        photoService.saveAll(post1.getId(), List.of("test-path1.png", "test-path2.png", "test-path3.png"));
 
         // when
-        List<CommunityPostPhoto> findPhotos = communityPostPhotoService.findAll();
+        List<Photo> findPhotos = photoService.findAll();
 
         // then
         assertThat(findPhotos.size()).isEqualTo(4);
-        assertThat(findPhotos).extracting(CommunityPostPhoto::getPostPhotoPath)
+        assertThat(findPhotos).extracting(Photo::getPostPhotoPath)
                 .containsExactly("default-path.png", "test-path1.png", "test-path2.png", "test-path3.png");
     }
 
@@ -98,14 +98,14 @@ class CommunityPostPhotoServiceTest {
     @DisplayName("정상적으로 사진(경로) 수정하기")
     void updateAll() {
         // given
-        communityPostPhotoService.updateAll(post1.getId(), List.of("update-path1.png", "update-path2.png"));
+        photoService.updateAll(post1.getId(), List.of("update-path1.png", "update-path2.png"));
 
         // when
-        List<CommunityPostPhoto> findPhotos = communityPostPhotoService.findAll();
+        List<Photo> findPhotos = photoService.findAll();
 
         // then
         assertThat(findPhotos.size()).isEqualTo(2);
-        assertThat(findPhotos).extracting(CommunityPostPhoto::getPostPhotoPath)
+        assertThat(findPhotos).extracting(Photo::getPostPhotoPath)
                 .containsExactly("update-path1.png", "update-path2.png");
     }
 
@@ -117,7 +117,7 @@ class CommunityPostPhotoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityPostPhotoService.updateAll(999L, List.of("update-path1.png", "update-path2.png")))
+        assertThatThrownBy(() -> photoService.updateAll(999L, List.of("update-path1.png", "update-path2.png")))
                 .isInstanceOf(CommunityPostException.class);
     }
 }

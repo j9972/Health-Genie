@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name ="COMMUNITY_LIKED_TB")
-public class CommunityLiked extends BaseEntity {
+public class Like extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,5 +25,5 @@ public class CommunityLiked extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")
-    private CommunityPost post;
+    private Post post;
 }

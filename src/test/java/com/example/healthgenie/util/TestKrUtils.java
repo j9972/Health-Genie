@@ -7,12 +7,12 @@ import com.example.healthgenie.boundedContext.chat.entity.ChatRoomUser;
 import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository;
 import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
-import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
-import com.example.healthgenie.boundedContext.community.repository.CommunityCommentRepository;
-import com.example.healthgenie.boundedContext.community.repository.CommunityPostPhotoRepository;
-import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
+import com.example.healthgenie.boundedContext.community.entity.Comment;
+import com.example.healthgenie.boundedContext.community.entity.Post;
+import com.example.healthgenie.boundedContext.community.entity.Photo;
+import com.example.healthgenie.boundedContext.community.repository.CommentRepository;
+import com.example.healthgenie.boundedContext.community.repository.PhotoRepository;
+import com.example.healthgenie.boundedContext.community.repository.PostRepository;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingCondition;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingResponse;
@@ -40,9 +40,9 @@ public class TestKrUtils {
 
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final CommunityPostRepository communityPostRepository;
-    private final CommunityCommentRepository communityCommentRepository;
-    private final CommunityPostPhotoRepository communityPostPhotoRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final PhotoRepository photoRepository;
     private final MatchingRepository matchingRepository;
     private final MatchingUserRepository matchingUserRepository;
     private final MatchingService matchingService;
@@ -62,18 +62,18 @@ public class TestKrUtils {
         return userRepository.save(user);
     }
 
-    public CommunityPost createPost(User writer, String title, String content, List<CommunityPostPhoto> photos) {
-        CommunityPost post = CommunityPost.builder()
+    public Post createPost(User writer, String title, String content, List<Photo> photos) {
+        Post post = Post.builder()
                 .writer(writer)
                 .title(title)
                 .content(content)
-                .communityPostPhotos(photos)
+                .photos(photos)
                 .build();
 
-        return communityPostRepository.save(post);
+        return postRepository.save(post);
     }
 
-    public CommunityPost createPost(User writer, String title, String content) {
+    public Post createPost(User writer, String title, String content) {
         return createPost(writer, title, content, new ArrayList<>());
     }
 
@@ -138,25 +138,25 @@ public class TestKrUtils {
                 .build();
     }
 
-    public CommunityComment createComment(String content, CommunityPost post) {
+    public Comment createComment(String content, Post post) {
         User writer = createUser("기본 사용자", Role.EMPTY, "default@test.com");
 
-        CommunityComment comment = CommunityComment.builder()
+        Comment comment = Comment.builder()
                 .commentBody(content)
                 .writer(writer)
                 .post(post)
                 .build();
 
-        return communityCommentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
-    public CommunityPostPhoto createPostPhoto(CommunityPost post, String path) {
-        CommunityPostPhoto postPhoto = CommunityPostPhoto.builder()
+    public Photo createPostPhoto(Post post, String path) {
+        Photo postPhoto = Photo.builder()
                 .post(post)
                 .postPhotoPath(path)
                 .build();
 
-        return communityPostPhotoRepository.save(postPhoto);
+        return photoRepository.save(postPhoto);
     }
 
     public MatchingRequest createMatchingRequest(String date, String time, String place, String description, Long userId, Long trainerId) {

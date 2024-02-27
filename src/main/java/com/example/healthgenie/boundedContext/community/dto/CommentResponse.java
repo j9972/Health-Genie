@@ -1,7 +1,7 @@
 package com.example.healthgenie.boundedContext.community.dto;
 
 import com.example.healthgenie.base.utils.DateUtils;
-import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
+import com.example.healthgenie.boundedContext.community.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class CommentResponse {
     private String writer;
     private String content;
 
-    public static CommentResponse of(CommunityComment comment) {
+    public static CommentResponse of(Comment comment) {
         LocalDateTime dateTime = comment.getCreatedDate();
         String date = DateUtils.toStringDate(dateTime);
         String time = DateUtils.toStringTime(dateTime);
@@ -36,7 +36,7 @@ public class CommentResponse {
                 .build();
     }
 
-    public static List<CommentResponse> of(List<CommunityComment> comments) {
+    public static List<CommentResponse> of(List<Comment> comments) {
         return comments.stream()
                 .map(CommentResponse::of)
                 .toList();

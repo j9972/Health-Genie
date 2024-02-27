@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "COMMUNITY_POST_TB")
 @Builder(toBuilder = true)
-public class CommunityPost extends BaseEntity {
+public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,11 +39,11 @@ public class CommunityPost extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<CommunityComment> communityComments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<CommunityPostPhoto> communityPostPhotos = new ArrayList<>();
+    private List<Photo> photos = new ArrayList<>();
 
     public void updateTitle(String title) {
         this.title = title;
@@ -56,21 +56,21 @@ public class CommunityPost extends BaseEntity {
     /*
     연관 관계 편의 메서드
      */
-    public void addComment(CommunityComment comment) {
-        this.communityComments.add(comment);
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
         comment.setPost(this);
     }
 
-    public void removeComment(CommunityComment comment) {
-        this.communityComments.remove(comment);
+    public void removeComment(Comment comment) {
+        this.comments.remove(comment);
     }
 
-    public void addPhoto(CommunityPostPhoto photo) {
-        this.communityPostPhotos.add(photo);
+    public void addPhoto(Photo photo) {
+        this.photos.add(photo);
         photo.setPost(this);
     }
 
-    public void removePhotos(List<CommunityPostPhoto> photos) {
-        this.communityPostPhotos.removeAll(photos);
+    public void removePhotos(List<Photo> photos) {
+        this.photos.removeAll(photos);
     }
 }

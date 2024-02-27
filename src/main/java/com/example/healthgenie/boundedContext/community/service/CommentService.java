@@ -5,10 +5,10 @@ import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.dto.CommentResponse;
-import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.community.repository.CommunityCommentRepository;
-import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
+import com.example.healthgenie.boundedContext.community.entity.Comment;
+import com.example.healthgenie.boundedContext.community.entity.Post;
+import com.example.healthgenie.boundedContext.community.repository.CommentRepository;
+import com.example.healthgenie.boundedContext.community.repository.PostRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,26 +28,26 @@ import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FO
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
-public class CommunityCommentService {
+public class CommentService {
 
-    private final CommunityCommentRepository communityCommentRepository;
-    private final CommunityPostRepository communityPostRepository;
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
     private final UserRepository userRepository;
 
     public CommentResponse save(Long postId, Long userId, CommentRequest request) {
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         User writer = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        CommunityComment comment = CommunityComment.builder()
+        Comment comment = Comment.builder()
                 .post(post)
                 .commentBody(request.getContent())
                 .writer(writer)
                 .build();
 
-        communityCommentRepository.save(comment);
+        commentRepository.save(comment);
 
         post.addComment(comment);
 
@@ -55,25 +55,25 @@ public class CommunityCommentService {
     }
 
     public CommentResponse findById(Long id) {
-        CommunityComment comment = communityCommentRepository.findById(id)
+        Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
 
         return CommentResponse.of(comment);
     }
 
     public List<CommentResponse> findAll() {
-        return CommentResponse.of(communityCommentRepository.findAll());
+        return CommentResponse.of(commentRepository.findAll());
     }
 
     public List<CommentResponse> findAllByPostId(Long postId) {
-        return CommentResponse.of(communityCommentRepository.findAllByPostIdOrderByIdDesc(postId));
+        return CommentResponse.of(commentRepository.findAllByPostIdOrderByIdDesc(postId));
     }
 
     public CommentResponse update(Long postId, Long commentId, Long userId, CommentRequest request) {
-        communityPostRepository.findById(postId)
+        postRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
-        CommunityComment comment = communityCommentRepository.findById(commentId)
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
 
         if(!comment.getWriter().getId().equals(userId)) {
@@ -88,17 +88,17 @@ public class CommunityCommentService {
     }
 
     public void deleteById(Long postId, Long commentId, Long userId) {
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
-        CommunityComment comment = communityCommentRepository.findById(commentId)
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommunityCommentException(COMMENT_EMPTY));
 
         if(!comment.getWriter().getId().equals(userId)) {
             throw new CommunityCommentException(NO_PERMISSION);
         }
 
-        communityCommentRepository.deleteById(commentId);
+        commentRepository.deleteById(commentId);
 
         post.removeComment(comment);
     }

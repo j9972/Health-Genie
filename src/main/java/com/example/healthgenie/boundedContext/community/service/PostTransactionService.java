@@ -6,9 +6,9 @@ import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.base.utils.SecurityUtils;
 import com.example.healthgenie.boundedContext.community.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.dto.PostResponse;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
-import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
+import com.example.healthgenie.boundedContext.community.entity.Post;
+import com.example.healthgenie.boundedContext.community.entity.Photo;
+import com.example.healthgenie.boundedContext.community.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,12 +31,12 @@ import static com.example.healthgenie.base.exception.CommunityPostErrorResult.PO
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class CommunityPostTransactionService {
+public class PostTransactionService {
 
     private final S3UploadUtils s3UploadUtils;
-    private final CommunityPostService communityPostService;
-    private final CommunityPostRepository communityPostRepository;
-    private final CommunityPostPhotoService communityPostPhotoService;
+    private final PostService postService;
+    private final PostRepository postRepository;
+    private final PhotoService photoService;
 
     public PostResponse save(Long userId, PostRequest request) throws IOException {
         List<String> photoPaths = new ArrayList<>();
@@ -48,11 +48,11 @@ public class CommunityPostTransactionService {
             }
 
             // CommunityPost 엔티티 저장
-            savedPost = communityPostService.save(userId, request);
+            savedPost = postService.save(userId, request);
 
             // CommunityPostPhoto 엔티티 저장
             if (existsFile(request)) {
-                communityPostPhotoService.saveAll(savedPost.getId(), photoPaths);
+                photoService.saveAll(savedPost.getId(), photoPaths);
             }
         } catch (Exception e) {
             for(String fileUrl : photoPaths) {
@@ -73,7 +73,7 @@ public class CommunityPostTransactionService {
     }
 
     public PostResponse update(Long postId, Long userId, PostRequest request) throws IOException {
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         if(!Objects.equals(post.getWriter().getId(), SecurityUtils.getCurrentUserId())) {
@@ -85,8 +85,8 @@ public class CommunityPostTransactionService {
         try {
             // 이미지 S3 저장
             if (existsFile(request)) {
-                List<String> removePaths = post.getCommunityPostPhotos().stream()
-                        .map(CommunityPostPhoto::getPostPhotoPath)
+                List<String> removePaths = post.getPhotos().stream()
+                        .map(Photo::getPostPhotoPath)
                         .toList();
 
                 for(String fileUrl : removePaths) {
@@ -97,11 +97,11 @@ public class CommunityPostTransactionService {
             }
 
             // CommunityPost 엔티티 저장
-            updatedPost = communityPostService.update(postId, userId, request);
+            updatedPost = postService.update(postId, userId, request);
 
             // CommunityPostPhoto 엔티티 저장
             if (existsFile(request)) {
-                communityPostPhotoService.updateAll(updatedPost.getId(), photoPaths);
+                photoService.updateAll(updatedPost.getId(), photoPaths);
                 updatedPost.setPhotoPaths(photoPaths);
             } else {
                 updatedPost.setPhotoPaths(new ArrayList<>());
@@ -129,17 +129,17 @@ public class CommunityPostTransactionService {
     }
 
     public String delete(Long postId, Long userId) throws IOException {
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
 
         if(!Objects.equals(userId, post.getWriter().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 
-        communityPostService.delete(postId);
+        postService.delete(postId);
 
-        List<String> paths = post.getCommunityPostPhotos().stream()
-                .map(CommunityPostPhoto::getPostPhotoPath)
+        List<String> paths = post.getPhotos().stream()
+                .map(Photo::getPostPhotoPath)
                 .toList();
 
         for (String path : paths) {

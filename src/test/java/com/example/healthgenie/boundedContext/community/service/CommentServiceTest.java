@@ -4,8 +4,8 @@ import com.example.healthgenie.base.exception.CommunityCommentException;
 import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.boundedContext.community.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.dto.CommentResponse;
-import com.example.healthgenie.boundedContext.community.entity.CommunityComment;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
+import com.example.healthgenie.boundedContext.community.entity.Comment;
+import com.example.healthgenie.boundedContext.community.entity.Post;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
@@ -24,17 +24,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
-class CommunityCommentServiceTest {
+class CommentServiceTest {
 
     @Autowired
     TestKrUtils testKrUtils;
 
     @Autowired
-    CommunityCommentService communityCommentService;
+    CommentService commentService;
 
-    CommunityPost post1;
+    Post post1;
     User user1;
-    CommunityComment comment1;
+    Comment comment1;
 
     @BeforeEach
     void before() {
@@ -52,7 +52,7 @@ class CommunityCommentServiceTest {
         CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
 
         // when
-        CommentResponse savedComment = communityCommentService.save(post1.getId(), user1.getId(), request);
+        CommentResponse savedComment = commentService.save(post1.getId(), user1.getId(), request);
 
         // then
         assertThat(savedComment.getContent()).isEqualTo("테스트 댓글1");
@@ -70,7 +70,7 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.save(999L, user1.getId(), request))
+        assertThatThrownBy(() -> commentService.save(999L, user1.getId(), request))
                 .isInstanceOf(CommunityPostException.class);
     }
 
@@ -81,10 +81,10 @@ class CommunityCommentServiceTest {
         testKrUtils.login(user1);
 
         CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
-        CommentResponse savedComment = communityCommentService.save(post1.getId(), user1.getId(), request);
+        CommentResponse savedComment = commentService.save(post1.getId(), user1.getId(), request);
 
         // when
-        CommentResponse findComment = communityCommentService.findById(savedComment.getId());
+        CommentResponse findComment = commentService.findById(savedComment.getId());
 
         // then
         assertThat(findComment.getWriter()).isEqualTo(user1.getName());
@@ -99,7 +99,7 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.findById(999L))
+        assertThatThrownBy(() -> commentService.findById(999L))
                 .isInstanceOf(CommunityCommentException.class);
     }
 
@@ -111,11 +111,11 @@ class CommunityCommentServiceTest {
 
         for(int i=1; i<=10; i++) {
             CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글" + i);
-            communityCommentService.save(post1.getId(), user1.getId(), request);
+            commentService.save(post1.getId(), user1.getId(), request);
         }
 
         // when
-        List<CommentResponse> response = communityCommentService.findAllByPostId(post1.getId());
+        List<CommentResponse> response = commentService.findAllByPostId(post1.getId());
 
         // then
         assertThat(response.size()).isEqualTo(11);
@@ -129,16 +129,16 @@ class CommunityCommentServiceTest {
         testKrUtils.login(user1);
 
         CommentRequest request1 = testKrUtils.createCommentRequest("테스트 댓글1");
-        CommentResponse savedComment = communityCommentService.save(post1.getId(), user1.getId(), request1);
+        CommentResponse savedComment = commentService.save(post1.getId(), user1.getId(), request1);
 
         CommentRequest request2 = testKrUtils.createCommentRequest("테스트 댓글2");
-        communityCommentService.save(post1.getId(), user1.getId(), request2);
+        commentService.save(post1.getId(), user1.getId(), request2);
 
         CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
-        CommentResponse updatedComment = communityCommentService.update(post1.getId(), savedComment.getId(), user1.getId(), updateRequest);
-        List<CommentResponse> allComments = communityCommentService.findAllByPostId(post1.getId());
+        CommentResponse updatedComment = commentService.update(post1.getId(), savedComment.getId(), user1.getId(), updateRequest);
+        List<CommentResponse> allComments = commentService.findAllByPostId(post1.getId());
 
         // then
         assertThat(updatedComment.getContent()).isEqualTo("수정된 댓글");
@@ -156,7 +156,7 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.update(999L, 999L, user1.getId(), updateRequest))
+        assertThatThrownBy(() -> commentService.update(999L, 999L, user1.getId(), updateRequest))
                 .isInstanceOf(CommunityPostException.class);
     }
 
@@ -171,7 +171,7 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.update(post1.getId(), 999L, user1.getId(), updateRequest))
+        assertThatThrownBy(() -> commentService.update(post1.getId(), 999L, user1.getId(), updateRequest))
                 .isInstanceOf(CommunityCommentException.class);
     }
 
@@ -186,7 +186,7 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.update(post1.getId(), comment1.getId(), user1.getId(), updateRequest))
+        assertThatThrownBy(() -> commentService.update(post1.getId(), comment1.getId(), user1.getId(), updateRequest))
                 .isInstanceOf(CommunityCommentException.class);
     }
 
@@ -197,13 +197,13 @@ class CommunityCommentServiceTest {
         testKrUtils.login(user1);
 
         CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
-        CommentResponse savedComment = communityCommentService.save(post1.getId(), user1.getId(), request);
+        CommentResponse savedComment = commentService.save(post1.getId(), user1.getId(), request);
 
         // when
-        communityCommentService.deleteById(post1.getId(), savedComment.getId(), user1.getId());
+        commentService.deleteById(post1.getId(), savedComment.getId(), user1.getId());
 
         // then
-        List<CommentResponse> allComments = communityCommentService.findAllByPostId(post1.getId());
+        List<CommentResponse> allComments = commentService.findAllByPostId(post1.getId());
         assertThat(allComments.size()).isEqualTo(1);
         assertThat(allComments).extracting(CommentResponse::getContent).doesNotContain("테스트 댓글1");
     }
@@ -217,7 +217,7 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.deleteById(999L, 999L, user1.getId()))
+        assertThatThrownBy(() -> commentService.deleteById(999L, 999L, user1.getId()))
                 .isInstanceOf(CommunityPostException.class);
     }
 
@@ -230,7 +230,7 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.deleteById(post1.getId(), 999L, user1.getId()))
+        assertThatThrownBy(() -> commentService.deleteById(post1.getId(), 999L, user1.getId()))
                 .isInstanceOf(CommunityCommentException.class);
     }
 
@@ -243,7 +243,7 @@ class CommunityCommentServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> communityCommentService.deleteById(post1.getId(), comment1.getId(), user1.getId()))
+        assertThatThrownBy(() -> commentService.deleteById(post1.getId(), comment1.getId(), user1.getId()))
                 .isInstanceOf(CommunityCommentException.class);
     }
 }

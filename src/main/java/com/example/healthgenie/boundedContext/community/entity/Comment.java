@@ -13,7 +13,7 @@ import lombok.*;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @Table(name = "COMMUNITY_COMMENT_TB")
-public class CommunityComment extends BaseEntity {
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class CommunityComment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")
-    private CommunityPost post;
+    private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -36,7 +36,7 @@ public class CommunityComment extends BaseEntity {
         this.commentBody = content;
     }
 
-    public void setPost(CommunityPost post) {
+    public void setPost(Post post) {
         this.post = post;
     }
 }

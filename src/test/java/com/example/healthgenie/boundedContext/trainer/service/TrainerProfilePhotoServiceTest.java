@@ -1,9 +1,6 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
-import com.example.healthgenie.base.exception.CommunityPostException;
-import com.example.healthgenie.base.exception.TrainerProfileErrorResult;
 import com.example.healthgenie.base.exception.TrainerProfileException;
-import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.user.entity.Role;
