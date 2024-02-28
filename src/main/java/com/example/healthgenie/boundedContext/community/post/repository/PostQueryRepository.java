@@ -25,6 +25,21 @@ public class PostQueryRepository {
                 .fetch();
     }
 
+//    public List<FindAllDto> findAll(String keyword) {
+//        return queryFactory
+//                .select(
+//                        Projections.constructor(
+//                                FindAllDto.class, post.id, post.title, post.content, post.createdDate, post.writer.nickname, comment.countDistinct().as("commentCount"), like.countDistinct().as("likeCount")
+//                        )
+//                )
+//                .from(post)
+//                .leftJoin(comment).on(post.eq(comment.post))
+//                .leftJoin(like).on(post.eq(like.post))
+//                .where(postTitleLike(keyword))
+//                .groupBy(post.id)
+//                .fetch();
+//    }
+
     private BooleanExpression postTitleLike(String keyword) {
         return post.title.like("%" + keyword + "%");
     }

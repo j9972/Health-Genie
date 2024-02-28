@@ -50,7 +50,7 @@ class PhotoServiceTest {
 
         // then
         assertThat(savedPhoto.getPost().getId()).isEqualTo(post1.getId());
-        assertThat(savedPhoto.getPostPhotoPath()).isEqualTo("test-path1.png");
+        assertThat(savedPhoto.getPath()).isEqualTo("test-path1.png");
     }
 
     @Test
@@ -76,7 +76,7 @@ class PhotoServiceTest {
 
         // then
         assertThat(savedPhotos.size()).isEqualTo(3);
-        assertThat(savedPhotos).extracting(Photo::getPostPhotoPath)
+        assertThat(savedPhotos).extracting(Photo::getPath)
                 .containsExactly("test-path1.png", "test-path2.png", "test-path3.png");
     }
 
@@ -91,7 +91,7 @@ class PhotoServiceTest {
 
         // then
         assertThat(findPhotos.size()).isEqualTo(4);
-        assertThat(findPhotos).extracting(Photo::getPostPhotoPath)
+        assertThat(findPhotos).extracting(Photo::getPath)
                 .containsExactly("default-path.png", "test-path1.png", "test-path2.png", "test-path3.png");
     }
 
@@ -106,7 +106,7 @@ class PhotoServiceTest {
 
         // then
         assertThat(findPhotos.size()).isEqualTo(2);
-        assertThat(findPhotos).extracting(Photo::getPostPhotoPath)
+        assertThat(findPhotos).extracting(Photo::getPath)
                 .containsExactly("update-path1.png", "update-path2.png");
     }
 

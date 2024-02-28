@@ -33,7 +33,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User writer;
 
-    public void changeContent(String content) {
+    public void updateContent(String content) {
         this.commentBody = content;
     }
 

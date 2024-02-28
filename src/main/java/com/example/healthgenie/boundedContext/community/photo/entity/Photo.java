@@ -23,7 +23,9 @@ public class Photo extends BaseEntity {
     @JoinColumn(name = "community_post_id")
     private Post post;
 
-    // 이미지 경로
     @Column(name = "post_photo_path")
-    private String postPhotoPath;
+    private String path;
+
+    @Column(name = "original_file_name")
+    private String name;
 }

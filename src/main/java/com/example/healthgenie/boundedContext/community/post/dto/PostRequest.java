@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
+import org.hibernate.validator.constraints.Length;
 
 @Data
 @AllArgsConstructor
@@ -16,8 +14,8 @@ import java.util.List;
 public class PostRequest {
 
     @NotBlank
+    @Length(max = 20)
     private String title;
     @NotBlank
     private String content;
-    private List<MultipartFile> photos;
 }

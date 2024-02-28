@@ -1,18 +1,22 @@
 package com.example.healthgenie.boundedContext.community.photo.service;
 
+import com.example.healthgenie.base.exception.CommunityPostException;
+import com.example.healthgenie.base.utils.S3UploadUtils;
+import com.example.healthgenie.boundedContext.community.photo.dto.PhotoRequest;
 import com.example.healthgenie.boundedContext.community.photo.entity.Photo;
 import com.example.healthgenie.boundedContext.community.photo.repository.PhotoRepository;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
-import com.example.healthgenie.base.exception.CommunityPostException;
-import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
+import com.example.healthgenie.boundedContext.community.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.PHOTO_EMPTY;
-import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
 
 @Service
 @RequiredArgsConstructor
@@ -20,43 +24,37 @@ import static com.example.healthgenie.base.exception.CommunityPostErrorResult.PO
 public class PhotoService {
 
     private final PhotoRepository photoRepository;
-    private final PostRepository postRepository;
+    private final PostService postService;
+    private final S3UploadUtils s3UploadUtils;
 
     @Transactional
-    public Photo save(Long postId, String path) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
+    public List<Photo> save(Long postId, PhotoRequest request) throws IOException {
+        List<Photo> photos = new ArrayList<>();
 
-        Photo photo = Photo.builder()
-                .postPhotoPath(path)
-                .post(post)
-                .build();
+        Post post = postService.findById(postId);
 
-        return photoRepository.save(photo);
-    }
+        for(MultipartFile file : request.getPhotos()) {
+            String uploadUrl = s3UploadUtils.upload(file, "post-photos");
+            String originName = file.getOriginalFilename();
 
-    @Transactional
-    public List<Photo> saveAll(Long postId, List<String> photoPaths) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
+            Photo savedPhoto = photoRepository.save(
+                    Photo.builder()
+                            .path(uploadUrl)
+                            .name(originName)
+                            .post(post)
+                            .build()
+            );
 
-        List<Photo> photos = photoPaths.stream()
-                .map(path -> Photo.builder()
-                        .postPhotoPath(path)
-                        .post(post)
-                        .build())
-                .toList();
+            photos.add(savedPhoto);
 
-        // 객체 그래프 탐색용
-        for (Photo photo : photos) {
-            post.addPhoto(photo);
+//            post.addPhoto(savedPhoto);
         }
 
-        return photoRepository.saveAll(photos);
+        return photos;
     }
 
-    public Photo findById(Long id) {
-        return photoRepository.findById(id)
+    public Photo findById(Long photoId) {
+        return photoRepository.findById(photoId)
                 .orElseThrow(() -> new CommunityPostException(PHOTO_EMPTY));
     }
 
@@ -64,18 +62,16 @@ public class PhotoService {
         return photoRepository.findAll();
     }
 
+    public List<Photo> findAllByPostId(Long postId) {
+        return photoRepository.findAllByPostId(postId);
+    }
+
     @Transactional
-    public List<Photo> updateAll(Long postId, List<String> photoPaths) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
+    public String deleteAllByPostId(Long postId) {
+        List<Photo> photos = findAllByPostId(postId);
 
-        // 객체 그래프 탐색용
-        post.removePhotos(post.getPhotos());
-
-        // 기존 Photo 삭제
         photoRepository.deleteAllByPostId(postId);
 
-        // 새로운 Photo 저장
-        return saveAll(postId, photoPaths);
+        return photos.size() + "개의 사진이 삭제 되었습니다.";
     }
 }

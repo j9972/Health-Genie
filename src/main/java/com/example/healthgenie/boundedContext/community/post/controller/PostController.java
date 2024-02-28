@@ -3,7 +3,6 @@ package com.example.healthgenie.boundedContext.community.post.controller;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
-import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
 import com.example.healthgenie.boundedContext.community.post.service.PostTransactionService;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -26,39 +25,37 @@ public class PostController {
     private final PostService postService;
     private final PostTransactionService postTransactionService;
 
-    @GetMapping
+    @GetMapping("/test")
     public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
-        List<PostResponse> response = postService.findAll(keyword);
+        List<PostResponse> response = PostResponse.of(postService.findAll(keyword));
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping("/{postId}")
     public ResponseEntity<Result> findById(@PathVariable Long postId) {
-        Post post = postService.findById(postId);
-
-        PostResponse response = PostResponse.of(post);
+        PostResponse response = PostResponse.of(postService.findById(postId));
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @PostMapping
     public ResponseEntity<Result> save(@AuthenticationPrincipal User user, @Valid PostRequest request) throws IOException {
-        PostResponse response = postTransactionService.save(user.getId(), request);
+        PostResponse response = PostResponse.of(postService.save(user.getId(), request));
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<Result> edit(@PathVariable Long postId, @AuthenticationPrincipal User user, PostRequest request) throws IOException {
-        PostResponse response = postTransactionService.update(postId, user.getId(), request);
+    public ResponseEntity<Result> update(@PathVariable Long postId, @AuthenticationPrincipal User user, @Valid PostRequest request) throws IOException {
+        PostResponse response = PostResponse.of(postService.update(postId, user.getId(), request));
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<Result> delete(@PathVariable Long postId, @AuthenticationPrincipal User user) throws IOException {
-        String response = postTransactionService.delete(postId, user.getId());
+        String response = postService.delete(postId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
