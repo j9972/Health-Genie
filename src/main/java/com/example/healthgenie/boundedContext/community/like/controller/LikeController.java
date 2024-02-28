@@ -11,7 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/likes/{postId}")
+@RequestMapping("/community/{postId}/likes")
 @RequiredArgsConstructor
 public class LikeController {
 
