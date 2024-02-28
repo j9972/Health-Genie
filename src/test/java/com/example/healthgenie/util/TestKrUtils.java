@@ -6,18 +6,17 @@ import com.example.healthgenie.boundedContext.chat.entity.ChatRoom;
 import com.example.healthgenie.boundedContext.chat.entity.ChatRoomUser;
 import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
-import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
-import com.example.healthgenie.boundedContext.community.post.entity.Post;
-import com.example.healthgenie.boundedContext.community.photo.entity.Photo;
 import com.example.healthgenie.boundedContext.community.comment.repository.CommentRepository;
+import com.example.healthgenie.boundedContext.community.photo.entity.Photo;
 import com.example.healthgenie.boundedContext.community.photo.repository.PhotoRepository;
+import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingCondition;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingResponse;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
-import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.matching.service.MatchingService;
@@ -28,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,14 +119,9 @@ public class TestKrUtils {
     }
 
     public PostRequest createPostRequest(String title, String content) {
-        return createPostRequest(title, content, null);
-    }
-
-    public PostRequest createPostRequest(String title, String content, List<MultipartFile> photos) {
         return PostRequest.builder()
                 .title(title)
                 .content(content)
-                .photos(photos)
                 .build();
     }
 
@@ -148,15 +141,6 @@ public class TestKrUtils {
                 .build();
 
         return commentRepository.save(comment);
-    }
-
-    public Photo createPostPhoto(Post post, String path) {
-        Photo postPhoto = Photo.builder()
-                .post(post)
-                .postPhotoPath(path)
-                .build();
-
-        return photoRepository.save(postPhoto);
     }
 
     public MatchingRequest createMatchingRequest(String date, String time, String place, String description, Long userId, Long trainerId) {
@@ -194,14 +178,5 @@ public class TestKrUtils {
         return MatchingCondition.builder()
                 .date(date)
                 .build();
-    }
-
-    public MatchingUser createMatchingUser(User user, Matching matching) {
-        MatchingUser matchingUser = MatchingUser.builder()
-                .user(user)
-                .matching(matching)
-                .build();
-
-        return matchingUserRepository.save(matchingUser);
     }
 }

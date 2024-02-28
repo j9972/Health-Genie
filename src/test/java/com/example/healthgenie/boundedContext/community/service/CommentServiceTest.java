@@ -3,7 +3,6 @@ package com.example.healthgenie.boundedContext.community.service;
 import com.example.healthgenie.base.exception.CommunityCommentException;
 import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
-import com.example.healthgenie.boundedContext.community.comment.dto.CommentResponse;
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
 import com.example.healthgenie.boundedContext.community.comment.service.CommentService;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
@@ -53,11 +52,11 @@ class CommentServiceTest {
         CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
 
         // when
-        CommentResponse savedComment = commentService.save(post1.getId(), user1.getId(), request);
+        Comment savedComment = commentService.save(post1.getId(), user1.getId(), request);
 
         // then
-        assertThat(savedComment.getContent()).isEqualTo("테스트 댓글1");
-        assertThat(savedComment.getWriter()).isEqualTo("test1");
+        assertThat(savedComment.getCommentBody()).isEqualTo("테스트 댓글1");
+        assertThat(savedComment.getWriter().getNickname()).isEqualTo("test1");
     }
 
     @Test
@@ -82,14 +81,14 @@ class CommentServiceTest {
         testKrUtils.login(user1);
 
         CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
-        CommentResponse savedComment = commentService.save(post1.getId(), user1.getId(), request);
+        Comment savedComment = commentService.save(post1.getId(), user1.getId(), request);
 
         // when
-        CommentResponse findComment = commentService.findById(savedComment.getId());
+        Comment findComment = commentService.findById(savedComment.getId());
 
         // then
-        assertThat(findComment.getWriter()).isEqualTo(user1.getName());
-        assertThat(findComment.getContent()).isEqualTo("테스트 댓글1");
+        assertThat(findComment.getWriter().getNickname()).isEqualTo(user1.getNickname());
+        assertThat(findComment.getCommentBody()).isEqualTo("테스트 댓글1");
     }
 
     @Test
@@ -116,11 +115,11 @@ class CommentServiceTest {
         }
 
         // when
-        List<CommentResponse> response = commentService.findAllByPostId(post1.getId());
+        List<Comment> response = commentService.findAllByPostId(post1.getId());
 
         // then
         assertThat(response.size()).isEqualTo(11);
-        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(CommentResponse::getId).reversed());
+        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(Comment::getId).reversed());
     }
 
     @Test
@@ -130,7 +129,7 @@ class CommentServiceTest {
         testKrUtils.login(user1);
 
         CommentRequest request1 = testKrUtils.createCommentRequest("테스트 댓글1");
-        CommentResponse savedComment = commentService.save(post1.getId(), user1.getId(), request1);
+        Comment savedComment = commentService.save(post1.getId(), user1.getId(), request1);
 
         CommentRequest request2 = testKrUtils.createCommentRequest("테스트 댓글2");
         commentService.save(post1.getId(), user1.getId(), request2);
@@ -138,12 +137,13 @@ class CommentServiceTest {
         CommentRequest updateRequest = testKrUtils.createCommentRequest("수정된 댓글");
 
         // when
-        CommentResponse updatedComment = commentService.update(post1.getId(), savedComment.getId(), user1.getId(), updateRequest);
-        List<CommentResponse> allComments = commentService.findAllByPostId(post1.getId());
+        Comment updatedComment = commentService.update(post1.getId(), savedComment.getId(), user1.getId(), updateRequest);
+
+        List<Comment> allComments = commentService.findAllByPostId(post1.getId());
 
         // then
-        assertThat(updatedComment.getContent()).isEqualTo("수정된 댓글");
-        assertThat(allComments).extracting(CommentResponse::getContent).contains("수정된 댓글");
+        assertThat(updatedComment.getCommentBody()).isEqualTo("수정된 댓글");
+        assertThat(allComments).extracting(Comment::getCommentBody).contains("수정된 댓글");
     }
 
     @Test
@@ -198,15 +198,15 @@ class CommentServiceTest {
         testKrUtils.login(user1);
 
         CommentRequest request = testKrUtils.createCommentRequest("테스트 댓글1");
-        CommentResponse savedComment = commentService.save(post1.getId(), user1.getId(), request);
+        Comment savedComment = commentService.save(post1.getId(), user1.getId(), request);
 
         // when
         commentService.deleteById(post1.getId(), savedComment.getId(), user1.getId());
 
         // then
-        List<CommentResponse> allComments = commentService.findAllByPostId(post1.getId());
+        List<Comment> allComments = commentService.findAllByPostId(post1.getId());
         assertThat(allComments.size()).isEqualTo(1);
-        assertThat(allComments).extracting(CommentResponse::getContent).doesNotContain("테스트 댓글1");
+        assertThat(allComments).extracting(Comment::getCommentBody).doesNotContain("테스트 댓글1");
     }
 
     @Test

@@ -1,9 +1,7 @@
 package com.example.healthgenie.boundedContext.community.service;
 
-import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
-import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
 import com.example.healthgenie.boundedContext.user.entity.Role;
@@ -52,38 +50,35 @@ class PostServiceTest {
         PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
 
         // when
-        PostResponse response = postService.save(user1.getId(), request);
+        Post response = postService.save(user1.getId(), request);
 
         // then
         assertThat(response.getTitle()).isEqualTo("테스트 게시글 제목1");
         assertThat(response.getContent()).isEqualTo("테스트 게시글 내용1");
-        assertThat(response.getWriter()).isEqualTo(user1.getName());
+        assertThat(response.getWriter().getNickname()).isEqualTo(user1.getNickname());
     }
 
     @Test
     @DisplayName("정상적인 게시글 조회하기")
     void findById() {
         // given
-        testKrUtils.login(user1);
 
         PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목1", "테스트 게시글 내용1");
-        PostResponse savedPost = postService.save(user1.getId(), request);
+        Post savedPost = postService.save(user1.getId(), request);
 
         // when
-        Post post = postService.findById(savedPost.getId());
-        PostResponse response = PostResponse.of(post);
+        Post response = postService.findById(savedPost.getId());
 
         // then
         assertThat(response.getTitle()).isEqualTo("테스트 게시글 제목1");
         assertThat(response.getContent()).isEqualTo("테스트 게시글 내용1");
-        assertThat(response.getWriter()).isEqualTo(user1.getName());
+        assertThat(response.getWriter().getNickname()).isEqualTo(user1.getNickname());
     }
 
     @Test
     @DisplayName("존재하지 않는 게시글 조회하기")
     void notExistPost() {
         // given
-        testKrUtils.login(user1);
 
         // when
 
@@ -96,27 +91,23 @@ class PostServiceTest {
     @DisplayName("정상적인 게시글 전체 조회하기")
     void findAll() {
         // given
-        testKrUtils.login(user1);
-
         for(int i=1; i<=10; i++) {
             PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목" + i, "테스트 게시글 내용" + i);
             postService.save(user1.getId(), request);
         }
 
         // when
-        List<PostResponse> response = postService.findAll("");
+        List<Post> response = postService.findAll("");
 
         // then
         assertThat(response.size()).isEqualTo(11);
-        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(PostResponse::getId).reversed());
+        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(Post::getId).reversed());
     }
 
     @Test
     @DisplayName("정상적인 게시글 제목 키워드 조회하기")
     void findAllByKeyword() {
         // given
-        testKrUtils.login(user1);
-
         for(int i=1; i<=10; i++) {
             PostRequest request = testKrUtils.createPostRequest("테스트 게시글 제목" + i, "테스트 게시글 내용" + i);
             postService.save(user1.getId(), request);
@@ -129,12 +120,12 @@ class PostServiceTest {
 
         // when
         String keyword = "키워드";
-        List<PostResponse> response = postService.findAll(keyword);
+        List<Post> response = postService.findAll(keyword);
 
         // then
         assertThat(response.size()).isEqualTo(3);
-        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(PostResponse::getId).reversed());
-        assertThat(response).extracting(PostResponse::getTitle).doesNotContain("테스트 게시글 제목");
+        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(Post::getId).reversed());
+        assertThat(response).extracting(Post::getTitle).doesNotContain("테스트 게시글 제목");
     }
 
     @Test
@@ -147,7 +138,7 @@ class PostServiceTest {
         PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용");
 
         // then
-        PostResponse response = postService.update(post1.getId(), user1.getId(), updateRequest);
+        Post response = postService.update(post1.getId(), user1.getId(), updateRequest);
 
         assertThat(response.getTitle()).isEqualTo("수정한 제목");
         assertThat(response.getContent()).isEqualTo("수정한 내용");
@@ -170,7 +161,6 @@ class PostServiceTest {
     @DisplayName("존재하지 않는 게시글을 수정하기")
     void notExistUpdate() {
         // given
-        testKrUtils.login(user1);
 
         // when
         PostRequest updateRequest = testKrUtils.createPostRequest("수정한 제목", "수정한 내용");
@@ -184,38 +174,24 @@ class PostServiceTest {
     @DisplayName("정상적인 게시글 삭제하기")
     void delete() {
         // given
-        testKrUtils.login(user1);
 
         // when
 
         // then
-        String response = postService.delete(post1.getId());
+        String response = postService.delete(post1.getId(), user1.getId());
 
         assertThat(response).isEqualTo("게시글이 삭제 되었습니다.");
-    }
-
-    @Test
-    @DisplayName("로그인 하지 않은 사용자가 게시글을 삭제하기")
-    void notLoginDelete() {
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> postService.delete(post1.getId()))
-                .isInstanceOf(CommonException.class);
     }
 
     @Test
     @DisplayName("자신의 게시글이 아닌 게시글을 삭제하기")
     void notOwnDelete() {
         // given
-        testKrUtils.login(user2);
 
         // when
 
         // then
-        assertThatThrownBy(() -> postService.delete(post1.getId()))
+        assertThatThrownBy(() -> postService.delete(post1.getId(), user2.getId()))
                 .isInstanceOf(CommunityPostException.class);
     }
 
@@ -223,12 +199,11 @@ class PostServiceTest {
     @DisplayName("존재하지 않는 게시글을 삭제하기")
     void notExistDelete() {
         // given
-        testKrUtils.login(user1);
 
         // when
 
         // then
-        assertThatThrownBy(() -> postService.delete(999L))
+        assertThatThrownBy(() -> postService.delete(999L, user1.getId()))
                 .isInstanceOf(CommunityPostException.class);
     }
 }

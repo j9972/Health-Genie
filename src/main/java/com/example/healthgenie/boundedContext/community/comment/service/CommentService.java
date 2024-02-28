@@ -23,13 +23,14 @@ import static com.example.healthgenie.base.exception.CommunityCommentErrorResult
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostService postService;
     private final UserService userService;
 
+    @Transactional
     public Comment save(Long postId, Long userId, CommentRequest request) {
         Post post = postService.findById(postId);
 
@@ -59,6 +60,7 @@ public class CommentService {
         return commentRepository.findAllByPostIdOrderByIdDesc(postId);
     }
 
+    @Transactional
     public Comment update(Long postId, Long commentId, Long userId, CommentRequest request) {
         postService.findById(postId);
 
@@ -75,6 +77,7 @@ public class CommentService {
         return comment;
     }
 
+    @Transactional
     public String deleteById(Long postId, Long commentId, Long userId) {
         postService.findById(postId);
 

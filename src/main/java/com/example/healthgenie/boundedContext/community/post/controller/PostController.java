@@ -4,7 +4,6 @@ import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
-import com.example.healthgenie.boundedContext.community.post.service.PostTransactionService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +22,8 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final PostTransactionService postTransactionService;
 
-    @GetMapping("/test")
+    @GetMapping
     public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
         List<PostResponse> response = PostResponse.of(postService.findAll(keyword));
 

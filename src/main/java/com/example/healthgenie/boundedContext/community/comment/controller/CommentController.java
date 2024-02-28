@@ -46,7 +46,7 @@ public class CommentController {
     public ResponseEntity<Result> update(@PathVariable Long postId,
                                          @PathVariable Long commentId,
                                          @AuthenticationPrincipal User user,
-                                         CommentRequest request) {
+                                         @RequestBody CommentRequest request) {
         CommentResponse response = CommentResponse.of(commentService.update(postId, commentId, user.getId(), request));
 
         return ResponseEntity.ok(Result.of(response));

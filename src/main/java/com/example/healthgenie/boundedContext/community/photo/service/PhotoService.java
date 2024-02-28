@@ -15,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.PHOTO_EMPTY;
 
 @Service
@@ -28,10 +30,14 @@ public class PhotoService {
     private final S3UploadUtils s3UploadUtils;
 
     @Transactional
-    public List<Photo> save(Long postId, PhotoRequest request) throws IOException {
+    public List<Photo> save(Long postId, Long userId, PhotoRequest request) throws IOException {
         List<Photo> photos = new ArrayList<>();
 
         Post post = postService.findById(postId);
+
+        if(!Objects.equals(userId, post.getWriter().getId())) {
+            throw new CommunityPostException(NO_PERMISSION);
+        }
 
         for(MultipartFile file : request.getPhotos()) {
             String uploadUrl = s3UploadUtils.upload(file, "post-photos");
@@ -46,8 +52,6 @@ public class PhotoService {
             );
 
             photos.add(savedPhoto);
-
-//            post.addPhoto(savedPhoto);
         }
 
         return photos;
@@ -67,8 +71,18 @@ public class PhotoService {
     }
 
     @Transactional
-    public String deleteAllByPostId(Long postId) {
+    public String deleteAllByPostId(Long postId, Long userId) {
+        Post post = postService.findById(postId);
+
+        if(!Objects.equals(userId, post.getWriter().getId())) {
+            throw new CommunityPostException(NO_PERMISSION);
+        }
+
         List<Photo> photos = findAllByPostId(postId);
+        for (Photo photo : photos) {
+            String path = photo.getPath();
+            s3UploadUtils.deleteS3Object("post-photos", path);
+        }
 
         photoRepository.deleteAllByPostId(postId);
 
