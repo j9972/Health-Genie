@@ -29,7 +29,7 @@ public class CommentController {
     }
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<Result> findById(@PathVariable String postId, @PathVariable Long commentId) {
+    public ResponseEntity<Result> findById(@PathVariable Long postId, @PathVariable Long commentId) {
         CommentResponse response = CommentResponse.of(commentService.findById(commentId));
 
         return ResponseEntity.ok(Result.of(response));
@@ -40,6 +40,11 @@ public class CommentController {
         List<CommentResponse> response = CommentResponse.of(commentService.findAllByPostId(postId));
 
         return ResponseEntity.ok(Result.of(response));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Result> count(@PathVariable Long postId) {
+        return ResponseEntity.ok(Result.of(commentService.countByPostId(postId)));
     }
 
     @PatchMapping("/{commentId}")

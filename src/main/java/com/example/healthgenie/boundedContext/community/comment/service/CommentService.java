@@ -92,4 +92,7 @@ public class CommentService {
         return "댓글이 삭제 되었습니다. [id=" + commentId + "]";
     }
 
+    public Long countByPostId(Long postId) {
+        return commentRepository.countByPostId(postId);
+    }
 }

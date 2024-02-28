@@ -26,7 +26,7 @@ public class LikeService {
     private final UserService userService;
 
     @Transactional
-    public Like like(Long postId, Long userId) {
+    public Like save(Long postId, Long userId) {
         likeRepository.findByPostIdAndUserId(postId, userId).ifPresent(like -> {
             throw new LikeException(ALREADY_LIKED);
         });
@@ -43,7 +43,7 @@ public class LikeService {
     }
 
     @Transactional
-    public String cancel(Long postId, Long userId) {
+    public String delete(Long postId, Long userId) {
         Like like = likeRepository.findByPostIdAndUserId(postId, userId)
                 .orElseThrow(() -> new LikeException(NOT_FOUND));
 
@@ -54,6 +54,10 @@ public class LikeService {
 
     public List<Like> findAllByPostId(Long postId) {
         return likeRepository.findAllByPostId(postId);
+    }
+
+    public Long countByPostId(Long postId) {
+        return likeRepository.countByPostId(postId);
     }
 }
 
