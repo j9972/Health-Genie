@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -29,12 +30,27 @@ public class UserController {
     private final UserService userService;
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<Result> update(@AuthenticationPrincipal User currentUser, @PathVariable Long userId, @RequestBody @Valid UserRequest request) throws IOException {
-        if(!Objects.equals(currentUser.getId(), userId)) {
+    public ResponseEntity<Result> update(@AuthenticationPrincipal User user,
+                                         @PathVariable Long userId,
+                                         @RequestBody @Valid UserRequest request) {
+        if(!Objects.equals(user.getId(), userId)) {
             throw new UserException(UserErrorResult.NO_PERMISSION);
         }
 
         UserResponse response = userService.edit(userId, request);
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @PatchMapping("/{userId}/photo")
+    public ResponseEntity<Result> update(@AuthenticationPrincipal User user,
+                                         @PathVariable Long userId,
+                                         @RequestPart MultipartFile photo) throws IOException {
+        if(!Objects.equals(user.getId(), userId)) {
+            throw new UserException(UserErrorResult.NO_PERMISSION);
+        }
+
+        UserResponse response = userService.edit(userId, photo);
 
         return ResponseEntity.ok(Result.of(response));
     }

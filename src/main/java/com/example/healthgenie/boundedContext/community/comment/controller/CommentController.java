@@ -37,7 +37,7 @@ public class CommentController {
 
     @GetMapping
     public ResponseEntity<Result> findAll(@PathVariable Long postId) {
-        List<CommentResponse> response = CommentResponse.of(commentService.findAllByPostId(postId));
+        List<CommentResponse> response = commentService.findAllByPostIdQuery(postId);
 
         return ResponseEntity.ok(Result.of(response));
     }

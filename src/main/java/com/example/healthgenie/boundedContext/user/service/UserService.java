@@ -62,21 +62,13 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse edit(Long userId, UserRequest request) throws IOException {
+    public UserResponse edit(Long userId, UserRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        // 이메일
-        if(StringUtils.hasText(request.getEmail())) {
-            user.updateEmail(request.getEmail());
-        }
         // 학교 이름
         if(StringUtils.hasText(request.getUniName())) {
             user.updateUniname(request.getUniName());
-        }
-        // 이름
-        if(StringUtils.hasText(request.getName())) {
-            user.updateName(request.getName());
         }
         // 닉네임
         if(StringUtils.hasText(request.getNickname())) {
@@ -85,18 +77,9 @@ public class UserService {
             }
             user.updateNickname(request.getNickname());
         }
-        // 제공자
-        if(request.getAuthProvider() != null && StringUtils.hasText(request.getAuthProvider().getAuthProvider())) {
-            user.updateAuthProvider(request.getAuthProvider());
-        }
         // 역할
-        if(request.getRole() != null && StringUtils.hasText(request.getRole())) {
-            user.updateRole(Role.valueOf(request.getRole().toUpperCase()));
-        }
-        // 프로필 사진
-        if(request.getProfilePhoto() != null && !request.getProfilePhoto().isEmpty()) {
-            String profilePhoto = uploadAndDelete(request.getProfilePhoto(), user.getProfilePhoto());
-            user.updateProfilePhoto(profilePhoto);
+        if(request.getRole() != null && StringUtils.hasText(request.getRole().getCode())) {
+            user.updateRole(request.getRole());
         }
         // 이메일 인증 확인
         if(Objects.nonNull(request.getEmailVerify()) && request.getEmailVerify()) {
@@ -125,6 +108,20 @@ public class UserService {
         // 성별
         if(request.getGender() != null && StringUtils.hasText(request.getGender().getCode())) {
             user.updateGender(request.getGender());
+        }
+
+        return UserResponse.of(user);
+    }
+
+    @Transactional
+    public UserResponse edit(Long userId, MultipartFile profilePhoto) throws IOException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+
+        if(!profilePhoto.isEmpty()) {
+            String path = uploadAndDelete(profilePhoto, user.getProfilePhoto());
+
+            user.updateProfilePhoto(path);
         }
 
         return UserResponse.of(user);

@@ -4,6 +4,7 @@ package com.example.healthgenie.boundedContext.community.post.service;
 import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
+import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.repository.PostQueryRepository;
 import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
@@ -30,6 +31,10 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
     private final UserRepository userRepository;
+
+    public PostResponse findByIdQuery(Long postId) {
+        return postQueryRepository.findById(postId);
+    }
 
     public Post findById(Long postId) {
         return postRepository.findById(postId)

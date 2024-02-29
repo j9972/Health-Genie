@@ -2,7 +2,9 @@ package com.example.healthgenie.boundedContext.community.comment.service;
 
 import com.example.healthgenie.base.exception.CommunityCommentException;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
+import com.example.healthgenie.boundedContext.community.comment.dto.CommentResponse;
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
+import com.example.healthgenie.boundedContext.community.comment.repository.CommentQueryRepository;
 import com.example.healthgenie.boundedContext.community.comment.repository.CommentRepository;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
@@ -27,6 +29,7 @@ import static com.example.healthgenie.base.exception.CommunityCommentErrorResult
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentQueryRepository commentQueryRepository;
     private final PostService postService;
     private final UserService userService;
 
@@ -58,6 +61,10 @@ public class CommentService {
 
     public List<Comment> findAllByPostId(Long postId) {
         return commentRepository.findAllByPostIdOrderByIdDesc(postId);
+    }
+
+    public List<CommentResponse> findAllByPostIdQuery(Long postId) {
+        return commentQueryRepository.findAllByPostIdQuery(postId);
     }
 
     @Transactional

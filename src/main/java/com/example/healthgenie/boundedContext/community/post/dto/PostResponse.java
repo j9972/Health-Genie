@@ -21,6 +21,7 @@ public class PostResponse {
     private String title;
     private String content;
     private String writer;
+    private String writerPhoto;
 
     public static PostResponse of(Post post) {
         return PostResponse.builder()

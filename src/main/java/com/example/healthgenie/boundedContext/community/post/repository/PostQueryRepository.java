@@ -1,6 +1,8 @@
 package com.example.healthgenie.boundedContext.community.post.repository;
 
+import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +14,24 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.example.healthgenie.boundedContext.community.post.entity.QPost.post;
+import static com.example.healthgenie.boundedContext.user.entity.QUser.user;
 
 @RequiredArgsConstructor
 @Repository
 public class PostQueryRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    public PostResponse findById(Long postId) {
+        return queryFactory
+                .select(
+                        Projections.constructor(PostResponse.class, post.id, post.createdDate, post.lastModifiedDate, post.title, post.content, post.writer.nickname, user.profilePhoto.as("writerPhoto"))
+                )
+                .from(post)
+                .join(user).on(post.writer.id.eq(user.id))
+                .where(post.id.eq(postId))
+                .fetchOne();
+    }
 
     public Slice<Post> findAll(String keyword, Long lastId, Pageable pageable) {
         List<Post> contents = queryFactory

@@ -80,6 +80,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "muscle_weight")
     private Double muscleWeight;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
 
