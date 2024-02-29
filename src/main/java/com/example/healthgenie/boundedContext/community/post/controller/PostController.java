@@ -3,17 +3,18 @@ package com.example.healthgenie.boundedContext.community.post.controller;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
+import com.example.healthgenie.boundedContext.community.post.dto.PostSliceResponse;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,8 +25,10 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
-        List<PostResponse> response = PostResponse.of(postService.findAll(keyword));
+    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword,
+                                          @RequestParam(value = "lastId", required = false) Long lastId,
+                                          Pageable pageable) {
+        PostSliceResponse response = PostSliceResponse.of(postService.findAll(keyword, lastId, pageable));
 
         return ResponseEntity.ok(Result.of(response));
     }

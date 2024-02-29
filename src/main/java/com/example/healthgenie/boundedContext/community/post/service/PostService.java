@@ -10,11 +10,12 @@ import com.example.healthgenie.boundedContext.community.post.repository.PostRepo
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
 import java.util.Objects;
 
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
@@ -35,8 +36,8 @@ public class PostService {
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
     }
 
-    public List<Post> findAll(String keyword) {
-        return postQueryRepository.findAll(keyword);
+    public Slice<Post> findAll(String keyword, Long lastId, Pageable pageable) {
+        return postQueryRepository.findAll(keyword, lastId, pageable);
     }
 
     @Transactional

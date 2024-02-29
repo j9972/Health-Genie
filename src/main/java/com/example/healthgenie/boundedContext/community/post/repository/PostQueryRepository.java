@@ -4,6 +4,9 @@ import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,31 +19,39 @@ public class PostQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    // TODO : 페이징 or 무한 스크롤 처리
-    public List<Post> findAll(String keyword) {
-        return queryFactory
+    public Slice<Post> findAll(String keyword, Long lastId, Pageable pageable) {
+        List<Post> contents = queryFactory
                 .selectFrom(post)
-                .where(postTitleLike(keyword))
+                .where(
+                        idLt(lastId),
+                        titleLike(keyword)
+                )
                 .orderBy(post.id.desc())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
+
+        return checkLastPage(pageable, contents);
     }
 
-//    public List<FindAllDto> findAll(String keyword) {
-//        return queryFactory
-//                .select(
-//                        Projections.constructor(
-//                                FindAllDto.class, post.id, post.title, post.content, post.createdDate, post.writer.nickname, comment.countDistinct().as("commentCount"), like.countDistinct().as("likeCount")
-//                        )
-//                )
-//                .from(post)
-//                .leftJoin(comment).on(post.eq(comment.post))
-//                .leftJoin(like).on(post.eq(like.post))
-//                .where(postTitleLike(keyword))
-//                .groupBy(post.id)
-//                .fetch();
-//    }
+    private Slice<Post> checkLastPage(Pageable pageable, List<Post> contents) {
+        boolean hasNext = false;
 
-    private BooleanExpression postTitleLike(String keyword) {
+        if (contents.size() > pageable.getPageSize()) {
+            hasNext = true;
+            contents.remove(pageable.getPageSize());
+        }
+
+        return new SliceImpl<>(contents, pageable, hasNext);
+    }
+
+    private BooleanExpression titleLike(String keyword) {
         return post.title.like("%" + keyword + "%");
+    }
+
+    private BooleanExpression idLt(Long postId) {
+        if(postId == null) {
+            return null;
+        }
+        return post.id.lt(postId);
     }
 }
