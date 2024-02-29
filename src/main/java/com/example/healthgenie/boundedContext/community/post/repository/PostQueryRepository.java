@@ -33,12 +33,13 @@ public class PostQueryRepository {
                 .fetchOne();
     }
 
-    public Slice<Post> findAll(String keyword, Long lastId, Pageable pageable) {
+    public Slice<Post> findAll(String keyword, Long userId, Long lastId, Pageable pageable) {
         List<Post> contents = queryFactory
                 .selectFrom(post)
                 .where(
                         idLt(lastId),
-                        titleLike(keyword)
+                        titleLike(keyword),
+                        writerIdEq(userId)
                 )
                 .orderBy(post.id.desc())
                 .limit(pageable.getPageSize() + 1)
@@ -67,5 +68,12 @@ public class PostQueryRepository {
             return null;
         }
         return post.id.lt(postId);
+    }
+
+    private BooleanExpression writerIdEq(Long userId) {
+        if(userId == null) {
+            return null;
+        }
+        return post.writer.id.eq(userId);
     }
 }

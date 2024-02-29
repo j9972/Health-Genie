@@ -26,9 +26,10 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword,
-                                          @RequestParam(value = "lastId", required = false) Long lastId,
+                                          @RequestParam(name = "userId", required = false) Long userId,
+                                          @RequestParam(name = "lastId", required = false) Long lastId,
                                           Pageable pageable) {
-        PostSliceResponse response = PostSliceResponse.of(postService.findAll(keyword, lastId, pageable));
+        PostSliceResponse response = PostSliceResponse.of(postService.findAll(keyword, userId, lastId, pageable));
 
         return ResponseEntity.ok(Result.of(response));
     }

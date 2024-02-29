@@ -41,8 +41,8 @@ public class PostService {
                 .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
     }
 
-    public Slice<Post> findAll(String keyword, Long lastId, Pageable pageable) {
-        return postQueryRepository.findAll(keyword, lastId, pageable);
+    public Slice<Post> findAll(String keyword, Long userId, Long lastId, Pageable pageable) {
+        return postQueryRepository.findAll(keyword, userId, lastId, pageable);
     }
 
     @Transactional
