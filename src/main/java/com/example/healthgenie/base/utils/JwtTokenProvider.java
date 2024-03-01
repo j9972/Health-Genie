@@ -7,7 +7,6 @@ import com.example.healthgenie.boundedContext.user.dto.Token;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,8 +39,8 @@ public class JwtTokenProvider {
         key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String getAccessToken(HttpServletRequest request) {
-        return request.getHeader("AccessToken");
+    public String resolveToken(String header) {
+        return header.replace("Bearer ", "");
     }
 
     public Token createToken(String email, String role) {

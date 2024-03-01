@@ -22,7 +22,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = jwtTokenProvider.getAccessToken(request);
+        String authorization = request.getHeader("Authorization");
+        String accessToken = StringUtils.hasText(authorization) ? jwtTokenProvider.resolveToken(authorization) : null;
 
         if(StringUtils.hasText(accessToken) && accessToken.equals("admin")) {
             Authentication authentication = jwtTokenProvider.getAuthentication("admin@admin.com");
