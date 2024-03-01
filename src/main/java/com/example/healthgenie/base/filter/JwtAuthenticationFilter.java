@@ -25,22 +25,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorization = request.getHeader("Authorization");
         String accessToken = StringUtils.hasText(authorization) ? jwtTokenProvider.resolveToken(authorization) : null;
 
-        if(StringUtils.hasText(accessToken) && accessToken.equals("admin")) {
-            Authentication authentication = jwtTokenProvider.getAuthentication("admin@admin.com");
+        if(StringUtils.hasText(accessToken)) {
+            if(accessToken.equals("admin")) {
+                Authentication authentication = jwtTokenProvider.getAuthentication("admin@admin.com");
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else if(!request.getRequestURI().equals("/refresh") && jwtTokenProvider.validateToken(accessToken)) {
+                String email = jwtTokenProvider.getEmail(accessToken);
 
-            filterChain.doFilter(request, response);
+                Authentication authentication = jwtTokenProvider.getAuthentication(email);
 
-            return;
-        }
-
-        if(!request.getRequestURI().equals("/refresh") && StringUtils.hasText(accessToken) && jwtTokenProvider.validateToken(accessToken)) {
-            String email = jwtTokenProvider.getEmail(accessToken);
-
-            Authentication authentication = jwtTokenProvider.getAuthentication(email);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
 
         filterChain.doFilter(request, response);
