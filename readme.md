@@ -141,6 +141,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 [ Field type - entity 정수 타입 고민 ](https://techj9972.tistory.com/250) <br>
 [ method 선택 - ParseInt() vs valueOf() ](https://techj9972.tistory.com/246) <br>
 [ Annotation - 컬렉션 타입 형태의 데이터 저장 고민 ](https://techj9972.tistory.com/243) <br>
+[ 무한스크롤 도입 - 페이지 조회 성능 향상을 위한 고민](https://techj9972.tistory.com/276) <br>
 
 ### 프로젝트 진행 이슈
 [ 이메일 인증 전략 고민 [1] - Redis 사용 ](https://techj9972.tistory.com/238) <br>
