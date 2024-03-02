@@ -5,6 +5,7 @@ import static com.example.healthgenie.boundedContext.trainer.entity.QTrainerInfo
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,12 +14,12 @@ import org.springframework.stereotype.Repository;
 public class TrainerQueryRepository {
     private final JPAQueryFactory query;
 
-    public List<TrainerInfo> findAllProfiles(int page, int size) {
+    public List<TrainerInfo> findAllProfilesSortByLatest(Long lastIndex) {
         return query
                 .selectFrom(trainerInfo)
+                .where(trainerInfo.id.loe(lastIndex))
                 .orderBy(trainerInfo.id.desc())
-                .offset(page)
-                .limit(size)
+                .limit(10)
                 .fetch();
     }
 
@@ -28,5 +29,12 @@ public class TrainerQueryRepository {
                 .where(trainerInfo.name.like("%" + name + "%"))
                 .orderBy(trainerInfo.id.desc())
                 .fetch();
+    }
+
+    public Optional<Long> findMaxId() {
+        return Optional.ofNullable(query
+                .select(trainerInfo.id.max())
+                .from(trainerInfo)
+                .fetchOne());
     }
 }

@@ -37,10 +37,11 @@ public class TrainerProfileController {
         return ResponseEntity.ok(Result.of(response));
     }
 
+    // 트레이너 전체 조회 -> 무한 스크롤
     @GetMapping
-    public ResponseEntity<Result> getAllProfile(@RequestParam(required = false, defaultValue = "0") int page) {
+    public ResponseEntity<Result> getAllProfile(@RequestParam(value = "lastIndex", required = false) Long lastIndex) {
 
-        List<ProfileResponseDto> response = profileService.getAllProfile(page, 10);
+        List<ProfileResponseDto> response = profileService.getAllProfile(lastIndex);
         return ResponseEntity.ok(Result.of(response));
     }
 
