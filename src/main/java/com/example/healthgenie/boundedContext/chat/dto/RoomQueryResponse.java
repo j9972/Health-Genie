@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.chat.dto;
 
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChatRoomRequest {
+public class RoomQueryResponse {
 
-    private Long userId;
-    private Long anotherUserId;
+    private Long roomId;
+    private String nickname;
+    private Role role;
+    private String profilePhoto;
 }

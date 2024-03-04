@@ -2,7 +2,6 @@ package com.example.healthgenie.boundedContext.chat.service;
 
 import com.example.healthgenie.base.exception.ChatException;
 import com.example.healthgenie.base.exception.UserException;
-import com.example.healthgenie.boundedContext.chat.dto.ChatMessageRequest;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
 import com.example.healthgenie.boundedContext.chat.repository.RoomRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;

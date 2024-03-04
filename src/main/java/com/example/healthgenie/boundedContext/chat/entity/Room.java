@@ -34,14 +34,4 @@ public class Room extends BaseEntity {
     // 특정 다른 유저와 해당 유저의 채팅방 값
     // 그룹 채팅 시 0
     private int roomHashCode;
-
-    private boolean active;
-
-    public void inactive() {
-        this.active = false;
-    }
-
-    public void active() {
-        this.active = true;
-    }
 }

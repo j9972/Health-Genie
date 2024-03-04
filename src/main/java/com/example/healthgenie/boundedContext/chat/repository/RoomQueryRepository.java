@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.chat.repository;
 
-import com.example.healthgenie.boundedContext.chat.dto.ChatRoomResponse;
+import com.example.healthgenie.boundedContext.chat.dto.RoomQueryResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +18,14 @@ public class RoomQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<ChatRoomResponse> findAll(Long userId, Long lastId, Pageable pageable) {
+    public List<RoomQueryResponse> findAll(Long userId, Long lastId, Pageable pageable) {
         return queryFactory
                 .select(
-                        Projections.constructor(ChatRoomResponse.class, roomUser.id.as("roomId"), user.nickname, user.role, user.profilePhoto)
+                        Projections.constructor(RoomQueryResponse.class, roomUser.id.as("roomId"), user.nickname, user.role, user.profilePhoto)
                 )
                 .from(roomUser)
                 .join(user).on(user.id.eq(roomUser.id))
-                .where(user.id.ne(userId))
+                .where(user.id.ne(userId), roomUser.active.eq(true))
                 .fetch();
     }
 }

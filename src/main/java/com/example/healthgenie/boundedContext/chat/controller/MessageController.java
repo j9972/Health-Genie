@@ -1,7 +1,7 @@
 package com.example.healthgenie.boundedContext.chat.controller;
 
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.chat.dto.ChatMessageRequest;
+import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
 import com.example.healthgenie.boundedContext.chat.dto.MessageResponse;
 import com.example.healthgenie.boundedContext.chat.entity.Message;
 import com.example.healthgenie.boundedContext.chat.service.MessageService;
@@ -28,7 +28,7 @@ public class MessageController {
     private final SimpMessageSendingOperations simpMessageSendingOperations;
 
     @MessageMapping("/chat/{roomId}")
-    public void broadcasting(@DestinationVariable Long roomId, ChatMessageRequest request) {
+    public void broadcasting(@DestinationVariable Long roomId, MessageRequest request) {
         MessageResponse response = messageService.save(roomId, request);
 
         simpMessageSendingOperations.convertAndSend("/sub/chat/" + roomId, response);

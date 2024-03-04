@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RoomRequest {
 
-    private Long senderId;
-    private Long receiverId;
+    private Long anotherUserId;
 }

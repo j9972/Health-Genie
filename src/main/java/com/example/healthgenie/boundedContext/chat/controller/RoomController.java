@@ -1,9 +1,10 @@
 package com.example.healthgenie.boundedContext.chat.controller;
 
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.chat.dto.ChatRoomRequest;
-import com.example.healthgenie.boundedContext.chat.dto.ChatRoomResponse;
-import com.example.healthgenie.boundedContext.chat.dto.GetMessageResponse;
+import com.example.healthgenie.boundedContext.chat.dto.RoomQueryResponse;
+import com.example.healthgenie.boundedContext.chat.dto.RoomRequest;
+import com.example.healthgenie.boundedContext.chat.dto.RoomResponse;
+import com.example.healthgenie.boundedContext.chat.entity.Room;
 import com.example.healthgenie.boundedContext.chat.service.RoomService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -29,21 +30,17 @@ public class RoomController {
     public ResponseEntity<Result> findAll(@AuthenticationPrincipal User user,
                                           @RequestParam Long lastId,
                                           @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        List<ChatRoomResponse> responses = roomService.findAll(user, lastId, pageable);
+        List<RoomQueryResponse> responses = roomService.findAll(user, lastId, pageable);
 
         return ResponseEntity.ok(Result.of(responses));
     }
 
     @PostMapping
-    public ResponseEntity<Result> createOneToOneChatRoom(@RequestBody ChatRoomRequest request) {
-        Long response = roomService.createChatRoom(request);
+    public ResponseEntity<Result> saveOrFind(@AuthenticationPrincipal User user,
+                                             @RequestBody RoomRequest request) {
+        Room room = roomService.saveOrActive(user, request);
 
-        return ResponseEntity.ok(Result.of(response));
-    }
-
-    @GetMapping("/{roomId}/messages")
-    public ResponseEntity<Result> getMessages(@PathVariable Long roomId, @AuthenticationPrincipal User user) {
-        List<GetMessageResponse> response = roomService.getMessages(roomId, user);
+        RoomResponse response = RoomResponse.of(room);
 
         return ResponseEntity.ok(Result.of(response));
     }

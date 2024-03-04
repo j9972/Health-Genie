@@ -3,9 +3,6 @@ package com.example.healthgenie.boundedContext.chat.service;
 
 import com.example.healthgenie.base.exception.ChatException;
 import com.example.healthgenie.base.exception.UserException;
-import com.example.healthgenie.boundedContext.chat.dto.ChatRoomRequest;
-import com.example.healthgenie.boundedContext.chat.dto.ChatRoomResponse;
-import com.example.healthgenie.boundedContext.chat.dto.GetMessageResponse;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
 import com.example.healthgenie.boundedContext.chat.entity.RoomUser;
 import com.example.healthgenie.boundedContext.chat.repository.RoomRepository;
@@ -51,7 +48,7 @@ class RoomServiceTest {
         user2 = testKrUtils.createUser("receiver", Role.TRAINER, "receiver1@test.com");
         user3 = testKrUtils.createUser("other1", Role.EMPTY, "other1@test.com");
         // user1, user3의 기본 채팅방
-        user1AndUser3ChatRoomId = roomService.createChatRoom(testKrUtils.createRoomRequest(user1.getId(), user3.getId()));
+        user1AndUser3ChatRoomId = roomService.saveOrActive(testKrUtils.createRoomRequest(user1.getId(), user3.getId()));
     }
 
     @Test
@@ -63,7 +60,7 @@ class RoomServiceTest {
         ChatRoomRequest request = testKrUtils.createRoomRequest(user1.getId(), user2.getId());
 
         // when
-        Long chatRoomId = roomService.createChatRoom(request);
+        Long chatRoomId = roomService.saveOrActive(request);
 
         Room findRoom = roomRepository.findById(chatRoomId).orElseThrow();
         List<RoomUser> roomUsers = findRoom.getRoomUsers();
@@ -81,7 +78,7 @@ class RoomServiceTest {
         ChatRoomRequest request = testKrUtils.createRoomRequest(user1.getId(), user3.getId());
 
         // when
-        Long roomId = roomService.createChatRoom(request);
+        Long roomId = roomService.saveOrActive(request);
 
         Room findRoom = roomRepository.findById(roomId).orElseThrow();
         List<RoomUser> roomUsers = findRoom.getRoomUsers();
@@ -101,7 +98,7 @@ class RoomServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> roomService.createChatRoom(request))
+        assertThatThrownBy(() -> roomService.saveOrActive(request))
                 .isInstanceOf(UserException.class);
     }
 
@@ -114,8 +111,8 @@ class RoomServiceTest {
         ChatRoomRequest createRequest1 = testKrUtils.createRoomRequest(user1.getId(), user2.getId());
         ChatRoomRequest createRequest2 = testKrUtils.createRoomRequest(user1.getId(), user3.getId());
 
-        roomService.createChatRoom(createRequest1);
-        roomService.createChatRoom(createRequest2);
+        roomService.saveOrActive(createRequest1);
+        roomService.saveOrActive(createRequest2);
 
         // when
         List<ChatRoomResponse> responses = roomService.findAll(user1, PageRequest.of(0, 10));
@@ -131,7 +128,7 @@ class RoomServiceTest {
         testKrUtils.login(user1);
 
         ChatRoomRequest createRequest = testKrUtils.createRoomRequest(user1.getId(), user2.getId());
-        Long roomId = roomService.createChatRoom(createRequest);
+        Long roomId = roomService.saveOrActive(createRequest);
 
         // when
         List<GetMessageResponse> responses = roomService.getMessages(roomId, user1);

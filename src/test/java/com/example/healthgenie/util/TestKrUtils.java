@@ -1,7 +1,5 @@
 package com.example.healthgenie.util;
 
-import com.example.healthgenie.boundedContext.chat.dto.ChatMessageRequest;
-import com.example.healthgenie.boundedContext.chat.dto.ChatRoomRequest;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
 import com.example.healthgenie.boundedContext.chat.entity.RoomUser;
 import com.example.healthgenie.boundedContext.chat.repository.RoomRepository;
