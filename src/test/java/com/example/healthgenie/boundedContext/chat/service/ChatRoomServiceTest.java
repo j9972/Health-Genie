@@ -118,7 +118,7 @@ class ChatRoomServiceTest {
         roomService.createChatRoom(createRequest2);
 
         // when
-        List<ChatRoomResponse> responses = roomService.getChatRooms(user1, PageRequest.of(0, 10));
+        List<ChatRoomResponse> responses = roomService.findAll(user1, PageRequest.of(0, 10));
 
         // then
         assertThat(responses.size()).isEqualTo(2);
@@ -175,8 +175,8 @@ class ChatRoomServiceTest {
         // when
         roomService.deleteChatRoom(user1AndUser3ChatRoomId, user1);
 
-        List<ChatRoomResponse> deleted = roomService.getChatRooms(user1, PageRequest.of(0, 10));
-        List<ChatRoomResponse> notDeleted = roomService.getChatRooms(user3, PageRequest.of(0, 10));
+        List<ChatRoomResponse> deleted = roomService.findAll(user1, PageRequest.of(0, 10));
+        List<ChatRoomResponse> notDeleted = roomService.findAll(user3, PageRequest.of(0, 10));
 
         // then
         assertThat(deleted.size()).isEqualTo(0);
@@ -193,8 +193,8 @@ class ChatRoomServiceTest {
         roomService.deleteChatRoom(user1AndUser3ChatRoomId, user1);
         roomService.deleteChatRoom(user1AndUser3ChatRoomId, user3);
 
-        List<ChatRoomResponse> user1Deleted = roomService.getChatRooms(user1, PageRequest.of(0, 10));
-        List<ChatRoomResponse> user3Deleted = roomService.getChatRooms(user3, PageRequest.of(0, 10));
+        List<ChatRoomResponse> user1Deleted = roomService.findAll(user1, PageRequest.of(0, 10));
+        List<ChatRoomResponse> user3Deleted = roomService.findAll(user3, PageRequest.of(0, 10));
 
         ChatRoom chatRoom = chatRoomRepository.findById(user1AndUser3ChatRoomId).get();
 

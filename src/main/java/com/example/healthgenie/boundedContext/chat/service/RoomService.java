@@ -8,14 +8,10 @@ import com.example.healthgenie.boundedContext.chat.dto.GetMessageResponse;
 import com.example.healthgenie.boundedContext.chat.entity.ChatMessage;
 import com.example.healthgenie.boundedContext.chat.entity.ChatRoom;
 import com.example.healthgenie.boundedContext.chat.entity.ChatRoomUser;
-import com.example.healthgenie.boundedContext.chat.repository.ChatMessageRepository;
-import com.example.healthgenie.boundedContext.chat.repository.ChatRedisRepository;
-import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository;
-import com.example.healthgenie.boundedContext.chat.repository.ChatRoomUserRepository;
+import com.example.healthgenie.boundedContext.chat.repository.*;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +33,7 @@ public class RoomService {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
+    private final ChatRoomQueryRepository chatRoomQueryRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRedisRepository chatRedisRepository;
 
@@ -67,15 +64,8 @@ public class RoomService {
         return createNewRoom(roomHashCode, user, anotherUser).getId();
     }
 
-    public List<ChatRoomResponse> getChatRooms(User user, Pageable pageable) {
-        List<ChatRoomResponse> responses = new ArrayList<>();
-
-        Page<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserIdAndActive(user.getId(), true, pageable);
-        for (ChatRoomUser chatRoomUser : chatRoomUsers) {
-            responses.add(ChatRoomResponse.of(chatRoomUser));
-        }
-
-        return responses;
+    public List<ChatRoomResponse> findAll(User user, Long lastId, Pageable pageable) {
+        return chatRoomQueryRepository.findAll(user.getId(), lastId, pageable);
     }
 
     public List<GetMessageResponse> getMessages(Long roomId, User user) {
