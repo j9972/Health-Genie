@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-public class ChatRoomUser extends BaseEntity {
+@Table(name = "ROOM_USER_TB")
+public class RoomUser extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +24,9 @@ public class ChatRoomUser extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @JoinColumn(name = "chatting_room_id")
+    @JoinColumn(name = "room_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ChatRoom chatRoom;
+    private Room room;
 
     private String name;
 

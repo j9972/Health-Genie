@@ -17,7 +17,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @Component
 @RequiredArgsConstructor
 @Order(HIGHEST_PRECEDENCE + 99)
-public class StompHandler implements ChannelInterceptor {
+public class ChatPreHandler implements ChannelInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -25,12 +25,10 @@ public class StompHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         log.info("message={}", message);
 
-        // STOMP 헤더 접근을 위한 accessor
         final StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-
-        // STOMP 연결 시 토큰 검증
         if(StompCommand.CONNECT == accessor.getCommand()) {
-            final String accessToken = accessor.getFirstNativeHeader("AccessToken");
+            final String accessToken = jwtTokenProvider.resolveToken(accessor.getFirstNativeHeader("Authorization"));
+            log.info("CONNECT {}", accessToken);
 
             jwtTokenProvider.validateToken(accessToken);
         }

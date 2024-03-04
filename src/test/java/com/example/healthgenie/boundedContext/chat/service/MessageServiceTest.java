@@ -3,8 +3,8 @@ package com.example.healthgenie.boundedContext.chat.service;
 import com.example.healthgenie.base.exception.ChatException;
 import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.boundedContext.chat.dto.ChatMessageRequest;
-import com.example.healthgenie.boundedContext.chat.entity.ChatRoom;
-import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository;
+import com.example.healthgenie.boundedContext.chat.entity.Room;
+import com.example.healthgenie.boundedContext.chat.repository.RoomRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -21,21 +21,21 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
-class ChatMessageServiceTest {
+class MessageServiceTest {
 
     @Autowired
     MessageService messageService;
     @Autowired
     UserRepository userRepository;
     @Autowired
-    ChatRoomRepository chatRoomRepository;
+    RoomRepository roomRepository;
     @Autowired
     TestKrUtils testKrUtils;
 
     User sender;
     User receiver;
     User other;
-    ChatRoom room;
+    Room room;
 
     @BeforeEach
     void before() {
@@ -99,7 +99,7 @@ class ChatMessageServiceTest {
         // when
 
         // then
-        assertThatCode(() -> messageService.sendMessage(sendRequest)).doesNotThrowAnyException();
+        assertThatCode(() -> messageService.save(sendRequest)).doesNotThrowAnyException();
     }
 
     @Test
@@ -111,7 +111,7 @@ class ChatMessageServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> messageService.sendMessage(sendRequest))
+        assertThatThrownBy(() -> messageService.save(sendRequest))
                 .isInstanceOf(UserException.class);
     }
 
@@ -124,7 +124,7 @@ class ChatMessageServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> messageService.sendMessage(sendRequest))
+        assertThatThrownBy(() -> messageService.save(sendRequest))
                 .isInstanceOf(ChatException.class);
     }
 }

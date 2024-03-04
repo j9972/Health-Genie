@@ -8,20 +8,20 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "CHAT_MESSAGE_PHOTO_TB")
-public class ChatMessagePhoto extends BaseEntity {
+@Table(name = "MESSAGE_PHOTO_TB")
+public class MessagePhoto extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chat_message_photo_id")
+    @Column(name = "essage_photo_id")
     private Long id;
 
     // 여러개 사진이 가능하다
-    @Column(name = "chat_message_photo")
+    @Column(name = "photo")
     private String photo;
 
     // FK -> chatMessagePhoto[N] : chatMessage[1]
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="message_id")
-    private ChatMessage chatMessage;
+    private Message message;
 }

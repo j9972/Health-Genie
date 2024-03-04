@@ -2,9 +2,9 @@ package com.example.healthgenie.util;
 
 import com.example.healthgenie.boundedContext.chat.dto.ChatMessageRequest;
 import com.example.healthgenie.boundedContext.chat.dto.ChatRoomRequest;
-import com.example.healthgenie.boundedContext.chat.entity.ChatRoom;
-import com.example.healthgenie.boundedContext.chat.entity.ChatRoomUser;
-import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository;
+import com.example.healthgenie.boundedContext.chat.entity.Room;
+import com.example.healthgenie.boundedContext.chat.entity.RoomUser;
+import com.example.healthgenie.boundedContext.chat.repository.RoomRepository;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
 import com.example.healthgenie.boundedContext.community.comment.repository.CommentRepository;
@@ -37,7 +37,7 @@ import java.util.Objects;
 public class TestKrUtils {
 
     private final UserRepository userRepository;
-    private final ChatRoomRepository chatRoomRepository;
+    private final RoomRepository roomRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final PhotoRepository photoRepository;
@@ -92,30 +92,30 @@ public class TestKrUtils {
 
     public ChatMessageRequest createMessageRequest(String content, Long senderId, Long roomId) {
         return ChatMessageRequest.builder()
-                .message(content)
+                .content(content)
                 .userId(senderId)
                 .roomId(roomId)
                 .build();
     }
 
-    public ChatRoom createChatRoom(User sender, User receiver) {
-        ChatRoomUser s = ChatRoomUser.builder()
+    public Room createChatRoom(User sender, User receiver) {
+        RoomUser s = RoomUser.builder()
                 .user(sender)
                 .active(true)
                 .build();
 
-        ChatRoomUser r = ChatRoomUser.builder()
+        RoomUser r = RoomUser.builder()
                 .user(receiver)
                 .active(true)
                 .build();
 
-        ChatRoom chatRoom = ChatRoom.builder()
-                .chatRoomUsers(List.of(s, r))
+        Room room = Room.builder()
+                .roomUsers(List.of(s, r))
                 .roomHashCode(sender.getId() > receiver.getId() ? Objects.hash(sender.getId(), receiver.getId()) : Objects.hash(receiver.getId(), sender.getId()))
                 .active(true)
                 .build();
 
-        return chatRoomRepository.save(chatRoom);
+        return roomRepository.save(room);
     }
 
     public PostRequest createPostRequest(String title, String content) {

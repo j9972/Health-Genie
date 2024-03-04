@@ -13,18 +13,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CHAT_MESSAGE_TB")
+@Table(name = "MESSAGE_TB")
 @Builder
-public class ChatMessage extends BaseEntity {
+public class Message extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chat_message_id")
+    @Column(name = "message_id")
     private Long id;
 
     @NotNull
-    @Column(name = "message_content")
-    private String messageContent;
+    @Column(name = "content")
+    private String content;
 
     @ManyToOne
     @JoinColumn(name ="sender_id")
@@ -32,5 +32,5 @@ public class ChatMessage extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name ="room_id")
-    private ChatRoom chatRoom;
+    private Room room;
 }

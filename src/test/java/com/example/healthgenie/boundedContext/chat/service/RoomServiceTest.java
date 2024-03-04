@@ -6,9 +6,9 @@ import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.boundedContext.chat.dto.ChatRoomRequest;
 import com.example.healthgenie.boundedContext.chat.dto.ChatRoomResponse;
 import com.example.healthgenie.boundedContext.chat.dto.GetMessageResponse;
-import com.example.healthgenie.boundedContext.chat.entity.ChatRoom;
-import com.example.healthgenie.boundedContext.chat.entity.ChatRoomUser;
-import com.example.healthgenie.boundedContext.chat.repository.ChatRoomRepository;
+import com.example.healthgenie.boundedContext.chat.entity.Room;
+import com.example.healthgenie.boundedContext.chat.entity.RoomUser;
+import com.example.healthgenie.boundedContext.chat.repository.RoomRepository;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -28,14 +28,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
-class ChatRoomServiceTest {
+class RoomServiceTest {
 
     @Autowired
     RoomService roomService;
     @Autowired
     UserRepository userRepository;
     @Autowired
-    ChatRoomRepository chatRoomRepository;
+    RoomRepository roomRepository;
     @Autowired
     TestKrUtils testKrUtils;
 
@@ -65,11 +65,11 @@ class ChatRoomServiceTest {
         // when
         Long chatRoomId = roomService.createChatRoom(request);
 
-        ChatRoom findChatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow();
-        List<ChatRoomUser> chatRoomUsers = findChatRoom.getChatRoomUsers();
+        Room findRoom = roomRepository.findById(chatRoomId).orElseThrow();
+        List<RoomUser> roomUsers = findRoom.getRoomUsers();
 
         // then
-        assertThat(chatRoomUsers).extracting(ChatRoomUser::getUser).contains(user1, user2);
+        assertThat(roomUsers).extracting(RoomUser::getUser).contains(user1, user2);
     }
 
     @Test
@@ -83,11 +83,11 @@ class ChatRoomServiceTest {
         // when
         Long roomId = roomService.createChatRoom(request);
 
-        ChatRoom findChatRoom = chatRoomRepository.findById(roomId).orElseThrow();
-        List<ChatRoomUser> chatRoomUsers = findChatRoom.getChatRoomUsers();
+        Room findRoom = roomRepository.findById(roomId).orElseThrow();
+        List<RoomUser> roomUsers = findRoom.getRoomUsers();
 
         // then
-        assertThat(chatRoomUsers).extracting(ChatRoomUser::getUser).contains(user1, user3);
+        assertThat(roomUsers).extracting(RoomUser::getUser).contains(user1, user3);
     }
 
     @Test
@@ -196,12 +196,12 @@ class ChatRoomServiceTest {
         List<ChatRoomResponse> user1Deleted = roomService.findAll(user1, PageRequest.of(0, 10));
         List<ChatRoomResponse> user3Deleted = roomService.findAll(user3, PageRequest.of(0, 10));
 
-        ChatRoom chatRoom = chatRoomRepository.findById(user1AndUser3ChatRoomId).get();
+        Room room = roomRepository.findById(user1AndUser3ChatRoomId).get();
 
         // then
         assertThat(user1Deleted.size()).isEqualTo(0);
         assertThat(user3Deleted.size()).isEqualTo(0);
-        assertThat(chatRoom.isActive()).isFalse();
+        assertThat(room.isActive()).isFalse();
     }
 
     @Test

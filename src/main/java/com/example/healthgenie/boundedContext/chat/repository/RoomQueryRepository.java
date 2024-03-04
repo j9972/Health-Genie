@@ -9,22 +9,22 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.example.healthgenie.boundedContext.chat.entity.QChatRoomUser.chatRoomUser;
+import static com.example.healthgenie.boundedContext.chat.entity.QRoomUser.roomUser;
 import static com.example.healthgenie.boundedContext.user.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
-public class ChatRoomQueryRepository {
+public class RoomQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
     public List<ChatRoomResponse> findAll(Long userId, Long lastId, Pageable pageable) {
         return queryFactory
                 .select(
-                        Projections.constructor(ChatRoomResponse.class, chatRoomUser.id.as("roomId"), user.nickname, user.role, user.profilePhoto)
+                        Projections.constructor(ChatRoomResponse.class, roomUser.id.as("roomId"), user.nickname, user.role, user.profilePhoto)
                 )
-                .from(chatRoomUser)
-                .join(user).on(user.id.eq(chatRoomUser.id))
+                .from(roomUser)
+                .join(user).on(user.id.eq(roomUser.id))
                 .where(user.id.ne(userId))
                 .fetch();
     }

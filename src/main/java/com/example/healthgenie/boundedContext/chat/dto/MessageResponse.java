@@ -1,13 +1,14 @@
 package com.example.healthgenie.boundedContext.chat.dto;
 
 
-import com.example.healthgenie.base.utils.DateUtils;
-import com.example.healthgenie.boundedContext.chat.entity.ChatMessage;
+import com.example.healthgenie.boundedContext.chat.entity.Message;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,21 +17,25 @@ import java.util.List;
 @Builder
 public class MessageResponse {
 
-    private String date;
-    private String time;
-    private String senderNickname;
+    private LocalDateTime createdDate;
+    private Long senderId;
+    private String nickname;
+    private Role role;
+    private String profilePhoto;
     private String content;
 
-    public static MessageResponse of(ChatMessage message) {
+    public static MessageResponse of(Message message) {
         return MessageResponse.builder()
-                .date(DateUtils.toStringDate(message.getCreatedDate()))
-                .time(DateUtils.toStringTime(message.getCreatedDate()))
-                .senderNickname(message.getSender().getNickname())
-                .content(message.getMessageContent())
+                .createdDate(message.getCreatedDate())
+                .senderId(message.getSender().getId())
+                .nickname(message.getSender().getNickname())
+                .role(message.getSender().getRole())
+                .profilePhoto(message.getSender().getProfilePhoto())
+                .content(message.getContent())
                 .build();
     }
 
-    public static List<MessageResponse> of(List<ChatMessage> messages) {
+    public static List<MessageResponse> of(List<Message> messages) {
         return messages.stream()
                 .map(MessageResponse::of)
                 .toList();

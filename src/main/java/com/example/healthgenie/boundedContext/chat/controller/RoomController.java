@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat/rooms")
-public class ChatRoomController {
+public class RoomController {
 
     private final RoomService roomService;
 
