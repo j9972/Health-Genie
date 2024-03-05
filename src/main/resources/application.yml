@@ -84,7 +84,7 @@ spring:
       max-request-size: 10MB
   data:
     redis:
-      host: localhost
+      host: ENC(B/Hj+f1ZSv5Cl1RjirBi9jgl+QNyDXJn)
       port: 6379 # redis port
 
     web:
