@@ -35,7 +35,7 @@ public class UserService {
     private final S3UploadUtils s3UploadUtils;
 
     @Transactional
-    public UserResponse signUp(String email, String name, AuthProvider authProvider, Role role) {
+    public User signUp(String email, String name, AuthProvider authProvider, Role role) {
         String defaultNickname = createUniqueNickname();
 
         User user = User.builder()
@@ -48,11 +48,11 @@ public class UserService {
                 .level(Level.EMPTY)
                 .build();
 
-        return UserResponse.of(userRepository.save(user));
+        return userRepository.save(user);
     }
 
     @Transactional
-    public UserResponse signUp(String email, String name, AuthProvider authProvider) {
+    public User signUp(String email, String name, AuthProvider authProvider) {
         return signUp(email, name, authProvider, Role.EMPTY);
     }
 
@@ -183,5 +183,10 @@ public class UserService {
         }
 
         return uploadedPath;
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
     }
 }

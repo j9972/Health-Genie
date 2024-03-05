@@ -39,43 +39,33 @@ public class KakaoRequestService {
     private String REDIRECT_URI;
 
     @Transactional
-    public SignInResponse redirect(TokenRequest tokenRequest) {
+    public JwtResponse getToken(TokenRequest tokenRequest) {
         TokenResponse tokenResponse = getToken(tokenRequest.getCode());
 
         KakaoUserInfo kakaoUserInfo = getUserInfo(tokenResponse.getAccessToken());
 
-        User user = userRepository.findByEmail(kakaoUserInfo.getEmail()).orElse(null);
+        User user = userRepository.findByEmail(kakaoUserInfo.getEmail())
+                .orElse(userService.signUp(kakaoUserInfo.getEmail(), kakaoUserInfo.getName(), KAKAO));
 
-        // 회원 가입이 안되어있는 경우(최초 로그인 시)
-        if(user == null) {
-            user = UserResponse.toEntity(userService.signUp(kakaoUserInfo.getEmail(), kakaoUserInfo.getName(), KAKAO));
+        String at = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole().getCode());
+        String rt = jwtTokenProvider.generateRefreshToken(user.getEmail(), user.getRole().getCode());
 
-            Token token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().getCode());
+        RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
+                .orElse(
+                        refreshTokenRepository.save(
+                                RefreshToken.builder()
+                                        .keyEmail(user.getEmail())
+                                        .refreshToken(rt)
+                                        .build()
+                        )
+                );
 
-            RefreshToken refreshToken = RefreshToken.builder().keyEmail(user.getEmail()).refreshToken(token.getRefreshToken()).build();
-
-            refreshTokenRepository.save(refreshToken);
-
-            return SignInResponse.builder()
-                    .authProvider(KAKAO)
-                    .accessToken(token.getAccessToken())
-                    .refreshToken(token.getRefreshToken())
-                    .userId(user.getId())
-                    .role(user.getRole())
-                    .build();
-        } else {
-            RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail()).get();
-
-            Token token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().getCode());
-
-            return SignInResponse.builder()
-                    .authProvider(KAKAO)
-                    .accessToken(token.getAccessToken())
-                    .refreshToken(refreshToken.getRefreshToken())
-                    .userId(user.getId())
-                    .role(user.getRole())
-                    .build();
-        }
+        return JwtResponse.builder()
+                .userId(user.getId())
+                .role(user.getRole())
+                .accessToken(at)
+                .refreshToken(refreshToken.getRefreshToken())
+                .build();
     }
 
     private TokenResponse getToken(String authorizationCode) {
