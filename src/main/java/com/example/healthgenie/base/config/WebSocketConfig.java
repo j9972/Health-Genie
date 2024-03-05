@@ -1,6 +1,7 @@
 package com.example.healthgenie.base.config;
 
-import com.example.healthgenie.base.handler.StompHandler;
+import com.example.healthgenie.base.handler.ChatPreHandler;
+import com.example.healthgenie.base.handler.StompExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -14,12 +15,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final StompHandler stompHandler;
+    private final ChatPreHandler chatPreHandler;
+    private final StompExceptionHandler stompExceptionHandler;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/sub/chat"); // subscribe
-        registry.setApplicationDestinationPrefixes("/pub"); // publish
+        registry.enableSimpleBroker("/sub");
+        registry.setApplicationDestinationPrefixes("/pub");
     }
 
     @Override
@@ -27,10 +29,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry
                 .addEndpoint("/ws")
                 .setAllowedOriginPatterns("*");
+
+        registry
+                .setErrorHandler(stompExceptionHandler);
     }
 
+    // JWT 인증
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(stompHandler);
+        registration.interceptors(chatPreHandler);
     }
 }

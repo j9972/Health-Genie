@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.user.dto;
 
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import lombok.Builder;
 import lombok.Getter;
 

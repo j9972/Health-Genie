@@ -25,7 +25,7 @@ import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
