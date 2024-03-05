@@ -2,7 +2,6 @@ package com.example.healthgenie.boundedContext.user.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
 import com.example.healthgenie.base.exception.UserException;
-import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -163,8 +162,8 @@ public class User extends BaseEntity implements UserDetails {
         this.height = height;
     }
 
-    public void updateBirth(String birth) {
-        this.birth = DateUtils.toLocalDateTime(birth);
+    public void updateBirth(LocalDateTime birth) {
+        this.birth = birth;
     }
 
     public void updateWeight(Double weight) {

@@ -30,6 +30,10 @@ public class RoomController {
     public ResponseEntity<Result> findAll(@AuthenticationPrincipal User user,
                                           @RequestParam Long lastId,
                                           @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        /*
+        TODO : 무한 스크롤 구현 해야함
+               -> 현재 lastId와 Pageable은 무시
+         */
         List<RoomQueryResponse> responses = roomService.findAll(user, lastId, pageable);
 
         return ResponseEntity.ok(Result.of(responses));
@@ -46,8 +50,12 @@ public class RoomController {
     }
 
     @PatchMapping("/{roomId}")
-    public ResponseEntity<Result> deleteChatRoom(@PathVariable Long roomId, @AuthenticationPrincipal User user) {
-        roomService.deleteChatRoom(roomId, user);
+    public ResponseEntity<Result> inactive(@PathVariable Long roomId, @AuthenticationPrincipal User user) {
+        /*
+        TODO : inactive 채팅방이 검색되는 문제 해결 해야함
+               -> RoomQueryRepository.findAll() 쿼리 수정 필요
+         */
+        roomService.inactive(roomId, user);
         return ResponseEntity.ok(Result.of("채팅방 삭제 성공"));
     }
 }

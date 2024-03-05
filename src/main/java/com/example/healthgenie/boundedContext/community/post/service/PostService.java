@@ -32,8 +32,8 @@ public class PostService {
     private final PostQueryRepository postQueryRepository;
     private final UserRepository userRepository;
 
-    public PostResponse findByIdQuery(Long postId) {
-        return postQueryRepository.findById(postId);
+    public PostResponse findDtoById(Long postId) {
+        return postQueryRepository.findDtoById(postId);
     }
 
     public Post findById(Long postId) {

@@ -6,17 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class MatchingRequest {
 
-    private String date;
-    private String time;
+    private LocalDateTime date;
     private String place;
     private String description;
     private MatchingState state;
     private Long userId;
-    private Long trainerId;
 }

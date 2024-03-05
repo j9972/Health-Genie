@@ -2,7 +2,6 @@ package com.example.healthgenie.boundedContext.chat.service;
 
 import com.example.healthgenie.base.exception.ChatException;
 import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
-import com.example.healthgenie.boundedContext.chat.dto.MessageResponse;
 import com.example.healthgenie.boundedContext.chat.entity.Message;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
 import com.example.healthgenie.boundedContext.chat.entity.RoomUser;
@@ -28,17 +27,15 @@ public class MessageService {
     private final RoomUserRepository roomUserRepository;
 
     @Transactional
-    public MessageResponse save(Long roomId, MessageRequest request) {
+    public Message save(Long roomId, MessageRequest request) {
         User user = userService.findById(request.getSenderId());
         Room room = roomService.findById(roomId);
 
-        Message savedMessage = messageRepository.save(Message.builder()
+        return messageRepository.save(Message.builder()
                 .room(room)
                 .sender(user)
                 .content(request.getContent())
                 .build());
-
-        return MessageResponse.of(savedMessage);
     }
 
     public List<Message> findAll(Long roomId, User user) {

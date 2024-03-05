@@ -17,10 +17,10 @@ public class CommentQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<CommentResponse> findAllByPostIdQuery(Long postId) {
+    public List<CommentResponse> findDtosAllByPostId(Long postId) {
         return queryFactory
                 .select(
-                        Projections.constructor(CommentResponse.class, comment.id, comment.createdDate, comment.lastModifiedDate, comment.writer.nickname, comment.commentBody, user.profilePhoto.as("profilePhoto"))
+                        Projections.constructor(CommentResponse.class, comment.id, comment.createdDate, comment.lastModifiedDate, comment.writer.nickname, comment.content, user.profilePhoto.as("profilePhoto"))
                 )
                 .from(comment)
                 .join(user).on(comment.writer.id.eq(user.id))

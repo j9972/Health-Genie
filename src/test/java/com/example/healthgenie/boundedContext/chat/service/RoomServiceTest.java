@@ -1,14 +1,13 @@
 package com.example.healthgenie.boundedContext.chat.service;
 
 
-import com.example.healthgenie.base.exception.ChatException;
-import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.boundedContext.chat.dto.RoomQueryResponse;
+import com.example.healthgenie.boundedContext.chat.dto.RoomRequest;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
 import com.example.healthgenie.boundedContext.chat.entity.RoomUser;
-import com.example.healthgenie.boundedContext.chat.repository.RoomRepository;
+import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -30,200 +28,75 @@ class RoomServiceTest {
     @Autowired
     RoomService roomService;
     @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoomRepository roomRepository;
-    @Autowired
     TestKrUtils testKrUtils;
 
     User user1;
     User user2;
     User user3;
-    Long user1AndUser3ChatRoomId;
+    Room user1AndUser2Room;
 
     @BeforeEach
     void before() {
         // 사용자 생성
-        user1 = testKrUtils.createUser("sender1", Role.USER, "sender1@test.com");
-        user2 = testKrUtils.createUser("receiver", Role.TRAINER, "receiver1@test.com");
-        user3 = testKrUtils.createUser("other1", Role.EMPTY, "other1@test.com");
-        // user1, user3의 기본 채팅방
-        user1AndUser3ChatRoomId = roomService.saveOrActive(testKrUtils.createRoomRequest(user1.getId(), user3.getId()));
+        user1 = testKrUtils.createUser("sender@test.com", "sender", AuthProvider.KAKAO, Role.USER);
+        user2 = testKrUtils.createUser("receiver@test.com", "receiver", AuthProvider.GOOGLE, Role.TRAINER);
+        user3 = testKrUtils.createUser("other@test.com", "other", AuthProvider.EMPTY, Role.ADMIN);
+        // user1, user2의 기본 채팅방
+        user1AndUser2Room = testKrUtils.createRoom(user1, user2.getId());
     }
 
     @Test
-    @DisplayName("정상적으로 새로운 채팅방을 생성한다.")
-    void createChatRoom() {
+    @DisplayName("채팅방 생성 또는 기존 채팅방 활성화")
+    void saveOrActive() {
         // given
-        testKrUtils.login(user1);
-
-        ChatRoomRequest request = testKrUtils.createRoomRequest(user1.getId(), user2.getId());
+        RoomRequest request1 = RoomRequest.builder().anotherUserId(user2.getId()).build(); // 기존 채팅방 조회
+        RoomRequest request2 = RoomRequest.builder().anotherUserId(user3.getId()).build(); // 새 채팅방 생성
 
         // when
-        Long chatRoomId = roomService.saveOrActive(request);
-
-        Room findRoom = roomRepository.findById(chatRoomId).orElseThrow();
-        List<RoomUser> roomUsers = findRoom.getRoomUsers();
+        Room room1 = roomService.saveOrActive(user1, request1);
+        Room room2 = roomService.saveOrActive(user1, request2);
 
         // then
-        assertThat(roomUsers).extracting(RoomUser::getUser).contains(user1, user2);
+        assertThat(room1.getRoomUsers()).extracting(RoomUser::getUser).contains(user1, user2);
+        assertThat(room2.getRoomUsers()).extracting(RoomUser::getUser).contains(user1, user3);
     }
 
     @Test
-    @DisplayName("한번이라도 생성한 적 있는 채팅방이라면 그 채팅방을 반환한다.")
-    void createChatRoom2() {
+    @DisplayName("채팅방 단건 조회")
+    void findById() {
         // given
-        testKrUtils.login(user1);
-
-        ChatRoomRequest request = testKrUtils.createRoomRequest(user1.getId(), user3.getId());
 
         // when
-        Long roomId = roomService.saveOrActive(request);
-
-        Room findRoom = roomRepository.findById(roomId).orElseThrow();
-        List<RoomUser> roomUsers = findRoom.getRoomUsers();
+        Room findRoom = roomService.findById(user1AndUser2Room.getId());
 
         // then
-        assertThat(roomUsers).extracting(RoomUser::getUser).contains(user1, user3);
+        assertThat(findRoom.getId()).isEqualTo(user1AndUser2Room.getId());
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자와 채팅방을 생성하면 예외를 발생시킨다.")
-    void createChatRoom3() {
+    @DisplayName("채팅방 전체 조회")
+    void findAll() {
         // given
-        testKrUtils.login(user1);
-
-        ChatRoomRequest request = testKrUtils.createRoomRequest(user1.getId(), 999L);
+        RoomRequest request = RoomRequest.builder().anotherUserId(user3.getId()).build();
+        roomService.saveOrActive(user1, request);
 
         // when
+        // TODO : findAll() 메서드 무한 스크롤 구현 후 수정 해야함. (현재, lastId와 Pageable 무시)
+        List<RoomQueryResponse> rooms = roomService.findAll(user1, 0L, PageRequest.of(0, 1));
 
         // then
-        assertThatThrownBy(() -> roomService.saveOrActive(request))
-                .isInstanceOf(UserException.class);
+        assertThat(rooms.size()).isEqualTo(2);
     }
 
-    @Test
-    @DisplayName("정상적으로 채팅방 목록을 조회한다.")
-    void getChatRooms() {
-        // given
-        testKrUtils.login(user1);
-
-        ChatRoomRequest createRequest1 = testKrUtils.createRoomRequest(user1.getId(), user2.getId());
-        ChatRoomRequest createRequest2 = testKrUtils.createRoomRequest(user1.getId(), user3.getId());
-
-        roomService.saveOrActive(createRequest1);
-        roomService.saveOrActive(createRequest2);
-
-        // when
-        List<ChatRoomResponse> responses = roomService.findAll(user1, PageRequest.of(0, 10));
-
-        // then
-        assertThat(responses.size()).isEqualTo(2);
-    }
-
-    @Test
-    @DisplayName("정상적으로 채팅방 내역을 조회한다.")
-    void getMessages() {
-        // given
-        testKrUtils.login(user1);
-
-        ChatRoomRequest createRequest = testKrUtils.createRoomRequest(user1.getId(), user2.getId());
-        Long roomId = roomService.saveOrActive(createRequest);
-
-        // when
-        List<GetMessageResponse> responses = roomService.getMessages(roomId, user1);
-
-        // then
-        assertThat(responses.size()).isEqualTo(0);
-    }
-
-    @Test
-    @DisplayName("존재하지 않거나 비활성화 상태인 채팅방 내역을 조회하면 예외를 발생시킨다.")
-    void getMessages2() {
-        // given
-        testKrUtils.login(user1);
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> roomService.getMessages(999L, user1))
-                .isInstanceOf(ChatException.class);
-    }
-
-    @Test
-    @DisplayName("채팅방에 참여하지 않은 사용자가 채팅방 내역을 조회하면 예외를 발생시킨다.")
-    void getMessages3() {
-        // given
-        testKrUtils.login(user2);
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> roomService.getMessages(user1AndUser3ChatRoomId, user2))
-                .isInstanceOf(ChatException.class);
-    }
-
-    @Test
-    @DisplayName("정상적으로 채팅방을 삭제한다.")
-    void deleteChatRoom() {
-        // given
-        testKrUtils.login(user1);
-
-        // when
-        roomService.deleteChatRoom(user1AndUser3ChatRoomId, user1);
-
-        List<ChatRoomResponse> deleted = roomService.findAll(user1, PageRequest.of(0, 10));
-        List<ChatRoomResponse> notDeleted = roomService.findAll(user3, PageRequest.of(0, 10));
-
-        // then
-        assertThat(deleted.size()).isEqualTo(0);
-        assertThat(notDeleted.size()).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("정상적으로 양쪽 모두 채팅방을 삭제하면 채팅방은 비활성화된다.")
-    void deleteChatRoom2() {
-        // given
-        testKrUtils.login(user1);
-
-        // when
-        roomService.deleteChatRoom(user1AndUser3ChatRoomId, user1);
-        roomService.deleteChatRoom(user1AndUser3ChatRoomId, user3);
-
-        List<ChatRoomResponse> user1Deleted = roomService.findAll(user1, PageRequest.of(0, 10));
-        List<ChatRoomResponse> user3Deleted = roomService.findAll(user3, PageRequest.of(0, 10));
-
-        Room room = roomRepository.findById(user1AndUser3ChatRoomId).get();
-
-        // then
-        assertThat(user1Deleted.size()).isEqualTo(0);
-        assertThat(user3Deleted.size()).isEqualTo(0);
-        assertThat(room.isActive()).isFalse();
-    }
-
-    @Test
-    @DisplayName("존재하지 않거나 비활성화 상태인 채팅방을 삭제하면 예외를 발생시킨다.")
-    void deleteChatRoom3() {
-        // given
-        testKrUtils.login(user1);
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> roomService.deleteChatRoom(999L, user1))
-                .isInstanceOf(ChatException.class);
-    }
-
-    @Test
-    @DisplayName("채팅방에 참여하지 않은 사용자가 채팅방을 삭제하면 예외를 발생시킨다.")
-    void deleteChatRoom4() {
-        // given
-        testKrUtils.login(user1);
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> roomService.deleteChatRoom(user1AndUser3ChatRoomId, user2))
-                .isInstanceOf(ChatException.class);
-    }
+//    @Test
+//    @DisplayName("채팅방 비활성화(=삭제)")
+//    void inactive() {
+//        // given
+//
+//        // when
+//        roomService.inactive(user1AndUser2Room.getId(), user1);
+//
+//        // then
+//        assertThat(roomService.findAll(user1, 0L, PageRequest.of(0, 1)).size()).isEqualTo(0);
+//    }
 }

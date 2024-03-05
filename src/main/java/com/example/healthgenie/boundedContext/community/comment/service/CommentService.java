@@ -41,7 +41,7 @@ public class CommentService {
 
         Comment comment = Comment.builder()
                 .post(post)
-                .commentBody(request.getContent())
+                .content(request.getContent())
                 .writer(writer)
                 .build();
 
@@ -63,8 +63,8 @@ public class CommentService {
         return commentRepository.findAllByPostIdOrderByIdDesc(postId);
     }
 
-    public List<CommentResponse> findAllByPostIdQuery(Long postId) {
-        return commentQueryRepository.findAllByPostIdQuery(postId);
+    public List<CommentResponse> findDtosAllByPostId(Long postId) {
+        return commentQueryRepository.findDtosAllByPostId(postId);
     }
 
     @Transactional

@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +25,7 @@ public class UserRequest {
     private Boolean emailVerify;
     private Level level;
     private Double height;
-    private String birth;
+    private LocalDateTime birth;
     private Double weight;
     private Double muscleWeight;
 }

@@ -36,7 +36,7 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<Result> findById(@PathVariable Long postId) {
-        return ResponseEntity.ok(Result.of(postService.findByIdQuery(postId)));
+        return ResponseEntity.ok(Result.of(postService.findDtoById(postId)));
     }
 
     @PostMapping

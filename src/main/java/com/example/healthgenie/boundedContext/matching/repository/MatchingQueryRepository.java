@@ -1,15 +1,13 @@
 package com.example.healthgenie.boundedContext.matching.repository;
 
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
-import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.healthgenie.boundedContext.matching.entity.QMatching.matching;
@@ -22,24 +20,24 @@ public class MatchingQueryRepository {
 
     private final JPAQueryFactory query;
 
-    public List<Matching> findAllByUserIdAndDate(Long userId, LocalDate date) {
+    public List<Matching> findAllByUserIdAndDate(Long userId, LocalDateTime date) {
         return query
                 .selectFrom(matching)
                 .join(matching.matchingUsers, matchingUser)
                 .where(
                         userIdEq(userId),
-                        matchingDateEq(date)
+                        matchingDateBetween(date, date.plusDays(1).minusNanos(1))
                 )
                 .orderBy(matchingTimeAsc())
                 .fetch();
     }
 
-    private OrderSpecifier<LocalTime> matchingTimeAsc() {
-        return matching.time.asc();
+    private OrderSpecifier<LocalDateTime> matchingTimeAsc() {
+        return matching.date.asc();
     }
 
-    private BooleanExpression matchingDateEq(LocalDate date) {
-        return matching.date.eq(date);
+    private BooleanExpression matchingDateBetween(LocalDateTime start, LocalDateTime end) {
+        return matching.date.between(start, end);
     }
 
     private BooleanExpression userIdEq(Long userId) {

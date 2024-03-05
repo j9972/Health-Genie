@@ -1,8 +1,5 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.example.healthgenie.base.exception.MatchingErrorResult;
 import com.example.healthgenie.base.exception.MatchingException;
 import com.example.healthgenie.base.exception.PtProcessErrorResult;
@@ -14,20 +11,27 @@ import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRe
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
+import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -48,6 +52,9 @@ class PtProcessServiceTest {
     @Autowired
     MatchingRepository matchingRepository;
 
+    @Autowired
+    UserService userService;
+
     User user;
     User user2;
     User user3;
@@ -57,15 +64,18 @@ class PtProcessServiceTest {
 
     @BeforeEach
     void before() {
-        LocalDateTime date = LocalDateTime.of(2023, 12, 5, 14, 30, 0);
+        LocalDateTime date = LocalDateTime.of(2024, 1, 1, 11, 0, 0);
         LocalDate date2 = LocalDate.of(2023, 12, 5);
 
-        user = testKrUtils.createUser("test1", Role.USER, "jh485200@gmail.com");
-        user2 = testKrUtils.createUser("test2", Role.TRAINER, "test@test.com");
-        user3 = testKrUtils.createUser("test3", Role.USER, "test3@gmail.com");
-        user4 = testKrUtils.createUser("test4", Role.TRAINER, "test4@test.com");
+        user = testKrUtils.createUser("jh485200@gmail.com", "test1", AuthProvider.EMPTY, Role.USER);
+        user2 = testKrUtils.createUser("test@test.com", "test2", AuthProvider.EMPTY, Role.TRAINER);
+        user3 = testKrUtils.createUser("test3@gmail.com", "test3", AuthProvider.EMPTY, Role.USER);
+        user4 = testKrUtils.createUser("test4@test.com", "test4", AuthProvider.EMPTY, Role.TRAINER);
 
-        matching = testKrUtils.createMatching(user.getId(), user2.getId(), "2024.01.01", "11:00:00", "체육관", "pt내용");
+        userService.update(user, UserRequest.builder().nickname("test1").build());
+        userService.update(user2, UserRequest.builder().nickname("test2").build());
+
+        matching = testKrUtils.createMatching(user2, user.getId(), date, "체육관", "pt내용");
         process = testSyUtils.createProcess(date2, "test title2", "test content2", user, user2);
     }
 
@@ -104,7 +114,7 @@ class PtProcessServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if (matching.getDate().isAfter(dto.getDate())) {
+            if (matching.getDate().toLocalDate().isAfter(dto.getDate())) {
                 throw new MatchingException(MatchingErrorResult.TOO_EARLY_TO_WRITE_FEEDBACK);
             }
         }).isInstanceOf(MatchingException.class);

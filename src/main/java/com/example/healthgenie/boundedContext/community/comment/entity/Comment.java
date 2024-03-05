@@ -23,7 +23,7 @@ public class Comment extends BaseEntity {
 
     @NotBlank
     @Column(name ="comment_body")
-    private String commentBody;
+    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")
@@ -34,7 +34,7 @@ public class Comment extends BaseEntity {
     private User writer;
 
     public void updateContent(String content) {
-        this.commentBody = content;
+        this.content = content;
     }
 
     public void setPost(Post post) {

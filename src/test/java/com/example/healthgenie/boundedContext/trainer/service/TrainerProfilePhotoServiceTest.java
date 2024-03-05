@@ -3,6 +3,7 @@ package com.example.healthgenie.boundedContext.trainer.service;
 import com.example.healthgenie.base.exception.TrainerProfileException;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
@@ -42,7 +43,7 @@ class TrainerProfilePhotoServiceTest {
         LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
         LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
 
-        user = testKrUtils.createUser("test1", Role.TRAINER, "test1@test.com");
+        user = testKrUtils.createUser("test1@test.com", "test1", AuthProvider.EMPTY, Role.TRAINER);
         profile = testSyUtils.createProfile("test intro", "test career", "경북대", startTime, endTime, 4.5, 12000,23,user);
         photo = testSyUtils.createProfilePhoto(profile, "default-path.png");
     }

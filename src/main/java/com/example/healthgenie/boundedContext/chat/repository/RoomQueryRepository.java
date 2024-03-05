@@ -24,7 +24,7 @@ public class RoomQueryRepository {
                         Projections.constructor(RoomQueryResponse.class, roomUser.id.as("roomId"), user.nickname, user.role, user.profilePhoto)
                 )
                 .from(roomUser)
-                .join(user).on(user.id.eq(roomUser.id))
+                .join(user).on(user.id.eq(roomUser.user.id))
                 .where(user.id.ne(userId), roomUser.active.eq(true))
                 .fetch();
     }

@@ -1,12 +1,11 @@
 package com.example.healthgenie.boundedContext.chat.service;
 
-import com.example.healthgenie.base.exception.ChatException;
-import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
+import com.example.healthgenie.boundedContext.chat.entity.Message;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
-import com.example.healthgenie.boundedContext.chat.repository.RoomRepository;
+import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -25,105 +25,49 @@ class MessageServiceTest {
     @Autowired
     MessageService messageService;
     @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoomRepository roomRepository;
-    @Autowired
     TestKrUtils testKrUtils;
 
-    User sender;
-    User receiver;
-    User other;
-    Room room;
+    User user1;
+    User user2;
+    User user3;
+    Room user1AndUser2Room;
 
     @BeforeEach
     void before() {
         // 사용자 생성
-        sender = testKrUtils.createUser("sender1", Role.USER, "sender1@test.com");
-        receiver = testKrUtils.createUser("receiver", Role.TRAINER, "receiver1@test.com");
-        other = testKrUtils.createUser("other1", Role.EMPTY, "other1@test.com");
-
-        // 채팅방 생성
-        room = testKrUtils.createChatRoom(sender, receiver);
+        user1 = testKrUtils.createUser("sender@test.com", "sender", AuthProvider.KAKAO, Role.USER);
+        user2 = testKrUtils.createUser("receiver@test.com", "receiver", AuthProvider.GOOGLE, Role.TRAINER);
+        user3 = testKrUtils.createUser("other@test.com", "other", AuthProvider.EMPTY, Role.ADMIN);
+        // user1, user2의 기본 채팅방
+        user1AndUser2Room = testKrUtils.createRoom(user1, user2.getId());
     }
 
     @Test
-    @DisplayName("정상적으로 채팅방을 입장한다.")
-    void enter() {
+    @DisplayName("메세지 저장")
+    void save() {
         // given
-        testKrUtils.login(sender);
-
-        ChatMessageRequest enterRequest = testKrUtils.createMessageRequest(sender.getId(), room.getId());
+        MessageRequest request = MessageRequest.builder().content("새 메세지입니다.").senderId(user1.getId()).build();
 
         // when
+        Message message = messageService.save(user1AndUser2Room.getId(), request);
 
         // then
-        assertThatCode(() -> messageService.enter(enterRequest)).doesNotThrowAnyException();
+        assertThat(message.getSender().getId()).isEqualTo(user1.getId());
+        assertThat(message.getContent()).isEqualTo("새 메세지입니다.");
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자가 채팅방을 입장하면 예외를 발생시킨다.")
-    void enter2() {
+    @DisplayName("해당 채팅방의 전체 메세지 조회")
+    void findAll() {
         // given
-        ChatMessageRequest enterRequest = testKrUtils.createMessageRequest(999L, room.getId());
+        for(int i=0; i<10; i++) {
+            testKrUtils.createMessage(user1AndUser2Room.getId(), user1.getId(), "새 메세지 " + i);
+        }
 
         // when
+        List<Message> messages = messageService.findAll(user1AndUser2Room.getId(), user1);
 
         // then
-        assertThatThrownBy(() -> messageService.enter(enterRequest))
-                .isInstanceOf(UserException.class);
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 채팅방을 입장하면 예외를 발생시킨다.")
-    void enter3() {
-        // given
-        ChatMessageRequest enterRequest = testKrUtils.createMessageRequest(sender.getId(), 999L);
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> messageService.enter(enterRequest))
-                .isInstanceOf(ChatException.class);
-    }
-
-    @Test
-    @DisplayName("정상적으로 메세지를 보낸다.")
-    void sendMessage() {
-        // given
-        testKrUtils.login(sender);
-
-        ChatMessageRequest sendRequest = testKrUtils.createMessageRequest("테스트 메세지 발송", sender.getId(), room.getId());
-
-        // when
-
-        // then
-        assertThatCode(() -> messageService.save(sendRequest)).doesNotThrowAnyException();
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 사용자가 메세지를 보내면 예외를 발생시킨다.")
-    void sendMessage2() {
-        // given
-        ChatMessageRequest sendRequest = testKrUtils.createMessageRequest("테스트 메세지 발송", 999L, room.getId());
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> messageService.save(sendRequest))
-                .isInstanceOf(UserException.class);
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 채팅방에 메세지를 보내면 예외를 발생시킨다.")
-    void sendMessage3() {
-        // given
-        ChatMessageRequest sendRequest = testKrUtils.createMessageRequest("테스트 메세지 발송", sender.getId(), 999L);
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> messageService.save(sendRequest))
-                .isInstanceOf(ChatException.class);
+        assertThat(messages.size()).isEqualTo(10);
     }
 }

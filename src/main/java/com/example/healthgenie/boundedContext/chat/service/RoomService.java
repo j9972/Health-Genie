@@ -59,7 +59,7 @@ public class RoomService {
     }
 
     @Transactional
-    public void deleteChatRoom(Long roomId, User user) {
+    public void inactive(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
 

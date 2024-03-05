@@ -1,14 +1,6 @@
 package com.example.healthgenie.boundedContext.ptreview.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.example.healthgenie.base.exception.CommonErrorResult;
-import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.base.exception.MatchingErrorResult;
-import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.PtReviewErrorResult;
-import com.example.healthgenie.base.exception.PtReviewException;
+import com.example.healthgenie.base.exception.*;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -18,21 +10,28 @@ import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
+import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -56,6 +55,9 @@ class PtReviewServiceTest {
     @Autowired
     PtReviewRepository ptReviewRepository;
 
+    @Autowired
+    UserService userService;
+
     User user;
     User user2;
     User user3;
@@ -70,17 +72,24 @@ class PtReviewServiceTest {
 
     @BeforeEach
     void before() {
-        LocalDateTime date = LocalDateTime.of(2023, 12, 5, 14, 30, 0);
+        LocalDateTime date1 = LocalDateTime.of(2024, 1, 1, 11, 0, 0);
+        LocalDateTime date2 = LocalDateTime.of(2030, 1, 1, 11, 0, 0);
 
-        user = testKrUtils.createUser("test1", Role.USER, "jh485200@gmail.com");
-        user2 = testKrUtils.createUser("test2", Role.TRAINER, "test@test.com");
-        user3 = testKrUtils.createUser("test3", Role.USER, "test3@gmail.com");
-        user4 = testKrUtils.createUser("test4", Role.TRAINER, "test4@test.com");
-        user5 = testKrUtils.createUser("test5", Role.USER, "test5@gmail.com");
-        user6 = testKrUtils.createUser("test6", Role.TRAINER, "test6@test.com");
+        user = testKrUtils.createUser("jh485200@gmail.com", "test1", AuthProvider.EMPTY, Role.USER);
+        user2 = testKrUtils.createUser("test@test.com", "test2", AuthProvider.EMPTY, Role.TRAINER);
+        user3 = testKrUtils.createUser("test3@gamil.com", "test3", AuthProvider.EMPTY, Role.USER);
+        user4 = testKrUtils.createUser("test4@test.com", "test4", AuthProvider.EMPTY, Role.TRAINER);
+        user5 = testKrUtils.createUser("test5@gmail.com", "test5", AuthProvider.EMPTY, Role.USER);
+        user6 = testKrUtils.createUser("test6@test.com", "test6", AuthProvider.EMPTY, Role.TRAINER);
 
-        matching = testKrUtils.createMatching(user.getId(), user2.getId(), "2024.01.01", "11:00:00", "체육관", "pt내용");
-        matching2 = testKrUtils.createMatching(user5.getId(), user6.getId(), "2030.01.01", "11:00:00", "체육관", "pt내용");
+        userService.update(user, UserRequest.builder().nickname("test1").build());
+        userService.update(user2, UserRequest.builder().nickname("test2").build());
+        userService.update(user3, UserRequest.builder().nickname("test3").build());
+        userService.update(user4, UserRequest.builder().nickname("test4").build());
+
+        matching = testKrUtils.createMatching(user2, user.getId(), date1, "체육관", "pt내용");
+        matching2 = testKrUtils.createMatching(user6, user5.getId(), date2, "체육관", "pt내용");
+
         review = testSyUtils.createReview("test review", "stop", 4.5, user3, user4);
     }
 
@@ -115,7 +124,7 @@ class PtReviewServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if (LocalDate.now().isAfter(matching.getDate())) {
+            if (LocalDate.now().isAfter(matching.getDate().toLocalDate())) {
                 throw new MatchingException(MatchingErrorResult.TOO_EARLY_TO_WRITE_FEEDBACK);
             }
         }).isInstanceOf(MatchingException.class);

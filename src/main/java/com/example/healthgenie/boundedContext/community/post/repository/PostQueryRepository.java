@@ -22,7 +22,7 @@ public class PostQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public PostResponse findById(Long postId) {
+    public PostResponse findDtoById(Long postId) {
         return queryFactory
                 .select(
                         Projections.constructor(PostResponse.class, post.id, post.createdDate, post.lastModifiedDate, post.title, post.content, post.writer.nickname, user.profilePhoto.as("writerPhoto"))

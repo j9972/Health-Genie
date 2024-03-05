@@ -29,7 +29,7 @@ public class MessageController {
 
     @MessageMapping("/chat/{roomId}")
     public void broadcasting(@DestinationVariable Long roomId, MessageRequest request) {
-        MessageResponse response = messageService.save(roomId, request);
+        MessageResponse response = MessageResponse.of(messageService.save(roomId, request));
 
         simpMessageSendingOperations.convertAndSend("/sub/chat/" + roomId, response);
     }

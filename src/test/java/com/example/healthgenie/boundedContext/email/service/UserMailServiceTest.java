@@ -1,18 +1,16 @@
 package com.example.healthgenie.boundedContext.email.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import com.univcert.api.UnivCert;
 import jakarta.mail.MessagingException;
-import java.io.IOException;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -42,6 +46,9 @@ class UserMailServiceTest {
     @Autowired
     RedisService redisService;
 
+    @Autowired
+    UserService userService;
+
     @Value("${univCert.key}")
     private String KEY;
 
@@ -56,9 +63,12 @@ class UserMailServiceTest {
      */
     @BeforeEach
     void before() {
-        user = testUtils.createUser("test1", Role.EMPTY, "jsy9972@knu.ac.kr");
-        user2 = testUtil.createUser("test1", "test1", Role.TRAINER, "경북대학교", "jsy9972@knu.ac.kr");
-        user3 = testUtil.createUser("test1", "test1", "가나다대학교", "jsy9972@knu.ac.kr");
+        user = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.EMPTY);
+        user2 = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.TRAINER);
+        user3 = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.EMPTY);
+
+        userService.update(user2, UserRequest.builder().uniName("경북대학교").build());
+        userService.update(user3, UserRequest.builder().uniName("가나다대학교").build());
     }
 
 

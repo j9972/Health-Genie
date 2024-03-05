@@ -1,27 +1,29 @@
 package com.example.healthgenie.boundedContext.todo.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.example.healthgenie.base.exception.TodoErrorResult;
 import com.example.healthgenie.base.exception.TodoException;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
+import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -41,7 +43,7 @@ class TodoServiceTest {
 
     @BeforeEach
     void before() {
-        user = testKrUtils.createUser("test1", Role.USER, "jh485200@gmail.com");
+        user = testKrUtils.createUser("jh485200@gmail.com", "test1", AuthProvider.EMPTY, Role.USER);
 
         LocalDate localDate = LocalDate.of(2023, 12, 15);
         LocalTime localTime = LocalTime.of(14, 30, 45); // 시, 분, 초

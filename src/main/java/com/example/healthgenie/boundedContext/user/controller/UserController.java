@@ -1,7 +1,5 @@
 package com.example.healthgenie.boundedContext.user.controller;
 
-import com.example.healthgenie.base.exception.UserErrorResult;
-import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.user.dto.DietResponse;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
@@ -19,45 +17,32 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
-    @PatchMapping("/{userId}")
-    public ResponseEntity<Result> update(@AuthenticationPrincipal User user,
-                                         @PathVariable Long userId,
-                                         @RequestBody @Valid UserRequest request) {
-        if(!Objects.equals(user.getId(), userId)) {
-            throw new UserException(UserErrorResult.NO_PERMISSION);
-        }
-
-        UserResponse response = userService.edit(userId, request);
+    @PatchMapping
+    public ResponseEntity<Result> update(@AuthenticationPrincipal User user, @RequestBody @Valid UserRequest request) {
+        UserResponse response = UserResponse.of(userService.update(user, request));
 
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PatchMapping("/{userId}/photo")
-    public ResponseEntity<Result> update(@AuthenticationPrincipal User user,
-                                         @PathVariable Long userId,
-                                         @RequestPart MultipartFile photo) throws IOException {
-        if(!Objects.equals(user.getId(), userId)) {
-            throw new UserException(UserErrorResult.NO_PERMISSION);
-        }
-
-        UserResponse response = userService.edit(userId, photo);
+    @PatchMapping("/photo")
+    public ResponseEntity<Result> update(@AuthenticationPrincipal User user, @RequestPart MultipartFile photo) throws IOException {
+        UserResponse response = UserResponse.of(userService.update(user, photo));
 
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/{userId}/calculator")
-    public ResponseEntity<Result> calculate(@PathVariable Long userId, @RequestParam Integer type) {
-        DietResponse response = userService.calculate(userId, type);
+    @GetMapping("/calculator")
+    public ResponseEntity<Result> calculate(@AuthenticationPrincipal User user, @RequestParam Integer type) {
+        DietResponse response = userService.calculate(user, type);
 
         return ResponseEntity.ok(Result.of(response));
     }
