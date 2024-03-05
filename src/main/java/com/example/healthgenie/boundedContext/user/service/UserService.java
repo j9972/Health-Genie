@@ -5,10 +5,10 @@ import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.dto.DietResponse;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +36,10 @@ public class UserService {
     @Transactional
     public User signUp(String email, String name, AuthProvider authProvider, Role role) {
         String defaultNickname = createUniqueNickname();
+
+        if(userRepository.existsByEmail(email)) {
+            throw new UserException(ALREADY_SIGN_UP);
+        }
 
         User user = User.builder()
                 .email(email)

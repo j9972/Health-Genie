@@ -51,20 +51,13 @@ public class GoogleRequestService {
         GoogleUserInfo googleUserInfo = getUserInfo(tokenResponse.getAccessToken());
 
         User user = userRepository.findByEmail(googleUserInfo.getEmail())
-                .orElse(userService.signUp(googleUserInfo.getEmail(), googleUserInfo.getName(), GOOGLE));
+                .orElseGet(() -> userService.signUp(googleUserInfo.getEmail(), googleUserInfo.getName(), GOOGLE));
 
         String at = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole().getCode());
         String rt = jwtTokenProvider.generateRefreshToken(user.getEmail(), user.getRole().getCode());
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
-                .orElse(
-                        refreshTokenRepository.save(
-                                RefreshToken.builder()
-                                        .keyEmail(user.getEmail())
-                                        .refreshToken(rt)
-                                        .build()
-                        )
-                );
+                .orElseGet(() -> refreshTokenRepository.save(RefreshToken.builder().keyEmail(user.getEmail()).refreshToken(rt).build()));
 
         return JwtResponse.builder()
                 .userId(user.getId())

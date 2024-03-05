@@ -5,9 +5,9 @@ import com.example.healthgenie.boundedContext.chat.dto.RoomQueryResponse;
 import com.example.healthgenie.boundedContext.chat.dto.RoomRequest;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
 import com.example.healthgenie.boundedContext.chat.entity.RoomUser;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,9 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -78,14 +77,20 @@ class RoomServiceTest {
     void findAll() {
         // given
         RoomRequest request = RoomRequest.builder().anotherUserId(user3.getId()).build();
-        roomService.saveOrActive(user1, request);
+        Room user1AndUser3Room = roomService.saveOrActive(user1, request);
+
+        Long start = user1AndUser2Room.getId();
+        Long end = user1AndUser3Room.getId();
 
         // when
-        // TODO : findAll() 메서드 무한 스크롤 구현 후 수정 해야함. (현재, lastId와 Pageable 무시)
-        List<RoomQueryResponse> rooms = roomService.findAll(user1, 0L, PageRequest.of(0, 1));
+        Slice<RoomQueryResponse> findRooms1 = roomService.findAll(user1, null, PageRequest.of(0, 1));
+        Slice<RoomQueryResponse> findRooms2 = roomService.findAll(user1, (start+end)/2+1, PageRequest.of(0, 1));
 
         // then
-        assertThat(rooms.size()).isEqualTo(2);
+        assertThat(findRooms1.isLast()).isFalse();
+        assertThat(findRooms1.getContent().size()).isEqualTo(1);
+        assertThat(findRooms2.isLast()).isTrue();
+        assertThat(findRooms2.getContent().size()).isEqualTo(1);
     }
 
 //    @Test

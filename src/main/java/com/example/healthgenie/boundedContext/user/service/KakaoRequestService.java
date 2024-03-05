@@ -45,20 +45,13 @@ public class KakaoRequestService {
         KakaoUserInfo kakaoUserInfo = getUserInfo(tokenResponse.getAccessToken());
 
         User user = userRepository.findByEmail(kakaoUserInfo.getEmail())
-                .orElse(userService.signUp(kakaoUserInfo.getEmail(), kakaoUserInfo.getName(), KAKAO));
+                .orElseGet(() -> userService.signUp(kakaoUserInfo.getEmail(), kakaoUserInfo.getName(), KAKAO));
 
         String at = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole().getCode());
         String rt = jwtTokenProvider.generateRefreshToken(user.getEmail(), user.getRole().getCode());
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
-                .orElse(
-                        refreshTokenRepository.save(
-                                RefreshToken.builder()
-                                        .keyEmail(user.getEmail())
-                                        .refreshToken(rt)
-                                        .build()
-                        )
-                );
+                .orElseGet(() -> refreshTokenRepository.save(RefreshToken.builder().keyEmail(user.getEmail()).refreshToken(rt).build()));
 
         return JwtResponse.builder()
                 .userId(user.getId())

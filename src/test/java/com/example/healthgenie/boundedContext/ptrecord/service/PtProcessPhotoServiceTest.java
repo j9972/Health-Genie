@@ -40,7 +40,7 @@ class PtProcessPhotoServiceTest {
     @BeforeEach
     void before() {
         user = testKrUtils.createUser("test1@test.com", "test1", AuthProvider.EMPTY, Role.USER);
-        user2 = testKrUtils.createUser("test1@test.com", "test1", AuthProvider.EMPTY, Role.TRAINER);
+        user2 = testKrUtils.createUser("test2@test.com", "test2", AuthProvider.EMPTY, Role.TRAINER);
         process = testSyUtils.createProcess("title", "content", user, user2);
         photo = testSyUtils.createProcessPhoto(process, "default-path.png");
     }

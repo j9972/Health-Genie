@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.Map;
@@ -64,11 +65,12 @@ class UserMailServiceTest {
     @BeforeEach
     void before() {
         user = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.EMPTY);
-        user2 = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.TRAINER);
-        user3 = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.EMPTY);
+//        user2 = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.TRAINER);
+//        user3 = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.EMPTY);
 
-        userService.update(user2, UserRequest.builder().uniName("경북대학교").build());
-        userService.update(user3, UserRequest.builder().uniName("가나다대학교").build());
+        userService.update(user, UserRequest.builder().uniName("경북대학교").build());
+//        userService.update(user2, UserRequest.builder().uniName("경북대학교").build());
+//        userService.update(user3, UserRequest.builder().uniName("가나다대학교").build());
     }
 
 
@@ -76,15 +78,15 @@ class UserMailServiceTest {
     @DisplayName("이메일에 검증 코드 보내기")
     void sendCode() throws IOException {
         // given
-        testUtils.login(user2);
-        String uniDomain = uniDomainService.findUniDomain(user2.getUniName());
+        testUtils.login(user);
+        String uniDomain = uniDomainService.findUniDomain(user.getUniName());
         Map<String, Object> result = null;
 
         // when
 
-        if (uniDomainService.checkDomain(user2.getEmail(), uniDomain)) {
+        if (uniDomainService.checkDomain(user.getEmail(), uniDomain)) {
 
-            result = UnivCert.certify(KEY, user2.getEmail(), user2.getUniName(), true);
+            result = UnivCert.certify(KEY, user.getEmail(), user.getUniName(), true);
         }
         // then
         assertThat(result).isNotNull();
@@ -95,13 +97,13 @@ class UserMailServiceTest {
     void wrongDomainForSendCode() {
         // given
         testUtils.login(user);
-        String uniDomain = uniDomainService.findUniDomain(user2.getUniName());
+        String uniDomain = uniDomainService.findUniDomain("가나다대학교");
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            if (!uniDomain.isEmpty()) {
+            if (!StringUtils.hasText(uniDomain)) {
                 throw new CommonException(CommonErrorResult.BAD_REQUEST);
             }
         }).isInstanceOf(CommonException.class);

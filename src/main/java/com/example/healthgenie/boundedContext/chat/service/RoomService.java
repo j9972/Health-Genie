@@ -12,11 +12,11 @@ import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static com.example.healthgenie.base.exception.ChatErrorResult.NO_PERMISSION;
@@ -49,7 +49,7 @@ public class RoomService {
         return room;
     }
 
-    public List<RoomQueryResponse> findAll(User user, Long lastId, Pageable pageable) {
+    public Slice<RoomQueryResponse> findAll(User user, Long lastId, Pageable pageable) {
         return roomQueryRepository.findAll(user.getId(), lastId, pageable);
     }
 
