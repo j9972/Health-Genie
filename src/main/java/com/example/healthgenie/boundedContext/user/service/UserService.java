@@ -71,6 +71,8 @@ public class UserService {
 
     @Transactional
     public User update(User user, UserRequest request) {
+        user = findById(user.getId());
+
         // 학교 이름
         if(StringUtils.hasText(request.getUniName())) {
             user.updateUniname(request.getUniName());
@@ -120,6 +122,8 @@ public class UserService {
 
     @Transactional
     public User update(User user, MultipartFile profilePhoto) throws IOException {
+        user = findById(user.getId());
+
         if(!profilePhoto.isEmpty()) {
             String path = uploadAndDelete(profilePhoto, user.getProfilePhoto());
 
