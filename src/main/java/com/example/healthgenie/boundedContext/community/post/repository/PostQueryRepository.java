@@ -12,6 +12,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.healthgenie.boundedContext.community.post.entity.QPost.post;
 import static com.example.healthgenie.boundedContext.user.entity.QUser.user;
@@ -22,15 +23,15 @@ public class PostQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public PostResponse findDtoById(Long postId) {
-        return queryFactory
+    public Optional<PostResponse> findDtoById(Long postId) {
+        return Optional.ofNullable(queryFactory
                 .select(
                         Projections.constructor(PostResponse.class, post.id, post.createdDate, post.lastModifiedDate, post.title, post.content, post.writer.nickname, user.profilePhoto.as("writerPhoto"))
                 )
                 .from(post)
                 .join(user).on(post.writer.id.eq(user.id))
                 .where(post.id.eq(postId))
-                .fetchOne();
+                .fetchOne());
     }
 
     public Slice<Post> findAll(String keyword, Long userId, Long lastId, Pageable pageable) {

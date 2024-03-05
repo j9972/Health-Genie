@@ -33,7 +33,8 @@ public class PostService {
     private final UserRepository userRepository;
 
     public PostResponse findDtoById(Long postId) {
-        return postQueryRepository.findDtoById(postId);
+        return postQueryRepository.findDtoById(postId)
+                .orElseThrow(() -> new CommunityPostException(POST_EMPTY));
     }
 
     public Post findById(Long postId) {
