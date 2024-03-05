@@ -1,7 +1,13 @@
 package com.example.healthgenie.boundedContext.trainer.dto;
 
+import com.example.healthgenie.boundedContext.community.dto.PostResponse;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
+import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
+import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

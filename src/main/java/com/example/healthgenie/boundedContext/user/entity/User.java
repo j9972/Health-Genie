@@ -2,10 +2,8 @@ package com.example.healthgenie.boundedContext.user.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
 import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
-import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
-import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -82,7 +80,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "muscle_weight")
     private Double muscleWeight;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
 
@@ -165,8 +162,8 @@ public class User extends BaseEntity implements UserDetails {
         this.height = height;
     }
 
-    public void updateBirth(LocalDateTime birth) {
-        this.birth = birth;
+    public void updateBirth(String birth) {
+        this.birth = DateUtils.toLocalDateTime(birth);
     }
 
     public void updateWeight(Double weight) {

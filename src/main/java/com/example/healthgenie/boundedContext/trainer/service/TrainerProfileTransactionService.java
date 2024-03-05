@@ -1,13 +1,18 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
+import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.base.exception.TrainerProfileErrorResult;
 import com.example.healthgenie.base.exception.TrainerProfileException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
+import com.example.healthgenie.base.utils.SecurityUtils;
+import com.example.healthgenie.boundedContext.community.dto.PostRequest;
+import com.example.healthgenie.boundedContext.community.dto.PostResponse;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
-import com.example.healthgenie.boundedContext.user.entity.enums.Role;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +25,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
+import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
+import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
 
 @Slf4j
 @Service

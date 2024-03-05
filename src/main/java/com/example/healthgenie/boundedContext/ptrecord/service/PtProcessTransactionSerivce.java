@@ -1,6 +1,8 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
 import com.example.healthgenie.base.utils.S3UploadUtils;
+import com.example.healthgenie.boundedContext.community.dto.PostRequest;
+import com.example.healthgenie.boundedContext.community.dto.PostResponse;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

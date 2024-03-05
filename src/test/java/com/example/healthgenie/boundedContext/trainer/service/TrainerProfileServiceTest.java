@@ -1,15 +1,13 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
+import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.TrainerProfileErrorResult;
 import com.example.healthgenie.base.exception.TrainerProfileException;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
-import com.example.healthgenie.boundedContext.user.dto.UserRequest;
-import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.enums.Role;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +35,6 @@ class TrainerProfileServiceTest {
     @Autowired
     TrainerProfileService trainerProfileService;
 
-    @Autowired
-    UserService userService;
-
     User user;
     User user2;
     TrainerInfo profile;
@@ -49,12 +44,8 @@ class TrainerProfileServiceTest {
         LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
         LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
 
-        user = testKrUtils.createUser("jh485200@gmail.com", "test", AuthProvider.EMPTY, Role.USER);
-        user2 = testKrUtils.createUser("test@gmail.com", "test2", AuthProvider.EMPTY, Role.TRAINER);
-
-        userService.update(user, UserRequest.builder().nickname("test").build());
-        userService.update(user2, UserRequest.builder().nickname("test2").build());
-
+        user = testKrUtils.createUser("test", Role.USER,"jh485200@gmail.com");
+        user2 = testKrUtils.createUser("test2", Role.TRAINER,"test@gmail.com");
         profile = testSyUtils.createProfile("introduction", "career", "경북대",startTime, endTime, 4.3, null,20000,20, user2);
     }
 

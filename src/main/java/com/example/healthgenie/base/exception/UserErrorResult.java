@@ -12,8 +12,7 @@ public enum UserErrorResult {
     DUPLICATED_NICKNAME(HttpStatus.BAD_REQUEST, "duplicated nickname"),
     NOT_VALID_FIELD(HttpStatus.BAD_REQUEST, "field is not valid"),
     ALREADY_EXISTS_ROLE(HttpStatus.BAD_REQUEST, "already role exists"),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user is not found!!"),
-    ALREADY_SIGN_UP(HttpStatus.NOT_FOUND, "already sign up")
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user is not found!!")
     ;
 
     private final HttpStatus httpStatus;

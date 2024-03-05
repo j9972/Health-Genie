@@ -92,14 +92,9 @@ public class TrainerProfileService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProfileResponseDto> getAllProfile(Long lastIndex) {
-        Long maxId = lastIndex;
+    public List<ProfileResponseDto> getAllProfile(int page, int size) {
+        List<TrainerInfo> profiles = trainerQueryRepository.findAllProfiles(page, size);
 
-        if (maxId == null) {
-            maxId = trainerQueryRepository.findMaxId().orElse(0L);
-        }
-
-        List<TrainerInfo> profiles = trainerQueryRepository.findAllProfilesSortByLatest(maxId);
         return ProfileResponseDto.of(profiles);
     }
 

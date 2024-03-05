@@ -26,8 +26,8 @@ public class SecurityConfig {
 
     private final String[] COMMON_WHITE_LIST = new String[]
             {
-                    "/login/**", "/oauth2/**", "/h2-console/**", "/refresh", "/error/**", "/ws",
-                    "/routine/genie/**", "/routine/genie/detail/**", "/auth/mail/**", "/users/admin"
+                    "/login/**", "/oauth2/**", "/h2-console/**", "/refresh", "/error/**", "/ws/**",
+                    "/routine/genie/**", "/routine/genie/detail/**", "/auth/mail/**", "/auth/user/admin"
             };
     private final String[] GET_WHITE_LIST = new String[]
             {

@@ -3,9 +3,11 @@ package com.example.healthgenie.base.utils;
 import com.example.healthgenie.base.constant.Constants;
 import com.example.healthgenie.base.exception.JwtErrorResult;
 import com.example.healthgenie.base.exception.JwtException;
+import com.example.healthgenie.boundedContext.user.dto.Token;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,36 +40,34 @@ public class JwtTokenProvider {
         key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String resolveToken(String header) {
-        return header.replace("Bearer ", "");
+    public String getAccessToken(HttpServletRequest request) {
+        return request.getHeader("AccessToken");
     }
 
-    public String generateAccessToken(String email, String role) {
+    public Token createToken(String email, String role) {
         JwtBuilder builder = Jwts.builder()
                 .subject(email)
                 .claim("role", role);
 
         Date now = new Date();
 
-        return builder
+        String accessToken = builder
                 .signWith(key)
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + Constants.ACCESS_TOKEN_EXPIRE_COUNT))
                 .compact();
-    }
 
-    public String generateRefreshToken(String email, String role) {
-        JwtBuilder builder = Jwts.builder()
-                .subject(email)
-                .claim("role", role);
-
-        Date now = new Date();
-
-        return builder
+        String refreshToken = builder
                 .signWith(key)
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + Constants.REFRESH_TOKEN_EXPIRE_COUNT))
                 .compact();
+
+        return Token.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .key(email)
+                .build();
     }
 
     public String getEmail(String token) {

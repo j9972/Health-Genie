@@ -1,9 +1,14 @@
 package com.example.healthgenie.boundedContext.ptrecord.dto;
 
+import com.example.healthgenie.boundedContext.community.dto.PostResponse;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;

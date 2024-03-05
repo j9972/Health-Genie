@@ -1,5 +1,8 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
+import com.example.healthgenie.base.exception.CommunityPostException;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
 import com.example.healthgenie.base.exception.PtProcessErrorResult;
@@ -12,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
 
 @Slf4j
 @Service

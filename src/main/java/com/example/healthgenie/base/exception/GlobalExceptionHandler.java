@@ -111,12 +111,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.makeErrorResponseEntity(exception.getJwtErrorResult());
     }
 
-    @ExceptionHandler({LikeException.class})
-    public ResponseEntity<ErrorResponse> handleRestApiException(final LikeException exception) {
-        log.warn("LikeException occur: ", exception);
-        return this.makeErrorResponseEntity(exception.getLikeErrorResult());
-    }
-
     @ExceptionHandler({UserException.class})
     public ResponseEntity<ErrorResponse> handleRestApiException(final UserException exception) {
         log.warn("UserException occur: ", exception);
@@ -207,11 +201,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final MatchingErrorResult errorResult) {
-        return ResponseEntity.status(errorResult.getHttpStatus())
-                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
-    }
-
-    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final LikeErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }

@@ -1,10 +1,11 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
+import com.example.healthgenie.base.exception.CommunityPostException;
 import com.example.healthgenie.base.exception.PtProcessException;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
-import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.enums.Role;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
@@ -15,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -39,8 +42,8 @@ class PtProcessPhotoServiceTest {
 
     @BeforeEach
     void before() {
-        user = testKrUtils.createUser("test1@test.com", "test1", AuthProvider.EMPTY, Role.USER);
-        user2 = testKrUtils.createUser("test2@test.com", "test2", AuthProvider.EMPTY, Role.TRAINER);
+        user = testKrUtils.createUser("test1", Role.USER, "test1@test.com");
+        user2 = testKrUtils.createUser("test1", Role.TRAINER, "test1@test.com");
         process = testSyUtils.createProcess("title", "content", user, user2);
         photo = testSyUtils.createProcessPhoto(process, "default-path.png");
     }

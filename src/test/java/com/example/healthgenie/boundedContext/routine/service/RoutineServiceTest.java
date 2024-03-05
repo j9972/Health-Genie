@@ -1,5 +1,9 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.RoutineErrorResult;
@@ -11,25 +15,19 @@ import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
-import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.enums.Role;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
@@ -61,7 +59,7 @@ class RoutineServiceTest {
         workoutRecipeList.add(recipe);
         workoutRecipeList.add(recipe2);
 
-        user = testKrUtils.createUser("jh485200@gmail.com", "test1", AuthProvider.EMPTY, Role.USER);
+        user = testKrUtils.createUser("test1", Role.USER, "jh485200@gmail.com");
         routine = testSyUtils.writeRoutine(Day.WEDNESDAY, "하체,가슴", workoutRecipeList, user);
         //routine = testSyUtils.writeRoutine(Day.WEDNESDAY, "하체,가슴", recipe, user);
 

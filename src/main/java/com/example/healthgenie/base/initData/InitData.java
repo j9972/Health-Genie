@@ -1,18 +1,19 @@
 package com.example.healthgenie.base.initData;
 
-import com.example.healthgenie.boundedContext.community.post.entity.Post;
-import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
+import com.example.healthgenie.boundedContext.community.entity.CommunityPost;
+import com.example.healthgenie.boundedContext.community.repository.CommunityPostRepository;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
-import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.enums.Role;
+import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,7 @@ public class InitData {
     @Bean
     CommandLineRunner init(
             UserRepository userRepository,
-            PostRepository postRepository,
+            CommunityPostRepository communityPostRepository,
             RoutineRepository routineRepository
     ) {
         return new CommandLineRunner() {
@@ -36,7 +37,7 @@ public class InitData {
             public void run(String... args) {
                 for(int i=1; i<=10; i++) {
                     User user = createUser(i + "@test.com", "test" + i);
-                    Post post = createPost(i + "번째 게시글 제목", i + "번째 게시글 내용", user);
+                    CommunityPost post = createPost(i + "번째 게시글 제목", i + "번째 게시글 내용", user);
                 }
 
                 createRoutine(BEGINNER, MONDAY, "초급자님! 오늘은 하체 데이입니다! 화아팅 하세요", "하체","스쿼트",120,4,12);
@@ -100,14 +101,14 @@ public class InitData {
                 return userRepository.save(user);
             }
 
-            private Post createPost(String title, String content, User user) {
-                Post post = Post.builder()
+            private CommunityPost createPost(String title, String content, User user) {
+                CommunityPost post = CommunityPost.builder()
                         .title(title)
                         .content(content)
                         .writer(user)
                         .build();
 
-                return postRepository.save(post);
+                return communityPostRepository.save(post);
             }
 
             private Routine createRoutine(Level level, Day day, String content, String part, String workoutName, int kg, int sets, int reps) {

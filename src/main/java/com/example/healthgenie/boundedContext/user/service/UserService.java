@@ -5,10 +5,11 @@ import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.dto.DietResponse;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.dto.UserResponse;
+import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.Gender;
+import com.example.healthgenie.boundedContext.user.entity.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
-import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,12 +35,8 @@ public class UserService {
     private final S3UploadUtils s3UploadUtils;
 
     @Transactional
-    public User signUp(String email, String name, AuthProvider authProvider, Role role) {
+    public UserResponse signUp(String email, String name, AuthProvider authProvider, Role role) {
         String defaultNickname = createUniqueNickname();
-
-        if(userRepository.existsByEmail(email)) {
-            throw new UserException(ALREADY_SIGN_UP);
-        }
 
         User user = User.builder()
                 .email(email)
@@ -51,31 +48,37 @@ public class UserService {
                 .level(Level.EMPTY)
                 .build();
 
-        return userRepository.save(user);
+        return UserResponse.of(userRepository.save(user));
     }
 
     @Transactional
-    public User signUp(String email, String name, AuthProvider authProvider) {
+    public UserResponse signUp(String email, String name, AuthProvider authProvider) {
         return signUp(email, name, authProvider, Role.EMPTY);
     }
 
-    public User findById(Long userId) {
-        return userRepository.findById(userId)
+    public UserResponse findById(Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
-    }
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+        return UserResponse.of(user);
     }
 
     @Transactional
-    public User update(User user, UserRequest request) {
-        user = findById(user.getId());
+    public UserResponse edit(Long userId, UserRequest request) throws IOException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
+        // 이메일
+        if(StringUtils.hasText(request.getEmail())) {
+            user.updateEmail(request.getEmail());
+        }
         // 학교 이름
         if(StringUtils.hasText(request.getUniName())) {
             user.updateUniname(request.getUniName());
+        }
+        // 이름
+        if(StringUtils.hasText(request.getName())) {
+            user.updateName(request.getName());
         }
         // 닉네임
         if(StringUtils.hasText(request.getNickname())) {
@@ -84,16 +87,25 @@ public class UserService {
             }
             user.updateNickname(request.getNickname());
         }
+        // 제공자
+        if(request.getAuthProvider() != null && StringUtils.hasText(request.getAuthProvider().getAuthProvider())) {
+            user.updateAuthProvider(request.getAuthProvider());
+        }
         // 역할
-        if(Objects.nonNull(request.getRole())) {
-            user.updateRole(request.getRole());
+        if(request.getRole() != null && StringUtils.hasText(request.getRole())) {
+            user.updateRole(Role.valueOf(request.getRole().toUpperCase()));
+        }
+        // 프로필 사진
+        if(request.getProfilePhoto() != null && !request.getProfilePhoto().isEmpty()) {
+            String profilePhoto = uploadAndDelete(request.getProfilePhoto(), user.getProfilePhoto());
+            user.updateProfilePhoto(profilePhoto);
         }
         // 이메일 인증 확인
         if(Objects.nonNull(request.getEmailVerify()) && request.getEmailVerify()) {
             user.updateEmailVerify(true);
         }
         // 단계
-        if(Objects.nonNull(request.getLevel())) {
+        if(request.getLevel() != null && StringUtils.hasText(request.getLevel().getCode())) {
             user.updateLevel(request.getLevel());
         }
         // 키
@@ -101,7 +113,7 @@ public class UserService {
             user.updateHeight(request.getHeight());
         }
         // 생년월일
-        if(Objects.nonNull(request.getBirth())) {
+        if(StringUtils.hasText(request.getBirth())) {
             user.updateBirth(request.getBirth());
         }
         // 몸무게
@@ -113,27 +125,17 @@ public class UserService {
             user.updateMuscleWeight(request.getMuscleWeight());
         }
         // 성별
-        if(Objects.nonNull(request.getGender())) {
+        if(request.getGender() != null && StringUtils.hasText(request.getGender().getCode())) {
             user.updateGender(request.getGender());
         }
 
-        return user;
+        return UserResponse.of(user);
     }
 
-    @Transactional
-    public User update(User user, MultipartFile profilePhoto) throws IOException {
-        user = findById(user.getId());
+    public DietResponse calculate(Long userId, Integer type) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        if(!profilePhoto.isEmpty()) {
-            String path = uploadAndDelete(profilePhoto, user.getProfilePhoto());
-
-            user.updateProfilePhoto(path);
-        }
-
-        return user;
-    }
-
-    public DietResponse calculate(User user, Integer type) {
         Gender gender = user.getGender();
         double weight = user.getWeight();
         double height = user.getHeight();

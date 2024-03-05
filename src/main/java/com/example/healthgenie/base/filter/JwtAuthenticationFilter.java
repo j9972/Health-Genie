@@ -22,21 +22,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
-        String accessToken = StringUtils.hasText(authorization) ? jwtTokenProvider.resolveToken(authorization) : null;
+        String accessToken = jwtTokenProvider.getAccessToken(request);
 
-        if(StringUtils.hasText(accessToken)) {
-            if(accessToken.equals("admin")) {
-                Authentication authentication = jwtTokenProvider.getAuthentication("admin@admin.com");
+        if(StringUtils.hasText(accessToken) && accessToken.equals("admin")) {
+            Authentication authentication = jwtTokenProvider.getAuthentication("admin@admin.com");
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else if(!request.getRequestURI().equals("/refresh") && jwtTokenProvider.validateToken(accessToken)) {
-                String email = jwtTokenProvider.getEmail(accessToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                Authentication authentication = jwtTokenProvider.getAuthentication(email);
+            filterChain.doFilter(request, response);
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            return;
+        }
+
+        if(!request.getRequestURI().equals("/refresh") && StringUtils.hasText(accessToken) && jwtTokenProvider.validateToken(accessToken)) {
+            String email = jwtTokenProvider.getEmail(accessToken);
+
+            Authentication authentication = jwtTokenProvider.getAuthentication(email);
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);

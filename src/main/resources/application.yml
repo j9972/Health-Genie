@@ -23,7 +23,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         validator:
@@ -86,10 +86,6 @@ spring:
     redis:
       host: 3.37.195.242
       port: 6379 # redis port
-
-    web:
-      pageable:
-        default-page-size: 10
 
 
 

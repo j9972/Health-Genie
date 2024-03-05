@@ -1,8 +1,10 @@
 package com.example.healthgenie.boundedContext.trainer.entity;
 
+import com.example.healthgenie.boundedContext.community.entity.CommunityPostPhoto;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.base.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalTime;
