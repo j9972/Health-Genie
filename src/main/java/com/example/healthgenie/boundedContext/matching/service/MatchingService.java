@@ -4,7 +4,7 @@ import com.example.healthgenie.base.exception.MatchingException;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingCondition;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
-import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
+import com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingQueryRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.example.healthgenie.base.exception.MatchingErrorResult.*;
-import static com.example.healthgenie.boundedContext.matching.entity.MatchingState.*;
-import static com.example.healthgenie.boundedContext.user.entity.Role.TRAINER;
-import static com.example.healthgenie.boundedContext.user.entity.Role.USER;
+import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.*;
+import static com.example.healthgenie.boundedContext.user.entity.enums.Role.TRAINER;
+import static com.example.healthgenie.boundedContext.user.entity.enums.Role.USER;
 
 @Service
 @RequiredArgsConstructor

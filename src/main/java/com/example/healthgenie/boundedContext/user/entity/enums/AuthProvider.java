@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.user.entity;
+package com.example.healthgenie.boundedContext.user.entity.enums;
 
 import lombok.Getter;
 

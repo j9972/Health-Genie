@@ -11,7 +11,7 @@ import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.service.RefreshTokenService;
 import com.example.healthgenie.boundedContext.user.dto.JwtResponse;
 import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
-import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.KAKAO;
+import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.KAKAO;
 
 @Slf4j
 @Service

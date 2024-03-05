@@ -2,9 +2,9 @@ package com.example.healthgenie.boundedContext.user.service;
 
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
-import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.Gender;
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;

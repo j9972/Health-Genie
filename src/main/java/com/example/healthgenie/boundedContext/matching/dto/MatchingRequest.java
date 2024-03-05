@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.matching.dto;
 
-import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
+import com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

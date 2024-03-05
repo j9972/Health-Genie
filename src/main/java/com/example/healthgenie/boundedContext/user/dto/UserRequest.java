@@ -1,8 +1,8 @@
 package com.example.healthgenie.boundedContext.user.dto;
 
 import com.example.healthgenie.boundedContext.routine.entity.Level;
-import com.example.healthgenie.boundedContext.user.entity.Gender;
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

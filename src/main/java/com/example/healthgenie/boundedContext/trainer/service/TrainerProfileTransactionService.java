@@ -7,7 +7,7 @@ import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

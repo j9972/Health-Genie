@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.KAKAO;
+import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.KAKAO;
 
 @Slf4j
 @Service

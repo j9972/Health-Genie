@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.chat.dto;
 
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

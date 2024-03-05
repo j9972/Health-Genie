@@ -12,7 +12,7 @@ import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewQueryRepository;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

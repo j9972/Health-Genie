@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.matching.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
+import com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

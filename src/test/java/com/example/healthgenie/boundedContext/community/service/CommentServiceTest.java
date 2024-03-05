@@ -6,8 +6,8 @@ import com.example.healthgenie.boundedContext.community.comment.dto.CommentRespo
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
 import com.example.healthgenie.boundedContext.community.comment.service.CommentService;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
-import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;

@@ -2,9 +2,9 @@ package com.example.healthgenie.boundedContext.user.dto;
 
 import com.example.healthgenie.base.utils.DateUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
-import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.Gender;
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

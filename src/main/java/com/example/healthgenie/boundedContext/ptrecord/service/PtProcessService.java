@@ -12,7 +12,7 @@ import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessQueryRepository;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessRepository;
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

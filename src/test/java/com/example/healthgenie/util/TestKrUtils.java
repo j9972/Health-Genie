@@ -15,8 +15,8 @@ import com.example.healthgenie.boundedContext.community.post.service.PostService
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.service.MatchingService;
-import com.example.healthgenie.boundedContext.user.entity.AuthProvider;
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;

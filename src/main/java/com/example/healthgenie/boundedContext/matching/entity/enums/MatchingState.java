@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.matching.entity;
+package com.example.healthgenie.boundedContext.matching.entity.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
