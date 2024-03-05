@@ -64,7 +64,7 @@ public class UserController {
 
     @PostMapping("/admin")
     public ResponseEntity<Result> admin() {
-        UserResponse response = userService.signUp("admin@admin.com", "admin", AuthProvider.EMPTY, Role.ADMIN);
+        UserResponse response = UserResponse.of(userService.signUp("admin@admin.com", "admin", AuthProvider.EMPTY, Role.ADMIN));
 
         return ResponseEntity.ok(Result.of(response));
     }
