@@ -39,7 +39,7 @@ public class RoomService {
         int roomHashCode = createRoomHashCode(user, anotherUser);
 
         Room room = roomRepository.findByRoomHashCode(roomHashCode)
-                .orElse(createNewRoom(roomHashCode, user, anotherUser));
+                .orElseGet(() -> createNewRoom(roomHashCode, user, anotherUser));
 
         RoomUser roomUser = roomUserRepository.findByRoomIdAndUserId(room.getId(), user.getId())
                 .orElseThrow(() -> new ChatException(NO_PERMISSION));
