@@ -1,10 +1,12 @@
 package com.example.healthgenie.boundedContext.matching.dto;
 
-import com.example.healthgenie.boundedContext.matching.entity.MatchingState;
+import com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -12,11 +14,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MatchingRequest {
 
-    private String date;
-    private String time;
+    private LocalDateTime date;
     private String place;
     private String description;
     private MatchingState state;
     private Long userId;
-    private Long trainerId;
 }

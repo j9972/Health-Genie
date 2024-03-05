@@ -3,7 +3,10 @@ package com.example.healthgenie.boundedContext.user.service;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
-import com.example.healthgenie.boundedContext.user.dto.*;
+import com.example.healthgenie.boundedContext.user.dto.GoogleUserInfo;
+import com.example.healthgenie.boundedContext.user.dto.JwtResponse;
+import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
+import com.example.healthgenie.boundedContext.user.dto.TokenResponse;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import com.example.healthgenie.boundedContext.user.service.feign.GoogleInfoClient;
@@ -14,7 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.healthgenie.boundedContext.user.entity.AuthProvider.GOOGLE;
+import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.GOOGLE;
 
 @Slf4j
 @Service
@@ -42,47 +45,30 @@ public class GoogleRequestService {
     private String CLIENT_SECRET;
 
     @Transactional
-    public SignInResponse redirect(TokenRequest tokenRequest) {
-        TokenResponse tokenResponse = getToken(tokenRequest);
+    public JwtResponse getToken(TokenRequest tokenRequest) {
+        TokenResponse tokenResponse = getToken(tokenRequest.getCode());
 
         GoogleUserInfo googleUserInfo = getUserInfo(tokenResponse.getAccessToken());
 
-        User user = userRepository.findByEmail(googleUserInfo.getEmail()).orElse(null);
+        User user = userRepository.findByEmail(googleUserInfo.getEmail())
+                .orElseGet(() -> userService.signUp(googleUserInfo.getEmail(), googleUserInfo.getName(), GOOGLE));
 
-        // 회원 가입이 안되어있는 경우(최초 로그인 시)
-        if(user == null) {
-            user = UserResponse.toEntity(userService.signUp(googleUserInfo.getEmail(), googleUserInfo.getName(), GOOGLE));
+        String at = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole().getCode());
+        String rt = jwtTokenProvider.generateRefreshToken(user.getEmail(), user.getRole().getCode());
 
-            Token token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().getCode());
+        RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
+                .orElseGet(() -> refreshTokenRepository.save(RefreshToken.builder().keyEmail(user.getEmail()).refreshToken(rt).build()));
 
-            RefreshToken refreshToken = RefreshToken.builder().keyEmail(user.getEmail()).refreshToken(token.getRefreshToken()).build();
-
-            refreshTokenRepository.save(refreshToken);
-
-            return SignInResponse.builder()
-                    .authProvider(GOOGLE)
-                    .accessToken(token.getAccessToken())
-                    .refreshToken(token.getRefreshToken())
-                    .userId(user.getId())
-                    .role(user.getRole())
-                    .build();
-        } else {
-            RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail()).get();
-
-            Token token = jwtTokenProvider.createToken(user.getEmail(), user.getRole().getCode());
-
-            return SignInResponse.builder()
-                    .authProvider(GOOGLE)
-                    .accessToken(token.getAccessToken())
-                    .refreshToken(refreshToken.getRefreshToken())
-                    .userId(user.getId())
-                    .role(user.getRole())
-                    .build();
-        }
+        return JwtResponse.builder()
+                .userId(user.getId())
+                .role(user.getRole())
+                .accessToken(at)
+                .refreshToken(refreshToken.getRefreshToken())
+                .build();
     }
 
-    private TokenResponse getToken(TokenRequest tokenRequest) {
-        return googleTokenClient.getToken(GRANT_TYPE, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, tokenRequest.getCode());
+    private TokenResponse getToken(String authorizationCode) {
+        return googleTokenClient.getToken(GRANT_TYPE, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, authorizationCode);
     }
 
     private GoogleUserInfo getUserInfo(String accessToken) {

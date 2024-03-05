@@ -1,80 +1,34 @@
 package com.example.healthgenie.base.handler;
 
-import org.springframework.http.HttpStatus;
+import com.example.healthgenie.base.exception.JwtException;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageDeliveryException;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.StompSubProtocolErrorHandler;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
-//@Component
+@Component
 public class StompExceptionHandler extends StompSubProtocolErrorHandler {
 
-    private static final byte[] EMPTY_PAYLOAD = new byte[0];
-
-    public StompExceptionHandler() {
-        super();
-    }
-
     @Override
-    public Message<byte[]> handleClientMessageProcessingError(Message<byte[]> clientMessage, Throwable ex) {
-        final Throwable exception = converterThrowException(ex);
-
-//        if(exception instanceof UnauthorizeException) {
-//            return handleUnauthorizedException(clientMessage, ex);
-//        }
-
-        // 임시
-        return handleUnauthorizedException(clientMessage, ex);
-
-//        return super.handleClientMessageProcessingError(clientMessage, ex);
-    }
-
-    private Throwable converterThrowException(final Throwable ex) {
-        if(ex instanceof MessageDeliveryException) {
-            return ex.getCause();
+    public Message<byte[]> handleClientMessageProcessingError(
+            Message<byte[]> clientMessage,
+            Throwable ex) {
+        if (ex.getCause() instanceof JwtException exception) {
+            return errorMessage(exception.getJwtErrorResult().getMessage());
         }
-        return ex;
+
+        return super.handleClientMessageProcessingError(clientMessage, ex);
     }
 
-    private Message<byte[]> handleUnauthorizedException(Message<byte[]> clientMessage, Throwable ex) {
-        return prepareErrorMessage(clientMessage, ex.getMessage(), HttpStatus.UNAUTHORIZED.name());
-    }
-
-    private Message<byte[]> prepareErrorMessage(Message<byte[]> clientMessage, String message, String errorCode) {
-        final StompHeaderAccessor accessor = StompHeaderAccessor.create(StompCommand.ERROR);
-        accessor.setMessage(errorCode);
+    private Message<byte[]> errorMessage(String errorMessage) {
+        StompHeaderAccessor accessor = StompHeaderAccessor.create(StompCommand.ERROR);
         accessor.setLeaveMutable(true);
 
-        setReceiptIdForClient(clientMessage, accessor);
-
-        return MessageBuilder.createMessage(
-                message != null ? message.getBytes(StandardCharsets.UTF_8) : EMPTY_PAYLOAD,
-                accessor.getMessageHeaders()
-        );
-    }
-
-    private void setReceiptIdForClient(Message<byte[]> clientMessage, StompHeaderAccessor accessor) {
-        if(Objects.isNull(clientMessage)) {
-            return;
-        }
-
-        final StompHeaderAccessor clientHeaderAccessor = MessageHeaderAccessor.getAccessor(clientMessage, StompHeaderAccessor.class);
-
-        final String receiptId = Objects.isNull(clientHeaderAccessor) ? null : clientHeaderAccessor.getReceiptId();
-
-        if(receiptId != null) {
-            accessor.setReceiptId(receiptId);
-        }
-    }
-
-    @Override
-    protected Message<byte[]> handleInternal(StompHeaderAccessor errorHeaderAccessor, byte[] errorPayload, Throwable cause, StompHeaderAccessor clientHeaderAccessor) {
-        return MessageBuilder.createMessage(errorPayload, errorHeaderAccessor.getMessageHeaders());
+        return MessageBuilder.createMessage(errorMessage.getBytes(StandardCharsets.UTF_8),
+                accessor.getMessageHeaders());
     }
 }

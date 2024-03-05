@@ -1,14 +1,14 @@
 package com.example.healthgenie.boundedContext.matching.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
+import com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +26,7 @@ public class Matching extends BaseEntity {
     private Long id;
 
     @Column(name = "pt_date")
-    private LocalDate date;
-
-    @Column(name = "pt_time")
-    private LocalTime time;
+    private LocalDateTime date;
 
     @Column(name = "pt_place")
     private String place;

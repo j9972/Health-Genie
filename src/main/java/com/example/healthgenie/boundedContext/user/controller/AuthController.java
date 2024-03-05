@@ -2,7 +2,6 @@ package com.example.healthgenie.boundedContext.user.controller;
 
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.user.dto.JwtResponse;
-import com.example.healthgenie.boundedContext.user.dto.SignInResponse;
 import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
 import com.example.healthgenie.boundedContext.user.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +29,7 @@ public class AuthController {
         log.info("code={}", code);
         log.info("state={}", state);
 
-        SignInResponse result = authService.redirect(
+        JwtResponse response = authService.redirect(
                 TokenRequest.builder()
                         .registrationId(registrationId)
                         .code(code)
@@ -38,19 +37,12 @@ public class AuthController {
                         .build()
         );
 
-        JwtResponse jwt = JwtResponse.builder()
-                .userId(result.getUserId())
-                .role(result.getRole())
-                .accessToken(result.getAccessToken())
-                .refreshToken(result.getRefreshToken())
-                .build();
-
-        return ResponseEntity.ok(Result.of(jwt));
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<Result> refreshToken(HttpServletRequest request) {
-        SignInResponse response = authService.refreshToken(request.getHeader("AccessToken"), request.getHeader("RefreshToken"));
+        JwtResponse response = authService.refreshToken(request.getHeader("AccessToken"), request.getHeader("RefreshToken"));
 
         return ResponseEntity.ok(Result.of(response));
     }

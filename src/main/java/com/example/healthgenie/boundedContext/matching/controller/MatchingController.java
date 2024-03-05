@@ -23,32 +23,31 @@ public class MatchingController {
     private final MatchingService matchingService;
 
     @PostMapping
-    public ResponseEntity<Result> save(@RequestBody MatchingRequest request) {
-        MatchingResponse response = matchingService.save(
-                        request.getUserId(), request.getTrainerId(),
-                        request.getDate(), request.getTime(),
-                        request.getPlace(), request.getDescription());
+    public ResponseEntity<Result> save(@AuthenticationPrincipal User trainer, @RequestBody MatchingRequest request) {
+        MatchingResponse response = MatchingResponse.of(matchingService.save(trainer, request));
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping("/{matchingId}")
-    public ResponseEntity<Result> findOne(@PathVariable Long matchingId) {
-        MatchingResponse response = matchingService.findOne(matchingId);
+    public ResponseEntity<Result> findById(@PathVariable Long matchingId, @AuthenticationPrincipal User user) {
+        MatchingResponse response = MatchingResponse.of(matchingService.findById(matchingId, user));
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping
-    public ResponseEntity<Result> findAll(@AuthenticationPrincipal User user, MatchingCondition condition) {
-        List<MatchingResponse> responses = matchingService.findAll(user, condition);
+    public ResponseEntity<Result> findAll(@AuthenticationPrincipal User user, @RequestBody MatchingCondition condition) {
+        List<MatchingResponse> responses = MatchingResponse.of(matchingService.findAll(user, condition));
 
         return ResponseEntity.ok(Result.of(responses));
     }
 
     @PatchMapping("/{matchingId}")
-    public ResponseEntity<Result> update(@PathVariable Long matchingId, @RequestBody MatchingRequest request) {
-        MatchingResponse response = matchingService.update(matchingId, request.getState());
+    public ResponseEntity<Result> update(@PathVariable Long matchingId,
+                                         @AuthenticationPrincipal User user,
+                                         @RequestBody MatchingRequest request) {
+        MatchingResponse response = MatchingResponse.of(matchingService.update(matchingId, user, request.getState()));
 
         return ResponseEntity.ok(Result.of(response));
     }

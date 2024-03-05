@@ -1,11 +1,6 @@
 package com.example.healthgenie.boundedContext.ptreview.service;
 
-import com.example.healthgenie.base.exception.MatchingErrorResult;
-import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.PtReviewErrorResult;
-import com.example.healthgenie.base.exception.PtReviewException;
-import com.example.healthgenie.base.exception.UserErrorResult;
-import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.exception.*;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -17,15 +12,16 @@ import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewQueryRepository;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
-import com.example.healthgenie.boundedContext.user.entity.Role;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
 
 
 @Service
@@ -67,7 +63,7 @@ public class PtReviewService {
                         .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
 
                 // 작성 날짜가 매칭날짜보다 뒤에 있어야 한다
-                if (LocalDate.now().isAfter(matching.getDate())) {
+                if (LocalDate.now().isAfter(matching.getDate().toLocalDate())) {
                     return makePtReview(dto, trainer, user);
                 }
 
