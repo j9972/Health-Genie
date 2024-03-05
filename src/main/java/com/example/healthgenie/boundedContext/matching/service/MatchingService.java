@@ -64,7 +64,7 @@ public class MatchingService {
         Matching matching = findById(matchingId);
 
         for(MatchingUser mu : matching.getMatchingUsers()) {
-            if(Objects.equals(mu.getUser(), user)) {
+            if(Objects.equals(mu.getUser().getId(), user.getId())) {
                 return matching;
             }
         }
