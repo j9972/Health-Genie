@@ -11,10 +11,9 @@ import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRe
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
-import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
@@ -72,8 +71,8 @@ class PtProcessServiceTest {
         user3 = testKrUtils.createUser("test3@gmail.com", "test3", AuthProvider.EMPTY, Role.USER);
         user4 = testKrUtils.createUser("test4@test.com", "test4", AuthProvider.EMPTY, Role.TRAINER);
 
-        userService.update(user, UserRequest.builder().nickname("test1").build());
-        userService.update(user2, UserRequest.builder().nickname("test2").build());
+        userService.update(user, null, "test1", null, null, null, null, null);
+        userService.update(user2, null, "test2", null, null, null, null, null);
 
         matching = testKrUtils.createMatching(user2, user.getId(), date, "체육관", "pt내용");
         process = testSyUtils.createProcess(date2, "test title2", "test content2", user, user2);
