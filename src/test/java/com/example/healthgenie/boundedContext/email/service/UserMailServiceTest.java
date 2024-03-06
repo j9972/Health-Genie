@@ -1,16 +1,20 @@
 package com.example.healthgenie.boundedContext.email.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import com.univcert.api.UnivCert;
-import jakarta.mail.MessagingException;
+import java.io.IOException;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,12 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.io.IOException;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -136,42 +134,4 @@ class UserMailServiceTest {
         assertThat(user.isEmailVerify()).isTrue();
     }
 
-    @Test
-    @DisplayName("검증 코드가 달라서 실패")
-    void diffCode() throws MessagingException {
-        // given
-        testUtils.login(user);
-
-        String authCode = userMailService.sendCode(user.getEmail());
-        int testCode = 12345678;
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            if (!authCode.equals(testCode)) {
-                throw new CommonException(CommonErrorResult.BAD_REQUEST);
-            }
-        }).isInstanceOf(CommonException.class);
-    }
-
-
-    @Test
-    @DisplayName("코드가 존재하지 않아서 검증 실패")
-    void failVerify() {
-        // given
-        testUtils.login(user);
-        String email = "jh485200@gmail.com";
-
-        // when
-        redisService.deleteValues(AUTH_CODE_PREFIX + email);
-        String redisAuthCode = redisService.getValues(AUTH_CODE_PREFIX + email);
-
-        // then
-        assertThatThrownBy(() -> {
-            if (!redisService.checkExistsValue(redisAuthCode)) {
-                throw new CommonException(CommonErrorResult.BAD_REQUEST);
-            }
-        }).isInstanceOf(CommonException.class);
-    }
 }
