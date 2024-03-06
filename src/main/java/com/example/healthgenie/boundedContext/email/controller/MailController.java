@@ -53,7 +53,7 @@ public class MailController {
 
         } else {
             log.warn("이메일의 도메인이 해당 학교 도메인과 다릅니다");
-            throw new CommonException(CommonErrorResult.WRONG_VALIDATE_EMAIL);
+            throw new CommonException(CommonErrorResult.WRONG_DOMAIN);
         }
     }
 
