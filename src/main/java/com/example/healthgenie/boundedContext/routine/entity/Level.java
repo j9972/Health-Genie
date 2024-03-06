@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Level {
 
-    EMPTY("", "기본"),
+    EMPTY("EMPTY", "기본"),
     BEGINNER("BEGINNER", "초급자"), //  초급자
     INTERMEDIATE("INTERMEDIATE", "중급자"), // 중급자
     EXPERT("EXPERT", "상급자"); // 상급자

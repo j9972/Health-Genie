@@ -2,7 +2,6 @@ package com.example.healthgenie.boundedContext.email.service;
 
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.boundedContext.user.dto.UserRequest;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -63,12 +62,12 @@ public class UserMailService {
     @Transactional
     public void updateUniv(String univ_name, Long userId) throws IOException {
         User user = userService.findById(userId);
-        userService.update(user, UserRequest.builder().uniName(univ_name).build());
+        userService.update(user, univ_name, null);
     }
 
     @Transactional
     public void updateUnivVerify(Long userId) throws IOException {
         User user = userService.findById(userId);
-        userService.update(user, UserRequest.builder().emailVerify(true).build());
+        userService.update(user, null, true);
     }
 }

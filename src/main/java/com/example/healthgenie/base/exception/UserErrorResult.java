@@ -13,7 +13,8 @@ public enum UserErrorResult {
     NOT_VALID_FIELD(HttpStatus.BAD_REQUEST, "field is not valid"),
     ALREADY_EXISTS_ROLE(HttpStatus.BAD_REQUEST, "already role exists"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user is not found!!"),
-    ALREADY_SIGN_UP(HttpStatus.NOT_FOUND, "already sign up")
+    ALREADY_SIGN_UP(HttpStatus.NOT_FOUND, "already sign up"),
+    PROFILE_PHOTO_UPLOAD_EXCEPTION(HttpStatus.NOT_FOUND, "this profile photo can not upload")
     ;
 
     private final HttpStatus httpStatus;

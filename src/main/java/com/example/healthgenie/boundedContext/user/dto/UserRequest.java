@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -17,15 +18,19 @@ import java.time.LocalDateTime;
 @Builder
 public class UserRequest {
 
-    private String uniName;
+    private Role role;
+
+    private Level level;
+
+    private MultipartFile photo;
     @Size(min = 2, max = 8)
     private String nickname;
-    private Role role;
     private Gender gender;
-    private Boolean emailVerify;
-    private Level level;
-    private Double height;
     private LocalDateTime birth;
+    private Double height;
     private Double weight;
     private Double muscleWeight;
+
+    private String uniName;
+    private Boolean emailVerify;
 }
