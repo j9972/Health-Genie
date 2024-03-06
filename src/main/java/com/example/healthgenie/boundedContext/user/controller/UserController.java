@@ -4,9 +4,9 @@ import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.user.dto.DietResponse;
 import com.example.healthgenie.boundedContext.user.dto.UserRequest;
 import com.example.healthgenie.boundedContext.user.dto.UserResponse;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -26,16 +23,35 @@ public class UserController {
 
     private final UserService userService;
 
-    @PatchMapping
-    public ResponseEntity<Result> update(@AuthenticationPrincipal User user, @RequestBody @Valid UserRequest request) {
-        UserResponse response = UserResponse.of(userService.update(user, request));
+    @PatchMapping("/info")
+    public ResponseEntity<Result> updateInfo(@AuthenticationPrincipal User user, @Valid UserRequest request) {
+        UserResponse response = UserResponse.of(
+                userService.update(
+                        user, request.getPhoto(), request.getNickname(), request.getGender(), request.getBirth(),
+                        request.getHeight(), request.getWeight(), request.getMuscleWeight()
+                )
+        );
 
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PatchMapping("/photo")
-    public ResponseEntity<Result> update(@AuthenticationPrincipal User user, @RequestPart MultipartFile photo) throws IOException {
-        UserResponse response = UserResponse.of(userService.update(user, photo));
+    @PatchMapping("/role")
+    public ResponseEntity<Result> updateRole(@AuthenticationPrincipal User user, @RequestBody @Valid UserRequest request) {
+        UserResponse response = UserResponse.of(userService.update(user, request.getRole()));
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @PatchMapping("/level")
+    public ResponseEntity<Result> updateLevel(@AuthenticationPrincipal User user, @RequestBody @Valid UserRequest request) {
+        UserResponse response = UserResponse.of(userService.update(user, request.getLevel()));
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @PatchMapping("/univ")
+    public ResponseEntity<Result> updateUniv(@AuthenticationPrincipal User user, @RequestBody @Valid UserRequest request) {
+        UserResponse response = UserResponse.of(userService.update(user, request.getUniName(), request.getEmailVerify()));
 
         return ResponseEntity.ok(Result.of(response));
     }

@@ -4,7 +4,6 @@ import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.dto.DietResponse;
-import com.example.healthgenie.boundedContext.user.dto.UserRequest;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
@@ -70,67 +69,31 @@ public class UserService {
     }
 
     @Transactional
-    public User update(User user, UserRequest request) {
-        user = findById(user.getId());
-
-        // 학교 이름
-        if(StringUtils.hasText(request.getUniName())) {
-            user.updateUniname(request.getUniName());
-        }
-        // 닉네임
-        if(StringUtils.hasText(request.getNickname())) {
-            if(userRepository.existsByNickname(request.getNickname())) {
-                throw new UserException(DUPLICATED_NICKNAME);
-            }
-            user.updateNickname(request.getNickname());
-        }
-        // 역할
-        if(Objects.nonNull(request.getRole())) {
-            user.updateRole(request.getRole());
-        }
-        // 이메일 인증 확인
-        if(Objects.nonNull(request.getEmailVerify()) && request.getEmailVerify()) {
-            user.updateEmailVerify(true);
-        }
-        // 단계
-        if(Objects.nonNull(request.getLevel())) {
-            user.updateLevel(request.getLevel());
-        }
-        // 키
-        if(Objects.nonNull(request.getHeight())) {
-            user.updateHeight(request.getHeight());
-        }
-        // 생년월일
-        if(Objects.nonNull(request.getBirth())) {
-            user.updateBirth(request.getBirth());
-        }
-        // 몸무게
-        if(Objects.nonNull(request.getWeight())) {
-            user.updateWeight(request.getWeight());
-        }
-        // 골격근량
-        if(Objects.nonNull(request.getMuscleWeight())) {
-            user.updateMuscleWeight(request.getMuscleWeight());
-        }
-        // 성별
-        if(Objects.nonNull(request.getGender())) {
-            user.updateGender(request.getGender());
+    public User update(User user, Role role) {
+        if(Objects.isNull(role)) {
+            throw new UserException(NOT_VALID_FIELD);
         }
 
-        return user;
+        return update(user, role, null, null, null, null, null, null, null, null, null, null);
     }
 
     @Transactional
-    public User update(User user, MultipartFile profilePhoto) throws IOException {
-        user = findById(user.getId());
-
-        if(!profilePhoto.isEmpty()) {
-            String path = uploadAndDelete(profilePhoto, user.getProfilePhoto());
-
-            user.updateProfilePhoto(path);
+    public User update(User user, Level level) {
+        if(Objects.isNull(level)) {
+            throw new UserException(NOT_VALID_FIELD);
         }
 
-        return user;
+        return update(user, null, level, null, null, null, null, null, null, null, null, null);
+    }
+
+    @Transactional
+    public User update(User user, MultipartFile photo, String nickname, Gender gender, LocalDateTime birth, Double height, Double weight, Double muscleWeight) {
+        return update(user, null, null, photo, nickname, gender, birth, height, weight, muscleWeight, null, null);
+    }
+
+    @Transactional
+    public User update(User user, String uniName, Boolean emailVerify) {
+        return update(user, null, null, null, null, null, null, null, null, null, uniName, emailVerify);
     }
 
     public DietResponse calculate(User user, Integer type) {
@@ -162,6 +125,62 @@ public class UserService {
                 .build();
     }
 
+    private User update(User user, Role role, Level level, MultipartFile photo, String nickname, Gender gender, LocalDateTime birth, Double height, Double weight, Double muscleWeight, String uniName, Boolean emailVerify) {
+        user = findById(user.getId());
+
+        // 역할
+        if(Objects.nonNull(role)) {
+            user.updateRole(role);
+        }
+        // 단계
+        if(Objects.nonNull(level)) {
+            user.updateLevel(level);
+        }
+        // 프로필 사진
+        if(Objects.nonNull(photo) && !photo.isEmpty()) {
+            String path = uploadAndDelete(photo, user.getProfilePhoto());
+
+            user.updateProfilePhoto(path);
+        }
+        // 닉네임
+        if(StringUtils.hasText(nickname)) {
+            if(userRepository.existsByNickname(nickname)) {
+                throw new UserException(DUPLICATED_NICKNAME);
+            }
+            user.updateNickname(nickname);
+        }
+        // 성별
+        if(Objects.nonNull(gender)) {
+            user.updateGender(gender);
+        }
+        // 생년월일
+        if(Objects.nonNull(birth)) {
+            user.updateBirth(birth);
+        }
+        // 키
+        if(Objects.nonNull(height)) {
+            user.updateHeight(height);
+        }
+        // 몸무게
+        if(Objects.nonNull(weight)) {
+            user.updateWeight(weight);
+        }
+        // 골격근량
+        if(Objects.nonNull(muscleWeight)) {
+            user.updateMuscleWeight(muscleWeight);
+        }
+        // 학교 이름
+        if(StringUtils.hasText(uniName)) {
+            user.updateUniname(uniName);
+        }
+        // 이메일 인증 확인
+        if(Objects.nonNull(emailVerify) && emailVerify) {
+            user.updateEmailVerify(true);
+        }
+
+        return user;
+    }
+
     private String createUniqueNickname() {
         String nickname;
 
@@ -178,13 +197,17 @@ public class UserService {
         return nickname;
     }
 
-    private String uploadAndDelete(MultipartFile uploadPhoto, String deletePhotoPath) throws IOException {
-        String uploadedPath = s3UploadUtils.upload(uploadPhoto, "profile-photo");
+    private String uploadAndDelete(MultipartFile uploadPhoto, String deletePhotoPath) {
+        try {
+            String uploadedPath = s3UploadUtils.upload(uploadPhoto, "profile-photo");
 
-        if(StringUtils.hasText(deletePhotoPath)) {
-            s3UploadUtils.deleteS3Object("profile-photo", deletePhotoPath);
+            if (StringUtils.hasText(deletePhotoPath)) {
+                s3UploadUtils.deleteS3Object("profile-photo", deletePhotoPath);
+            }
+
+            return uploadedPath;
+        } catch (IOException e) {
+            throw new UserException(PROFILE_PHOTO_UPLOAD_EXCEPTION);
         }
-
-        return uploadedPath;
     }
 }
