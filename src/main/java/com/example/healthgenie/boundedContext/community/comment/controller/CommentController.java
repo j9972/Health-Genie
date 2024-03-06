@@ -23,7 +23,7 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<Result> save(@PathVariable Long postId, @AuthenticationPrincipal User user, @RequestBody CommentRequest request) {
-        CommentResponse response = CommentResponse.of(commentService.save(postId, user.getId(), request));
+        CommentResponse response = CommentResponse.of(commentService.save(postId, user, request));
 
         return ResponseEntity.ok(Result.of(response));
     }
