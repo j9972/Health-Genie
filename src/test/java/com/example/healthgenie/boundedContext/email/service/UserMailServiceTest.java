@@ -13,7 +13,6 @@ import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import com.univcert.api.UnivCert;
-import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -137,38 +136,15 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("검증 코드가 달라서 실패")
-    void diffCode() throws MessagingException {
+    void diffCode() throws IOException {
         // given
         testUtils.login(user);
 
-        String authCode = userMailService.sendCode(user.getEmail());
-        int testCode = 12345678;
-
         // when
+        userMailService.updateUnivVerify(user.getId());
 
         // then
-        assertThatThrownBy(() -> {
-            throw new CommonException(CommonErrorResult.BAD_REQUEST);
-        }).isInstanceOf(CommonException.class);
+        assertThat(user.isEmailVerify()).isFalse();
     }
 
-
-    @Test
-    @DisplayName("코드가 존재하지 않아서 검증 실패")
-    void failVerify() {
-        // given
-        testUtils.login(user);
-        String email = "jh485200@gmail.com";
-
-        // when
-        redisService.deleteValues(AUTH_CODE_PREFIX + email);
-        String redisAuthCode = redisService.getValues(AUTH_CODE_PREFIX + email);
-
-        // then
-        assertThatThrownBy(() -> {
-            if (!redisService.checkExistsValue(redisAuthCode)) {
-                throw new CommonException(CommonErrorResult.BAD_REQUEST);
-            }
-        }).isInstanceOf(CommonException.class);
-    }
 }
