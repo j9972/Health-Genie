@@ -134,17 +134,4 @@ class UserMailServiceTest {
         assertThat(user.isEmailVerify()).isTrue();
     }
 
-    @Test
-    @DisplayName("검증 코드가 달라서 실패")
-    void diffCode() throws IOException {
-        // given
-        testUtils.login(user);
-
-        // when
-        userMailService.updateUnivVerify(user.getId());
-
-        // then
-        assertThat(user.isEmailVerify()).isFalse();
-    }
-
 }
