@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.user.service;
 
+import com.example.healthgenie.base.exception.DietException;
 import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Random;
 
+import static com.example.healthgenie.base.exception.DietErrorResult.TYPE_EMPTY;
 import static com.example.healthgenie.base.exception.UserErrorResult.*;
 
 @Transactional(readOnly = true)
@@ -97,6 +99,10 @@ public class UserService {
     }
 
     public DietResponse calculate(User user, Integer type) {
+        if(Objects.isNull(type)) {
+            throw new DietException(TYPE_EMPTY);
+        }
+
         Gender gender = user.getGender();
         double weight = user.getWeight();
         double height = user.getHeight();
