@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/trainer/profiles")
+@RequestMapping("/trainers/profiles")
 public class TrainerProfileController {
 
     private final TrainerProfileService profileService;
@@ -46,7 +46,7 @@ public class TrainerProfileController {
     }
 
     // 관리페이지에 보여줄 본인 내용
-    @GetMapping("/detail/{profileId}")
+    @GetMapping("/details/{profileId}")
     public ResponseEntity<Result> getProfile(@PathVariable Long profileId) {
         ProfileResponseDto response = profileService.getProfile(profileId);
         return ResponseEntity.ok(Result.of(response));

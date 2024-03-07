@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/review")
+@RequestMapping("/reviews")
 @Slf4j
 public class PtReviewController {
 
@@ -54,7 +54,7 @@ public class PtReviewController {
     }
 
     // 트레이너 후기는 로그인 하지 않고도 볼 수 있다.
-    @GetMapping("/trainer/list/{trainerId}")
+    @GetMapping("/trainers/list/{trainerId}")
     public ResponseEntity<Result> getAllTrainerReview(@PathVariable Long trainerId,
                                                       @RequestParam(required = false, defaultValue = "0") int page) {
 

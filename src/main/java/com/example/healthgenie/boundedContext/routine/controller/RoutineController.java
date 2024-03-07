@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/routine")
+@RequestMapping("/routines")
 public class RoutineController {
 
     private final RoutineService routineService;
@@ -60,7 +60,7 @@ public class RoutineController {
         개인 루틴 상세조회
         회원용/트레이너용 관리페이지에서 조회할때 사용할 API
      */
-    @GetMapping("/detail/{day}")
+    @GetMapping("/details/{day}")
     public ResponseEntity<Result> getRoutine(@PathVariable Day day, @AuthenticationPrincipal User user) {
 
         List<RoutineResponseDto> response = routineService.getMyRoutine(day, user.getId());
@@ -79,7 +79,7 @@ public class RoutineController {
         지니 - 초/중/고 급자 상세 조회 -> 요일에 대한 상세 조회인데 list 조회
         회원용/트레이너용 관리페이지에서 조회할때 사용할 API
      */
-    @GetMapping("/genie/detail/{level}/{day}")
+    @GetMapping("/genie/details/{level}/{day}")
     public ResponseEntity<Result> getGenieRoutine(@PathVariable Level level, @PathVariable Day day) {
 
         List<RoutineResponseDto> response = routineService.getGenieRoutine(level, day);

@@ -1,5 +1,8 @@
 package com.example.healthgenie.boundedContext.email.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -9,6 +12,8 @@ import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import com.univcert.api.UnivCert;
+import java.io.IOException;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,12 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.io.IOException;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -63,12 +62,8 @@ class UserMailServiceTest {
     @BeforeEach
     void before() {
         user = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.EMPTY);
-//        user2 = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.TRAINER);
-//        user3 = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.EMPTY);
 
         userService.update(user, "경북대학교", null);
-//        userService.update(user2, UserRequest.builder().uniName("경북대학교").build());
-//        userService.update(user3, UserRequest.builder().uniName("가나다대학교").build());
     }
 
 
