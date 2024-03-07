@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/calender/todo")
+@RequestMapping("/calender/todos")
 @Slf4j
 public class TodoController {
 

@@ -33,7 +33,7 @@ public class PtProcessController {
     private final PtProcessTransactionSerivce processTransactionSerivce;
 
     // trainer가 작성
-    @PostMapping("/trainer")
+    @PostMapping("/trainers")
     public ResponseEntity<Result> addPtProcess(PtProcessRequestDto dto,
                                                @AuthenticationPrincipal User user) throws IOException {
 
@@ -48,7 +48,7 @@ public class PtProcessController {
         트레이너가 작성한 전체 피드백 모아보기 [ 트레이너용 관리페이지에서 사용 ]
         관리페이지 : 최근 작성한 글들 순서로 정렬해 놓은 것이기 때문에 상위 3개씩 가져다가 쓰면 된다.
      */
-    @GetMapping("/trainer/list")
+    @GetMapping("/trainers/list")
     public ResponseEntity<Result> getAllTrainerProcess(@RequestParam(required = false, defaultValue = "0") int page,
                                                        @AuthenticationPrincipal User user) {
 
@@ -88,7 +88,7 @@ public class PtProcessController {
     }
 
 
-    @GetMapping("/detail/{processId}")
+    @GetMapping("/details/{processId}")
     public ResponseEntity<Result> getProcess(@PathVariable Long processId,
                                              @AuthenticationPrincipal User user) {
         PtProcessResponseDto response = processService.getPtProcess(processId, user);
