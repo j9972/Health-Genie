@@ -59,7 +59,7 @@ public class MailController {
 
 
     //이메일 코드검증  -> accessToken 필요
-    @GetMapping("/verification")
+    @GetMapping("/verifications")
     public ResponseEntity<Result> validMailCode(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user)
             throws IOException {
 
