@@ -6,7 +6,6 @@ import com.example.healthgenie.boundedContext.community.like.repository.LikeRepo
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,16 +22,14 @@ public class LikeService {
 
     private final LikeRepository likeRepository;
     private final PostService postService;
-    private final UserService userService;
 
     @Transactional
-    public Like save(Long postId, Long userId) {
-        likeRepository.findByPostIdAndUserId(postId, userId).ifPresent(like -> {
+    public Like save(Long postId, User user) {
+        likeRepository.findByPostIdAndUserId(postId, user.getId()).ifPresent(like -> {
             throw new LikeException(ALREADY_LIKED);
         });
 
         Post post = postService.findById(postId);
-        User user = userService.findById(userId);
 
         Like like = Like.builder()
                 .post(post)
