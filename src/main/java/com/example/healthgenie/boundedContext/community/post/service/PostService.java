@@ -2,14 +2,13 @@ package com.example.healthgenie.boundedContext.community.post.service;
 
 
 import com.example.healthgenie.base.exception.CommunityPostException;
-import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.repository.PostQueryRepository;
 import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -21,7 +20,6 @@ import java.util.Objects;
 
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
 import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
-import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +28,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public PostResponse findDtoById(Long postId) {
         return postQueryRepository.findDtoById(postId)
@@ -48,8 +46,7 @@ public class PostService {
 
     @Transactional
     public Post save(Long userId, PostRequest request) {
-        User writer = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+        User writer = userService.findById(userId);
 
         Post post = Post.builder()
                 .title(request.getTitle())

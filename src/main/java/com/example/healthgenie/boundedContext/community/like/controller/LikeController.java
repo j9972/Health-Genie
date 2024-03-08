@@ -18,7 +18,7 @@ public class LikeController {
 
     @PostMapping
     public ResponseEntity<Result> save(@PathVariable Long postId, @AuthenticationPrincipal User user) {
-        LikeResponse response = LikeResponse.of(likeService.save(postId, user.getId()));
+        LikeResponse response = LikeResponse.of(likeService.save(postId, user));
 
         return ResponseEntity.ok(Result.of(response));
     }

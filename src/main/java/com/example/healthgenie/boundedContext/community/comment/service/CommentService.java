@@ -9,7 +9,6 @@ import com.example.healthgenie.boundedContext.community.comment.repository.Comme
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,13 +30,10 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentQueryRepository commentQueryRepository;
     private final PostService postService;
-    private final UserService userService;
 
     @Transactional
-    public Comment save(Long postId, Long userId, CommentRequest request) {
+    public Comment save(Long postId, User writer, CommentRequest request) {
         Post post = postService.findById(postId);
-
-        User writer = userService.findById(userId);
 
         Comment comment = Comment.builder()
                 .post(post)
@@ -45,9 +41,7 @@ public class CommentService {
                 .writer(writer)
                 .build();
 
-        commentRepository.save(comment);
-
-        return comment;
+        return commentRepository.save(comment);
     }
 
     public Comment findById(Long commentId) {

@@ -59,9 +59,9 @@ public class TestKrUtils {
         return roomService.saveOrActive(user, request);
     }
 
-    public Comment createComment(Long postId, Long userId, String content) {
+    public Comment createComment(Long postId, User user, String content) {
         CommentRequest request = CommentRequest.builder().content(content).build();
-        return commentService.save(postId, userId, request);
+        return commentService.save(postId, user, request);
     }
 
     public Message createMessage(Long roomId, Long senderId, String content) {
