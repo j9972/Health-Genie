@@ -7,13 +7,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,8 +38,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             response.getWriter().print(objectMapper.writeValueAsString(map));
         } catch (UserException e) {
             Map<String, String> map = new HashMap<>();
-            map.put("code", "USER_NOT_FOUND!!!--!!");
-            map.put("message", "user not found!!!--!!");
+            map.put("code", "USER_NOT_FOUND");
+            map.put("message", "user not found");
 
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(e.getUserErrorResult().getHttpStatus().value());
