@@ -99,7 +99,7 @@
 ## 🧑‍💻 API 문서 보기
 
 
-HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.com/view/14933639/2s9YsNdVs4)
+HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.com/view/31167063/2sA2xh4DR2)
 
 
 ## 🐧 TEST CODE
