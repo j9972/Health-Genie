@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -57,13 +58,14 @@ public class MailController {
         }
     }
 
-
-    //이메일 코드검증  -> accessToken 필요
     @GetMapping("/verifications")
-    public ResponseEntity<Result> validMailCode(@RequestBody MailRequestDto dto, @AuthenticationPrincipal User user)
-            throws IOException {
+    public ResponseEntity<Result> validMailCode(@RequestParam(name = "univ_email") String univ_email,
+                                                @RequestParam(name = "univName") String univName,
+                                                @RequestParam(name = "code") int code,
+                                                @AuthenticationPrincipal User user) throws IOException {
 
-        Map<String, Object> response = UnivCert.certifyCode(KEY, dto.getUniv_email(), dto.getUnivName(), dto.getCode());
+        Map<String, Object> response = UnivCert.certifyCode(KEY, univ_email, univName, code);
+
         boolean success = (boolean) response.get("success");
 
         if (success) {
