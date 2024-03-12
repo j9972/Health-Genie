@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.boundedContext.user.dto.UserRequest;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
@@ -63,12 +62,8 @@ class UserMailServiceTest {
     @BeforeEach
     void before() {
         user = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.EMPTY);
-//        user2 = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.TRAINER);
-//        user3 = testUtils.createUser("jsy9972@knu.ac.kr", "test1", AuthProvider.EMPTY, Role.EMPTY);
 
-        userService.update(user, UserRequest.builder().uniName("경북대학교").build());
-//        userService.update(user2, UserRequest.builder().uniName("경북대학교").build());
-//        userService.update(user3, UserRequest.builder().uniName("가나다대학교").build());
+        userService.update(user, "경북대학교", null);
     }
 
 

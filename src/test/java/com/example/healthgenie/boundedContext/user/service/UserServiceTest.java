@@ -1,11 +1,10 @@
 package com.example.healthgenie.boundedContext.user.service;
 
 import com.example.healthgenie.boundedContext.routine.entity.Level;
-import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -84,35 +83,50 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("회원 정보 변경")
-    void update() {
+    @DisplayName("회원 정보 변경 - Role")
+    void updateRole() {
         // given
-        UserRequest request = UserRequest.builder()
-                .uniName("한국대학교")
-                .nickname("변경된닉네임")
-                .role(Role.USER)
-                .emailVerify(true)
-                .level(Level.BEGINNER)
-                .height(170.5)
-                .birth(LocalDateTime.of(1996, 6, 15, 0, 0, 0))
-                .weight(70.5)
-                .muscleWeight(30.0)
-                .gender(Gender.MALE)
-                .build();
 
         // when
-        User updateUser = userService.update(default1, request);
+        User updateUser = userService.update(default1, Role.USER);
 
         // then
-        assertThat(updateUser.getUniName()).isEqualTo("한국대학교");
-        assertThat(updateUser.getNickname()).isEqualTo("변경된닉네임");
-        assertThat(updateUser.getRole()).isEqualTo(Role.USER);
-        assertThat(updateUser.isEmailVerify()).isTrue();
-        assertThat(updateUser.getLevel()).isEqualTo(Level.BEGINNER);
-        assertThat(updateUser.getHeight()).isEqualTo(170.5);
-        assertThat(updateUser.getBirth()).isEqualTo(LocalDateTime.of(1996, 6, 15, 0, 0, 0));
-        assertThat(updateUser.getWeight()).isEqualTo(70.5);
-        assertThat(updateUser.getMuscleWeight()).isEqualTo(30.0);
-        assertThat(updateUser.getGender()).isEqualTo(Gender.MALE);
+        assertThat(updateUser.getId()).isEqualTo(default1.getId());
+        assertThat(updateUser.getRole()).isEqualTo(default1.getRole());
     }
+
+    @Test
+    @DisplayName("회원 정보 변경 - Level")
+    void updateLevel() {
+        // given
+
+        // when
+        User updateUser = userService.update(default1, Level.EXPERT);
+
+        // then
+        assertThat(updateUser.getId()).isEqualTo(default1.getId());
+        assertThat(updateUser.getLevel()).isEqualTo(default1.getLevel());
+    }
+
+    @Test
+    @DisplayName("회원 정보 변경 - Info")
+    void updateInfo() {
+        // given
+
+        // when
+        LocalDateTime birth = LocalDateTime.of(1996, 6, 15, 0, 0, 0);
+
+        User updateUser = userService.update(default1,
+                null, "변경된닉네임", Gender.MALE, birth, 180.5, 80.5, 30.5);
+
+        // then
+        assertThat(updateUser.getId()).isEqualTo(default1.getId());
+        assertThat(updateUser.getNickname()).isEqualTo("변경된닉네임");
+        assertThat(updateUser.getGender()).isEqualTo(Gender.MALE);
+        assertThat(updateUser.getBirth()).isEqualTo(birth);
+        assertThat(updateUser.getHeight()).isEqualTo(180.5);
+        assertThat(updateUser.getWeight()).isEqualTo(80.5);
+        assertThat(updateUser.getMuscleWeight()).isEqualTo(30.5);
+    }
+
 }

@@ -39,7 +39,7 @@ class CommentServiceTest {
     void before() {
         user1 = testKrUtils.createUser("user1@test.com", "user1", AuthProvider.KAKAO, Role.USER);
         post1 = testKrUtils.createPost(user1.getId(), "기본 제목", "기본 내용");
-        comment1 = testKrUtils.createComment(post1.getId(), user1.getId(), "기본 댓글");
+        comment1 = testKrUtils.createComment(post1.getId(), user1, "기본 댓글");
     }
 
     @Test
@@ -49,7 +49,7 @@ class CommentServiceTest {
         CommentRequest request = CommentRequest.builder().content("새 댓글").build();
 
         // when
-        Comment saveComment = commentService.save(post1.getId(), user1.getId(), request);
+        Comment saveComment = commentService.save(post1.getId(), user1, request);
 
         // then
         assertThat(saveComment.getPost()).isEqualTo(post1);
@@ -78,7 +78,7 @@ class CommentServiceTest {
         // given
         for(int i=0; i<10; i++) {
             Post post = testKrUtils.createPost(user1.getId(), "제목" + i, "내용" + i);
-            testKrUtils.createComment(post.getId(), user1.getId(), "댓글" + i);
+            testKrUtils.createComment(post.getId(), user1, "댓글" + i);
         }
 
         // when
@@ -93,7 +93,7 @@ class CommentServiceTest {
     void findAllByPostId() {
         // given
         for(int i=0; i<10; i++) {
-            testKrUtils.createComment(post1.getId(), user1.getId(), "댓글" + i);
+            testKrUtils.createComment(post1.getId(), user1, "댓글" + i);
         }
 
         // when
@@ -108,7 +108,7 @@ class CommentServiceTest {
     void findDtosAllByPostId() {
         // given
         for(int i=0; i<10; i++) {
-            testKrUtils.createComment(post1.getId(), user1.getId(), "댓글" + i);
+            testKrUtils.createComment(post1.getId(), user1, "댓글" + i);
         }
 
         // when

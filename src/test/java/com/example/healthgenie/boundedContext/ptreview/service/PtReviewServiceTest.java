@@ -10,10 +10,9 @@ import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
-import com.example.healthgenie.boundedContext.user.dto.UserRequest;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
@@ -82,10 +81,10 @@ class PtReviewServiceTest {
         user5 = testKrUtils.createUser("test5@gmail.com", "test5", AuthProvider.EMPTY, Role.USER);
         user6 = testKrUtils.createUser("test6@test.com", "test6", AuthProvider.EMPTY, Role.TRAINER);
 
-        userService.update(user, UserRequest.builder().nickname("test1").build());
-        userService.update(user2, UserRequest.builder().nickname("test2").build());
-        userService.update(user3, UserRequest.builder().nickname("test3").build());
-        userService.update(user4, UserRequest.builder().nickname("test4").build());
+        userService.update(user, null, "test1", null, null, null, null, null);
+        userService.update(user2, null, "test2", null, null, null, null, null);
+        userService.update(user3, null, "test3", null, null, null, null, null);
+        userService.update(user4, null, "test4", null, null, null, null, null);
 
         matching = testKrUtils.createMatching(user2, user.getId(), date1, "체육관", "pt내용");
         matching2 = testKrUtils.createMatching(user6, user5.getId(), date2, "체육관", "pt내용");

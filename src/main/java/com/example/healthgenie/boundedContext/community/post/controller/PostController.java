@@ -40,14 +40,14 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Result> save(@AuthenticationPrincipal User user, @Valid PostRequest request) throws IOException {
+    public ResponseEntity<Result> save(@AuthenticationPrincipal User user, @RequestBody @Valid PostRequest request) throws IOException {
         PostResponse response = PostResponse.of(postService.save(user.getId(), request));
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<Result> update(@PathVariable Long postId, @AuthenticationPrincipal User user, @Valid PostRequest request) throws IOException {
+    public ResponseEntity<Result> update(@PathVariable Long postId, @AuthenticationPrincipal User user, @RequestBody @Valid PostRequest request) throws IOException {
         PostResponse response = PostResponse.of(postService.update(postId, user.getId(), request));
 
         return ResponseEntity.ok(Result.of(response));

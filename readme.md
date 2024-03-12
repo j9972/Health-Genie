@@ -99,7 +99,7 @@
 ## 🧑‍💻 API 문서 보기
 
 
-HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.com/view/14933639/2s9YsNdVs4)
+HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.com/view/31167063/2sA2xh4DR2)
 
 
 ## 🐧 TEST CODE
@@ -142,6 +142,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 [ method 선택 - ParseInt() vs valueOf() ](https://techj9972.tistory.com/246) <br>
 [ Annotation - 컬렉션 타입 형태의 데이터 저장 고민 ](https://techj9972.tistory.com/243) <br>
 [ 무한스크롤 도입 - 페이지 조회 성능 향상을 위한 고민](https://techj9972.tistory.com/276) <br>
+[ null처리는 어떻게? - orElse() vs orElseGet()](https://techj9972.tistory.com/278) <br>
 
 ### 프로젝트 진행 이슈
 [ 이메일 인증 전략 고민 [1] - Redis 사용 ](https://techj9972.tistory.com/238) <br>
