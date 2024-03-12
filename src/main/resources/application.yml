@@ -57,12 +57,12 @@ spring:
           google:
             client-id: ENC(uXj+vgUM6r5CTQSXKYFeh2SBjCbBtRlEF+HtOfRxuT0hXuA3WMH47RAVqcoD1xVrIxNqVUPOQTltOy2fHtGiHPBWcBtssTYlhEa9KFMg7qHMq0iSDImirQ==)
             client-secret: ENC(k6Cb1xstVKOeTOX+w/GK3mni2uNZOPfKuzpIefwDhOjX3LcYegHZ5ae4Gh9/b4T+)
-            redirect-uri: "http://localhost:1234/login/oauth2/code/google"
+            redirect-uri: "http://localhost:3000/login/oauth2/code/google"
             authorization-grant-type: authorization_code
             scope: profile, email
           kakao:
             client-id: ENC(m6aLA3pUJemYByvbSJN433+f3nyw5YOQNRDfDbMmGrvKNS3HJXQ/fhy6SYoXluG5)
-            redirect-uri: "http://localhost:1234/login/oauth2/code/kakao"
+            redirect-uri: "http://localhost:3000/login/oauth2/code/kakao"
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image, account_email
