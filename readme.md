@@ -157,7 +157,8 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 
 [ 후기 - 리팩토링 전 ]
 <br>
-![review - 전](https://github.com/j9972/health-genie/assets/50689754/a8aabaf7-9f1b-4863-8525-866afaa3dfc9)
+![review - 후기 전](https://github.com/j9972/health-genie/assets/50689754/aeb11ddd-4e1a-4748-8579-0e9b899fed34)
+
 
 
 [ 후기 - 리팩토링 후 ]
