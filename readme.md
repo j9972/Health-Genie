@@ -145,6 +145,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 부하 조건: 100명의 사람의 초당 트래픽 1000 
 
 [ 일지 - 리팩토링 전 ]
+<br>
 ![process - 리팩토링 전](https://github.com/j9972/health-genie/assets/50689754/b6af6539-f02d-4d4a-80ac-55d012746a98)
 
 [ 일지 - 리팩토링 후 ]
@@ -155,6 +156,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 <br>
 
 [ 후기 - 리팩토링 전 ]
+<br>
 ![review - 전](https://github.com/j9972/health-genie/assets/50689754/a8aabaf7-9f1b-4863-8525-866afaa3dfc9)
 
 
