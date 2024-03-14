@@ -1,44 +1,133 @@
 package com.example.healthgenie.base.initData;
 
+import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
+import com.example.healthgenie.boundedContext.community.comment.repository.CommentRepository;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
+import com.example.healthgenie.boundedContext.matching.entity.Matching;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
+import com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
+import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import static com.example.healthgenie.boundedContext.routine.entity.Day.*;
 import static com.example.healthgenie.boundedContext.routine.entity.Level.*;
 
 
 @Profile("dev")
-//@Configuration
+@Configuration
 public class InitData {
 
     @Bean
     CommandLineRunner init(
             UserRepository userRepository,
             PostRepository postRepository,
-            RoutineRepository routineRepository
+            RoutineRepository routineRepository,
+            CommentRepository commentRepository,
+            MatchingRepository matchingRepository,
+            MatchingUserRepository matchingUserRepository
     ) {
         return new CommandLineRunner() {
             @Override
             @Transactional
             public void run(String... args) {
-                for(int i=1; i<=10; i++) {
-                    User user = createUser(i + "@test.com", "test" + i);
-                    Post post = createPost(i + "번째 게시글 제목", i + "번째 게시글 내용", user);
+                User user = createUser("user@test.com", "user", Role.USER); // 일반유저
+                User trainer = createUser("trainer@test.com", "trainer", Role.TRAINER); // 트레이너
+
+                for(int i=1; i<=2000; i++) {
+                    User writer = createUser(i + "@test.com", "test" + i, Role.EMPTY);
+                    Post post = createPost(i + "번째 게시글 제목", i + "번째 게시글 내용", writer);
+                    Comment comment = createComment(post, post.getId() + "번째 게시글의 댓글", writer);
+                    Matching matching = createMatching(LocalDateTime.of(2024, (i%12)+1, (i%30)+1, i%24, i%60, 0), "매칭 설명", "장소", MatchingState.DEFAULT);
+                    MatchingUser matchingUser = createMatchingUser(user, matching);
+                    MatchingUser matchingTrainer = createMatchingUser(trainer, matching);
                 }
 
+                createGenieRoutine();
+            }
+
+            private MatchingUser createMatchingUser(User user, Matching matching) {
+                MatchingUser matchinguser = MatchingUser.builder()
+                        .user(user)
+                        .matching(matching)
+                        .build();
+
+                return matchingUserRepository.save(matchinguser);
+            }
+
+            private Matching createMatching(LocalDateTime date, String description, String place, MatchingState state) {
+                Matching matching = Matching.builder()
+                        .date(date)
+                        .description(description)
+                        .place(place)
+                        .state(state)
+                        .build();
+
+                return matchingRepository.save(matching);
+            }
+
+            private Comment createComment(Post post, String content, User writer) {
+                Comment comment = Comment.builder()
+                        .post(post)
+                        .content(content)
+                        .writer(writer)
+                        .build();
+
+                return commentRepository.save(comment);
+            }
+
+            private User createUser(String email, String name, Role role) {
+                User user = User.builder()
+                        .email(email)
+                        .name(name)
+                        .nickname(name)
+                        .role(role)
+                        .authProvider(AuthProvider.EMPTY)
+                        .build();
+
+                return userRepository.save(user);
+            }
+
+            private Post createPost(String title, String content, User user) {
+                Post post = Post.builder()
+                        .title(title)
+                        .content(content)
+                        .writer(user)
+                        .build();
+
+                return postRepository.save(post);
+            }
+
+            private Routine createRoutine(Level level, Day day, String content, String part, String workoutName, int kg, int sets, int reps) {
+                WorkoutRecipe recipe = new WorkoutRecipe(workoutName, kg ,sets, reps);
+                Routine routine = Routine.builder()
+                        .level(level)
+                        .day(day)
+                        .content(content)
+                        .parts(part)
+                        .workoutRecipe(recipe)
+                        .build();
+
+                return routineRepository.save(routine);
+            }
+
+            private void createGenieRoutine() {
                 createRoutine(BEGINNER, MONDAY, "초급자님! 오늘은 하체 데이입니다! 화아팅 하세요", "하체","스쿼트",120,4,12);
                 createRoutine(BEGINNER, MONDAY, "초급자님! 오늘은 하체 데이입니다! 화아팅 하세요", "하체","레그 프레스",120,4,12);
                 createRoutine(BEGINNER, MONDAY, "초급자님! 오늘은 하체 데이입니다! 화아팅 하세요", "하체","레그 익스텐션",120,4,12);
@@ -86,41 +175,6 @@ public class InitData {
                 createRoutine(EXPERT, SATURDAY, "고급자님! 오늘은 삼두, 이두 슈퍼 세트 데이입니다! 화아팅 하세요", "삼두, 이두","덤벨 오버헤드 익스텐션",3, 4,15);
                 createRoutine(EXPERT, SATURDAY, "고급자님! 오늘은 삼두, 이두 슈퍼 세트 데이입니다! 화아팅 하세요", "삼두, 이두","바벨 컬",3, 4,15);
                 createRoutine(EXPERT, SATURDAY, "고급자님! 오늘은 삼두, 이두 슈퍼 세트 데이입니다! 화아팅 하세요", "삼두, 이두","헤머컬",3, 4,15);
-            }
-
-            private User createUser(String email, String name) {
-                User user = User.builder()
-                        .email(email)
-                        .name(name)
-                        .nickname(name)
-                        .role(Role.EMPTY)
-                        .authProvider(AuthProvider.EMPTY)
-                        .build();
-
-                return userRepository.save(user);
-            }
-
-            private Post createPost(String title, String content, User user) {
-                Post post = Post.builder()
-                        .title(title)
-                        .content(content)
-                        .writer(user)
-                        .build();
-
-                return postRepository.save(post);
-            }
-
-            private Routine createRoutine(Level level, Day day, String content, String part, String workoutName, int kg, int sets, int reps) {
-                WorkoutRecipe recipe = new WorkoutRecipe(workoutName, kg ,sets, reps);
-                Routine routine = Routine.builder()
-                        .level(level)
-                        .day(day)
-                        .content(content)
-                        .parts(part)
-                        .workoutRecipe(recipe)
-                        .build();
-
-                return routineRepository.save(routine);
             }
         };
     }
