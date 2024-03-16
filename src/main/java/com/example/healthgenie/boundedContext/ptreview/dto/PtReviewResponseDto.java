@@ -1,24 +1,17 @@
 package com.example.healthgenie.boundedContext.ptreview.dto;
 
-import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
-import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
-import lombok.*;
-
 import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder
 public class PtReviewResponseDto {
     private Long id;
-
     private String content;
-
     private String stopReason;
-
     private Double reviewScore;
-
-
     private String userNickName;
     private String trainerNickName; // 작성하는 사람
 
