@@ -43,11 +43,8 @@ public class RoomController {
 
     @PatchMapping("/{roomId}")
     public ResponseEntity<Result> inactive(@PathVariable Long roomId, @AuthenticationPrincipal User user) {
-        /*
-        TODO : inactive 채팅방이 검색되는 문제 해결 해야함
-               -> RoomQueryRepository.findAll() 쿼리 수정 필요
-         */
         roomService.inactive(roomId, user);
+
         return ResponseEntity.ok(Result.of("채팅방 삭제 성공"));
     }
 }
