@@ -23,6 +23,13 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping
+    public ResponseEntity<Result> getInfo(@AuthenticationPrincipal User user) {
+        UserResponse response = UserResponse.of(userService.findById(user.getId()));
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
     @PatchMapping("/info")
     public ResponseEntity<Result> updateInfo(@AuthenticationPrincipal User user, @Valid UserRequest request) {
         UserResponse response = UserResponse.of(
