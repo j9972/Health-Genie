@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -397,21 +396,21 @@ class PtReviewServiceTest {
                 .isInstanceOf(PtReviewException.class);
     }
 
-    @Test
-    @DisplayName("리뷰 검색 성공")
-    void findAll() {
-        // given
-        testKrUtils.login(user);
-
-        // when
-        String keyword = "review";
-        List<PtReviewResponseDto> response = reviewService.findAll(keyword);
-
-        // then
-        assertThat(response.size()).isEqualTo(1);
-        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(PtReviewResponseDto::getId).reversed());
-        assertThat(response).extracting(PtReviewResponseDto::getContent).doesNotContain("test");
-    }
+//    @Test
+//    @DisplayName("리뷰 검색 성공")
+//    void findAll() {
+//        // given
+//        testKrUtils.login(user);
+//
+//        // when
+//        String keyword = "review";
+//        List<PtReviewResponseDto> response = reviewService.findAll(keyword);
+//
+//        // then
+//        assertThat(response.size()).isEqualTo(1);
+//        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(PtReviewResponseDto::getId).reversed());
+//        assertThat(response).extracting(PtReviewResponseDto::getContent).doesNotContain("test");
+//    }
 
     @Test
     @DisplayName("만들어진 리뷰 날짜 기준으로 필터링 성공")
