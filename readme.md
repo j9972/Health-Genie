@@ -153,6 +153,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 
 결과 ( 응답시간 변화, TPS 변환 )
 
+
 <br>
 
 [ 후기 - 리팩토링 전 ]
@@ -163,9 +164,11 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 [ 후기 - 리팩토링 후 ]
 ![review - 후기 후](https://github.com/j9972/health-genie/assets/50689754/dbbc1910-2c61-44ee-adfa-5d08bf9b47f7)
 
+<br>
 
+### 평균 응답시간 ( 1.7초 -> 0.3초 ) 약 75%, TPS ( 57 -> 270 ) 약 473% 개선이 이루어졌습니다
 
-결과 ( 응답시간 변화, TPS 변환 )
+이전의 코드는 100이 초당 1000번의 트래픽을 발생시킬때, 매번 2000건의 데이터를 갱신 시키며 조회 성능이 느렸는데, 이를 개선하기 위해서 10개씩 보여주며, 다음 데이터가 있는 경우를 먼저 확인하고 기존의 보여준 데이터말고 새로운 데이터만 보이는 식으로 코드 및 쿼리를 변경하였습니다.
 
 <br>
 
