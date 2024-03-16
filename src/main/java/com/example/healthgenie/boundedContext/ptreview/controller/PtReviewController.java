@@ -4,6 +4,7 @@ import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewDeleteResponseDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
+import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewSliceResponse;
 import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
 import com.example.healthgenie.boundedContext.ptreview.service.PtReviewService;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -78,11 +80,14 @@ public class PtReviewController {
 
     // 후기를 검색으로 찾기
     @GetMapping("/list/findAll")
-    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
-        List<PtReviewResponseDto> response = reviewService.findAll(keyword);
+    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword,
+                                          @RequestParam(name = "lastId", required = false) Long lastId,
+                                          Pageable pageable) {
+        PtReviewSliceResponse response = PtReviewSliceResponse.of(reviewService.findAll(keyword, lastId, pageable));
 
         return ResponseEntity.ok(Result.of(response));
     }
+
 
     // 날짜 필터링으로 후기 모아보기
     @GetMapping("/list/dateFilter")

@@ -1,6 +1,11 @@
 package com.example.healthgenie.boundedContext.ptreview.service;
 
-import com.example.healthgenie.base.exception.*;
+import com.example.healthgenie.base.exception.MatchingErrorResult;
+import com.example.healthgenie.base.exception.MatchingException;
+import com.example.healthgenie.base.exception.PtReviewErrorResult;
+import com.example.healthgenie.base.exception.PtReviewException;
+import com.example.healthgenie.base.exception.UserErrorResult;
+import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -12,16 +17,17 @@ import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewQueryRepository;
 import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
-import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -160,8 +166,8 @@ public class PtReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<PtReviewResponseDto> findAll(String keyword) {
-        return PtReviewResponseDto.of(ptReviewQueryRepository.findAll(keyword));
+    public Slice<PtReview> findAll(String keyword, Long lastId, Pageable pageable) {
+        return ptReviewQueryRepository.findAll(keyword, lastId, pageable);
     }
 
     @Transactional(readOnly = true)

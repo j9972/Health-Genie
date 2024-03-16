@@ -3,10 +3,14 @@ package com.example.healthgenie.boundedContext.ptreview.repository;
 import static com.example.healthgenie.boundedContext.ptreview.entity.QPtReview.ptReview;
 
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,12 +20,19 @@ public class PtReviewQueryRepository {
     private final JPAQueryFactory query;
 
     // query 사용법 -> join 편리 & 동적 쿼리 사용 가능 & null 자동 제거
-    public List<PtReview> findAll(String keyword) {
-        return query
+    public Slice<PtReview> findAll(String keyword, Long lastId, Pageable pageable) {
+        List<PtReview> reviews = query
                 .selectFrom(ptReview)
-                .where(ptReview.content.like("%" + keyword + "%"))
+                .where(
+                        idLt(lastId),
+                        ptReview.content.like("%" + keyword + "%")
+
+                )
                 .orderBy(ptReview.id.desc())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
+
+        return LastPage(pageable, reviews);
     }
 
     public List<PtReview> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
@@ -52,5 +63,23 @@ public class PtReviewQueryRepository {
                 .offset(page)
                 .limit(size)
                 .fetch();
+    }
+
+    private Slice<PtReview> LastPage(Pageable pageable, List<PtReview> review) {
+        boolean hasNext = false;
+
+        if (review.size() > pageable.getPageSize()) {
+            hasNext = true;
+            review.remove(pageable.getPageSize());
+        }
+
+        return new SliceImpl<>(review, pageable, hasNext);
+    }
+
+    private BooleanExpression idLt(Long reviewId) {
+        if (reviewId == null) {
+            return null;
+        }
+        return ptReview.id.lt(reviewId);
     }
 }
