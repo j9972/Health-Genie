@@ -149,6 +149,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 ![process - 리팩토링 전](https://github.com/j9972/health-genie/assets/50689754/b6af6539-f02d-4d4a-80ac-55d012746a98)
 
 [ 일지 - 리팩토링 후 ]
+![process - 리팩토링 후](https://github.com/j9972/health-genie/assets/50689754/a2bcd2f1-0a45-4b4a-b738-11aa8a38b3a4)
 
 
 결과 ( 응답시간 변화, TPS 변환 )
