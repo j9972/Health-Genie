@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +35,15 @@ public class TrainerProfileController {
     private final TrainerProfileTransactionService trainerProfileTransactionService;
 
     // 트레이너 패킷 세부 내용 작성 API
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Result> createObservation(@AuthenticationPrincipal User user,
+                                                    @RequestPart ProfileRequestDto dto,
+                                                    @RequestPart(name = "profileImages", required = false) List<MultipartFile> profileImages) {
+
+        ProfileResponseDto response = profileService.save(user, dto, profileImages);
+        return ResponseEntity.ok(Result.of(response));
+    }
+
     @PostMapping
     public ResponseEntity<Result> save(ProfileRequestDto dto, @AuthenticationPrincipal User user) throws IOException {
 
@@ -65,7 +77,7 @@ public class TrainerProfileController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 프로필을 검색으로 찾기
+    // 프로을 검색으로 찾기
     @GetMapping("/searching")
     public ResponseEntity<Result> searchProfile(@RequestParam(name = "search", defaultValue = "") String name,
                                                 @RequestParam(name = "lastId", required = false) Long lastId,
