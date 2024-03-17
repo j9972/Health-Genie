@@ -3,6 +3,7 @@ package com.example.healthgenie.boundedContext.trainer.controller;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
+import com.example.healthgenie.boundedContext.trainer.dto.ProfileSliceResponse;
 import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileService;
 import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileTransactionService;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,8 +67,10 @@ public class TrainerProfileController {
 
     // 프로필을 검색으로 찾기
     @GetMapping("/searching")
-    public ResponseEntity<Result> searchProfile(@RequestParam(name = "search", defaultValue = "") String name) {
-        List<ProfileResponseDto> response = profileService.findAll(name);
+    public ResponseEntity<Result> searchProfile(@RequestParam(name = "search", defaultValue = "") String name,
+                                                @RequestParam(name = "lastId", required = false) Long lastId,
+                                                Pageable pageable) {
+        ProfileSliceResponse response = ProfileSliceResponse.of(profileService.findAll(name, lastId, pageable));
 
         return ResponseEntity.ok(Result.of(response));
     }

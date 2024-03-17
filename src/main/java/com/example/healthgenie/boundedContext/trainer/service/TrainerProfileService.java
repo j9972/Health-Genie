@@ -11,6 +11,8 @@ import com.example.healthgenie.boundedContext.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,8 +106,7 @@ public class TrainerProfileService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProfileResponseDto> findAll(String name) {
-        return ProfileResponseDto.of(trainerQueryRepository.findAll(name));
+    public Slice<TrainerInfo> findAll(String keyword, Long lastId, Pageable pageable) {
+        return trainerQueryRepository.findAll(keyword, lastId, pageable);
     }
-
 }

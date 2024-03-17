@@ -2,14 +2,13 @@ package com.example.healthgenie.boundedContext.trainer.dto;
 
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Builder
@@ -34,12 +33,11 @@ public class ProfileResponseDto {
 
     public static ProfileResponseDto of(TrainerInfo info) {
         List<String> paths = new ArrayList<>();
-        if(info.getTrainerPhotos() != null) {
+        if (info.getTrainerPhotos() != null) {
             paths = info.getTrainerPhotos().stream()
                     .map(TrainerPhoto::getInfoPhotoPath)
                     .toList();
         }
-
 
         return ProfileResponseDto.builder()
                 .id(info.getId())
@@ -62,4 +60,6 @@ public class ProfileResponseDto {
                 .map(ProfileResponseDto::of)
                 .toList();
     }
+
+
 }
