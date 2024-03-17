@@ -63,7 +63,7 @@ public class TrainerProfileController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 후기를 검색으로 찾기
+    // 프로필을 검색으로 찾기
     @GetMapping("/searching")
     public ResponseEntity<Result> searchProfile(@RequestParam(name = "search", defaultValue = "") String name) {
         List<ProfileResponseDto> response = profileService.findAll(name);

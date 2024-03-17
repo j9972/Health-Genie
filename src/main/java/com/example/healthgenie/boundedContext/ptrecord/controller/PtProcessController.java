@@ -5,6 +5,7 @@ import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessDeleteResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
+import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessSliceResponse;
 import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessService;
 import com.example.healthgenie.boundedContext.ptrecord.service.PtProcessTransactionSerivce;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -67,11 +69,13 @@ public class PtProcessController {
         List<PtProcessResponseDto> response = processService.getAllMyProcess(page, 5, user);
         return ResponseEntity.ok(Result.of(response));
     }
-
+    
     // 일지를 검색으로 찾기
     @GetMapping("/list/findAll")
-    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword) {
-        List<PtProcessResponseDto> response = processService.findAll(keyword);
+    public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword,
+                                          @RequestParam(name = "lastId", required = false) Long lastId,
+                                          Pageable pageable) {
+        PtProcessSliceResponse response = PtProcessSliceResponse.of(processService.findAll(keyword, lastId, pageable));
 
         return ResponseEntity.ok(Result.of(response));
     }
