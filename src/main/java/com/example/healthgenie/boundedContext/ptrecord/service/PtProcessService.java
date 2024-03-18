@@ -1,7 +1,14 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
 
-import com.example.healthgenie.base.exception.*;
+import com.example.healthgenie.base.exception.CommonErrorResult;
+import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.MatchingErrorResult;
+import com.example.healthgenie.base.exception.MatchingException;
+import com.example.healthgenie.base.exception.PtProcessErrorResult;
+import com.example.healthgenie.base.exception.PtProcessException;
+import com.example.healthgenie.base.exception.UserErrorResult;
+import com.example.healthgenie.base.exception.UserException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -12,16 +19,17 @@ import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessQueryRepository;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessRepository;
-import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -142,9 +150,10 @@ public class PtProcessService {
                 .build();
     }
 
+
     @Transactional(readOnly = true)
-    public List<PtProcessResponseDto> findAll(String keyword) {
-        return PtProcessResponseDto.of(ptProcessQueryRepository.findAll(keyword));
+    public Slice<PtProcess> findAll(String keyword, Long lastId, Pageable pageable) {
+        return ptProcessQueryRepository.findAll(keyword, lastId, pageable);
     }
 
     @Transactional(readOnly = true)

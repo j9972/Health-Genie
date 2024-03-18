@@ -31,6 +31,23 @@ public class ProfileRequestDto {
     private String nickname; // 트레이너 닉네임
     private List<MultipartFile> photos; // 트레이너 사진들
 
+    public TrainerInfo toEntity(User user) {
+        return TrainerInfo.builder()
+                .introduction(this.introduction)
+                .career(this.career)
+                .careerMonth(this.month)
+                .cost(this.cost)
+                .name(this.name)
+                .university(this.university)
+                .startTime(this.startTime)
+                .endTime(this.endTime)
+                .reviewAvg(this.reviewAvg)
+                .name(this.name)
+                .member(user)
+                .build();
+
+    }
+
     public boolean hasIntroduction() {
         return introduction != null;
     }
@@ -62,22 +79,4 @@ public class ProfileRequestDto {
     public boolean hasReviewAvg() {
         return reviewAvg != null;
     }
-
-    public TrainerInfo toEntity(User user) {
-        return TrainerInfo.builder()
-                .introduction(this.introduction)
-                .career(this.career)
-                .careerMonth(this.month)
-                .cost(this.cost)
-                .name(this.name)
-                .university(this.university)
-                .startTime(this.startTime)
-                .endTime(this.endTime)
-                .reviewAvg(this.reviewAvg)
-                .name(this.name)
-                .member(user)
-                .build();
-
-    }
-
 }

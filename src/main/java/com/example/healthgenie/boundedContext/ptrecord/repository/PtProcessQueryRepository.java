@@ -1,12 +1,17 @@
 package com.example.healthgenie.boundedContext.ptrecord.repository;
 
 import static com.example.healthgenie.boundedContext.ptrecord.entity.QPtProcess.ptProcess;
+import static com.example.healthgenie.boundedContext.ptreview.entity.QPtReview.ptReview;
 
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
@@ -15,13 +20,21 @@ public class PtProcessQueryRepository {
 
     private final JPAQueryFactory query;
 
-    public List<PtProcess> findAll(String keyword) {
-        return query
+    public Slice<PtProcess> findAll(String keyword, Long lastId, Pageable pageable) {
+        List<PtProcess> reviews = query
                 .selectFrom(ptProcess)
-                .where(ptProcess.content.like("%" + keyword + "%"))
+                .where(
+                        idLt(lastId),
+                        ptProcess.content.like("%" + keyword + "%")
+
+                )
                 .orderBy(ptProcess.id.desc())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
+
+        return LastPage(pageable, reviews);
     }
+
 
     public List<PtProcess> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
         return query
@@ -51,5 +64,23 @@ public class PtProcessQueryRepository {
                 .offset(page)
                 .limit(size)
                 .fetch();
+    }
+
+    private Slice<PtProcess> LastPage(Pageable pageable, List<PtProcess> process) {
+        boolean hasNext = false;
+
+        if (process.size() > pageable.getPageSize()) {
+            hasNext = true;
+            process.remove(pageable.getPageSize());
+        }
+
+        return new SliceImpl<>(process, pageable, hasNext);
+    }
+
+    private BooleanExpression idLt(Long processId) {
+        if (processId == null) {
+            return null;
+        }
+        return ptReview.id.lt(processId);
     }
 }
