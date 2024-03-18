@@ -1,6 +1,14 @@
 package com.example.healthgenie.boundedContext.ptreview.service;
 
-import com.example.healthgenie.base.exception.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.example.healthgenie.base.exception.CommonErrorResult;
+import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.MatchingErrorResult;
+import com.example.healthgenie.base.exception.MatchingException;
+import com.example.healthgenie.base.exception.PtReviewErrorResult;
+import com.example.healthgenie.base.exception.PtReviewException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -16,20 +24,18 @@ import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -396,21 +402,24 @@ class PtReviewServiceTest {
                 .isInstanceOf(PtReviewException.class);
     }
 
-//    @Test
-//    @DisplayName("리뷰 검색 성공")
-//    void findAll() {
-//        // given
-//        testKrUtils.login(user);
-//
-//        // when
-//        String keyword = "review";
-//        List<PtReviewResponseDto> response = reviewService.findAll(keyword);
-//
-//        // then
-//        assertThat(response.size()).isEqualTo(1);
-//        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(PtReviewResponseDto::getId).reversed());
-//        assertThat(response).extracting(PtReviewResponseDto::getContent).doesNotContain("test");
-//    }
+    @Test
+    @DisplayName("리뷰 검색 성공")
+    void findAll() {
+        // given
+        testKrUtils.login(user);
+
+        // when
+        String keyword = "review";
+        PageRequest pageable = PageRequest.of(0, 10);
+
+        Slice<PtReview> response = reviewService.findAll(keyword, 1L, pageable);
+
+        // then
+
+        // then
+        assertThat(response.isLast()).isFalse();
+        assertThat(response.getContent().size()).isEqualTo(1);
+    }
 
     @Test
     @DisplayName("만들어진 리뷰 날짜 기준으로 필터링 성공")

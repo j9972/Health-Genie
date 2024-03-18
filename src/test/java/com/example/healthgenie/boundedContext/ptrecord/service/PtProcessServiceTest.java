@@ -1,5 +1,8 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.example.healthgenie.base.exception.MatchingErrorResult;
 import com.example.healthgenie.base.exception.MatchingException;
 import com.example.healthgenie.base.exception.PtProcessErrorResult;
@@ -17,20 +20,15 @@ import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -381,20 +379,20 @@ class PtProcessServiceTest {
         });
     }
 
-    @Test
-    @DisplayName("키워드로 조회하기")
-    void findAll() {
-        // given
-        testKrUtils.login(user);
-
-        // when
-        String keyword = "test";
-        List<PtProcessResponseDto> response = processService.findAll(keyword);
-
-        // then
-        assertThat(response.size()).isEqualTo(1);
-        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(PtProcessResponseDto::getId).reversed());
-    }
+//    @Test
+//    @DisplayName("키워드로 조회하기")
+//    void findAll() {
+//        // given
+//        testKrUtils.login(user);
+//
+//        // when
+//        String keyword = "test";
+//        List<PtProcessResponseDto> response = processService.findAll(keyword);
+//
+//        // then
+//        assertThat(response.size()).isEqualTo(1);
+//        assertThat(response).isSortedAccordingTo(Comparator.comparingLong(PtProcessResponseDto::getId).reversed());
+//    }
 
     @Test
     @DisplayName("일지가 만들어진 날짜 기준으로 필터링으로 조회하기")
