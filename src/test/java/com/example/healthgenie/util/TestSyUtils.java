@@ -25,8 +25,8 @@ import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
-import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -291,6 +291,7 @@ public class TestSyUtils {
                 .nickname(nickname)
                 .build();
     }
+
 
     public TrainerInfo createProfile(String introduction, String career, String university,
                                      LocalTime startTime, LocalTime endTime, Double reviewAvg,

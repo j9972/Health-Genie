@@ -5,9 +5,7 @@ import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileSliceResponse;
 import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileService;
-import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileTransactionService;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,22 +30,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class TrainerProfileController {
 
     private final TrainerProfileService profileService;
-    private final TrainerProfileTransactionService trainerProfileTransactionService;
 
     // 트레이너 패킷 세부 내용 작성 API
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Result> createObservation(@AuthenticationPrincipal User user,
-                                                    @RequestPart ProfileRequestDto dto,
-                                                    @RequestPart(name = "profileImages", required = false) List<MultipartFile> profileImages) {
+    public ResponseEntity<Result> createProfile(@AuthenticationPrincipal User user,
+                                                @RequestPart ProfileRequestDto dto,
+                                                @RequestPart(name = "profileImages", required = false) List<MultipartFile> profileImages) {
 
         ProfileResponseDto response = profileService.save(user, dto, profileImages);
-        return ResponseEntity.ok(Result.of(response));
-    }
-
-    @PostMapping
-    public ResponseEntity<Result> save(ProfileRequestDto dto, @AuthenticationPrincipal User user) throws IOException {
-
-        ProfileResponseDto response = trainerProfileTransactionService.save(dto, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -67,12 +57,14 @@ public class TrainerProfileController {
     }
 
     // 관리페이지에서 트레이너 본인 내용을 수정
-    @PatchMapping("/{profileId}")
+    @PatchMapping(value = "/{profileId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> updateProfile(@PathVariable Long profileId,
-                                                ProfileRequestDto dto,
-                                                @AuthenticationPrincipal User user) throws IOException {
+                                                @RequestPart ProfileRequestDto dto,
+                                                @AuthenticationPrincipal User user,
+                                                @RequestPart(name = "profileImages", required = false) List<MultipartFile> profileImages) {
 
-        ProfileResponseDto response = trainerProfileTransactionService.update(profileId, dto, user);
+        ProfileResponseDto response = profileService.updateProfile(dto, profileId, user, profileImages);
 
         return ResponseEntity.ok(Result.of(response));
     }

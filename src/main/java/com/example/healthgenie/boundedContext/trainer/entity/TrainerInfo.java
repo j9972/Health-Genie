@@ -79,6 +79,10 @@ public class TrainerInfo extends BaseEntity {
         this.trainerPhotos.clear();
     }
 
+    public void updateProfileImages(List<TrainerPhoto> profileImages) {
+        this.trainerPhotos = profileImages;
+    }
+
     public void updateIntroduction(String introduction) {
         this.introduction = introduction;
     }

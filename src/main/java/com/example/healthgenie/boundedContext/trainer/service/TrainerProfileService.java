@@ -32,14 +32,37 @@ public class TrainerProfileService {
     /*
         관리페이지용 API -> 수정 , 트레이너만 가능
     */
-    @Transactional
-    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user) {
-        TrainerInfo profile = authorizationWriter(profileId, user);
+//    @Transactional
+//    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user) {
+//        TrainerInfo profile = authorizationWriter(profileId, user);
+//
+//        updateEachProfile(dto, profile);
+//
+//        return ProfileResponseDto.of(profile);
+//
+//    }
 
-        updateEachProfile(dto, profile);
+    @Transactional
+    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user,
+                                            List<MultipartFile> profileImages) {
+
+        TrainerInfo profile = trainerProfileRepository.findByIdAndMemberId(profileId, user.getId())
+                .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
+
+        updateProfileItems(dto, profile, profileImages);
 
         return ProfileResponseDto.of(profile);
+    }
 
+    private void updateProfileItems(ProfileRequestDto dto, TrainerInfo profile,
+                                    List<MultipartFile> profileImages) {
+
+        updateEachProfile(dto, profile);
+        if (profileImages != null && !profileImages.isEmpty()) {
+            List<TrainerPhoto> updatedImages = deleteExistedImagesAndUploadNewImages(profile,
+                    profileImages);
+            profile.updateProfileImages(updatedImages);
+        }
     }
 
     private void updateEachProfile(ProfileRequestDto dto, TrainerInfo profile) {
@@ -77,7 +100,6 @@ public class TrainerProfileService {
         return ProfileResponseDto.of(trainerProfileRepository.findById(profileId).orElseThrow());
     }
 
-    // review는 회원만 수정 삭제 가능
     private TrainerInfo authorizationWriter(Long id, User member) {
 
         TrainerInfo profile = trainerProfileRepository.findById(id)
@@ -146,5 +168,15 @@ public class TrainerProfileService {
 
         return trainerProfilePhotoRepository.save(
                 TrainerPhoto.builder().infoPhotoPath(url).info(profile).build());
+    }
+
+    private List<TrainerPhoto> deleteExistedImagesAndUploadNewImages(TrainerInfo profile,
+                                                                     List<MultipartFile> profileImages) {
+        deleteExistedImages(profile);
+        return uploadProfileImages(profile, profileImages);
+    }
+
+    private void deleteExistedImages(TrainerInfo profile) {
+        trainerProfilePhotoRepository.deleteByInfoId(profile.getId());
     }
 }
