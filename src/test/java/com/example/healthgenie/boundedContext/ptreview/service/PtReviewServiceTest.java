@@ -112,8 +112,8 @@ class PtReviewServiceTest {
         assertThat(response.getStopReason()).isEqualTo("test");
         assertThat(response.getContent()).isEqualTo("test");
         assertThat(response.getReviewScore()).isEqualTo(4.5);
-        assertThat(response.getUserNickName()).isEqualTo("test1");
-        assertThat(response.getTrainerNickName()).isEqualTo("test2");
+        assertThat(response.getUserName()).isEqualTo("test1");
+        assertThat(response.getTrainerName()).isEqualTo("test2");
     }
 
     @Test
@@ -221,8 +221,8 @@ class PtReviewServiceTest {
         assertThat(response.getStopReason()).isEqualTo("stop");
         assertThat(response.getContent()).isEqualTo("test review");
         assertThat(response.getReviewScore()).isEqualTo(4.5);
-        assertThat(response.getUserNickName()).isEqualTo("test3");
-        assertThat(response.getTrainerNickName()).isEqualTo("test4");
+        assertThat(response.getUserName()).isEqualTo("test3");
+        assertThat(response.getTrainerName()).isEqualTo("test4");
     }
 
     @Test
@@ -252,8 +252,8 @@ class PtReviewServiceTest {
         assertThat(response.get(0).getContent()).isEqualTo("test review");
         assertThat(response.get(0).getReviewScore()).isEqualTo(4.5);
         assertThat(response.get(0).getStopReason()).isEqualTo("stop");
-        assertThat(response.get(0).getUserNickName()).isEqualTo(user3.getNickname());
-        assertThat(response.get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
+        assertThat(response.get(0).getUserName()).isEqualTo(user3.getNickname());
+        assertThat(response.get(0).getTrainerName()).isEqualTo(user4.getNickname());
     }
 
     @Test
@@ -270,8 +270,8 @@ class PtReviewServiceTest {
         assertThat(response.get(0).getContent()).isEqualTo("test review");
         assertThat(response.get(0).getReviewScore()).isEqualTo(4.5);
         assertThat(response.get(0).getStopReason()).isEqualTo("stop");
-        assertThat(response.get(0).getUserNickName()).isEqualTo(user3.getNickname());
-        assertThat(response.get(0).getTrainerNickName()).isEqualTo(user4.getNickname());
+        assertThat(response.get(0).getUserName()).isEqualTo(user3.getNickname());
+        assertThat(response.get(0).getTrainerName()).isEqualTo(user4.getNickname());
     }
 
     @Test

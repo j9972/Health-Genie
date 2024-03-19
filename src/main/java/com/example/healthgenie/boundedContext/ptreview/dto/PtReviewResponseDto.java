@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.ptreview.dto;
 
 import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,8 +13,9 @@ public class PtReviewResponseDto {
     private String content;
     private String stopReason;
     private Double reviewScore;
-    private String userNickName;
-    private String trainerNickName; // 작성하는 사람
+    private String userName;
+    private String trainerName; // 작성하는 사람
+    private LocalDateTime createdAt;
 
     public static PtReviewResponseDto of(PtReview review) {
         return PtReviewResponseDto.builder()
@@ -21,8 +23,9 @@ public class PtReviewResponseDto {
                 .content(review.getContent())
                 .stopReason(review.getStopReason())
                 .reviewScore(review.getReviewScore())
-                .trainerNickName(review.getTrainer().getNickname())
-                .userNickName(review.getMember().getNickname())
+                .trainerName(review.getTrainer().getName())
+                .userName(review.getMember().getName())
+                .createdAt(review.getCreatedDate())
                 .build();
     }
 
