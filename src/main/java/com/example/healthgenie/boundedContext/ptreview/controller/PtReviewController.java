@@ -105,8 +105,6 @@ public class PtReviewController {
                                                @PathVariable Long reviewId,
                                                @AuthenticationPrincipal User user) {
 
-        log.info("review controller update -> principal user : {}", user);
-
         PtReviewResponseDto response = reviewService.updateReview(dto, reviewId, user);
         return ResponseEntity.ok(Result.of(response));
     }
