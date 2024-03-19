@@ -4,14 +4,13 @@ import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessResponseDto;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -38,7 +37,7 @@ public class PtProcessTransactionSerivce {
                 ptProcessPhotoService.saveAll(saved.getId(), photoPaths);
             }
         } catch (Exception e) {
-            for(String fileUrl : photoPaths) {
+            for (String fileUrl : photoPaths) {
                 s3UploadUtils.deleteS3Object("process-photos", fileUrl);
             }
             throw e;
@@ -50,8 +49,8 @@ public class PtProcessTransactionSerivce {
                 .content(saved.getContent())
                 .title(saved.getTitle())
                 .photoPaths(photoPaths)
-                .userNickName(saved.getUserNickName())
-                .trainerNickName(saved.getTrainerNickName())
+                .userName(saved.getUserName())
+                .trainerName(saved.getTrainerName())
                 .build();
     }
 
