@@ -3,6 +3,7 @@ package com.example.healthgenie.boundedContext.trainer.service;
 import com.example.healthgenie.base.exception.TrainerProfileErrorResult;
 import com.example.healthgenie.base.exception.TrainerProfileException;
 import com.example.healthgenie.base.utils.FileUploadUtils;
+import com.example.healthgenie.boundedContext.trainer.dto.ProfileDeleteResponseDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
@@ -32,16 +33,6 @@ public class TrainerProfileService {
     /*
         관리페이지용 API -> 수정 , 트레이너만 가능
     */
-//    @Transactional
-//    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user) {
-//        TrainerInfo profile = authorizationWriter(profileId, user);
-//
-//        updateEachProfile(dto, profile);
-//
-//        return ProfileResponseDto.of(profile);
-//
-//    }
-
     @Transactional
     public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user,
                                             List<MultipartFile> profileImages) {
@@ -114,14 +105,6 @@ public class TrainerProfileService {
 
     // 홈페이지에서 패킷에서 들어가면 보여줄 API
     @Transactional
-    public ProfileResponseDto save(ProfileRequestDto dto, User currentUser) {
-
-        TrainerInfo info = dto.toEntity(currentUser);
-
-        return ProfileResponseDto.of(trainerProfileRepository.save(info));
-    }
-
-    @Transactional
     public ProfileResponseDto save(User user, ProfileRequestDto dto, List<MultipartFile> profileImages) {
 
         TrainerInfo info = trainerProfileRepository.save(dto.toEntity(user));
@@ -178,5 +161,16 @@ public class TrainerProfileService {
 
     private void deleteExistedImages(TrainerInfo profile) {
         trainerProfilePhotoRepository.deleteByInfoId(profile.getId());
+    }
+
+    @Transactional
+    public ProfileDeleteResponseDto deleteProfile(Long profileId, User user) {
+
+        TrainerInfo profile = authorizationWriter(profileId, user);
+        trainerProfileRepository.deleteById(profile.getId());
+
+        return ProfileDeleteResponseDto.builder()
+                .id(profile.getId())
+                .build();
     }
 }

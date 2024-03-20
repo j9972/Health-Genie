@@ -67,6 +67,7 @@ public class TodoService {
         }
     }
 
+    @Transactional
     public TodoDeleteResponseDto deleteTodo(Long todoId, User user) {
         // user가 해당 글을 작성한 유저인지 체크 [ DB에 많은 데이터가 쌓이기 때문에 필요 ]
         Todo todo = authorizationWriter(todoId, user);
@@ -90,6 +91,7 @@ public class TodoService {
     /*
         todo를 전부 띄우는게 아니라 날짜 별로 띄워야 하는게 핵심
      */
+    @Transactional(readOnly = true)
     public List<TodoResponseDto> getAllMyTodo(LocalDate date, User user) {
 
         List<Todo> todos = todoQueryRepository.findAllByMemberIdAndDate(user.getId(), date);

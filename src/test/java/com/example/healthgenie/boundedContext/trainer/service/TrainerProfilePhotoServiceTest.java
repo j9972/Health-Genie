@@ -1,25 +1,24 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.example.healthgenie.base.exception.TrainerProfileException;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -44,7 +43,8 @@ class TrainerProfilePhotoServiceTest {
         LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
 
         user = testKrUtils.createUser("test1@test.com", "test1", AuthProvider.EMPTY, Role.TRAINER);
-        profile = testSyUtils.createProfile("test intro", "test career", "경북대", startTime, endTime, 4.5, 12000,23,user);
+        profile = testSyUtils.createProfile("test intro", "test career", "경북대", startTime, endTime, 4.5, 12000, 23,
+                user);
         photo = testSyUtils.createProfilePhoto(profile, "default-path.png");
     }
 
@@ -118,6 +118,7 @@ class TrainerProfilePhotoServiceTest {
         // then
         assertThat(all.size()).isEqualTo(4);
         assertThat(all).extracting(TrainerPhoto::getInfoPhotoPath)
-                .containsExactly( "default-path.png","test-photo-path.png", "test1-photo-path.png", "test2-photo-path.png");
+                .containsExactly("default-path.png", "test-photo-path.png", "test1-photo-path.png",
+                        "test2-photo-path.png");
     }
 }

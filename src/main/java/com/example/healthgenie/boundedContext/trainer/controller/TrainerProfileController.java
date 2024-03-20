@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.trainer.controller;
 
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.trainer.dto.ProfileDeleteResponseDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileSliceResponse;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,6 +78,12 @@ public class TrainerProfileController {
                                                 Pageable pageable) {
         ProfileSliceResponse response = ProfileSliceResponse.of(profileService.findAll(name, lastId, pageable));
 
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @DeleteMapping("/{profileId}")
+    public ResponseEntity<Result> deleteProfile(@AuthenticationPrincipal User user, @PathVariable Long profileId) {
+        ProfileDeleteResponseDto response = profileService.deleteProfile(profileId, user);
         return ResponseEntity.ok(Result.of(response));
     }
 }
