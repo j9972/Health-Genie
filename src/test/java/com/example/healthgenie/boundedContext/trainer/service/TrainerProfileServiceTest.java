@@ -71,7 +71,7 @@ class TrainerProfileServiceTest {
                 startTime, endTime, 4.5, null, 12000, 25, "test2");
 
         // when
-        ProfileResponseDto response = trainerProfileService.save(dto, user2);
+        ProfileResponseDto response = trainerProfileService.save(user2, dto, null);
 
         // then
         assertThat(response.getIntroduction()).isEqualTo("test intro");
@@ -106,7 +106,7 @@ class TrainerProfileServiceTest {
             if (!login) {
                 throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY);
             } else {
-                trainerProfileService.save(dto, user);
+                trainerProfileService.save(user, dto, null);
             }
         });
     }
@@ -176,7 +176,7 @@ class TrainerProfileServiceTest {
                 startTime, endTime, 4.5, null, 12000, 25, "test");
 
         // when
-        ProfileResponseDto saved = trainerProfileService.save(dto, user);
+        ProfileResponseDto saved = trainerProfileService.save(user, dto, null);
         ProfileRequestDto updatedDto = testSyUtils.createProfileDto("updated intro", "Olympia", "경북대",
                 startTime, endTime, 4.5, null, 22000, 25, "test");
 
@@ -200,7 +200,7 @@ class TrainerProfileServiceTest {
                 startTime, endTime, 4.5, null, 12000, 25, "test");
 
         // when
-        ProfileResponseDto response = trainerProfileService.save(dto, user);
+        ProfileResponseDto response = trainerProfileService.save(user, dto, null);
         trainerProfileService.getProfile(response.getId());
 
         // then
