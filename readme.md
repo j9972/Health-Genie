@@ -185,6 +185,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 [ Annotation - 컬렉션 타입 형태의 데이터 저장 고민 ](https://techj9972.tistory.com/243) <br>
 [ 무한스크롤 도입 - 페이지 조회 성능 향상을 위한 고민](https://techj9972.tistory.com/276) <br>
 [ null처리는 어떻게? - orElse() vs orElseGet()](https://techj9972.tistory.com/278) <br>
+[ Caching Exception ](https://techj9972.tistory.com/295) <br>
 
 ### 프로젝트 진행 이슈
 [ 이메일 인증 전략 고민 [1] - Redis 사용 ](https://techj9972.tistory.com/238) <br>
