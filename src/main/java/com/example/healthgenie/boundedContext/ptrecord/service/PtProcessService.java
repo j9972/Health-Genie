@@ -1,11 +1,9 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
 
-import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.MatchingErrorResult;
 import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.PtProcessErrorResult;
 import com.example.healthgenie.base.exception.PtProcessException;
 import com.example.healthgenie.base.exception.UserErrorResult;
 import com.example.healthgenie.base.exception.UserException;
@@ -72,7 +70,7 @@ public class PtProcessService {
                 }
 
                 log.warn("일지 작성 날짜가 매칭날짜보다 뒤에 있어야 하는데 그렇지 못함");
-                throw new PtProcessException(PtProcessErrorResult.WRONG_DATE);
+                throw PtProcessException.WRONG_DATE;
 
             }
         }
@@ -101,7 +99,7 @@ public class PtProcessService {
     @Transactional(readOnly = true)
     public PtProcessResponseDto getPtProcess(Long processId, User user) {
         PtProcess process = ptProcessRepository.findById(processId)
-                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_PROCESS_HISTORY));
+                .orElseThrow(() -> PtProcessException.NO_PROCESS_HISTORY);
 
         // 권한 체크
         checkRole(user, Role.TRAINER);
@@ -165,7 +163,7 @@ public class PtProcessService {
     private PtProcess authorizationProcessWriter(Long id, User member) {
 
         PtProcess process = ptProcessRepository.findById(id)
-                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.RECORD_EMPTY));
+                .orElseThrow(() -> PtProcessException.RECORD_EMPTY);
         authCheck(member, process);
 
         return process;
@@ -174,14 +172,14 @@ public class PtProcessService {
     private void authCheck(User member, PtProcess process) {
         if (!process.getTrainer().getId().equals(member.getId())) {
             log.warn("process 소유자 user : {}", member);
-            throw new PtProcessException(PtProcessErrorResult.WRONG_USER);
+            throw PtProcessException.WRONG_USER;
         }
     }
 
     private void checkRole(User currentUser, Role role) {
         if (!currentUser.getRole().equals(role)) {
             log.warn("role 오류. currentUser : {}", currentUser);
-            throw new CommonException(CommonErrorResult.UNAUTHORIZED);
+            throw CommonException.UNAUTHORIZED;
         }
     }
 

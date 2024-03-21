@@ -1,9 +1,8 @@
 package com.example.healthgenie.boundedContext.email.service;
 
-import com.example.healthgenie.base.exception.CommonErrorResult;
+
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.boundedContext.email.EmailValidator;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
@@ -23,11 +22,11 @@ public class MailService {
 
     public void sendEmail(String toEmail,
                           String title,
-                          String text) throws MailException  {
+                          String text) throws MailException {
 
         if (!validator.test(toEmail)) {
             log.warn("email validateion fail");
-            throw new CommonException(CommonErrorResult.WRONG_VALIDATE_EMAIL);
+            throw CommonException.WRONG_VALIDATE_EMAIL;
         }
 
         SimpleMailMessage emailForm = createEmailForm(toEmail, title, text);
@@ -36,7 +35,7 @@ public class MailService {
             log.info("email send ,emailForm : {} ", emailForm);
             emailSender.send(emailForm);
         } catch (RuntimeException e) {
-            throw new CommonException(CommonErrorResult.UNABLE_TO_SEND_EMAIL);
+            throw CommonException.UNABLE_TO_SEND_EMAIL;
         }
     }
 

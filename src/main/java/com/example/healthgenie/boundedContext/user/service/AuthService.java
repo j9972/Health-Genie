@@ -1,6 +1,8 @@
 package com.example.healthgenie.boundedContext.user.service;
 
-import com.example.healthgenie.base.exception.CommonErrorResult;
+
+import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.KAKAO;
+
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.exception.JwtErrorResult;
 import com.example.healthgenie.base.exception.JwtException;
@@ -11,16 +13,14 @@ import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.service.RefreshTokenService;
 import com.example.healthgenie.boundedContext.user.dto.JwtResponse;
 import com.example.healthgenie.boundedContext.user.dto.TokenRequest;
-import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.KAKAO;
 
 @Slf4j
 @Service
@@ -35,19 +35,19 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public JwtResponse redirect(TokenRequest tokenRequest){
-        if(KAKAO.getAuthProvider().equals(tokenRequest.getRegistrationId())){
+    public JwtResponse redirect(TokenRequest tokenRequest) {
+        if (KAKAO.getAuthProvider().equals(tokenRequest.getRegistrationId())) {
             return kakaoRequestService.getToken(tokenRequest);
-        } else if(AuthProvider.GOOGLE.getAuthProvider().equals(tokenRequest.getRegistrationId())) {
+        } else if (AuthProvider.GOOGLE.getAuthProvider().equals(tokenRequest.getRegistrationId())) {
             return googleRequestService.getToken(tokenRequest);
         }
 
-        throw new CommonException(CommonErrorResult.BAD_REQUEST);
+        throw CommonException.BAD_REQUEST;
     }
 
     @Transactional
     public JwtResponse refreshToken(String accessToken, String refreshToken) {
-        if(!jwtTokenProvider.isExpired(accessToken)) {
+        if (!jwtTokenProvider.isExpired(accessToken)) {
             throw new JwtException(JwtErrorResult.NOT_EXPIRED_TOKEN);
         }
 
@@ -55,9 +55,10 @@ public class AuthService {
 
         User user = userService.findByEmail(refreshTokenObj.getKeyEmail());
 
-        if(jwtTokenProvider.isExpired(refreshToken)) {
+        if (jwtTokenProvider.isExpired(refreshToken)) {
             refreshTokenService.deleteByKeyEmail(user.getEmail());
-            refreshTokenObj = refreshTokenService.save(jwtTokenProvider.generateRefreshToken(user.getEmail(), user.getRole().getCode()), user.getEmail());
+            refreshTokenObj = refreshTokenService.save(
+                    jwtTokenProvider.generateRefreshToken(user.getEmail(), user.getRole().getCode()), user.getEmail());
         }
 
         return JwtResponse.builder()

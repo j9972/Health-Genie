@@ -1,6 +1,5 @@
 package com.example.healthgenie.boundedContext.email.controller;
 
-import com.example.healthgenie.base.exception.CommonErrorResult;
 import com.example.healthgenie.base.exception.CommonException;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.email.dto.MailRequestDto;
@@ -54,7 +53,7 @@ public class MailController {
 
         } else {
             log.warn("이메일의 도메인이 해당 학교 도메인과 다릅니다");
-            throw new CommonException(CommonErrorResult.WRONG_DOMAIN);
+            throw CommonException.WRONG_DOMAIN;
         }
     }
 

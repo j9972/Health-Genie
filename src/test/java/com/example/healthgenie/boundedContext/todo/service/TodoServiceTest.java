@@ -1,29 +1,27 @@
 package com.example.healthgenie.boundedContext.todo.service;
 
-import com.example.healthgenie.base.exception.TodoErrorResult;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.example.healthgenie.base.exception.TodoException;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -87,7 +85,7 @@ class TodoServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw new TodoException(TodoErrorResult.NO_USER_INFO);
+                throw TodoException.NO_USER_INFO;
             } else {
                 todoService.addTodoList(dto, user);
             }
@@ -122,7 +120,7 @@ class TodoServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw new TodoException(TodoErrorResult.NO_USER_INFO);
+                throw TodoException.NO_USER_INFO;
             } else {
                 todoService.update(dto, todoTest.getId(), user);
             }
@@ -155,7 +153,7 @@ class TodoServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw new TodoException(TodoErrorResult.WRONG_USER);
+                throw TodoException.WRONG_USER;
             } else {
                 todoService.deleteTodo(todoTest.getId(), user);
             }

@@ -1,17 +1,15 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
+import com.example.healthgenie.base.exception.PtProcessException;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
-import com.example.healthgenie.base.exception.PtProcessErrorResult;
-import com.example.healthgenie.base.exception.PtProcessException;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessPhotoRepository;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -23,7 +21,7 @@ public class PtProcessPhotoService {
     @Transactional
     public PtProcessPhoto save(Long processId, String path) {
         PtProcess process = ptProcessRepository.findById(processId)
-                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_PROCESS_HISTORY));
+                .orElseThrow(() -> PtProcessException.NO_PROCESS_HISTORY);
 
         PtProcessPhoto photo = PtProcessPhoto.builder()
                 .processPhotoPath(path)
@@ -36,7 +34,7 @@ public class PtProcessPhotoService {
     @Transactional
     public List<PtProcessPhoto> saveAll(Long processId, List<String> photoPaths) {
         PtProcess process = ptProcessRepository.findById(processId)
-                .orElseThrow(() -> new PtProcessException(PtProcessErrorResult.NO_PROCESS_HISTORY));
+                .orElseThrow(() -> PtProcessException.NO_PROCESS_HISTORY);
 
         List<PtProcessPhoto> photos = photoPaths.stream()
                 .map(path -> PtProcessPhoto.builder()

@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
-import com.example.healthgenie.base.exception.TrainerProfileErrorResult;
+
 import com.example.healthgenie.base.exception.TrainerProfileException;
 import com.example.healthgenie.base.utils.FileUploadUtils;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileDeleteResponseDto;
@@ -38,7 +38,7 @@ public class TrainerProfileService {
                                             List<MultipartFile> profileImages) {
 
         TrainerInfo profile = trainerProfileRepository.findByIdAndMemberId(profileId, user.getId())
-                .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
+                .orElseThrow(() -> TrainerProfileException.PROFILE_EMPTY);
 
         updateProfileItems(dto, profile, profileImages);
 
@@ -94,11 +94,11 @@ public class TrainerProfileService {
     private TrainerInfo authorizationWriter(Long id, User member) {
 
         TrainerInfo profile = trainerProfileRepository.findById(id)
-                .orElseThrow(() -> new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY));
+                .orElseThrow(() -> TrainerProfileException.PROFILE_EMPTY);
 
         if (!profile.getMember().getId().equals(member.getId())) {
             log.warn("current user doesn't have permission, member : {}", profile.getMember());
-            throw new TrainerProfileException(TrainerProfileErrorResult.NO_PERMISSION);
+            throw TrainerProfileException.NO_PERMISSION;
         }
         return profile;
     }

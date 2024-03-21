@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
-import com.example.healthgenie.base.exception.RoutineErrorResult;
+
 import com.example.healthgenie.base.exception.RoutineException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineDeleteResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
@@ -34,7 +34,7 @@ public class RoutineService {
         Routine saved = new Routine();
 
         boolean valid = dto.getWriter().equals(user.getNickname());
-        validNickname(valid, RoutineErrorResult.DIFFERNET_NICKNAME);
+        validNickname(valid);
 
         List<Routine> routines = routineRepository.findAllByMemberId(user.getId());
 
@@ -42,7 +42,7 @@ public class RoutineService {
             for (Routine mine : routines) {
                 if (mine.getDay().equals(dto.getDay())) {
                     log.warn("중복된 요일입니다.");
-                    throw new RoutineException(RoutineErrorResult.DUPLICATE_DAY);
+                    throw RoutineException.DUPLICATE_DAY;
                 }
             }
         }
@@ -141,20 +141,20 @@ public class RoutineService {
     private Routine authorizationWriter(Long id, User member) {
 
         Routine routine = routineRepository.findById(id)
-                .orElseThrow(() -> new RoutineException(RoutineErrorResult.NO_HISTORY));
+                .orElseThrow(() -> RoutineException.NO_HISTORY);
 
         if (!routine.getMember().getId().equals(member.getId())) {
             log.warn("member doesn't have authentication , routine.getMember {}", routine.getMember());
-            throw new RoutineException(RoutineErrorResult.NO_USER_INFO);
+            throw RoutineException.NO_USER_INFO;
         }
         return routine;
 
     }
 
-    private void validNickname(boolean routine, RoutineErrorResult validError) {
+    private void validNickname(boolean routine) {
         if (!routine) {
             log.warn("routine valid : false");
-            throw new RoutineException(validError);
+            throw RoutineException.DIFFERENT_NICKNAME;
         }
     }
 
