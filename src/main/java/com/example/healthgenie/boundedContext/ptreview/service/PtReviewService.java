@@ -2,7 +2,6 @@ package com.example.healthgenie.boundedContext.ptreview.service;
 
 import com.example.healthgenie.base.exception.MatchingErrorResult;
 import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.PtReviewErrorResult;
 import com.example.healthgenie.base.exception.PtReviewException;
 import com.example.healthgenie.base.exception.UserErrorResult;
 import com.example.healthgenie.base.exception.UserException;
@@ -45,10 +44,10 @@ public class PtReviewService {
     public PtReviewResponseDto addPtReview(PtReviewRequestDto dto, User user) {
 
         User trainer = userRepository.findByNickname(dto.getTrainerNickName())
-                .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.TRAINER_EMPTY));
+                .orElseThrow(() -> PtReviewException.TRAINER_EMPTY);
 
         User matchingUser = userRepository.findByNickname(dto.getUserNickName())
-                .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.WRONG_USER));
+                .orElseThrow(() -> PtReviewException.WRONG_USER);
 
         ShouldNotBeTrainer(matchingUser, Role.TRAINER);
 
@@ -74,7 +73,7 @@ public class PtReviewService {
                 }
 
                 log.warn("일지 작성 날짜가 매칭날짜보다 뒤에 있어야 하는데 그렇지 못함");
-                throw new PtReviewException(PtReviewErrorResult.WRONG_DATE);
+                throw PtReviewException.WRONG_DATE;
 
             }
         }
@@ -96,7 +95,7 @@ public class PtReviewService {
     @Transactional(readOnly = true)
     public PtReviewResponseDto getPtReview(Long reviewId, User user) {
         PtReview review = ptReviewRepository.findById(reviewId).orElseThrow(
-                () -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
+                () -> PtReviewException.NO_REVIEW_HISTORY);
 
         reviewWriter(user, review);
         return PtReviewResponseDto.of(review);
@@ -178,7 +177,7 @@ public class PtReviewService {
     // review는 회원만 수정 삭제 가능
     private PtReview authorizationReviewWriter(Long id, User member) {
         PtReview review = ptReviewRepository.findById(id)
-                .orElseThrow(() -> new PtReviewException(PtReviewErrorResult.NO_REVIEW_HISTORY));
+                .orElseThrow(() -> PtReviewException.NO_REVIEW_HISTORY);
 
         reviewWriter(member, review);
         return review;
@@ -187,28 +186,28 @@ public class PtReviewService {
     private void reviewWriter(User member, PtReview review) {
         if (!review.getMember().getId().equals(member.getId())) {
             log.warn("this user doesn't have authentication : {}", review.getMember());
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER);
+            throw PtReviewException.WRONG_USER;
         }
     }
 
     private void ShouldNotBeTrainer(User currentUser, Role role) {
         if (currentUser.getRole().equals(role)) {
             log.warn("trainer can't write review ( role : {} )", currentUser.getRole());
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
+            throw PtReviewException.WRONG_USER_ROLE;
         }
     }
 
     private void ShouldBeTrainer(User trainer, Role role) {
         if (!trainer.getRole().equals(role)) {
             log.warn("wrong user role : {} ( is not trainer )", trainer.getRole());
-            throw new PtReviewException(PtReviewErrorResult.WRONG_USER_ROLE);
+            throw PtReviewException.WRONG_USER_ROLE;
         }
     }
 
     private void duplicateReview(PtReview review) {
         if (review != null) {
             log.warn("duplicate review : {}", review);
-            throw new PtReviewException(PtReviewErrorResult.DUPLICATED_REVIEW);
+            throw PtReviewException.DUPLICATED_REVIEW;
         }
     }
 }

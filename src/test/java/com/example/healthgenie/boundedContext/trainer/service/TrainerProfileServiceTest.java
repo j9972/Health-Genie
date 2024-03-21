@@ -3,7 +3,6 @@ package com.example.healthgenie.boundedContext.trainer.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.healthgenie.base.exception.TrainerProfileErrorResult;
 import com.example.healthgenie.base.exception.TrainerProfileException;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
@@ -104,7 +103,7 @@ class TrainerProfileServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY);
+                throw TrainerProfileException.PROFILE_EMPTY;
             } else {
                 trainerProfileService.save(user, dto, null);
             }
@@ -156,7 +155,7 @@ class TrainerProfileServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw new TrainerProfileException(TrainerProfileErrorResult.PROFILE_EMPTY);
+                throw TrainerProfileException.PROFILE_EMPTY;
             } else {
                 trainerProfileService.updateProfile(dto, profile.getId(), user, null);
             }

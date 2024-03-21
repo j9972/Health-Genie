@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toList;
 
 import com.example.healthgenie.base.exception.MatchingErrorResult;
 import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.TodoErrorResult;
 import com.example.healthgenie.base.exception.TodoException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
@@ -79,11 +78,11 @@ public class TodoService {
     }
 
     private Todo authorizationWriter(Long id, User member) {
-        Todo todo = todoRepository.findById(id).orElseThrow(() -> new TodoException(TodoErrorResult.NO_TODO_INFO));
+        Todo todo = todoRepository.findById(id).orElseThrow(() -> TodoException.NO_TODO_INFO);
 
         if (!todo.getMember().getId().equals(member.getId())) {
             log.warn("todo 작성한 member 오류 : {}", todo.getMember());
-            throw new TodoException(TodoErrorResult.WRONG_USER);
+            throw TodoException.WRONG_USER;
         }
         return todo;
     }

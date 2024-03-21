@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.healthgenie.base.exception.MatchingErrorResult;
 import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.PtProcessErrorResult;
 import com.example.healthgenie.base.exception.PtProcessException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
@@ -150,7 +149,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user.getRole().equals(Role.TRAINER)) {
-                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+                throw PtProcessException.NO_USER_INFO;
             }
         }).isInstanceOf(PtProcessException.class);
     }
@@ -171,7 +170,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+                throw PtProcessException.NO_USER_INFO;
             } else {
                 processService.addPtProcess(dto, user);
             }
@@ -225,7 +224,7 @@ class PtProcessServiceTest {
             if (!user3.getNickname().equals(process.getMember().getNickname())
                     & !user3.getNickname().equals(process.getTrainer().getNickname())
             ) {
-                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+                throw PtProcessException.NO_USER_INFO;
             } else {
                 processService.getPtProcess(process.getId(), user3);
             }
@@ -304,7 +303,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+                throw PtProcessException.NO_USER_INFO;
             } else {
                 processService.getAllMyProcess(0, 5, user);
             }
@@ -322,7 +321,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+                throw PtProcessException.NO_USER_INFO;
             } else {
                 processService.getAllTrainerProcess(0, 5, user);
             }
@@ -354,7 +353,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user.getRole().equals(Role.TRAINER)) {
-                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+                throw PtProcessException.NO_USER_INFO;
             }
         }).isInstanceOf(PtProcessException.class);
     }
@@ -370,7 +369,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw new PtProcessException(PtProcessErrorResult.NO_USER_INFO);
+                throw PtProcessException.NO_USER_INFO;
             } else {
                 processService.deletePtProcess(process.getId(), user);
             }

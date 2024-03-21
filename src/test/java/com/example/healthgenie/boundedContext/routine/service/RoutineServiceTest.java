@@ -1,8 +1,10 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
-import com.example.healthgenie.base.exception.CommonErrorResult;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.base.exception.RoutineErrorResult;
 import com.example.healthgenie.base.exception.RoutineException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
@@ -11,25 +13,20 @@ import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
 import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
@@ -125,7 +122,7 @@ class RoutineServiceTest {
                 RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.MONDAY
                         , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
                 routineService.writeRoutine(dto, user);
-                throw new RoutineException(RoutineErrorResult.DUPLICATE_DAY);
+                throw RoutineException.DUPLICATE_DAY;
             }
 
         }).isInstanceOf(RoutineException.class);
@@ -147,7 +144,7 @@ class RoutineServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!loginResult) {
-                throw new CommonException(CommonErrorResult.BAD_REQUEST);
+                throw CommonException.BAD_REQUEST;
             } else {
                 routineService.writeRoutine(dto, user);
             }
@@ -272,7 +269,7 @@ class RoutineServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (failRoutine.getLevel().equals(Level.EMPTY)) {
-                throw new CommonException(CommonErrorResult.BAD_REQUEST);
+                throw CommonException.BAD_REQUEST;
             }
         }).isInstanceOf(CommonException.class);
     }
@@ -324,7 +321,7 @@ class RoutineServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!loginResult) {
-                throw new CommonException(CommonErrorResult.BAD_REQUEST);
+                throw CommonException.BAD_REQUEST;
             } else {
                 routineService.deleteRoutine(routine.getId(), user);
             }

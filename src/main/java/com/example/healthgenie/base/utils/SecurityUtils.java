@@ -6,19 +6,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static com.example.healthgenie.base.exception.CommonErrorResult.USER_NOT_FOUND;
 
 @Slf4j
 public class SecurityUtils {
 
-    private SecurityUtils() { }
+    private SecurityUtils() {
+    }
 
     public static User getCurrentUser() {
 
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null) {
-            throw new CommonException(USER_NOT_FOUND);
+            throw CommonException.USER_NOT_FOUND;
         }
         return (User) authentication.getPrincipal();
     }
