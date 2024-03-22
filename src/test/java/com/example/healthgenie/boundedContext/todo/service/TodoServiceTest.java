@@ -3,7 +3,7 @@ package com.example.healthgenie.boundedContext.todo.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.healthgenie.base.exception.TodoException;
+import com.example.healthgenie.base.exception.Todo.TodoException;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;

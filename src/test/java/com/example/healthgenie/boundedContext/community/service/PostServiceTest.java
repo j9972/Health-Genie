@@ -1,13 +1,16 @@
 package com.example.healthgenie.boundedContext.community.service;
 
-import com.example.healthgenie.base.exception.CommunityPostException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.example.healthgenie.base.exception.Post.CommunityPostException;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,9 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -92,19 +92,19 @@ class PostServiceTest {
         // given
         Long start = 0L;
         Long end = 0L;
-        for(int i=1; i<=20; i++) {
+        for (int i = 1; i <= 20; i++) {
             Post post = testKrUtils.createPost(user1.getId(), "검색용" + i);
-            if(i == 1) {
+            if (i == 1) {
                 start = post.getId();
             }
-            if(i == 20) {
+            if (i == 20) {
                 end = post.getId();
             }
         }
 
         // when
         Slice<Post> findPosts1 = postService.findAll("검색용", null, null, PageRequest.of(0, 10));
-        Slice<Post> findPosts2 = postService.findAll("검색용", null, (start+end)/2+1, PageRequest.of(0, 10));
+        Slice<Post> findPosts2 = postService.findAll("검색용", null, (start + end) / 2 + 1, PageRequest.of(0, 10));
 
         // then
         assertThat(findPosts1.isLast()).isFalse();

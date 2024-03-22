@@ -1,7 +1,10 @@
 package com.example.healthgenie.boundedContext.community.post.service;
 
 
-import com.example.healthgenie.base.exception.CommunityPostException;
+import static com.example.healthgenie.base.exception.Post.CommunityPostErrorResult.NO_PERMISSION;
+import static com.example.healthgenie.base.exception.Post.CommunityPostErrorResult.POST_EMPTY;
+
+import com.example.healthgenie.base.exception.Post.CommunityPostException;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
@@ -9,17 +12,13 @@ import com.example.healthgenie.boundedContext.community.post.repository.PostQuer
 import com.example.healthgenie.boundedContext.community.post.repository.PostRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.util.Objects;
-
-import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
-import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
 
 @Service
 @RequiredArgsConstructor
@@ -61,15 +60,15 @@ public class PostService {
     public Post update(Long postId, Long userId, PostRequest request) {
         Post post = findById(postId);
 
-        if(!Objects.equals(userId, post.getWriter().getId())) {
+        if (!Objects.equals(userId, post.getWriter().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 
-        if(StringUtils.hasText(request.getTitle())) {
+        if (StringUtils.hasText(request.getTitle())) {
             post.updateTitle(request.getTitle());
         }
 
-        if(StringUtils.hasText(request.getContent())) {
+        if (StringUtils.hasText(request.getContent())) {
             post.updateContent(request.getContent());
         }
 
@@ -80,7 +79,7 @@ public class PostService {
     public String delete(Long postId, Long userId) {
         Post post = findById(postId);
 
-        if(!Objects.equals(userId, post.getWriter().getId())) {
+        if (!Objects.equals(userId, post.getWriter().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 

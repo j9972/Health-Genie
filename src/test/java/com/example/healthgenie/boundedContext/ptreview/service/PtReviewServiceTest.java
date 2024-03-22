@@ -3,10 +3,10 @@ package com.example.healthgenie.boundedContext.ptreview.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.base.exception.MatchingErrorResult;
-import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.PtReviewException;
+import com.example.healthgenie.base.exception.Common.CommonException;
+import com.example.healthgenie.base.exception.Matching.MatchingErrorResult;
+import com.example.healthgenie.base.exception.Matching.MatchingException;
+import com.example.healthgenie.base.exception.PtReview.PtReviewException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;

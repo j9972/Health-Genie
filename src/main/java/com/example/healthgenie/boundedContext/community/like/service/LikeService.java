@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.community.like.service;
 
-import com.example.healthgenie.base.exception.LikeException;
+import com.example.healthgenie.base.exception.Like.LikeException;
 import com.example.healthgenie.boundedContext.community.like.entity.Like;
 import com.example.healthgenie.boundedContext.community.like.repository.LikeRepository;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.healthgenie.base.exception.LikeErrorResult.ALREADY_LIKED;
-import static com.example.healthgenie.base.exception.LikeErrorResult.NOT_FOUND;
+import static com.example.healthgenie.base.exception.Like.LikeErrorResult.ALREADY_LIKED;
+import static com.example.healthgenie.base.exception.Like.LikeErrorResult.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

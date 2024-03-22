@@ -1,7 +1,7 @@
 //package com.example.healthgenie.boundedContext.chat.service;
 //
-//import com.example.healthgenie.base.exception.ChatErrorResult;
-//import com.example.healthgenie.base.exception.ChatException;
+//import com.example.healthgenie.base.exception.Chat.ChatErrorResult;
+//import com.example.healthgenie.base.exception.Chat.ChatException;
 //import com.example.healthgenie.boundedContext.chat.dto.ChatMessageRequest;
 //import com.example.healthgenie.boundedContext.chat.dto.GetMessageResponse;
 //import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.email.controller;
 
-import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.Common.CommonException;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.email.dto.MailRequestDto;
 import com.example.healthgenie.boundedContext.email.service.UniDomainService;

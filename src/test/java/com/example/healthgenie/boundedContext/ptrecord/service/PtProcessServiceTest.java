@@ -3,9 +3,9 @@ package com.example.healthgenie.boundedContext.ptrecord.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.healthgenie.base.exception.MatchingErrorResult;
-import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.PtProcessException;
+import com.example.healthgenie.base.exception.Matching.MatchingErrorResult;
+import com.example.healthgenie.base.exception.Matching.MatchingException;
+import com.example.healthgenie.base.exception.PtProcess.PtProcessException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;

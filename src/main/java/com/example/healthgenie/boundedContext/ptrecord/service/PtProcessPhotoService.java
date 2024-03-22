@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
-import com.example.healthgenie.base.exception.PtProcessException;
+import com.example.healthgenie.base.exception.PtProcess.PtProcessException;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessPhotoRepository;

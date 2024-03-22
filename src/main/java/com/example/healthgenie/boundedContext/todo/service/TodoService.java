@@ -2,9 +2,9 @@ package com.example.healthgenie.boundedContext.todo.service;
 
 import static java.util.stream.Collectors.toList;
 
-import com.example.healthgenie.base.exception.MatchingErrorResult;
-import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.TodoException;
+import com.example.healthgenie.base.exception.Matching.MatchingErrorResult;
+import com.example.healthgenie.base.exception.Matching.MatchingException;
+import com.example.healthgenie.base.exception.Todo.TodoException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;

@@ -3,7 +3,7 @@ package com.example.healthgenie.boundedContext.trainer.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.healthgenie.base.exception.TrainerProfileException;
+import com.example.healthgenie.base.exception.TrainerProfile.TrainerProfileException;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;

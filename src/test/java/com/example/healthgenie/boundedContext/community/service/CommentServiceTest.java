@@ -1,26 +1,25 @@
 package com.example.healthgenie.boundedContext.community.service;
 
-import com.example.healthgenie.base.exception.CommunityCommentException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.example.healthgenie.base.exception.Comment.CommunityCommentException;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentResponse;
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
 import com.example.healthgenie.boundedContext.community.comment.service.CommentService;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.util.TestKrUtils;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -76,7 +75,7 @@ class CommentServiceTest {
     @DisplayName("전체 댓글 조회 - 전체 게시글")
     void findAll() {
         // given
-        for(int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             Post post = testKrUtils.createPost(user1.getId(), "제목" + i, "내용" + i);
             testKrUtils.createComment(post.getId(), user1, "댓글" + i);
         }
@@ -92,7 +91,7 @@ class CommentServiceTest {
     @DisplayName("전체 댓글(Entity) 조회 - 해당 게시글")
     void findAllByPostId() {
         // given
-        for(int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             testKrUtils.createComment(post1.getId(), user1, "댓글" + i);
         }
 
@@ -107,7 +106,7 @@ class CommentServiceTest {
     @DisplayName("전체 댓글(DTO) 조회 - 해당 게시글")
     void findDtosAllByPostId() {
         // given
-        for(int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             testKrUtils.createComment(post1.getId(), user1, "댓글" + i);
         }
 

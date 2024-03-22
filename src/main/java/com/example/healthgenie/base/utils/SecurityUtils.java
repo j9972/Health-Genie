@@ -1,6 +1,6 @@
 package com.example.healthgenie.base.utils;
 
-import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.Common.CommonException;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

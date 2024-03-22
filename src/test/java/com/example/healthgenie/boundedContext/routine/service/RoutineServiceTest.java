@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.base.exception.RoutineException;
+import com.example.healthgenie.base.exception.Common.CommonException;
+import com.example.healthgenie.base.exception.Routine.RoutineException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;

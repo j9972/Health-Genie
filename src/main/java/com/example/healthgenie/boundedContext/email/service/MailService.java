@@ -1,7 +1,7 @@
 package com.example.healthgenie.boundedContext.email.service;
 
 
-import com.example.healthgenie.base.exception.CommonException;
+import com.example.healthgenie.base.exception.Common.CommonException;
 import com.example.healthgenie.boundedContext.email.EmailValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

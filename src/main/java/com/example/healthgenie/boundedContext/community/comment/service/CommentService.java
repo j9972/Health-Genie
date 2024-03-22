@@ -1,6 +1,9 @@
 package com.example.healthgenie.boundedContext.community.comment.service;
 
-import com.example.healthgenie.base.exception.CommunityCommentException;
+import static com.example.healthgenie.base.exception.Comment.CommunityCommentErrorResult.COMMENT_EMPTY;
+import static com.example.healthgenie.base.exception.Comment.CommunityCommentErrorResult.NO_PERMISSION;
+
+import com.example.healthgenie.base.exception.Comment.CommunityCommentException;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentResponse;
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
@@ -9,17 +12,13 @@ import com.example.healthgenie.boundedContext.community.comment.repository.Comme
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.util.List;
-import java.util.Objects;
-
-import static com.example.healthgenie.base.exception.CommunityCommentErrorResult.COMMENT_EMPTY;
-import static com.example.healthgenie.base.exception.CommunityCommentErrorResult.NO_PERMISSION;
 
 @Service
 @Slf4j
@@ -67,11 +66,11 @@ public class CommentService {
 
         Comment comment = findById(commentId);
 
-        if(!Objects.equals(userId, comment.getWriter().getId())) {
+        if (!Objects.equals(userId, comment.getWriter().getId())) {
             throw new CommunityCommentException(NO_PERMISSION);
         }
 
-        if(StringUtils.hasText(request.getContent())) {
+        if (StringUtils.hasText(request.getContent())) {
             comment.updateContent(request.getContent());
         }
 
@@ -84,7 +83,7 @@ public class CommentService {
 
         Comment comment = findById(commentId);
 
-        if(!Objects.equals(userId, comment.getWriter().getId())) {
+        if (!Objects.equals(userId, comment.getWriter().getId())) {
             throw new CommunityCommentException(NO_PERMISSION);
         }
 

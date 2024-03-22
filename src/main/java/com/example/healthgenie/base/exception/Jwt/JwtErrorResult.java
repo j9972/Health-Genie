@@ -1,4 +1,4 @@
-package com.example.healthgenie.base.exception;
+package com.example.healthgenie.base.exception.Jwt;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,7 @@ public enum JwtErrorResult {
     EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "expired access token"),
     EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "expired access token"),
     NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED, "not found token"),
-    NOT_EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "not expired yet")
-    ;
+    NOT_EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "not expired yet");
 
     private final HttpStatus httpStatus;
     private final String message;

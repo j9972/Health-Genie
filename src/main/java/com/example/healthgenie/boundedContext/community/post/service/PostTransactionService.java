@@ -1,6 +1,6 @@
 //package com.example.healthgenie.boundedContext.community.post.service;
 //
-//import com.example.healthgenie.base.exception.CommunityPostException;
+//import com.example.healthgenie.base.exception.Post.CommunityPostException;
 //import com.example.healthgenie.base.utils.DateUtils;
 //import com.example.healthgenie.base.utils.S3UploadUtils;
 //import com.example.healthgenie.base.utils.SecurityUtils;
@@ -22,8 +22,8 @@
 //import java.util.List;
 //import java.util.Objects;
 //
-//import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
-//import static com.example.healthgenie.base.exception.CommunityPostErrorResult.POST_EMPTY;
+//import static com.example.healthgenie.base.exception.Post.CommunityPostErrorResult.NO_PERMISSION;
+//import static com.example.healthgenie.base.exception.Post.CommunityPostErrorResult.POST_EMPTY;
 //
 ///**
 // * 작업 단위를 늘려서 같은 트랜잭션에서 변경이 일어나게 하기 위한 서비스
