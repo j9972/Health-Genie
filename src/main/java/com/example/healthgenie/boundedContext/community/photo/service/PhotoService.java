@@ -1,24 +1,23 @@
 package com.example.healthgenie.boundedContext.community.photo.service;
 
-import com.example.healthgenie.base.exception.CommunityPostException;
+import static com.example.healthgenie.base.exception.Post.CommunityPostErrorResult.NO_PERMISSION;
+import static com.example.healthgenie.base.exception.Post.CommunityPostErrorResult.PHOTO_EMPTY;
+
+import com.example.healthgenie.base.exception.Post.CommunityPostException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.community.photo.dto.PhotoRequest;
 import com.example.healthgenie.boundedContext.community.photo.entity.Photo;
 import com.example.healthgenie.boundedContext.community.photo.repository.PhotoRepository;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import static com.example.healthgenie.base.exception.CommunityPostErrorResult.NO_PERMISSION;
-import static com.example.healthgenie.base.exception.CommunityPostErrorResult.PHOTO_EMPTY;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -35,11 +34,11 @@ public class PhotoService {
 
         Post post = postService.findById(postId);
 
-        if(!Objects.equals(userId, post.getWriter().getId())) {
+        if (!Objects.equals(userId, post.getWriter().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 
-        for(MultipartFile file : request.getPhotos()) {
+        for (MultipartFile file : request.getPhotos()) {
             String uploadUrl = s3UploadUtils.upload(file, "post-photos");
             String originName = file.getOriginalFilename();
 
@@ -74,7 +73,7 @@ public class PhotoService {
     public String deleteAllByPostId(Long postId, Long userId) {
         Post post = postService.findById(postId);
 
-        if(!Objects.equals(userId, post.getWriter().getId())) {
+        if (!Objects.equals(userId, post.getWriter().getId())) {
             throw new CommunityPostException(NO_PERMISSION);
         }
 

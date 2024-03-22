@@ -1,10 +1,10 @@
 package com.example.healthgenie.boundedContext.ptreview.service;
 
-import com.example.healthgenie.base.exception.MatchingErrorResult;
-import com.example.healthgenie.base.exception.MatchingException;
-import com.example.healthgenie.base.exception.PtReviewException;
-import com.example.healthgenie.base.exception.UserErrorResult;
-import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.exception.Matching.MatchingErrorResult;
+import com.example.healthgenie.base.exception.Matching.MatchingException;
+import com.example.healthgenie.base.exception.PtReview.PtReviewException;
+import com.example.healthgenie.base.exception.User.UserErrorResult;
+import com.example.healthgenie.base.exception.User.UserException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;

@@ -1,4 +1,4 @@
-package com.example.healthgenie.base.exception;
+package com.example.healthgenie.base.exception.TrainerProfile;
 
 
 import lombok.Getter;

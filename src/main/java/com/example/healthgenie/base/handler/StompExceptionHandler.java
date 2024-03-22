@@ -1,6 +1,6 @@
 package com.example.healthgenie.base.handler;
 
-import com.example.healthgenie.base.exception.JwtException;
+import com.example.healthgenie.base.exception.Jwt.JwtException;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;

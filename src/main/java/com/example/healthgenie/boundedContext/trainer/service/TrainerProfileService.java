@@ -1,7 +1,7 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
 
-import com.example.healthgenie.base.exception.TrainerProfileException;
+import com.example.healthgenie.base.exception.TrainerProfile.TrainerProfileException;
 import com.example.healthgenie.base.utils.FileUploadUtils;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileDeleteResponseDto;
 import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;

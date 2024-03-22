@@ -1,4 +1,4 @@
-package com.example.healthgenie.base.exception;
+package com.example.healthgenie.base.exception.Chat;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

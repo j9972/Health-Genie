@@ -1,5 +1,26 @@
 package com.example.healthgenie.base.exception;
 
+import com.example.healthgenie.base.exception.Chat.ChatErrorResult;
+import com.example.healthgenie.base.exception.Chat.ChatException;
+import com.example.healthgenie.base.exception.Comment.CommunityCommentErrorResult;
+import com.example.healthgenie.base.exception.Comment.CommunityCommentException;
+import com.example.healthgenie.base.exception.Common.CommonException;
+import com.example.healthgenie.base.exception.Jwt.JwtErrorResult;
+import com.example.healthgenie.base.exception.Jwt.JwtException;
+import com.example.healthgenie.base.exception.Like.LikeErrorResult;
+import com.example.healthgenie.base.exception.Like.LikeException;
+import com.example.healthgenie.base.exception.Matching.MatchingErrorResult;
+import com.example.healthgenie.base.exception.Matching.MatchingException;
+import com.example.healthgenie.base.exception.Post.CommunityPostErrorResult;
+import com.example.healthgenie.base.exception.Post.CommunityPostException;
+import com.example.healthgenie.base.exception.PtProcess.PtProcessException;
+import com.example.healthgenie.base.exception.PtReview.PtReviewException;
+import com.example.healthgenie.base.exception.Routine.RoutineException;
+import com.example.healthgenie.base.exception.Todo.TodoException;
+import com.example.healthgenie.base.exception.TrainerProfile.TrainerProfileException;
+import com.example.healthgenie.base.exception.User.UserErrorResult;
+import com.example.healthgenie.base.exception.User.UserException;
+import com.example.healthgenie.base.exception.UserEmail.UserEmailException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
@@ -40,23 +61,38 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse("NOT_VALID_PARAMETERS", errors));
     }
 
-//    @ExceptionHandler({PtReviewException.class})
-//    public ResponseEntity<ErrorResponse> handleRestApiException(final PtReviewException exception) {
-//        log.warn("PtReviewException occur: ", exception);
-//        return this.makeErrorResponseEntity(exception.getPtReviewErrorResult());
-//    }
-//
-//    @ExceptionHandler({PtProcessException.class})
-//    public ResponseEntity<ErrorResponse> handleRestApiException(final PtProcessException exception) {
-//        log.warn("Exception occur: ", exception);
-//        return this.makeErrorResponseEntity(exception.getPtProcessErrorResult());
-//    }
-//
-//    @ExceptionHandler({RoutineException.class})
-//    public ResponseEntity<ErrorResponse> handleRestApiException(final RoutineException exception) {
-//        log.warn("PtReviewException occur: ", exception);
-//        return this.makeErrorResponseEntity(exception.getRoutineErrorResult());
-//    }
+    @ExceptionHandler({PtReviewException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final PtReviewException exception) {
+        log.warn("PtReviewException occur: ", exception);
+        return this.makeErrorResponseEntity(exception);
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final PtReviewException exception) {
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(new ErrorResponse(exception.getHttpStatus().name(), exception.getMessage()));
+    }
+
+    @ExceptionHandler({PtProcessException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final PtProcessException exception) {
+        log.warn("Exception occur: ", exception);
+        return this.makeErrorResponseEntity(exception);
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final PtProcessException exception) {
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(new ErrorResponse(exception.getHttpStatus().name(), exception.getMessage()));
+    }
+
+    @ExceptionHandler({RoutineException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final RoutineException exception) {
+        log.warn("PtReviewException occur: ", exception);
+        return this.makeErrorResponseEntity(exception);
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final RoutineException exception) {
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(new ErrorResponse(exception.getHttpStatus().name(), exception.getMessage()));
+    }
 
     @ExceptionHandler({MatchingException.class})
     public ResponseEntity<ErrorResponse> handleRestApiException(final MatchingException exception) {
@@ -100,59 +136,49 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.makeErrorResponseEntity(exception.getUserErrorResult());
     }
 
-//    @ExceptionHandler({TrainerProfileException.class})
-//    public ResponseEntity<ErrorResponse> handleRestApiException(final TrainerProfileException exception) {
-//        log.warn("TrainerProfileException occur: ", exception);
-//        return this.makeErrorResponseEntity(exception.getTrainerProfileErrorResult());
-//    }
+    @ExceptionHandler({TrainerProfileException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final TrainerProfileException exception) {
+        log.warn("TrainerProfileException occur: ", exception);
+        return this.makeErrorResponseEntity(exception);
+    }
 
-//    @ExceptionHandler({CommonException.class})
-//    public ResponseEntity<ErrorResponse> handleException(final CommonException exception) {
-//        log.warn("Exception occur: ", exception);
-//        return this.makeErrorResponseEntity(exception.getCommonErrorResult());
-//    }
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final TrainerProfileException exception) {
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(new ErrorResponse(exception.getHttpStatus().name(), exception.getMessage()));
+    }
 
-//    @ExceptionHandler({UserEmailException.class})
-//    public ResponseEntity<ErrorResponse> handleRestApiException(final UserEmailException exception) {
-//        log.warn("UserEmailException occur: ", exception);
-//        return this.makeErrorResponseEntity(exception.getUserEmailErrorResult());
-//    }
-//
-//    @ExceptionHandler({TodoException.class})
-//    public ResponseEntity<ErrorResponse> handleRestApiException(final TodoException exception) {
-//        log.warn("TodoException occur: ", exception);
-//        return this.makeErrorResponseEntity(exception.getTodoErrorResult());
-//    }
+    @ExceptionHandler({CommonException.class})
+    public ResponseEntity<ErrorResponse> handleException(final CommonException exception) {
+        log.warn("Exception occur: ", exception);
+        return this.makeErrorResponseEntity(exception);
+    }
 
-//    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final TodoErrorResult errorResult) {
-//        return ResponseEntity.status(errorResult.getHttpStatus())
-//                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
-//    }
-//
-//    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final RoutineErrorResult errorResult) {
-//        return ResponseEntity.status(errorResult.getHttpStatus())
-//                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
-//    }
-//
-//    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final UserEmailErrorResult errorResult) {
-//        return ResponseEntity.status(errorResult.getHttpStatus())
-//                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
-//    }
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final CommonException exception) {
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(new ErrorResponse(exception.getHttpStatus().name(), exception.getMessage()));
+    }
 
-//    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final CommonErrorResult errorResult) {
-//        return ResponseEntity.status(errorResult.getHttpStatus())
-//                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
-//    }
+    @ExceptionHandler({UserEmailException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final UserEmailException exception) {
+        log.warn("UserEmailException occur: ", exception);
+        return this.makeErrorResponseEntity(exception);
+    }
 
-//    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final PtReviewErrorResult errorResult) {
-//        return ResponseEntity.status(errorResult.getHttpStatus())
-//                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
-//    }
-//
-//    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final PtProcessErrorResult errorResult) {
-//        return ResponseEntity.status(errorResult.getHttpStatus())
-//                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
-//    }
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final UserEmailException exception) {
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(new ErrorResponse(exception.getHttpStatus().name(), exception.getMessage()));
+    }
+
+    @ExceptionHandler({TodoException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final TodoException exception) {
+        log.warn("TodoException occur: ", exception);
+        return this.makeErrorResponseEntity(exception);
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final TodoException exception) {
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(new ErrorResponse(exception.getHttpStatus().name(), exception.getMessage()));
+    }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final CommunityPostErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
@@ -178,11 +204,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
-
-//    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final TrainerProfileErrorResult errorResult) {
-//        return ResponseEntity.status(errorResult.getHttpStatus())
-//                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
-//    }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final MatchingErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())

@@ -1,4 +1,4 @@
-package com.example.healthgenie.base.exception;
+package com.example.healthgenie.base.exception.User;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +14,7 @@ public enum UserErrorResult {
     ALREADY_EXISTS_ROLE(HttpStatus.BAD_REQUEST, "already role exists"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user is not found!!"),
     ALREADY_SIGN_UP(HttpStatus.NOT_FOUND, "already sign up"),
-    PROFILE_PHOTO_UPLOAD_EXCEPTION(HttpStatus.NOT_FOUND, "this profile photo can not upload")
-    ;
+    PROFILE_PHOTO_UPLOAD_EXCEPTION(HttpStatus.NOT_FOUND, "this profile photo can not upload");
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -1,6 +1,6 @@
 package com.example.healthgenie.base.config;
 
-import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.exception.User.UserException;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import static com.example.healthgenie.base.exception.UserErrorResult.USER_NOT_FOUND;
+import static com.example.healthgenie.base.exception.User.UserErrorResult.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Slf4j

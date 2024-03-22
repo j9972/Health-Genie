@@ -1,28 +1,33 @@
 package com.example.healthgenie.boundedContext.matching.service;
 
-import com.example.healthgenie.base.exception.MatchingException;
+import static com.example.healthgenie.base.exception.Matching.MatchingErrorResult.MATCHING_EMPTY;
+import static com.example.healthgenie.base.exception.Matching.MatchingErrorResult.NOT_VALID_FIELD;
+import static com.example.healthgenie.base.exception.Matching.MatchingErrorResult.NO_PERMISSION;
+import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.CANCEL;
+import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.CANCEL_ACCEPT;
+import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.DEFAULT;
+import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.PARTICIPATE;
+import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.PARTICIPATE_ACCEPT;
+import static com.example.healthgenie.boundedContext.user.entity.enums.Role.TRAINER;
+import static com.example.healthgenie.boundedContext.user.entity.enums.Role.USER;
+
+import com.example.healthgenie.base.exception.Matching.MatchingException;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingCondition;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
-import com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
+import com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingQueryRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Objects;
-
-import static com.example.healthgenie.base.exception.MatchingErrorResult.*;
-import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.*;
-import static com.example.healthgenie.boundedContext.user.entity.enums.Role.TRAINER;
-import static com.example.healthgenie.boundedContext.user.entity.enums.Role.USER;
 
 @Service
 @RequiredArgsConstructor
@@ -63,8 +68,8 @@ public class MatchingService {
     public Matching findById(Long matchingId, User user) {
         Matching matching = findById(matchingId);
 
-        for(MatchingUser mu : matching.getMatchingUsers()) {
-            if(Objects.equals(mu.getUser().getId(), user.getId())) {
+        for (MatchingUser mu : matching.getMatchingUsers()) {
+            if (Objects.equals(mu.getUser().getId(), user.getId())) {
                 return matching;
             }
         }
@@ -91,19 +96,17 @@ public class MatchingService {
     private void validateUpdate(Matching matching, MatchingState changeState) {
         MatchingState currentState = matching.getState();
 
-        if(currentState.equals(CANCEL_ACCEPT)) {
+        if (currentState.equals(CANCEL_ACCEPT)) {
             throw new MatchingException(NO_PERMISSION);
         }
 
-        if(currentState.equals(DEFAULT)) {
-            if(changeState.equals(PARTICIPATE) || changeState.equals(CANCEL)) {
+        if (currentState.equals(DEFAULT)) {
+            if (changeState.equals(PARTICIPATE) || changeState.equals(CANCEL)) {
                 return;
             }
-        }
-        else if(currentState.equals(PARTICIPATE) && changeState.equals(PARTICIPATE_ACCEPT)) {
+        } else if (currentState.equals(PARTICIPATE) && changeState.equals(PARTICIPATE_ACCEPT)) {
             return;
-        }
-        else if(currentState.equals(CANCEL) && changeState.equals(CANCEL_ACCEPT)) {
+        } else if (currentState.equals(CANCEL) && changeState.equals(CANCEL_ACCEPT)) {
             return;
         }
 
@@ -111,7 +114,7 @@ public class MatchingService {
     }
 
     private void validateSave(User user, User trainer) {
-        if(!user.getRole().equals(USER) || !trainer.getRole().equals(TRAINER)) {
+        if (!user.getRole().equals(USER) || !trainer.getRole().equals(TRAINER)) {
             throw new MatchingException(NO_PERMISSION);
         }
     }
@@ -119,12 +122,12 @@ public class MatchingService {
     private void validatePermission(User user, MatchingState state) {
         switch (state) {
             case PARTICIPATE, CANCEL -> {
-                if(!user.getRole().equals(USER)) {
+                if (!user.getRole().equals(USER)) {
                     throw new MatchingException(NO_PERMISSION);
                 }
             }
             case PARTICIPATE_ACCEPT, CANCEL_ACCEPT -> {
-                if(!user.getRole().equals(TRAINER)) {
+                if (!user.getRole().equals(TRAINER)) {
                     throw new MatchingException(NO_PERMISSION);
                 }
             }

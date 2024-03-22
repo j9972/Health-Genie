@@ -1,7 +1,7 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
 
-import com.example.healthgenie.base.exception.RoutineException;
+import com.example.healthgenie.base.exception.Routine.RoutineException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineDeleteResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;

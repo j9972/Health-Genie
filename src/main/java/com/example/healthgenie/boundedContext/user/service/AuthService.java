@@ -3,9 +3,9 @@ package com.example.healthgenie.boundedContext.user.service;
 
 import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.KAKAO;
 
-import com.example.healthgenie.base.exception.CommonException;
-import com.example.healthgenie.base.exception.JwtErrorResult;
-import com.example.healthgenie.base.exception.JwtException;
+import com.example.healthgenie.base.exception.Common.CommonException;
+import com.example.healthgenie.base.exception.Jwt.JwtErrorResult;
+import com.example.healthgenie.base.exception.Jwt.JwtException;
 import com.example.healthgenie.base.utils.CookieUtils;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
 import com.example.healthgenie.base.utils.SecurityUtils;

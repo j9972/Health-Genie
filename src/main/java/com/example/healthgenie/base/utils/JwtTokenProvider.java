@@ -1,11 +1,20 @@
 package com.example.healthgenie.base.utils;
 
 import com.example.healthgenie.base.constant.Constants;
-import com.example.healthgenie.base.exception.JwtErrorResult;
-import com.example.healthgenie.base.exception.JwtException;
-import io.jsonwebtoken.*;
+import com.example.healthgenie.base.exception.Jwt.JwtErrorResult;
+import com.example.healthgenie.base.exception.Jwt.JwtException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,12 +23,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -83,7 +86,7 @@ public class JwtTokenProvider {
         return new Date(Long.parseLong(decodeToken(token).get("exp")) * 1000).before(new Date());
     }
 
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) {
         try {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
@@ -114,7 +117,7 @@ public class JwtTokenProvider {
         Map<String, String> map = new HashMap<>();
 
         String[] contents = payload.split(",");
-        for(String content : contents) {
+        for (String content : contents) {
             String[] c = content.split(":");
             map.put(c[0], c[1]);
         }

@@ -1,4 +1,4 @@
-package com.example.healthgenie.base.exception;
+package com.example.healthgenie.base.exception.Common;
 
 // TODO : 얘기 끝나면 지우기
 //@Getter

@@ -1,7 +1,7 @@
 package com.example.healthgenie.base.filter;
 
-import com.example.healthgenie.base.exception.JwtException;
-import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.exception.Jwt.JwtException;
+import com.example.healthgenie.base.exception.User.UserException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

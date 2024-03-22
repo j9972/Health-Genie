@@ -1,14 +1,26 @@
 package com.example.healthgenie.boundedContext.user.entity;
 
+import static com.example.healthgenie.base.exception.User.UserErrorResult.ALREADY_EXISTS_ROLE;
+
 import com.example.healthgenie.base.entity.BaseEntity;
-import com.example.healthgenie.base.exception.UserException;
+import com.example.healthgenie.base.exception.User.UserException;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,12 +28,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-
-import static com.example.healthgenie.base.exception.UserErrorResult.ALREADY_EXISTS_ROLE;
 
 @Entity
 @Getter
@@ -33,7 +39,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", unique=true)
+    @Column(name = "user_id", unique = true)
     private Long id;
 
     @Column(name = "email")
@@ -123,7 +129,7 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     public void updateRole(Role role) {
-        if(this.role != Role.EMPTY) {
+        if (this.role != Role.EMPTY) {
             throw new UserException(ALREADY_EXISTS_ROLE);
         }
         this.role = role;

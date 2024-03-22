@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.chat.service;
 
-import com.example.healthgenie.base.exception.ChatException;
+import com.example.healthgenie.base.exception.Chat.ChatException;
 import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
 import com.example.healthgenie.boundedContext.chat.entity.Message;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.healthgenie.base.exception.ChatErrorResult.NO_PERMISSION;
+import static com.example.healthgenie.base.exception.Chat.ChatErrorResult.NO_PERMISSION;
 
 @Service
 @RequiredArgsConstructor
