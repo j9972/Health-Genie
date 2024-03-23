@@ -1,7 +1,7 @@
 package com.example.healthgenie.base.filter;
 
-import com.example.healthgenie.base.exception.Jwt.JwtException;
-import com.example.healthgenie.base.exception.User.UserException;
+import com.example.healthgenie.base.exception.CustomException;
+import com.example.healthgenie.base.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,25 +24,20 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch (JwtException e) {
+        } catch (CustomException e) {
+            ErrorCode errorCode = e.getErrorCode();
             Map<String, String> map = new HashMap<>();
-            map.put("code", String.valueOf(e.getJwtErrorResult()));
-            map.put("message", e.getJwtErrorResult().getMessage());
+            map.put("code", errorCode.name());
+            map.put("message", errorCode.getMessage());
+
+            StackTraceElement element = e.getStackTrace()[0];
+            log.warn("[{}] occurs caused by {}.{}() {} line : {}", errorCode.name(), element.getClassName(), element.getMethodName(), element.getLineNumber(), errorCode.getMessage());
 
             response.setContentType("application/json;charset=UTF-8");
-            response.setStatus(e.getJwtErrorResult().getHttpStatus().value());
-            response.getWriter().print(objectMapper.writeValueAsString(map));
-        } catch (UserException e) {
-            Map<String, String> map = new HashMap<>();
-            map.put("code", "USER_NOT_FOUND");
-            map.put("message", "user not found");
-
-            response.setContentType("application/json;charset=UTF-8");
-            response.setStatus(e.getUserErrorResult().getHttpStatus().value());
+            response.setStatus(errorCode.getStatus().value());
             response.getWriter().print(objectMapper.writeValueAsString(map));
         }
     }

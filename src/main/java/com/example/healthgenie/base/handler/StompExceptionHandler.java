@@ -1,6 +1,6 @@
 package com.example.healthgenie.base.handler;
 
-import com.example.healthgenie.base.exception.Jwt.JwtException;
+import com.example.healthgenie.base.exception.CustomException;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -17,8 +17,8 @@ public class StompExceptionHandler extends StompSubProtocolErrorHandler {
     public Message<byte[]> handleClientMessageProcessingError(
             Message<byte[]> clientMessage,
             Throwable ex) {
-        if (ex.getCause() instanceof JwtException exception) {
-            return errorMessage(exception.getJwtErrorResult().getMessage());
+        if (ex.getCause() instanceof CustomException exception) {
+            return errorMessage(exception.getErrorCode().getMessage());
         }
 
         return super.handleClientMessageProcessingError(clientMessage, ex);

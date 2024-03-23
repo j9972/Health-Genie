@@ -1,17 +1,6 @@
 package com.example.healthgenie.boundedContext.matching.service;
 
-import static com.example.healthgenie.base.exception.Matching.MatchingErrorResult.MATCHING_EMPTY;
-import static com.example.healthgenie.base.exception.Matching.MatchingErrorResult.NOT_VALID_FIELD;
-import static com.example.healthgenie.base.exception.Matching.MatchingErrorResult.NO_PERMISSION;
-import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.CANCEL;
-import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.CANCEL_ACCEPT;
-import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.DEFAULT;
-import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.PARTICIPATE;
-import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.PARTICIPATE_ACCEPT;
-import static com.example.healthgenie.boundedContext.user.entity.enums.Role.TRAINER;
-import static com.example.healthgenie.boundedContext.user.entity.enums.Role.USER;
-
-import com.example.healthgenie.base.exception.Matching.MatchingException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingCondition;
 import com.example.healthgenie.boundedContext.matching.dto.MatchingRequest;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
@@ -22,12 +11,17 @@ import com.example.healthgenie.boundedContext.matching.repository.MatchingReposi
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.service.UserService;
-import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+
+import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.*;
+import static com.example.healthgenie.boundedContext.user.entity.enums.Role.TRAINER;
+import static com.example.healthgenie.boundedContext.user.entity.enums.Role.USER;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +56,7 @@ public class MatchingService {
 
     public Matching findById(Long matchingId) {
         return matchingRepository.findById(matchingId)
-                .orElseThrow(() -> new MatchingException(MATCHING_EMPTY));
+                .orElseThrow(() -> CustomException.MATCHING_EMPTY);
     }
 
     public Matching findById(Long matchingId, User user) {
@@ -74,7 +68,7 @@ public class MatchingService {
             }
         }
 
-        throw new MatchingException(NO_PERMISSION);
+        throw CustomException.NO_PERMISSION;
     }
 
     public List<Matching> findAll(User user, MatchingCondition condition) {
@@ -97,7 +91,7 @@ public class MatchingService {
         MatchingState currentState = matching.getState();
 
         if (currentState.equals(CANCEL_ACCEPT)) {
-            throw new MatchingException(NO_PERMISSION);
+            throw CustomException.NO_PERMISSION;
         }
 
         if (currentState.equals(DEFAULT)) {
@@ -110,12 +104,12 @@ public class MatchingService {
             return;
         }
 
-        throw new MatchingException(NO_PERMISSION);
+        throw CustomException.NO_PERMISSION;
     }
 
     private void validateSave(User user, User trainer) {
         if (!user.getRole().equals(USER) || !trainer.getRole().equals(TRAINER)) {
-            throw new MatchingException(NO_PERMISSION);
+            throw CustomException.NO_PERMISSION;
         }
     }
 
@@ -123,15 +117,15 @@ public class MatchingService {
         switch (state) {
             case PARTICIPATE, CANCEL -> {
                 if (!user.getRole().equals(USER)) {
-                    throw new MatchingException(NO_PERMISSION);
+                    throw CustomException.NO_PERMISSION;
                 }
             }
             case PARTICIPATE_ACCEPT, CANCEL_ACCEPT -> {
                 if (!user.getRole().equals(TRAINER)) {
-                    throw new MatchingException(NO_PERMISSION);
+                    throw CustomException.NO_PERMISSION;
                 }
             }
-            default -> throw new MatchingException(NOT_VALID_FIELD);
+            default -> throw CustomException.NOT_VALID_FIELD;
         }
     }
 

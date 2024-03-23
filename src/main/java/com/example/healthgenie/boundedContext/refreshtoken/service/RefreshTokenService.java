@@ -1,13 +1,11 @@
 package com.example.healthgenie.boundedContext.refreshtoken.service;
 
-import com.example.healthgenie.base.exception.Jwt.JwtException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.example.healthgenie.base.exception.Jwt.JwtErrorResult.NOT_FOUND_TOKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +26,7 @@ public class RefreshTokenService {
 
     public RefreshToken findByRefreshToken(String refreshToken) {
         return refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new JwtException(NOT_FOUND_TOKEN));
+                .orElseThrow(() -> CustomException.REFRESH_TOKEN_EMPTY);
     }
 
     @Transactional

@@ -1,11 +1,7 @@
 package com.example.healthgenie.boundedContext.user.service;
 
 
-import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.KAKAO;
-
-import com.example.healthgenie.base.exception.Common.CommonException;
-import com.example.healthgenie.base.exception.Jwt.JwtErrorResult;
-import com.example.healthgenie.base.exception.Jwt.JwtException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.utils.CookieUtils;
 import com.example.healthgenie.base.utils.JwtTokenProvider;
 import com.example.healthgenie.base.utils.SecurityUtils;
@@ -21,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.KAKAO;
 
 @Slf4j
 @Service
@@ -42,13 +40,13 @@ public class AuthService {
             return googleRequestService.getToken(tokenRequest);
         }
 
-        throw CommonException.BAD_REQUEST;
+        throw CustomException.NOT_VALID_FIELD;
     }
 
     @Transactional
     public JwtResponse refreshToken(String accessToken, String refreshToken) {
         if (!jwtTokenProvider.isExpired(accessToken)) {
-            throw new JwtException(JwtErrorResult.NOT_EXPIRED_TOKEN);
+            throw CustomException.NOT_EXPIRED_TOKEN;
         }
 
         RefreshToken refreshTokenObj = refreshTokenService.findByRefreshToken(refreshToken);

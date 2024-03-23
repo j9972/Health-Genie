@@ -1,14 +1,6 @@
 package com.example.healthgenie.boundedContext.user.service;
 
-import static com.example.healthgenie.base.exception.Diet.DietErrorResult.TYPE_EMPTY;
-import static com.example.healthgenie.base.exception.User.UserErrorResult.ALREADY_SIGN_UP;
-import static com.example.healthgenie.base.exception.User.UserErrorResult.DUPLICATED_NICKNAME;
-import static com.example.healthgenie.base.exception.User.UserErrorResult.NOT_VALID_FIELD;
-import static com.example.healthgenie.base.exception.User.UserErrorResult.PROFILE_PHOTO_UPLOAD_EXCEPTION;
-import static com.example.healthgenie.base.exception.User.UserErrorResult.USER_NOT_FOUND;
-
-import com.example.healthgenie.base.exception.Diet.DietException;
-import com.example.healthgenie.base.exception.User.UserException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.dto.DietResponse;
@@ -17,16 +9,17 @@ import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Random;
 
 @Transactional(readOnly = true)
 @Service
@@ -42,7 +35,7 @@ public class UserService {
         String defaultNickname = createUniqueNickname();
 
         if (userRepository.existsByEmail(email)) {
-            throw new UserException(ALREADY_SIGN_UP);
+            throw CustomException.DUPLICATED_EMAIL;
         }
 
         User user = User.builder()
@@ -65,18 +58,18 @@ public class UserService {
 
     public User findById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+                .orElseThrow(() -> CustomException.USER_EMPTY);
     }
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+                .orElseThrow(() -> CustomException.USER_EMPTY);
     }
 
     @Transactional
     public User update(User user, Role role) {
         if (Objects.isNull(role)) {
-            throw new UserException(NOT_VALID_FIELD);
+            throw CustomException.NOT_VALID_FIELD;
         }
 
         return update(user, role, null, null, null, null, null, null, null, null, null, null);
@@ -85,7 +78,7 @@ public class UserService {
     @Transactional
     public User update(User user, Level level) {
         if (Objects.isNull(level)) {
-            throw new UserException(NOT_VALID_FIELD);
+            throw CustomException.NOT_VALID_FIELD;
         }
 
         return update(user, null, level, null, null, null, null, null, null, null, null, null);
@@ -104,7 +97,7 @@ public class UserService {
 
     public DietResponse calculate(User user, Integer type) {
         if (Objects.isNull(type)) {
-            throw new DietException(TYPE_EMPTY);
+            throw CustomException.NOT_VALID_VALUE;
         }
 
         Gender gender = user.getGender();
@@ -118,7 +111,7 @@ public class UserService {
         } else if (gender == Gender.FEMALE) {
             basic = 655 + (9.6 * weight) + (1.7 * height) - (4.7 * age);
         } else {
-            throw new UserException(NOT_VALID_FIELD);
+            throw CustomException.NOT_VALID_FIELD;
         }
 
         double active = switch (type) {
@@ -126,7 +119,7 @@ public class UserService {
             case 2 -> basic * 1.4;
             case 3 -> basic * 1.6;
             case 4 -> basic * 1.8;
-            default -> throw new UserException(NOT_VALID_FIELD);
+            default -> throw CustomException.NOT_VALID_FIELD;
         };
 
         return DietResponse.builder()
@@ -157,7 +150,7 @@ public class UserService {
         // 닉네임
         if (StringUtils.hasText(nickname)) {
             if (userRepository.existsByNickname(nickname)) {
-                throw new UserException(DUPLICATED_NICKNAME);
+                throw CustomException.DUPLICATED_NICKNAME;
             }
             user.updateNickname(nickname);
         }
@@ -219,7 +212,7 @@ public class UserService {
 
             return uploadedPath;
         } catch (IOException e) {
-            throw new UserException(PROFILE_PHOTO_UPLOAD_EXCEPTION);
+            throw CustomException.FAILED_PHOTO_UPLOAD;
         }
     }
 }

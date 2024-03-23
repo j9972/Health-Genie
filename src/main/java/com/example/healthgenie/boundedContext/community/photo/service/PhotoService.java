@@ -1,23 +1,21 @@
 package com.example.healthgenie.boundedContext.community.photo.service;
 
-import static com.example.healthgenie.base.exception.Post.CommunityPostErrorResult.NO_PERMISSION;
-import static com.example.healthgenie.base.exception.Post.CommunityPostErrorResult.PHOTO_EMPTY;
-
-import com.example.healthgenie.base.exception.Post.CommunityPostException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.community.photo.dto.PhotoRequest;
 import com.example.healthgenie.boundedContext.community.photo.entity.Photo;
 import com.example.healthgenie.boundedContext.community.photo.repository.PhotoRepository;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +33,7 @@ public class PhotoService {
         Post post = postService.findById(postId);
 
         if (!Objects.equals(userId, post.getWriter().getId())) {
-            throw new CommunityPostException(NO_PERMISSION);
+            throw CustomException.NO_PERMISSION;
         }
 
         for (MultipartFile file : request.getPhotos()) {
@@ -58,7 +56,7 @@ public class PhotoService {
 
     public Photo findById(Long photoId) {
         return photoRepository.findById(photoId)
-                .orElseThrow(() -> new CommunityPostException(PHOTO_EMPTY));
+                .orElseThrow(() -> CustomException.PHOTO_EMPTY);
     }
 
     public List<Photo> findAll() {
@@ -74,7 +72,7 @@ public class PhotoService {
         Post post = postService.findById(postId);
 
         if (!Objects.equals(userId, post.getWriter().getId())) {
-            throw new CommunityPostException(NO_PERMISSION);
+            throw CustomException.NO_PERMISSION;
         }
 
         List<Photo> photos = findAllByPostId(postId);
