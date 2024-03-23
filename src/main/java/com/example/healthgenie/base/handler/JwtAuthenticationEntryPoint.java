@@ -24,7 +24,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         // 유효한 자격증명을 제공하지 않고 접근하려 할때 401
-        ErrorCode errorCode = ErrorCode.JWT_EMPTY;
+        ErrorCode errorCode = ErrorCode.NO_JWT;
 
         Map<String, String> map = new HashMap<>();
         map.put("code", errorCode.name());

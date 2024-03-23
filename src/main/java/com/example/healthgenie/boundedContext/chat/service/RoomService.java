@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.chat.service;
 
-import com.example.healthgenie.base.exception.Chat.ChatException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.chat.dto.RoomQueryResponse;
 import com.example.healthgenie.boundedContext.chat.dto.RoomRequest;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
@@ -18,9 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
-import static com.example.healthgenie.base.exception.Chat.ChatErrorResult.NO_PERMISSION;
-import static com.example.healthgenie.base.exception.Chat.ChatErrorResult.ROOM_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +39,7 @@ public class RoomService {
                 .orElseGet(() -> createNewRoom(roomHashCode, user, anotherUser));
 
         RoomUser roomUser = roomUserRepository.findByRoomIdAndUserId(room.getId(), user.getId())
-                .orElseThrow(() -> new ChatException(NO_PERMISSION));
+                .orElseThrow(() -> CustomException.NO_PERMISSION);
 
         roomUser.active();
 
@@ -55,16 +52,16 @@ public class RoomService {
 
     public Room findById(Long roomId) {
         return roomRepository.findById(roomId)
-                .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
+                .orElseThrow(() -> CustomException.ROOM_EMPTY);
     }
 
     @Transactional
     public void inactive(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new ChatException(ROOM_NOT_FOUND));
+                .orElseThrow(() -> CustomException.ROOM_EMPTY);
 
         RoomUser roomUser = roomUserRepository.findByRoomIdAndUserId(roomId, user.getId())
-                .orElseThrow(() -> new ChatException(NO_PERMISSION));
+                .orElseThrow(() -> CustomException.NO_PERMISSION);
 
         roomUser.inactive();
     }

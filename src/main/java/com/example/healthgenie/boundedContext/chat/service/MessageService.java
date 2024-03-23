@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.chat.service;
 
-import com.example.healthgenie.base.exception.Chat.ChatException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
 import com.example.healthgenie.boundedContext.chat.entity.Message;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.example.healthgenie.base.exception.Chat.ChatErrorResult.NO_PERMISSION;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +38,7 @@ public class MessageService {
 
     public List<Message> findAll(Long roomId, User user) {
         RoomUser roomUser = roomUserRepository.findByRoomIdAndUserId(roomId, user.getId())
-                .orElseThrow(() -> new ChatException(NO_PERMISSION));
+                .orElseThrow(() -> CustomException.NO_PERMISSION);
 
         return messageRepository.findAllByRoomIdOrderByCreatedDateDesc(roomId);
     }

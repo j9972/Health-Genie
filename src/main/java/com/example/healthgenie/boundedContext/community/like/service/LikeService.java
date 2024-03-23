@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.community.like.service;
 
-import com.example.healthgenie.base.exception.Like.LikeException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.community.like.entity.Like;
 import com.example.healthgenie.boundedContext.community.like.repository.LikeRepository;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.example.healthgenie.base.exception.Like.LikeErrorResult.ALREADY_LIKED;
-import static com.example.healthgenie.base.exception.Like.LikeErrorResult.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +23,7 @@ public class LikeService {
     @Transactional
     public Like save(Long postId, User user) {
         likeRepository.findByPostIdAndUserId(postId, user.getId()).ifPresent(like -> {
-            throw new LikeException(ALREADY_LIKED);
+            throw CustomException.ALREADY_LIKED;
         });
 
         Post post = postService.findById(postId);
@@ -42,7 +39,7 @@ public class LikeService {
     @Transactional
     public String delete(Long postId, Long userId) {
         Like like = likeRepository.findByPostIdAndUserId(postId, userId)
-                .orElseThrow(() -> new LikeException(NOT_FOUND));
+                .orElseThrow(() -> CustomException.LIKE_EMPTY);
 
         likeRepository.delete(like);
 

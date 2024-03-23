@@ -11,96 +11,58 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
     // 4xx
-    // PtProcessError
-    TRAINER_EMPTY(BAD_REQUEST, "trainer is empty Request"),
-    USER_EMPTY(BAD_REQUEST, "user is empty Request"),
-    WRONG_USER(BAD_REQUEST, "user is wrong Request"),
-    WRONG_DATE(BAD_REQUEST, "process have to write after matching date"),
-    RECORD_EMPTY(BAD_REQUEST, "record is empty Request"),
-    WRONG_USER_ROLE(BAD_REQUEST, "role is trainer not user"),
-    NO_USER_INFO(BAD_REQUEST, "user info is empty Request"),
-    NO_PROCESS_HISTORY(BAD_REQUEST, "feedback is empty Request"),
+    // ENTITY NOT FOUND
+    TRAINER_INFO_EMPTY(BAD_REQUEST, "트레이너 정보가 존재하지 않습니다."),
+    USER_EMPTY(BAD_REQUEST, "회원이 존재하지 않습니다."),
+    COMMENT_EMPTY(BAD_REQUEST, "댓글이 존재하지 않습니다."),
+    LIKE_EMPTY(BAD_REQUEST, "좋아요가 존재하지 않습니다."),
+    MATCHING_EMPTY(BAD_REQUEST, "매칭이 존재하지 않습니다."),
+    PHOTO_EMPTY(BAD_REQUEST, "사진이 존재하지 않습니다."),
+    POST_EMPTY(BAD_REQUEST, "게시글이 존재하지 않습니다."),
+    TODO_EMPTY(BAD_REQUEST, "할일이 존재하지 않습니다."),
+    ROOM_EMPTY(BAD_REQUEST, "채팅방이 존재하지 않습니다."),
+    REFRESH_TOKEN_EMPTY(BAD_REQUEST, "리프레시 토큰이 존재하지 않습니다."),
 
-    // ChatError
-    NO_PERMISSION(BAD_REQUEST, "don't have any permissions"),
-    SELF_CHAT(BAD_REQUEST, "don't create self chat room"),
-    ROOM_NOT_FOUND(BAD_REQUEST, "not found room"),
+    // NO HISTORY
+    NO_PROCESS_HISTORY(BAD_REQUEST, "일지를 남긴 기록이 없습니다."),
+    NO_REVIEW_HISTORY(BAD_REQUEST, "후기를 남긴 기록이 없습니다."),
 
-    // CommentError
-    COMMENT_EMPTY(BAD_REQUEST, "comment is empty"),
+    // DUPLICATED
+    DUPLICATED_REVIEW(BAD_REQUEST, "이미 같은 후기가 존재합니다."),
+    DUPLICATED_DAY(BAD_REQUEST, "이미 같은 요일이 존재합니다."),
+    DUPLICATED_NICKNAME(BAD_REQUEST, "이미 같은 닉네임이 존재합니다."),
+    DUPLICATED_EMAIL(BAD_REQUEST, "이미 같은 이메일이 존재합니다."),
+    DUPLICATED_TRAINER_INFO(BAD_REQUEST, "이미 같은 트레이너 정보가 존재합니다."),
 
-    // CommonError
-    ALREADY_EXISTS_ROLE(BAD_REQUEST, "already role exists"),
-    ITEM_EMPTY(BAD_REQUEST, "No items"),
-    USER_NOT_FOUND(NOT_FOUND, "not found user"),
-    WRONG_VALIDATE_EMAIL(BAD_REQUEST, "Wrong email validate"),
-    VALID_OUT(INTERNAL_SERVER_ERROR, "verification failed"),
-    UNABLE_TO_SEND_EMAIL(BAD_REQUEST, "unable to send email"),
-    WRONG_DOMAIN(BAD_REQUEST, "domain is wrong for sending"),
-    MEMBER_EXISTS(BAD_REQUEST, "member already exists"),
-    NO_SUCH_ALGORITHM(BAD_REQUEST, "no such algorithm"),
+    // WRONG
+    WRONG_DATE(BAD_REQUEST, "날짜가 잘못되었습니다."),
+    WRONG_USER_ROLE(BAD_REQUEST, "회원의 역할이 잘못되었습니다."),
 
-    // DietError
-    TYPE_EMPTY(BAD_REQUEST, "type is empty"),
+    // NOT VALIDATED
+    NOT_VALID_FIELD(BAD_REQUEST, "유효하지 않은 필드입니다."),
+    NOT_VALID_VALUE(BAD_REQUEST, "유효하지 않은 값입니다."),
 
-    // LikeError
-    LIKE_NOT_FOUND(BAD_REQUEST, "like is not found"),
-    ALREADY_LIKED(BAD_REQUEST, "already liked"),
+    // ALREADY
+    ALREADY_LIKED(BAD_REQUEST, "이미 좋아요를 표시했습니다."),
+    ALREADY_EXISTS_ROLE(BAD_REQUEST, "이미 역할을 선택했습니다."),
 
-    // MatchingError
-    NOT_VALID_FIELD(BAD_REQUEST, "matching is empty"),
-    MATCHING_EMPTY(BAD_REQUEST, "matching is empty"),
-    TOO_EARLY_TO_WRITE_FEEDBACK(BAD_REQUEST, "writing process is early than matching date"),
-    NOT_CANCELED(BAD_REQUEST, "matching is not canceled"),
+    SELF_CHAT(BAD_REQUEST, "자기 자신과 채팅은 불가능합니다."),
+    TOO_EARLY_TO_WRITE_FEEDBACK(BAD_REQUEST, "아직 일지를 작성하기 이릅니다."),
 
-    // PostError
-    PHOTO_EMPTY(BAD_REQUEST, "photo is empty"),
-    POST_EMPTY(BAD_REQUEST, "post is empty"),
-    PAGE_EMPTY(BAD_REQUEST, "post is empty Request"),
+    // JWT
+    NO_JWT(UNAUTHORIZED, "요청 시, JWT를 함께 보내주세요."),
+    WRONG_SIGNATURE(UNAUTHORIZED, "잘못된 서명입니다."),
+    EXPIRED_TOKEN(UNAUTHORIZED, "토큰이 만료되었습니다."),
+    UNSUPPORTED(UNAUTHORIZED, "지원하지 않는 토큰입니다."),
+    WRONG_TOKEN(UNAUTHORIZED, "잘못된 토큰입니다."),
+    NOT_EXPIRED_TOKEN(UNAUTHORIZED, "아직 토큰이 만료되지 않았습니다."),
 
-    // PtReviewError
-    PtReviewException(BAD_REQUEST, "Duplicated Membership Register Request"),
-    NO_REVIEW_HISTORY(BAD_REQUEST, "No Reivew History For Edit"),
-    MEMBER_EMPTY(BAD_REQUEST, "member is empty"),
+    NO_PERMISSION(BAD_REQUEST, "권한이 없습니다."),
 
-    // RoutineError
-    NO_HISTORY(BAD_REQUEST, "no history"),
-    DUPLICATE_DAY(BAD_REQUEST, "duplicate day"),
-    DIFFERENT_NICKNAME(BAD_REQUEST, "wrong user nickname"),
-
-    // TodoError
-    TODO_EMPTY(BAD_REQUEST, "todo is empty Request"),
-    NO_TODO_INFO(BAD_REQUEST, "todo info is empty Request"),
-
-    // TrainerProfileError
-    PROFILE_EMPTY(BAD_REQUEST, "profile is empty Request"),
-    DIFFERENT_USER(BAD_REQUEST, "current user and trainer are different"),
-    PROFILE_EXIST(BAD_REQUEST, "trainer profile exist"),
-    USER_IS_NOT_TRAINER(BAD_REQUEST, "user is not trainer"),
-
-    // JwtError
-    JWT_EMPTY(UNAUTHORIZED, "you need to request with JWT"),
-    WRONG_SIGNATURE(UNAUTHORIZED, "wrong signature"),
-    EXPIRED_TOKEN(UNAUTHORIZED, "expired token"),
-    UNSUPPORTED(UNAUTHORIZED, "unsupported token"),
-    WRONG_TOKEN(UNAUTHORIZED, "wrong token"),
-    EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "expired access token"),
-    EXPIRED_ACCESS_TOKEN(UNAUTHORIZED, "expired access token"),
-    NOT_FOUND_TOKEN(UNAUTHORIZED, "not found token"),
-    NOT_EXPIRED_TOKEN(UNAUTHORIZED, "not expired yet"),
-
-    // UserError
-    DUPLICATED_NICKNAME(BAD_REQUEST, "duplicated nickname"),
-    ALREADY_SIGN_UP(NOT_FOUND, "already sign up"),
-    PROFILE_PHOTO_UPLOAD_EXCEPTION(NOT_FOUND, "this profile photo can not upload"),
-
-    // UserEmailError
-    DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "Duplicated email Request"),
-    INVALID_EMAIL(HttpStatus.BAD_REQUEST, "Email is not valid"),
-    BAD_CREDENTIALS(HttpStatus.BAD_REQUEST, "Bad Credentialsm"),
+    FAILED_PHOTO_UPLOAD(INTERNAL_SERVER_ERROR, "사진 업로드에 실패했습니다. 관리자에게 문의해주세요."),
 
     // 5xx
-    UNKNOWN_EXCEPTION(INTERNAL_SERVER_ERROR, "unknown_Exception")
+    UNKNOWN_EXCEPTION(INTERNAL_SERVER_ERROR, "알 수 없는 예외입니다. 관리자에게 문의해주세요.")
     ;
 
     private final HttpStatus status;

@@ -1,9 +1,6 @@
 package com.example.healthgenie.boundedContext.community.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.example.healthgenie.base.exception.Comment.CommunityCommentException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentResponse;
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
@@ -13,13 +10,17 @@ import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.util.TestKrUtils;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -143,7 +144,7 @@ class CommentServiceTest {
 
         // then
         assertThatThrownBy(() -> commentService.findById(comment1.getId()))
-                .isInstanceOf(CommunityCommentException.class);
+                .isInstanceOf(CustomException.class);
         assertThat(commentService.findAll().size()).isEqualTo(0);
     }
 

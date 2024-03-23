@@ -1,9 +1,6 @@
 package com.example.healthgenie.boundedContext.community.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.example.healthgenie.base.exception.Post.CommunityPostException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.post.dto.PostResponse;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
@@ -20,6 +17,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -139,6 +139,6 @@ class PostServiceTest {
 
         // then
         assertThatThrownBy(() -> postService.findById(post1.getId()))
-                .isInstanceOf(CommunityPostException.class);
+                .isInstanceOf(CustomException.class);
     }
 }
