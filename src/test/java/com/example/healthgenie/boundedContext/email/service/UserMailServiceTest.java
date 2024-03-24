@@ -41,9 +41,6 @@ class UserMailServiceTest {
     UniDomainService uniDomainService;
 
     @Autowired
-    RedisService redisService;
-
-    @Autowired
     UserService userService;
 
     @Value("${univCert.key}")
