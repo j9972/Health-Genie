@@ -2,9 +2,18 @@ package com.example.healthgenie.base.utils;
 
 import com.example.healthgenie.base.constant.Constants;
 import com.example.healthgenie.base.exception.CustomException;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,14 +22,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.example.healthgenie.base.exception.ErrorCode.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -89,13 +90,13 @@ public class JwtTokenProvider {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            throw new CustomException(WRONG_SIGNATURE);
+            throw CustomException.WRONG_SIGNATURE;
         } catch (ExpiredJwtException e) {
-            throw new CustomException(EXPIRED_TOKEN);
+            throw CustomException.EXPIRED_TOKEN;
         } catch (UnsupportedJwtException e) {
-            throw new CustomException(UNSUPPORTED);
+            throw CustomException.UNSUPPORTED;
         } catch (IllegalArgumentException e) {
-            throw new CustomException(WRONG_TOKEN);
+            throw CustomException.WRONG_TOKEN;
         }
     }
 

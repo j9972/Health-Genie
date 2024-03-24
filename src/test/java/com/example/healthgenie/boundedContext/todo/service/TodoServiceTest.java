@@ -3,7 +3,7 @@ package com.example.healthgenie.boundedContext.todo.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.healthgenie.base.exception.Todo.TodoException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
@@ -85,11 +85,11 @@ class TodoServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw TodoException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             } else {
                 todoService.addTodoList(dto, user);
             }
-        }).isInstanceOf(TodoException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -120,11 +120,11 @@ class TodoServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw TodoException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             } else {
                 todoService.update(dto, todoTest.getId(), user);
             }
-        }).isInstanceOf(TodoException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -139,7 +139,7 @@ class TodoServiceTest {
         todoService.deleteTodo(todoTest.getId(), user);
 
         assertThatThrownBy(() -> todoService.deleteTodo(todoTest.getId(), user))
-                .isInstanceOf(TodoException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -153,7 +153,7 @@ class TodoServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw TodoException.WRONG_USER;
+                throw CustomException.USER_EMPTY;
             } else {
                 todoService.deleteTodo(todoTest.getId(), user);
             }
@@ -170,7 +170,7 @@ class TodoServiceTest {
 
         // then
         assertThatThrownBy(() -> todoService.deleteTodo(2000L, user))
-                .isInstanceOf(TodoException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test

@@ -2,9 +2,7 @@ package com.example.healthgenie.boundedContext.todo.service;
 
 import static java.util.stream.Collectors.toList;
 
-import com.example.healthgenie.base.exception.Matching.MatchingErrorResult;
-import com.example.healthgenie.base.exception.Matching.MatchingException;
-import com.example.healthgenie.base.exception.Todo.TodoException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -78,11 +76,11 @@ public class TodoService {
     }
 
     private Todo authorizationWriter(Long id, User member) {
-        Todo todo = todoRepository.findById(id).orElseThrow(() -> TodoException.NO_TODO_INFO);
+        Todo todo = todoRepository.findById(id).orElseThrow(() -> CustomException.TODO_EMPTY);
 
         if (!todo.getMember().getId().equals(member.getId())) {
             log.warn("todo 작성한 member 오류 : {}", todo.getMember());
-            throw TodoException.WRONG_USER;
+            throw CustomException.USER_EMPTY;
         }
         return todo;
     }
@@ -100,7 +98,7 @@ public class TodoService {
         // 매칭이 여러개 있을 수 있다.
         for (MatchingUser m : userMatchings) {
             Matching eachMatching = matchingRepository.findById(m.getMatching().getId())
-                    .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+                    .orElseThrow(() -> CustomException.MATCHING_EMPTY);
 
             // 해당 매칭되서 pt날짜랑 특정 날짜랑 같으면 피티 있다고 알려주기
             if (eachMatching.getDate().equals(date)) {

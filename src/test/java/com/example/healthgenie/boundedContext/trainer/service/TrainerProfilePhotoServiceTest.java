@@ -3,7 +3,7 @@ package com.example.healthgenie.boundedContext.trainer.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.healthgenie.base.exception.TrainerProfile.TrainerProfileException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.photo.service.TrainerProfilePhotoService;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
@@ -71,7 +71,7 @@ class TrainerProfilePhotoServiceTest {
 
         // then
         assertThatThrownBy(() -> trainerProfilePhotoService.save(999L, "test-photo-path.png"))
-                .isInstanceOf(TrainerProfileException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test

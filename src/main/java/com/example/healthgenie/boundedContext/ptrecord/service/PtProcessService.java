@@ -1,12 +1,7 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
 
-import com.example.healthgenie.base.exception.Common.CommonException;
-import com.example.healthgenie.base.exception.Matching.MatchingErrorResult;
-import com.example.healthgenie.base.exception.Matching.MatchingException;
-import com.example.healthgenie.base.exception.PtProcess.PtProcessException;
-import com.example.healthgenie.base.exception.User.UserErrorResult;
-import com.example.healthgenie.base.exception.User.UserException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -44,13 +39,13 @@ public class PtProcessService {
     public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, User currentUser) {
 
         User trainer = userRepository.findById(currentUser.getId())
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+                .orElseThrow(() -> CustomException.USER_EMPTY);
 
         User user = userRepository.findByNickname(dto.getUserNickName())
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+                .orElseThrow(() -> CustomException.USER_EMPTY);
 
         MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+                .orElseThrow(() -> CustomException.MATCHING_EMPTY);
 
         List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.getId());
 
@@ -59,7 +54,7 @@ public class PtProcessService {
             if (match.getMatching().getId().equals(userMatching.getMatching().getId())) {
 
                 Matching matching = matchingRepository.findById(match.getMatching().getId())
-                        .orElseThrow(() -> new MatchingException(MatchingErrorResult.MATCHING_EMPTY));
+                        .orElseThrow(() -> CustomException.MATCHING_EMPTY);
 
                 // trainer와 user사이의 매칭이 있을때 일지 작성 가능
                 log.info("해당하는 매칭이 있음 matching : {}", matching);
@@ -70,13 +65,13 @@ public class PtProcessService {
                 }
 
                 log.warn("일지 작성 날짜가 매칭날짜보다 뒤에 있어야 하는데 그렇지 못함");
-                throw PtProcessException.WRONG_DATE;
+                throw CustomException.WRONG_DATE;
 
             }
         }
 
         log.warn("해당하는 매칭이 없음");
-        throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
+        throw CustomException.MATCHING_EMPTY;
     }
 
     @Transactional
@@ -99,7 +94,7 @@ public class PtProcessService {
     @Transactional(readOnly = true)
     public PtProcessResponseDto getPtProcess(Long processId, User user) {
         PtProcess process = ptProcessRepository.findById(processId)
-                .orElseThrow(() -> PtProcessException.NO_PROCESS_HISTORY);
+                .orElseThrow(() -> CustomException.NO_PROCESS_HISTORY);
 
         // 권한 체크
         checkRole(user, Role.TRAINER);
@@ -163,7 +158,7 @@ public class PtProcessService {
     private PtProcess authorizationProcessWriter(Long id, User member) {
 
         PtProcess process = ptProcessRepository.findById(id)
-                .orElseThrow(() -> PtProcessException.RECORD_EMPTY);
+                .orElseThrow(() -> CustomException.NO_PROCESS_HISTORY);
         authCheck(member, process);
 
         return process;
@@ -172,14 +167,14 @@ public class PtProcessService {
     private void authCheck(User member, PtProcess process) {
         if (!process.getTrainer().getId().equals(member.getId())) {
             log.warn("process 소유자 user : {}", member);
-            throw PtProcessException.WRONG_USER;
+            throw CustomException.USER_EMPTY;
         }
     }
 
     private void checkRole(User currentUser, Role role) {
         if (!currentUser.getRole().equals(role)) {
             log.warn("role 오류. currentUser : {}", currentUser);
-            throw CommonException.UNAUTHORIZED;
+            throw CustomException.WRONG_USER_ROLE;
         }
     }
 

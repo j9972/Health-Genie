@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.trainer.photo.service;
 
-import com.example.healthgenie.base.exception.TrainerProfile.TrainerProfileException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
@@ -22,7 +22,7 @@ public class TrainerProfilePhotoService {
     @Transactional
     public TrainerPhoto save(Long profileId, String path) {
         TrainerInfo profile = trainerProfileRepository.findById(profileId)
-                .orElseThrow(() -> TrainerProfileException.PROFILE_EMPTY);
+                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
 
         TrainerPhoto photo = TrainerPhoto.builder()
                 .infoPhotoPath(path)
@@ -35,7 +35,7 @@ public class TrainerProfilePhotoService {
     @Transactional
     public List<TrainerPhoto> saveAll(Long profileId, List<String> photoPaths) {
         TrainerInfo profile = trainerProfileRepository.findById(profileId)
-                .orElseThrow(() -> TrainerProfileException.PROFILE_EMPTY);
+                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
 
         List<TrainerPhoto> photos = photoPaths.stream()
                 .map(path -> TrainerPhoto.builder()
@@ -55,7 +55,7 @@ public class TrainerProfilePhotoService {
     @Transactional
     public List<TrainerPhoto> updateAll(Long profileId, List<String> photoPaths) {
         TrainerInfo info = trainerProfileRepository.findById(profileId)
-                .orElseThrow(() -> TrainerProfileException.PROFILE_EMPTY);
+                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
 
         // 객체 그래프 탐색용
         info.removePhotos(info.getTrainerPhotos());
@@ -70,7 +70,7 @@ public class TrainerProfilePhotoService {
     @Transactional(readOnly = true)
     public TrainerPhoto findById(Long id) {
         return trainerProfilePhotoRepository.findById(id)
-                .orElseThrow(() -> TrainerProfileException.PROFILE_EMPTY);
+                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
     }
 
     @Transactional(readOnly = true)

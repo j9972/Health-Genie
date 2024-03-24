@@ -1,6 +1,6 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
-import com.example.healthgenie.base.exception.PtProcess.PtProcessException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
 import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
 import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessPhotoRepository;
@@ -21,7 +21,7 @@ public class PtProcessPhotoService {
     @Transactional
     public PtProcessPhoto save(Long processId, String path) {
         PtProcess process = ptProcessRepository.findById(processId)
-                .orElseThrow(() -> PtProcessException.NO_PROCESS_HISTORY);
+                .orElseThrow(() -> CustomException.NO_PROCESS_HISTORY);
 
         PtProcessPhoto photo = PtProcessPhoto.builder()
                 .processPhotoPath(path)
@@ -34,7 +34,7 @@ public class PtProcessPhotoService {
     @Transactional
     public List<PtProcessPhoto> saveAll(Long processId, List<String> photoPaths) {
         PtProcess process = ptProcessRepository.findById(processId)
-                .orElseThrow(() -> PtProcessException.NO_PROCESS_HISTORY);
+                .orElseThrow(() -> CustomException.NO_PROCESS_HISTORY);
 
         List<PtProcessPhoto> photos = photoPaths.stream()
                 .map(path -> PtProcessPhoto.builder()

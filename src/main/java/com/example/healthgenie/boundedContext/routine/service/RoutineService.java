@@ -1,7 +1,7 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
 
-import com.example.healthgenie.base.exception.Routine.RoutineException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineDeleteResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
@@ -42,7 +42,7 @@ public class RoutineService {
             for (Routine mine : routines) {
                 if (mine.getDay().equals(dto.getDay())) {
                     log.warn("중복된 요일입니다.");
-                    throw RoutineException.DUPLICATE_DAY;
+                    throw CustomException.DUPLICATED_DAY;
                 }
             }
         }
@@ -141,11 +141,11 @@ public class RoutineService {
     private Routine authorizationWriter(Long id, User member) {
 
         Routine routine = routineRepository.findById(id)
-                .orElseThrow(() -> RoutineException.NO_HISTORY);
+                .orElseThrow(() -> CustomException.ROUTINE_EMPTY);
 
         if (!routine.getMember().getId().equals(member.getId())) {
             log.warn("member doesn't have authentication , routine.getMember {}", routine.getMember());
-            throw RoutineException.NO_USER_INFO;
+            throw CustomException.USER_EMPTY;
         }
         return routine;
 
@@ -154,7 +154,7 @@ public class RoutineService {
     private void validNickname(boolean routine) {
         if (!routine) {
             log.warn("routine valid : false");
-            throw RoutineException.DIFFERENT_NICKNAME;
+            throw CustomException.USER_EMPTY;
         }
     }
 

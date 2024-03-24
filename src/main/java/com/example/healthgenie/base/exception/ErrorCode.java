@@ -1,10 +1,12 @@
 package com.example.healthgenie.base.exception;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-
-import static org.springframework.http.HttpStatus.*;
 
 @Getter
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public enum ErrorCode {
     TODO_EMPTY(BAD_REQUEST, "할일이 존재하지 않습니다."),
     ROOM_EMPTY(BAD_REQUEST, "채팅방이 존재하지 않습니다."),
     REFRESH_TOKEN_EMPTY(BAD_REQUEST, "리프레시 토큰이 존재하지 않습니다."),
+    ROUTINE_EMPTY(BAD_REQUEST, "루틴이 존재하지 않습니다."),
 
     // NO HISTORY
     NO_PROCESS_HISTORY(BAD_REQUEST, "일지를 남긴 기록이 없습니다."),
@@ -62,8 +65,7 @@ public enum ErrorCode {
     FAILED_PHOTO_UPLOAD(INTERNAL_SERVER_ERROR, "사진 업로드에 실패했습니다. 관리자에게 문의해주세요."),
 
     // 5xx
-    UNKNOWN_EXCEPTION(INTERNAL_SERVER_ERROR, "알 수 없는 예외입니다. 관리자에게 문의해주세요.")
-    ;
+    UNKNOWN_EXCEPTION(INTERNAL_SERVER_ERROR, "알 수 없는 예외입니다. 관리자에게 문의해주세요.");
 
     private final HttpStatus status;
     private final String message;

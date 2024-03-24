@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.example.healthgenie.base.exception.Common.CommonException;
-import com.example.healthgenie.base.exception.Routine.RoutineException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;
@@ -122,10 +121,10 @@ class RoutineServiceTest {
                 RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.MONDAY
                         , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
                 routineService.writeRoutine(dto, user);
-                throw RoutineException.DUPLICATE_DAY;
+                throw CustomException.DUPLICATED_DAY;
             }
 
-        }).isInstanceOf(RoutineException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -144,11 +143,11 @@ class RoutineServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!loginResult) {
-                throw CommonException.BAD_REQUEST;
+                throw CustomException.UNKNOWN_EXCEPTION;
             } else {
                 routineService.writeRoutine(dto, user);
             }
-        }).isInstanceOf(CommonException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
 
@@ -269,9 +268,9 @@ class RoutineServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (failRoutine.getLevel().equals(Level.EMPTY)) {
-                throw CommonException.BAD_REQUEST;
+                throw CustomException.UNKNOWN_EXCEPTION;
             }
-        }).isInstanceOf(CommonException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
 
@@ -307,7 +306,7 @@ class RoutineServiceTest {
 
         // then
         assertThatThrownBy(() -> routineService.deleteRoutine(routine.getId(), user))
-                .isInstanceOf(RoutineException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -321,11 +320,11 @@ class RoutineServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!loginResult) {
-                throw CommonException.BAD_REQUEST;
+                throw CustomException.UNKNOWN_EXCEPTION;
             } else {
                 routineService.deleteRoutine(routine.getId(), user);
             }
-        }).isInstanceOf(CommonException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -338,7 +337,7 @@ class RoutineServiceTest {
 
         // then
         assertThatThrownBy(() -> routineService.deleteRoutine(2000L, user))
-                .isInstanceOf(RoutineException.class);
+                .isInstanceOf(CustomException.class);
     }
 
 }

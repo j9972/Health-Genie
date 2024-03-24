@@ -17,13 +17,15 @@ public class CustomException extends RuntimeException {
     public static final CustomException TODO_EMPTY = new CustomException(ErrorCode.TODO_EMPTY);
     public static final CustomException ROOM_EMPTY = new CustomException(ErrorCode.ROOM_EMPTY);
     public static final CustomException REFRESH_TOKEN_EMPTY = new CustomException(ErrorCode.REFRESH_TOKEN_EMPTY);
+    public static final CustomException ROUTINE_EMPTY = new CustomException(ErrorCode.ROUTINE_EMPTY);
     public static final CustomException NO_PROCESS_HISTORY = new CustomException(ErrorCode.NO_PROCESS_HISTORY);
     public static final CustomException NO_REVIEW_HISTORY = new CustomException(ErrorCode.NO_REVIEW_HISTORY);
     public static final CustomException DUPLICATED_REVIEW = new CustomException(ErrorCode.DUPLICATED_REVIEW);
     public static final CustomException DUPLICATED_DAY = new CustomException(ErrorCode.DUPLICATED_DAY);
     public static final CustomException DUPLICATED_NICKNAME = new CustomException(ErrorCode.DUPLICATED_NICKNAME);
     public static final CustomException DUPLICATED_EMAIL = new CustomException(ErrorCode.DUPLICATED_EMAIL);
-    public static final CustomException DUPLICATED_TRAINER_INFO = new CustomException(ErrorCode.DUPLICATED_TRAINER_INFO);
+    public static final CustomException DUPLICATED_TRAINER_INFO = new CustomException(
+            ErrorCode.DUPLICATED_TRAINER_INFO);
     public static final CustomException WRONG_DATE = new CustomException(ErrorCode.WRONG_DATE);
     public static final CustomException WRONG_USER_ROLE = new CustomException(ErrorCode.WRONG_USER_ROLE);
     public static final CustomException NOT_VALID_FIELD = new CustomException(ErrorCode.NOT_VALID_FIELD);
@@ -31,7 +33,8 @@ public class CustomException extends RuntimeException {
     public static final CustomException ALREADY_LIKED = new CustomException(ErrorCode.ALREADY_LIKED);
     public static final CustomException ALREADY_EXISTS_ROLE = new CustomException(ErrorCode.ALREADY_EXISTS_ROLE);
     public static final CustomException SELF_CHAT = new CustomException(ErrorCode.SELF_CHAT);
-    public static final CustomException TOO_EARLY_TO_WRITE_FEEDBACK = new CustomException(ErrorCode.TOO_EARLY_TO_WRITE_FEEDBACK);
+    public static final CustomException TOO_EARLY_TO_WRITE_FEEDBACK = new CustomException(
+            ErrorCode.TOO_EARLY_TO_WRITE_FEEDBACK);
     public static final CustomException NO_JWT = new CustomException(ErrorCode.NO_JWT);
     public static final CustomException WRONG_SIGNATURE = new CustomException(ErrorCode.WRONG_SIGNATURE);
     public static final CustomException EXPIRED_TOKEN = new CustomException(ErrorCode.EXPIRED_TOKEN);

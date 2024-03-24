@@ -1,8 +1,9 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
-import com.example.healthgenie.base.exception.Matching.MatchingErrorResult;
-import com.example.healthgenie.base.exception.Matching.MatchingException;
-import com.example.healthgenie.base.exception.PtProcess.PtProcessException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -16,19 +17,15 @@ import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -112,9 +109,9 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (matching.getDate().toLocalDate().isAfter(dto.getDate())) {
-                throw new MatchingException(MatchingErrorResult.TOO_EARLY_TO_WRITE_FEEDBACK);
+                throw CustomException.TOO_EARLY_TO_WRITE_FEEDBACK;
             }
-        }).isInstanceOf(MatchingException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -129,9 +126,9 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (trainerMatchings.isEmpty()) {
-                throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
+                throw CustomException.MATCHING_EMPTY;
             }
-        }).isInstanceOf(MatchingException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -150,9 +147,9 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user.getRole().equals(Role.TRAINER)) {
-                throw PtProcessException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             }
-        }).isInstanceOf(PtProcessException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -171,7 +168,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw PtProcessException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             } else {
                 processService.addPtProcess(dto, user);
             }
@@ -191,7 +188,7 @@ class PtProcessServiceTest {
 
         // then
         assertThatThrownBy(() -> processService.addPtProcess(dto, user3))
-                .isInstanceOf(MatchingException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -225,11 +222,11 @@ class PtProcessServiceTest {
             if (!user3.getNickname().equals(process.getMember().getNickname())
                     & !user3.getNickname().equals(process.getTrainer().getNickname())
             ) {
-                throw PtProcessException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             } else {
                 processService.getPtProcess(process.getId(), user3);
             }
-        }).isInstanceOf(PtProcessException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -254,7 +251,7 @@ class PtProcessServiceTest {
 
         // then
         assertThatThrownBy(() -> processService.getPtProcess(999L, user))
-                .isInstanceOf(PtProcessException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -304,7 +301,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw PtProcessException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             } else {
                 processService.getAllMyProcess(0, 5, user);
             }
@@ -322,7 +319,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw PtProcessException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             } else {
                 processService.getAllTrainerProcess(0, 5, user);
             }
@@ -340,7 +337,7 @@ class PtProcessServiceTest {
 
         // then
         assertThatThrownBy(() -> processService.deletePtProcess(process.getId(), user2))
-                .isInstanceOf(PtProcessException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -354,9 +351,9 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user.getRole().equals(Role.TRAINER)) {
-                throw PtProcessException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             }
-        }).isInstanceOf(PtProcessException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -370,7 +367,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw PtProcessException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             } else {
                 processService.deletePtProcess(process.getId(), user);
             }

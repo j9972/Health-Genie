@@ -3,10 +3,7 @@ package com.example.healthgenie.boundedContext.ptreview.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.healthgenie.base.exception.Common.CommonException;
-import com.example.healthgenie.base.exception.Matching.MatchingErrorResult;
-import com.example.healthgenie.base.exception.Matching.MatchingException;
-import com.example.healthgenie.base.exception.PtReview.PtReviewException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
@@ -125,9 +122,9 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (LocalDate.now().isAfter(matching.getDate().toLocalDate())) {
-                throw new MatchingException(MatchingErrorResult.TOO_EARLY_TO_WRITE_FEEDBACK);
+                throw CustomException.TOO_EARLY_TO_WRITE_FEEDBACK;
             }
-        }).isInstanceOf(MatchingException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -143,9 +140,9 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (userMatching.isEmpty()) {
-                throw new MatchingException(MatchingErrorResult.MATCHING_EMPTY);
+                throw CustomException.MATCHING_EMPTY;
             }
-        }).isInstanceOf(MatchingException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -161,9 +158,9 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (review.getId() != null) {
-                throw PtReviewException.DUPLICATED_REVIEW;
+                throw CustomException.DUPLICATED_REVIEW;
             }
-        }).isInstanceOf(PtReviewException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -178,9 +175,9 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user2.getRole().equals(Role.USER)) {
-                throw CommonException.BAD_REQUEST;
+                throw CustomException.UNKNOWN_EXCEPTION;
             }
-        }).isInstanceOf(CommonException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -195,7 +192,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw PtReviewException.WRONG_USER;
+                throw CustomException.USER_EMPTY;
             } else {
                 reviewService.addPtReview(dto, user);
             }
@@ -231,7 +228,7 @@ class PtReviewServiceTest {
 
         // then
         assertThatThrownBy(() -> reviewService.getPtReview(999L, user))
-                .isInstanceOf(PtReviewException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -299,7 +296,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw PtReviewException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             } else {
                 reviewService.updateReview(dto, review.getId(), user);
             }
@@ -317,7 +314,7 @@ class PtReviewServiceTest {
 
         // then
         assertThatThrownBy(() -> reviewService.updateReview(dto, review.getId(), user))
-                .isInstanceOf(PtReviewException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -332,9 +329,9 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user2.getRole().equals(Role.USER)) {
-                throw PtReviewException.WRONG_USER;
+                throw CustomException.USER_EMPTY;
             }
-        }).isInstanceOf(PtReviewException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -348,7 +345,7 @@ class PtReviewServiceTest {
 
         // then
         assertThatThrownBy(() -> reviewService.deletePtReview(review.getId(), user3))
-                .isInstanceOf(PtReviewException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -362,7 +359,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!login) {
-                throw PtReviewException.NO_USER_INFO;
+                throw CustomException.USER_EMPTY;
             } else {
                 reviewService.deletePtReview(review.getId(), user);
             }
@@ -380,9 +377,9 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user2.getRole().equals(Role.USER)) {
-                throw PtReviewException.WRONG_USER;
+                throw CustomException.USER_EMPTY;
             }
-        }).isInstanceOf(PtReviewException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -395,7 +392,7 @@ class PtReviewServiceTest {
 
         // then
         assertThatThrownBy(() -> reviewService.deletePtReview(review.getId(), user))
-                .isInstanceOf(PtReviewException.class);
+                .isInstanceOf(CustomException.class);
     }
 
 //    @Test

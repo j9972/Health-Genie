@@ -3,7 +3,7 @@ package com.example.healthgenie.boundedContext.email.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.healthgenie.base.exception.Common.CommonException;
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
@@ -96,9 +96,9 @@ class UserMailServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!StringUtils.hasText(uniDomain)) {
-                throw CommonException.BAD_REQUEST;
+                throw CustomException.UNKNOWN_EXCEPTION;
             }
-        }).isInstanceOf(CommonException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -109,9 +109,9 @@ class UserMailServiceTest {
         // when ,then
         assertThatThrownBy(() -> {
             if (!user.getAuthorities().isEmpty()) {
-                throw CommonException.BAD_REQUEST;
+                throw CustomException.UNKNOWN_EXCEPTION;
             }
-        }).isInstanceOf(CommonException.class);
+        }).isInstanceOf(CustomException.class);
     }
 
 
