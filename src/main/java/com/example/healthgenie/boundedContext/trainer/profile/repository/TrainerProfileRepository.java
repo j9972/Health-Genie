@@ -1,6 +1,6 @@
-package com.example.healthgenie.boundedContext.trainer.repository;
+package com.example.healthgenie.boundedContext.trainer.profile.repository;
 
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
+import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.trainer.dto;
+package com.example.healthgenie.boundedContext.trainer.profile.dto;
 
 import lombok.Builder;
 import lombok.Getter;

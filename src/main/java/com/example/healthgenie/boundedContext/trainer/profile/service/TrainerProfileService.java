@@ -1,16 +1,16 @@
-package com.example.healthgenie.boundedContext.trainer.service;
+package com.example.healthgenie.boundedContext.trainer.profile.service;
 
 
 import com.example.healthgenie.base.exception.TrainerProfile.TrainerProfileException;
 import com.example.healthgenie.base.utils.FileUploadUtils;
-import com.example.healthgenie.boundedContext.trainer.dto.ProfileDeleteResponseDto;
-import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
-import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
-import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfilePhotoRepository;
-import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
-import com.example.healthgenie.boundedContext.trainer.repository.TrainerQueryRepository;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
+import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileDeleteResponseDto;
+import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
+import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileResponseDto;
+import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
+import com.example.healthgenie.boundedContext.trainer.profile.repository.TrainerProfileRepository;
+import com.example.healthgenie.boundedContext.trainer.profile.repository.TrainerQueryRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import java.io.IOException;
 import java.util.List;

@@ -1,6 +1,7 @@
-package com.example.healthgenie.boundedContext.trainer.entity;
+package com.example.healthgenie.boundedContext.trainer.photo.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
+import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -4,8 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.healthgenie.base.exception.TrainerProfile.TrainerProfileException;
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.photo.service.TrainerProfilePhotoService;
+import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;

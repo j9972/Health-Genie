@@ -1,11 +1,11 @@
-package com.example.healthgenie.boundedContext.trainer.controller;
+package com.example.healthgenie.boundedContext.trainer.profile.controller;
 
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.trainer.dto.ProfileDeleteResponseDto;
-import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
-import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
-import com.example.healthgenie.boundedContext.trainer.dto.ProfileSliceResponse;
-import com.example.healthgenie.boundedContext.trainer.service.TrainerProfileService;
+import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileDeleteResponseDto;
+import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
+import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileResponseDto;
+import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileSliceResponse;
+import com.example.healthgenie.boundedContext.trainer.profile.service.TrainerProfileService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
