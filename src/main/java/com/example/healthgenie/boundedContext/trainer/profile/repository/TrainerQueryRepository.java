@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.trainer.profile.repository;
 
-import static com.example.healthgenie.boundedContext.trainer.entity.QTrainerInfo.trainerInfo;
+
+import static com.example.healthgenie.boundedContext.trainer.profile.entity.QTrainerInfo.trainerInfo;
 
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.querydsl.core.types.dsl.BooleanExpression;

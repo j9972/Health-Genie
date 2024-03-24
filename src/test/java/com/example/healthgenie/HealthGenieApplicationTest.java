@@ -7,5 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 class HealthGenieApplicationTest {
 
     @Test
-    void init() {}
+    void init() {
+    }
+
+    @Test
+    void init2() {
+    }
 }
