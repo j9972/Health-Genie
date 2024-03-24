@@ -1,6 +1,6 @@
-package com.example.healthgenie.boundedContext.trainer.repository;
+package com.example.healthgenie.boundedContext.trainer.photo.repository;
 
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TrainerProfilePhotoRepository extends JpaRepository<TrainerPhoto, Long> {

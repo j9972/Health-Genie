@@ -1,10 +1,10 @@
-package com.example.healthgenie.boundedContext.trainer.service;
+package com.example.healthgenie.boundedContext.trainer.photo.service;
 
 import com.example.healthgenie.base.exception.TrainerProfile.TrainerProfileException;
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerPhoto;
-import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfilePhotoRepository;
-import com.example.healthgenie.boundedContext.trainer.repository.TrainerProfileRepository;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
+import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
+import com.example.healthgenie.boundedContext.trainer.profile.repository.TrainerProfileRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

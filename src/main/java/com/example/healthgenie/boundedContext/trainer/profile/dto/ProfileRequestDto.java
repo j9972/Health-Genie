@@ -1,6 +1,6 @@
-package com.example.healthgenie.boundedContext.trainer.dto;
+package com.example.healthgenie.boundedContext.trainer.profile.dto;
 
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
+import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import java.time.LocalTime;
 import java.util.List;

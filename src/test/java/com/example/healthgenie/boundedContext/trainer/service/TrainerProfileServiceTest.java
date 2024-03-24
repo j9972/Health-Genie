@@ -4,9 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.healthgenie.base.exception.TrainerProfile.TrainerProfileException;
-import com.example.healthgenie.boundedContext.trainer.dto.ProfileRequestDto;
-import com.example.healthgenie.boundedContext.trainer.dto.ProfileResponseDto;
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
+import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
+import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileResponseDto;
+import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
+import com.example.healthgenie.boundedContext.trainer.profile.service.TrainerProfileService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;

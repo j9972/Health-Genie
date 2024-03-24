@@ -1,8 +1,8 @@
-package com.example.healthgenie.boundedContext.trainer.repository;
+package com.example.healthgenie.boundedContext.trainer.profile.repository;
 
 import static com.example.healthgenie.boundedContext.trainer.entity.QTrainerInfo.trainerInfo;
 
-import com.example.healthgenie.boundedContext.trainer.entity.TrainerInfo;
+import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
