@@ -12,6 +12,7 @@ import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo
 import com.example.healthgenie.boundedContext.trainer.profile.repository.TrainerProfileRepository;
 import com.example.healthgenie.boundedContext.trainer.profile.repository.TrainerQueryRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -106,6 +107,11 @@ public class TrainerProfileService {
     // 홈페이지에서 패킷에서 들어가면 보여줄 API
     @Transactional
     public ProfileResponseDto save(User user, ProfileRequestDto dto, List<MultipartFile> profileImages) {
+
+        // user role 검증
+        if (!user.getRole().equals(Role.TRAINER)) {
+            throw CustomException.WRONG_USER_ROLE;
+        }
 
         TrainerInfo info = trainerProfileRepository.save(dto.toEntity(user));
         if (profileImages != null && !profileImages.isEmpty()) {
