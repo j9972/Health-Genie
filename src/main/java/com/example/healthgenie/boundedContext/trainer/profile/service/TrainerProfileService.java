@@ -108,7 +108,7 @@ public class TrainerProfileService {
     @Transactional
     public ProfileResponseDto save(User user, ProfileRequestDto dto, List<MultipartFile> profileImages) {
 
-        // user role 검증
+        // user role 검증 -
         if (!user.getRole().equals(Role.TRAINER)) {
             throw CustomException.WRONG_USER_ROLE;
         }
