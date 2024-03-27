@@ -7,7 +7,7 @@ import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
-import com.example.healthgenie.boundedContext.trainer.profile.service.TrainerProfileService;
+import com.example.healthgenie.boundedContext.trainer.profile.service.ProfileService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class TrainerProfileServiceTest {
+class ProfileServiceTest {
 
     @Autowired
     TestSyUtils testSyUtils;
@@ -33,7 +33,7 @@ class TrainerProfileServiceTest {
     TestKrUtils testKrUtils;
 
     @Autowired
-    TrainerProfileService trainerProfileService;
+    ProfileService profileService;
 
     @Autowired
     UserService userService;
@@ -71,7 +71,7 @@ class TrainerProfileServiceTest {
                 startTime, endTime, 4.5, null, 12000, 25, "test2");
 
         // when
-        ProfileResponseDto response = trainerProfileService.save(user2, dto, null);
+        ProfileResponseDto response = profileService.save(user2, dto, null);
 
         // then
         assertThat(response.getIntroduction()).isEqualTo("test intro");
@@ -106,7 +106,7 @@ class TrainerProfileServiceTest {
             if (!login) {
                 throw CustomException.TRAINER_INFO_EMPTY;
             } else {
-                trainerProfileService.save(user, dto, null);
+                profileService.save(user, dto, null);
             }
         });
     }
@@ -124,7 +124,7 @@ class TrainerProfileServiceTest {
                 startTime, endTime, 4.5, null, 12000, 25, "test2");
 
         // when
-        ProfileResponseDto response = trainerProfileService.updateProfile(dto, profile.getId(), user2, null);
+        ProfileResponseDto response = profileService.updateProfile(dto, profile.getId(), user2, null);
 
         // then
         assertThat(response.getIntroduction()).isEqualTo("test intro");
@@ -158,7 +158,7 @@ class TrainerProfileServiceTest {
             if (!login) {
                 throw CustomException.TRAINER_INFO_EMPTY;
             } else {
-                trainerProfileService.updateProfile(dto, profile.getId(), user, null);
+                profileService.updateProfile(dto, profile.getId(), user, null);
             }
         });
     }

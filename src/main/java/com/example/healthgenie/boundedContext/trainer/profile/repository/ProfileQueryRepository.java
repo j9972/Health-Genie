@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class TrainerQueryRepository {
+public class ProfileQueryRepository {
     private final JPAQueryFactory query;
 
     public List<TrainerInfo> findAllProfilesSortByLatest(Long lastIndex) {
