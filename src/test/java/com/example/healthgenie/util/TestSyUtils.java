@@ -24,7 +24,7 @@ import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
-import com.example.healthgenie.boundedContext.trainer.profile.repository.TrainerProfileRepository;
+import com.example.healthgenie.boundedContext.trainer.profile.repository.ProfileRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -43,7 +43,7 @@ public class TestSyUtils {
     private final RoutineRepository routineRepository;
     private final TodoRepository todoRepository;
     private final PtReviewRepository ptReviewRepository;
-    private final TrainerProfileRepository trainerProfileRepository;
+    private final ProfileRepository profileRepository;
     private final TrainerProfilePhotoRepository trainerProfilePhotoRepository;
     private final PtProcessRepository ptProcessRepository;
     private final PtProcessPhotoRepository ptProcessPhotoRepository;
@@ -317,7 +317,7 @@ public class TestSyUtils {
                 .member(user)
                 .build();
 
-        return trainerProfileRepository.save(profile);
+        return profileRepository.save(profile);
     }
 
 

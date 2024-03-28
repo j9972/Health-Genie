@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
-import com.example.healthgenie.boundedContext.trainer.photo.service.TrainerProfilePhotoService;
+import com.example.healthgenie.boundedContext.trainer.photo.service.ProfilePhotoService;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class TrainerProfilePhotoServiceTest {
+class ProfilePhotoServiceTest {
 
     @Autowired
     TestKrUtils testKrUtils;
@@ -32,7 +32,7 @@ class TrainerProfilePhotoServiceTest {
     TestSyUtils testSyUtils;
 
     @Autowired
-    TrainerProfilePhotoService trainerProfilePhotoService;
+    ProfilePhotoService profilePhotoService;
 
     TrainerInfo profile;
     User user;
@@ -55,7 +55,7 @@ class TrainerProfilePhotoServiceTest {
         // given
 
         // when
-        TrainerPhoto saved = trainerProfilePhotoService.save(profile.getId(), "test-photo-path.png");
+        TrainerPhoto saved = profilePhotoService.save(profile.getId(), "test-photo-path.png");
 
         // then
         assertThat(saved.getInfo().getId()).isEqualTo(profile.getId());
@@ -70,7 +70,7 @@ class TrainerProfilePhotoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> trainerProfilePhotoService.save(999L, "test-photo-path.png"))
+        assertThatThrownBy(() -> profilePhotoService.save(999L, "test-photo-path.png"))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -80,7 +80,7 @@ class TrainerProfilePhotoServiceTest {
         // given
 
         // when
-        List<TrainerPhoto> saved = trainerProfilePhotoService.saveAll(profile.getId(),
+        List<TrainerPhoto> saved = profilePhotoService.saveAll(profile.getId(),
                 List.of("test-photo-path.png", "test1-photo-path.png", "test2-photo-path.png"));
 
         // then
@@ -94,11 +94,11 @@ class TrainerProfilePhotoServiceTest {
     @DisplayName("다중 사진 수정하기")
     void updateAll() {
         // given
-        trainerProfilePhotoService.updateAll(profile.getId(),
+        profilePhotoService.updateAll(profile.getId(),
                 List.of("updated-photo-path.png", "updated1-photo-path.png", "updated2-photo-path.png"));
 
         // when
-        List<TrainerPhoto> all = trainerProfilePhotoService.findAll();
+        List<TrainerPhoto> all = profilePhotoService.findAll();
 
         // then
         assertThat(all.size()).isEqualTo(3);
@@ -110,11 +110,11 @@ class TrainerProfilePhotoServiceTest {
     @DisplayName("다중 사진 조회하기")
     void findAll() {
         // given
-        trainerProfilePhotoService.saveAll(profile.getId(),
+        profilePhotoService.saveAll(profile.getId(),
                 List.of("test-photo-path.png", "test1-photo-path.png", "test2-photo-path.png"));
 
         // when
-        List<TrainerPhoto> all = trainerProfilePhotoService.findAll();
+        List<TrainerPhoto> all = profilePhotoService.findAll();
 
         // then
         assertThat(all.size()).isEqualTo(4);

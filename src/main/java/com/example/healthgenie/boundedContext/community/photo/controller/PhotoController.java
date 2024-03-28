@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.trainer.photo.controller;
+package com.example.healthgenie.boundedContext.community.photo.controller;
 
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.community.photo.dto.PhotoRequest;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/trainers/profiles/{profileId}/photos")
+@RequestMapping("/community/posts/{postId}/photos")
 public class PhotoController {
 
     private final PhotoService photoService;
