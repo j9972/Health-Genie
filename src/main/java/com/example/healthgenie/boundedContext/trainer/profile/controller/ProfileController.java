@@ -5,7 +5,7 @@ import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileDeleteR
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileSliceResponse;
-import com.example.healthgenie.boundedContext.trainer.profile.service.TrainerProfileService;
+import com.example.healthgenie.boundedContext.trainer.profile.service.ProfileService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/trainers/profiles")
-public class TrainerProfileController {
+public class ProfileController {
 
-    private final TrainerProfileService profileService;
+    private final ProfileService profileService;
 
     // 트레이너 패킷 세부 내용 작성 API
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})

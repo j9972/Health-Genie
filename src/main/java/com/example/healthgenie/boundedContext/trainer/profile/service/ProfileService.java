@@ -9,8 +9,8 @@ import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileDeleteR
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
-import com.example.healthgenie.boundedContext.trainer.profile.repository.TrainerProfileRepository;
-import com.example.healthgenie.boundedContext.trainer.profile.repository.TrainerQueryRepository;
+import com.example.healthgenie.boundedContext.trainer.profile.repository.ProfileQueryRepository;
+import com.example.healthgenie.boundedContext.trainer.profile.repository.ProfileRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import java.io.IOException;
@@ -26,9 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TrainerProfileService {
-    private final TrainerProfileRepository trainerProfileRepository;
-    private final TrainerQueryRepository trainerQueryRepository;
+public class ProfileService {
+    private final ProfileRepository profileRepository;
+    private final ProfileQueryRepository profileQueryRepository;
     private final TrainerProfilePhotoRepository trainerProfilePhotoRepository;
 
     /*
@@ -38,7 +38,7 @@ public class TrainerProfileService {
     public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user,
                                             List<MultipartFile> profileImages) {
 
-        TrainerInfo profile = trainerProfileRepository.findByIdAndMemberId(profileId, user.getId())
+        TrainerInfo profile = profileRepository.findByIdAndMemberId(profileId, user.getId())
                 .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
 
         updateProfileItems(dto, profile, profileImages);
@@ -89,12 +89,12 @@ public class TrainerProfileService {
     */
     @Transactional(readOnly = true)
     public ProfileResponseDto getProfile(Long profileId) {
-        return ProfileResponseDto.of(trainerProfileRepository.findById(profileId).orElseThrow());
+        return ProfileResponseDto.of(profileRepository.findById(profileId).orElseThrow());
     }
 
     private TrainerInfo authorizationWriter(Long id, User member) {
 
-        TrainerInfo profile = trainerProfileRepository.findById(id)
+        TrainerInfo profile = profileRepository.findById(id)
                 .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
 
         if (!profile.getMember().getId().equals(member.getId())) {
@@ -108,12 +108,12 @@ public class TrainerProfileService {
     @Transactional
     public ProfileResponseDto save(User user, ProfileRequestDto dto, List<MultipartFile> profileImages) {
 
-        // user role 검증
+        // user role 검증 -
         if (!user.getRole().equals(Role.TRAINER)) {
             throw CustomException.WRONG_USER_ROLE;
         }
 
-        TrainerInfo info = trainerProfileRepository.save(dto.toEntity(user));
+        TrainerInfo info = profileRepository.save(dto.toEntity(user));
         if (profileImages != null && !profileImages.isEmpty()) {
             List<TrainerPhoto> uploadedImages = uploadProfileImages(info, profileImages);
             info.getTrainerPhotos().addAll(uploadedImages);
@@ -127,16 +127,16 @@ public class TrainerProfileService {
         Long maxId = lastIndex;
 
         if (maxId == null) {
-            maxId = trainerQueryRepository.findMaxId().orElse(0L);
+            maxId = profileQueryRepository.findMaxId().orElse(0L);
         }
 
-        List<TrainerInfo> profiles = trainerQueryRepository.findAllProfilesSortByLatest(maxId);
+        List<TrainerInfo> profiles = profileQueryRepository.findAllProfilesSortByLatest(maxId);
         return ProfileResponseDto.of(profiles);
     }
 
     @Transactional(readOnly = true)
     public Slice<TrainerInfo> findAll(String keyword, Long lastId, Pageable pageable) {
-        return trainerQueryRepository.findAll(keyword, lastId, pageable);
+        return profileQueryRepository.findAll(keyword, lastId, pageable);
     }
 
     private List<TrainerPhoto> uploadProfileImages(TrainerInfo Profile, List<MultipartFile> ProfileImages) {
@@ -173,7 +173,7 @@ public class TrainerProfileService {
     public ProfileDeleteResponseDto deleteProfile(Long profileId, User user) {
 
         TrainerInfo profile = authorizationWriter(profileId, user);
-        trainerProfileRepository.deleteById(profile.getId());
+        profileRepository.deleteById(profile.getId());
 
         return ProfileDeleteResponseDto.builder()
                 .id(profile.getId())
