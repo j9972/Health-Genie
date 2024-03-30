@@ -69,16 +69,12 @@ spring:
             scope: profile_nickname, profile_image, account_email
 
         provider:
-          google:
-            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline
-            token_uri: https://accounts.google.com/o/oauth2/token
-            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
-
           kakao:
             authorization_uri: https://kauth.kakao.com/oauth/authorize
             token_uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user_name_attribute: id
+
   servlet:
     multipart:
       max-file-size: 10MB
