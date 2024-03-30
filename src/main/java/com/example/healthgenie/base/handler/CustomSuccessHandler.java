@@ -3,6 +3,8 @@ package com.example.healthgenie.base.handler;
 import com.example.healthgenie.base.utils.CookieUtils;
 import com.example.healthgenie.base.utils.JwtUtils;
 import com.example.healthgenie.boundedContext.auth.dto.CustomOAuth2User;
+import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
+import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +14,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Date;
 
 import static com.example.healthgenie.base.constant.Constants.*;
 
@@ -20,6 +23,7 @@ import static com.example.healthgenie.base.constant.Constants.*;
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtUtils jwtUtils;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -28,12 +32,24 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String email = customOAuth2User.getEmail();
         String role = authentication.getAuthorities().iterator().next().getAuthority();
 
-        String access = jwtUtils.createJwt(email, role, ACCESS_TOKEN_EXPIRE_COUNT);
-        String refresh = jwtUtils.createJwt(email, role, REFRESH_TOKEN_EXPIRE_COUNT);
+        String access = jwtUtils.createJwt("access", email, role, ACCESS_TOKEN_EXPIRATION_MS);
+        String refresh = jwtUtils.createJwt("refresh", email, role, REFRESH_TOKEN_EXPIRATION_MS);
+
+        saveRefreshToken(refresh, email, REFRESH_TOKEN_EXPIRATION_MS);
 
         response.setHeader("Authorization", BEARER_PREFIX + access);
         response.addCookie(CookieUtils.createCookie("refresh", refresh));
 //        response.sendRedirect("http://localhost:3000/health-management");
-        response.sendRedirect("http://localhost:1234/");
+        response.sendRedirect("http://localhost:1234/community/posts");
+    }
+
+    private void saveRefreshToken(String refresh, String email, Long expirationMs) {
+        RefreshToken refreshTokenObj = RefreshToken.builder()
+                .refreshToken(refresh)
+                .keyEmail(email)
+                .expiration(new Date(System.currentTimeMillis() + expirationMs).toString())
+                .build();
+
+        refreshTokenRepository.save(refreshTokenObj);
     }
 }
