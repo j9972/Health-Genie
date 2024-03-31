@@ -105,6 +105,7 @@ public class ProfileService {
     }
 
     // 홈페이지에서 패킷에서 들어가면 보여줄 API
+    /*
     @Transactional
     public ProfileResponseDto save(User user, ProfileRequestDto dto, List<MultipartFile> profileImages) {
 
@@ -118,6 +119,20 @@ public class ProfileService {
             List<TrainerPhoto> uploadedImages = uploadProfileImages(info, profileImages);
             info.getTrainerPhotos().addAll(uploadedImages);
         }
+
+        return ProfileResponseDto.of(info);
+    }
+     */
+
+    @Transactional
+    public ProfileResponseDto save(User user, ProfileRequestDto dto) {
+
+        // user role 검증
+        if (!user.getRole().equals(Role.TRAINER)) {
+            throw CustomException.WRONG_USER_ROLE;
+        }
+
+        TrainerInfo info = profileRepository.save(dto.toEntity(user));
 
         return ProfileResponseDto.of(info);
     }

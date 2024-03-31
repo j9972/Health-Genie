@@ -7,6 +7,7 @@ import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRespons
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileSliceResponse;
 import com.example.healthgenie.boundedContext.trainer.profile.service.ProfileService;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -34,12 +36,11 @@ public class ProfileController {
     private final ProfileService profileService;
 
     // 트레이너 패킷 세부 내용 작성 API
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping
     public ResponseEntity<Result> createProfile(@AuthenticationPrincipal User user,
-                                                @RequestPart ProfileRequestDto dto,
-                                                @RequestPart(name = "profileImages", required = false) List<MultipartFile> profileImages) {
+                                                @RequestBody @Valid ProfileRequestDto dto) {
 
-        ProfileResponseDto response = profileService.save(user, dto, profileImages);
+        ProfileResponseDto response = profileService.save(user, dto);
         return ResponseEntity.ok(Result.of(response));
     }
 
