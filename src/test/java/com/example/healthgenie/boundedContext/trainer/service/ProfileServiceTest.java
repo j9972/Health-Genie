@@ -71,7 +71,7 @@ class ProfileServiceTest {
                 startTime, endTime, 4.5, null, 12000, 25, "test2");
 
         // when
-        ProfileResponseDto response = profileService.save(user2, dto, null);
+        ProfileResponseDto response = profileService.save(user2, dto);
 
         // then
         assertThat(response.getIntroduction()).isEqualTo("test intro");
@@ -106,7 +106,7 @@ class ProfileServiceTest {
             if (!login) {
                 throw CustomException.TRAINER_INFO_EMPTY;
             } else {
-                profileService.save(user, dto, null);
+                profileService.save(user, dto);
             }
         });
     }
@@ -124,7 +124,7 @@ class ProfileServiceTest {
                 startTime, endTime, 4.5, null, 12000, 25, "test2");
 
         // when
-        ProfileResponseDto response = profileService.updateProfile(dto, profile.getId(), user2, null);
+        ProfileResponseDto response = profileService.updateProfile(dto, profile.getId(), user2);
 
         // then
         assertThat(response.getIntroduction()).isEqualTo("test intro");
@@ -158,7 +158,7 @@ class ProfileServiceTest {
             if (!login) {
                 throw CustomException.TRAINER_INFO_EMPTY;
             } else {
-                profileService.updateProfile(dto, profile.getId(), user, null);
+                profileService.updateProfile(dto, profile.getId(), user);
             }
         });
     }

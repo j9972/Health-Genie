@@ -35,26 +35,14 @@ public class ProfileService {
         관리페이지용 API -> 수정 , 트레이너만 가능
     */
     @Transactional
-    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user,
-                                            List<MultipartFile> profileImages) {
+    public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user) {
 
         TrainerInfo profile = profileRepository.findByIdAndMemberId(profileId, user.getId())
                 .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
 
-        updateProfileItems(dto, profile, profileImages);
+        updateEachProfile(dto, profile);
 
         return ProfileResponseDto.of(profile);
-    }
-
-    private void updateProfileItems(ProfileRequestDto dto, TrainerInfo profile,
-                                    List<MultipartFile> profileImages) {
-
-        updateEachProfile(dto, profile);
-        if (profileImages != null && !profileImages.isEmpty()) {
-            List<TrainerPhoto> updatedImages = deleteExistedImagesAndUploadNewImages(profile,
-                    profileImages);
-            profile.updateProfileImages(updatedImages);
-        }
     }
 
     private void updateEachProfile(ProfileRequestDto dto, TrainerInfo profile) {
