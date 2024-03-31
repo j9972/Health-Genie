@@ -53,8 +53,7 @@ class ProfileServiceTest {
         userService.update(user, null, "test", null, null, null, null, null);
         userService.update(user2, null, "test2", null, null, null, null, null);
 
-        profile = testSyUtils.createProfile("introduction", "career", "경북대", startTime, endTime, 4.3, null, 20000, 20,
-                user2);
+        profile = testSyUtils.createProfile("introduction", "career", "경북대", startTime, endTime, 4.3, 20000, 20, user2);
     }
 
 
@@ -62,13 +61,11 @@ class ProfileServiceTest {
     @DisplayName("profile 작성")
     void save() {
         // given
-        testKrUtils.login(user2);
-
         LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
         LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
 
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대",
-                startTime, endTime, 4.5, null, 12000, 25, "test2");
+        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대", startTime, endTime, 4.5,
+                12000, 25, "test2");
 
         // when
         ProfileResponseDto response = profileService.save(user2, dto);
@@ -80,7 +77,6 @@ class ProfileServiceTest {
         assertThat(response.getStartTime()).isEqualTo(startTime);
         assertThat(response.getEndTime()).isEqualTo(endTime);
         assertThat(response.getReviewAvg()).isEqualTo(4.5);
-        assertThat(response.getPhotoPaths()).isEmpty();
         assertThat(response.getCost()).isEqualTo(12000);
         assertThat(response.getMonth()).isEqualTo(25);
         assertThat(response.getNickname()).isEqualTo("test2");
@@ -89,31 +85,28 @@ class ProfileServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저 profile 작성")
-    void notLoginWriteProfile() {
+    void fail_write_profile_cuz_of_login() {
         // given
-        boolean login = testSyUtils.notLogin(user);
+        testSyUtils.logout();
 
         LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
         LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
 
         ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대",
-                startTime, endTime, 4.5, null, 12000, 25, "test2");
+                startTime, endTime, 4.5, 12000, 25, "test2");
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            if (!login) {
-                throw CustomException.TRAINER_INFO_EMPTY;
-            } else {
-                profileService.save(user, dto);
-            }
-        });
+            // 해당 메소드 호출
+            profileService.save(user, dto);
+        }).isInstanceOf(CustomException.TRAINER_INFO_EMPTY.getClass());
     }
 
     @Test
     @DisplayName("정상적으로 profile 수정")
-    void updateProfile() {
+    void update_profile() {
         // given
         testKrUtils.login(user2);
 
@@ -121,7 +114,7 @@ class ProfileServiceTest {
         LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
 
         ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대",
-                startTime, endTime, 4.5, null, 12000, 25, "test2");
+                startTime, endTime, 4.5, 2000, 25, "test2");
 
         // when
         ProfileResponseDto response = profileService.updateProfile(dto, profile.getId(), user2);
@@ -141,31 +134,28 @@ class ProfileServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 profile 수정")
-    void notLoginUpdateProfile() {
+    void fail_update_profile_cuz_of_login() {
         // given
-        boolean login = testSyUtils.notLogin(user);
+        testSyUtils.logout();
 
         LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
         LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
 
         ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대",
-                startTime, endTime, 4.5, null, 12000, 25, "test2");
+                startTime, endTime, 4.5, 12000, 25, "test2");
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            if (!login) {
-                throw CustomException.TRAINER_INFO_EMPTY;
-            } else {
-                profileService.updateProfile(dto, profile.getId(), user);
-            }
-        });
+            // 해당 메소드 호출
+            profileService.updateProfile(dto, profile.getId(), user);
+        }).isInstanceOf(CustomException.TRAINER_INFO_EMPTY.getClass());
     }
 
 //    @Test
 //    @DisplayName("해당 트레이너가 아닌 다른 트레이너 혹은 다른 회원이 profile 수정")
-//    void notOwnUpdateProfile() {
+//    void fail_update_profile_cuz_of_role() {
 //        // given
 //        testKrUtils.login(user);
 //
@@ -189,7 +179,7 @@ class ProfileServiceTest {
 
 //    @Test
 //    @DisplayName("정상적으로 profile 조회")
-//    void getProfile() {
+//    void get_profile() {
 //        // given
 //        testKrUtils.login(user);
 //
