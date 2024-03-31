@@ -9,7 +9,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -66,11 +65,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         refreshTokenRepository.deleteByRefreshToken(refresh);
 
-        Cookie cookie = new Cookie("refresh", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
+        response.addCookie(CookieUtils.deleteCookie("refresh"));
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

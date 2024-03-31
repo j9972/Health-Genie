@@ -30,4 +30,12 @@ public class CookieUtils {
                 .findAny()
                 .orElse(null);
     }
+
+    public static Cookie deleteCookie(String key) {
+        Cookie cookie = new Cookie(key, null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+
+        return cookie;
+    }
 }
