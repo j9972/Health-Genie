@@ -1,5 +1,6 @@
 package com.example.healthgenie.base.config;
 
+import com.example.healthgenie.base.filter.CustomLogoutFilter;
 import com.example.healthgenie.base.filter.JwtFilter;
 import com.example.healthgenie.base.handler.CustomSuccessHandler;
 import com.example.healthgenie.boundedContext.auth.service.CustomOAuth2UserService;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -27,10 +29,11 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JwtFilter jwtFilter;
+    private final CustomLogoutFilter customLogoutFilter;
 
     private final String[] COMMON_WHITE_LIST = new String[]
             {
-                    "/login/**", "/oauth2/**", "/h2-console/**", "/refresh", "/error/**", "/ws/**",
+                    "/login/**", "/oauth2/**", "/h2-console/**", "/refresh", "/error/**", "/ws/**", "/favicon.ico/**",
                     "/routine/genie/**", "/routine/genie/detail/**", "/auth/mail/**", "/users/admin"
             };
     private final String[] GET_WHITE_LIST = new String[]
@@ -66,6 +69,8 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterBefore(customLogoutFilter, LogoutFilter.class);
 
         http.oauth2Login(
                 (oauth2) -> oauth2

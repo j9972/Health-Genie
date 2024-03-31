@@ -28,14 +28,14 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestUri = request.getRequestURI();
-        if (requestUri.matches("^\\/login(?:\\/.*)?$") || requestUri.matches("^\\/oauth2(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/login(?:\\/.*)?$") || requestUri.matches("^\\/oauth2(?:\\/.*)?$") || requestUri.matches("^\\/favicon.ico(?:\\/.*)?$")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String authorization = request.getHeader("Authorization");
 
-        String token = StringUtils.hasText(authorization) ? authorization : null;
+        String token = StringUtils.hasText(authorization) ? jwtUtils.resolveToken(authorization) : null;
         if(token == null) {
             log.info("token null");
             filterChain.doFilter(request, response);
