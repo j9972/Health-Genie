@@ -13,8 +13,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -22,7 +27,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "USER_TB")
 @Builder(toBuilder = true)
-public class User extends BaseEntity {
+public class User extends BaseEntity implements OAuth2User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -102,18 +107,6 @@ public class User extends BaseEntity {
         this.emailVerify = emailVerify;
     }
 
-    public void updateEmail(String email) {
-        this.email = email;
-    }
-
-    public void updateName(String name) {
-        this.name = name;
-    }
-
-    public void updateAuthProvider(AuthProvider authProvider) {
-        this.authProvider = authProvider;
-    }
-
     public void updateProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
     }
@@ -136,5 +129,24 @@ public class User extends BaseEntity {
 
     public void updateGender(Gender gender) {
         this.gender = gender;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> collection = new ArrayList<>();
+
+        collection.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return role.getCode();
+            }
+        });
+
+        return collection;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.healthgenie.base.config;
 
 import com.example.healthgenie.base.filter.CustomLogoutFilter;
+import com.example.healthgenie.base.filter.JwtExceptionFilter;
 import com.example.healthgenie.base.filter.JwtFilter;
 import com.example.healthgenie.base.handler.CustomSuccessHandler;
 import com.example.healthgenie.boundedContext.auth.service.CustomOAuth2UserService;
@@ -29,6 +30,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JwtFilter jwtFilter;
+    private final JwtExceptionFilter jwtExceptionFilter;
     private final CustomLogoutFilter customLogoutFilter;
 
     private final String[] COMMON_WHITE_LIST = new String[]
@@ -68,7 +70,9 @@ public class SecurityConfig {
 
         http.httpBasic(AbstractHttpConfigurer::disable);
 
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter, JwtFilter.class);
 
         http.addFilterBefore(customLogoutFilter, LogoutFilter.class);
 

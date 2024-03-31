@@ -2,8 +2,9 @@ package com.example.healthgenie.boundedContext.auth.service;
 
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.exception.ErrorCode;
-import com.example.healthgenie.boundedContext.auth.dto.*;
-import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.auth.dto.GoogleResponse;
+import com.example.healthgenie.boundedContext.auth.dto.KakaoResponse;
+import com.example.healthgenie.boundedContext.auth.dto.OAuth2Response;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import com.example.healthgenie.boundedContext.user.service.UserService;
@@ -29,18 +30,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         OAuth2Response oAuth2Response = getOAuth2Response(registrationId, oAuth2User);
 
-        User user = userRepository.findByEmail(oAuth2Response.getEmail())
+        return userRepository.findByEmail(oAuth2Response.getEmail())
                 .orElseGet(() -> userService.signUp(oAuth2Response.getEmail(), oAuth2Response.getName(), AuthProvider.findByCode(oAuth2Response.getProvider())));
-
-        user.updateEmail(oAuth2Response.getEmail());
-        user.updateName(oAuth2Response.getName());
-
-        UserDto userDto = new UserDto();
-        userDto.setEmail(user.getEmail());
-        userDto.setName(user.getName());
-        userDto.setRole(user.getRole().getCode());
-
-        return new CustomOAuth2User(userDto);
     }
 
     private OAuth2Response getOAuth2Response(String registrationId, OAuth2User oAuth2User) {

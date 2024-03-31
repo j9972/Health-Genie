@@ -2,9 +2,9 @@ package com.example.healthgenie.base.handler;
 
 import com.example.healthgenie.base.utils.CookieUtils;
 import com.example.healthgenie.base.utils.JwtUtils;
-import com.example.healthgenie.boundedContext.auth.dto.CustomOAuth2User;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,9 +29,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
-        String email = customOAuth2User.getEmail();
+        String email = user.getEmail();
         String role = authentication.getAuthorities().iterator().next().getAuthority();
 
         String access = jwtUtils.createJwt("access", email, role, ACCESS_TOKEN_EXPIRATION_MS);
@@ -45,7 +45,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setHeader("Authorization", BEARER_PREFIX + access);
         response.addCookie(CookieUtils.createCookie("refresh", refresh));
         response.sendRedirect("http://localhost:3000/health-management");
-//        response.sendRedirect("http://localhost:1234/community/posts");
     }
 
     private void saveRefreshToken(String refresh, String email, Long expirationMs) {

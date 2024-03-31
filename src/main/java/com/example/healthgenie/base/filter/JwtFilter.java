@@ -1,8 +1,8 @@
 package com.example.healthgenie.base.filter;
 
 import com.example.healthgenie.base.utils.JwtUtils;
-import com.example.healthgenie.boundedContext.auth.dto.CustomOAuth2User;
-import com.example.healthgenie.boundedContext.auth.dto.UserDto;
+import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +24,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -49,15 +50,10 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String email = jwtUtils.getEmail(token);
-        String role = jwtUtils.getRole(token);
 
-        UserDto userDto = new UserDto();
-        userDto.setEmail(email);
-        userDto.setRole(role);
+        User user = userService.findByEmail(email);
 
-        CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDto);
-
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
+        Authentication authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
