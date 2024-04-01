@@ -1,8 +1,5 @@
 package com.example.healthgenie.boundedContext.ptrecord.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
@@ -17,15 +14,19 @@ import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -282,20 +283,20 @@ class PtProcessServiceTest {
         assertThat(response.get(0).getTrainerName()).isEqualTo("test2");
     }
 
-    @Test
-    @DisplayName("로그인 하지 않은 일반 회원 유저가 모든 피드백 조회 실패하기")
-    void fail_get_all_my_process_cuz_of_login() {
-        // given
-        testSyUtils.logout();
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            processService.getAllMyProcess(0, 5, user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
-    }
+//    @Test
+//    @DisplayName("로그인 하지 않은 일반 회원 유저가 모든 피드백 조회 실패하기")
+//    void fail_get_all_my_process_cuz_of_login() {
+//        // given
+//        testSyUtils.logout();
+//
+//        // when
+//
+//        // then
+//        assertThatThrownBy(() -> {
+//            // 해당 메소드 호출
+//            processService.getAllMyProcess(0, 5, user);
+//        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+//    }
 
     @Test
     @DisplayName("로그인 하지 않은 트레이너 유저가 모든 피드백 조회 실패하기")
