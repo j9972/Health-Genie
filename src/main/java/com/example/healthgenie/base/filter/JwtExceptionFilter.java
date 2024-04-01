@@ -3,6 +3,7 @@ package com.example.healthgenie.base.filter;
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,17 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
+        } catch (JwtException e) {
+            Map<String, String> map = new HashMap<>();
+            map.put("code", e.getClass().getSimpleName());
+            map.put("message", e.getMessage());
+
+            StackTraceElement element = e.getStackTrace()[0];
+            log.warn("[{}] occurs caused by {}.{}() {} line : {}", e.getClass().getSimpleName(), element.getClassName(), element.getMethodName(), element.getLineNumber(), e.getMessage());
+
+            response.setContentType("application/json;charset=UTF-8");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print(objectMapper.writeValueAsString(map));
         } catch (CustomException e) {
             ErrorCode errorCode = e.getErrorCode();
             Map<String, String> map = new HashMap<>();

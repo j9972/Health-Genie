@@ -15,7 +15,7 @@ public class RefreshToken extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "refresh_token_id", nullable = false)
-    private Long refreshTokenId;
+    private Long id;
 
     @Column(name = "refresh_token", nullable = false)
     private String refreshToken;
@@ -23,4 +23,5 @@ public class RefreshToken extends BaseEntity {
     @Column(name = "key_email", nullable = false)
     private String keyEmail;
 
+    private String expiration;
 }
