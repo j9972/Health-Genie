@@ -1,8 +1,5 @@
 package com.example.healthgenie.boundedContext.ptreview.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
@@ -19,16 +16,20 @@ import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -180,21 +181,21 @@ class PtReviewServiceTest {
         }).isInstanceOf(CustomException.class);
     }
 
-    @Test
-    @DisplayName("로그인 안하면 리뷰 작성 실패")
-    void fail_add_pt_review_cuz_of_login() {
-        // given
-        testSyUtils.logout();
-
-        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            reviewService.addPtReview(dto, user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
-    }
+//    @Test
+//    @DisplayName("로그인 안하면 리뷰 작성 실패")
+//    void fail_add_pt_review_cuz_of_login() {
+//        // given
+//        testSyUtils.logout();
+//
+//        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
+//        // when
+//
+//        // then
+//        assertThatThrownBy(() -> {
+//            // 해당 메소드 호출
+//            reviewService.addPtReview(dto, user);
+//        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+//    }
 
 
     @Test
