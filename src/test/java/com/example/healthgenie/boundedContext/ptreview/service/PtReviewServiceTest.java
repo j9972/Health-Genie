@@ -92,7 +92,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("회원이 리뷰 작성 성공")
-    void addPtReview() {
+    void add_pt_review() {
         // given
         testKrUtils.login(user);
 
@@ -111,7 +111,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("리뷰 작성 날짜가 매칭 이전이여서 실패")
-    void failAddPtReviewCuzDate() {
+    void fail_add_pt_review_cuz_of_date() {
         // given
         testKrUtils.login(user);
 
@@ -129,7 +129,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("매칭 기록없이 리뷰 작성 실패")
-    void noMatchingHistoryAddPtReview() {
+    void fail_add_pt_review_cuz_of_no_matching_hisotry() {
         // given
         testKrUtils.login(user3);
 
@@ -147,7 +147,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("리뷰 중복으로 작성 실패")
-    void duplicateReview() {
+    void fail_add_pt_review_cuz_of_duplicated() {
         // given
         testKrUtils.login(user3);
 
@@ -165,7 +165,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("회원이 아닌 트레이너면 리뷰 작성 실패")
-    void failAddPtReview() {
+    void fail_add_pt_review_cuz_of_role() {
         // given
         testKrUtils.login(user2);
 
@@ -182,27 +182,24 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("로그인 안하면 리뷰 작성 실패")
-    void notLoginAddPtReview() {
+    void fail_add_pt_review_cuz_of_login() {
         // given
-        boolean login = testSyUtils.notLogin(user);
+        testSyUtils.logout();
 
         PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
         // when
 
         // then
         assertThatThrownBy(() -> {
-            if (!login) {
-                throw CustomException.USER_EMPTY;
-            } else {
-                reviewService.addPtReview(dto, user);
-            }
-        });
+            // 해당 메소드 호출
+            reviewService.addPtReview(dto, user);
+        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
     }
 
 
     @Test
     @DisplayName("리뷰 조회 성공")
-    void getPtReview() {
+    void get_pt_review() {
         // given
         // review 작성한 사람 아니여도 조회 가능
         testKrUtils.login(user3);
@@ -220,7 +217,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 리뷰 조회 실패")
-    void notExistPtReview() {
+    void fail_pt_review_cuz_of_no_review_history() {
         // given
         testKrUtils.login(user);
 
@@ -233,7 +230,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("해당 트레이너 리뷰 전체 조회 성공")
-    void getAllTrainerReview() {
+    void get_all_trainer_review() {
         // given
         testKrUtils.login(user);
         Long trainerId = review.getTrainer().getId();
@@ -251,7 +248,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("내가 작성한 리뷰 전체 조회 성공")
-    void getAllReview() {
+    void get_all_review() {
         // given
         testKrUtils.login(user3);
         Long userId = review.getMember().getId();
@@ -269,7 +266,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("리뷰 수정 성공")
-    void updateReview() {
+    void update_review() {
         // given
         testKrUtils.login(user3);
 
@@ -286,26 +283,23 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 리뷰 수정 실패")
-    void notLoginUpdateReview() {
+    void fail_update_review_cuz_of_login() {
         // given
-        boolean login = testSyUtils.notLogin(user);
+        testSyUtils.logout();
 
         // when
         PtReviewUpdateRequest dto = testSyUtils.updateReviewDto("update", "update", 4.0);
 
         // then
         assertThatThrownBy(() -> {
-            if (!login) {
-                throw CustomException.USER_EMPTY;
-            } else {
-                reviewService.updateReview(dto, review.getId(), user);
-            }
-        });
+            // 해당 메소드 호출
+            reviewService.updateReview(dto, review.getId(), user);
+        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
     }
 
     @Test
     @DisplayName("다른 사람이 작성한 리뷰 수정 실패")
-    void failOtherReviewUpdate() {
+    void fail_other_review_update_cuz_of_role() {
         // given
         testKrUtils.login(user);
 
@@ -319,7 +313,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("트레이너가 리뷰 수정 실패")
-    void trainerFailReviewUpdate() {
+    void fail_review_update_cuz_of_role() {
         // given
         testKrUtils.login(user4);
 
@@ -336,7 +330,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("리뷰 삭제 성공")
-    void deletePtReview() {
+    void delete_pt_review() {
         // given
         testKrUtils.login(user3);
 
@@ -350,25 +344,22 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 리뷰 삭제 실패")
-    void notLoginDeletePtReview() {
+    void fila_delete_pt_review_cuz_of_login() {
         // given
-        boolean login = testSyUtils.notLogin(user);
+        testSyUtils.logout();
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            if (!login) {
-                throw CustomException.USER_EMPTY;
-            } else {
-                reviewService.deletePtReview(review.getId(), user);
-            }
-        });
+            // 해당 메소드 호출
+            reviewService.deletePtReview(review.getId(), user);
+        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
     }
 
     @Test
     @DisplayName("트레이가 리뷰 삭제 실패")
-    void failTrainerDeletePtReview() {
+    void fail_trainer_delete_pt_review_cuz_of_role() {
         // given
         testKrUtils.login(user4);
 
@@ -384,7 +375,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("다른 사람 리뷰 삭제 실패")
-    void failOtherDeletePtReview() {
+    void fail_other_delete_pt_review_cuz_of_role() {
         // given
         testKrUtils.login(user);
 
@@ -397,7 +388,7 @@ class PtReviewServiceTest {
 
 //    @Test
 //    @DisplayName("리뷰 검색 성공")
-//    void findAll() {
+//    void find_all() {
 //        // given
 //        testKrUtils.login(user);
 //
@@ -407,7 +398,6 @@ class PtReviewServiceTest {
 //
 //        Slice<PtReview> response = reviewService.findAll(keyword, 1L, pageable);
 //
-//        // then
 //
 //        // then
 //        assertThat(response.isLast()).isFalse();
@@ -416,7 +406,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("만들어진 리뷰 날짜 기준으로 필터링 성공")
-    void findAllByDate() {
+    void find_all_cuz_of_date() {
         // given
         LocalDate searchStartDate = LocalDate.of(2023, 12, 4);
         LocalDate searchEndDate = LocalDate.of(2024, 12, 8);
@@ -431,7 +421,7 @@ class PtReviewServiceTest {
 
     @Test
     @DisplayName("날짜 필터링 조회 실패로 리뷰 조회 실패")
-    void notExistFindAllByDate() {
+    void fail_find_all_cuz_of_date() {
         // given
         LocalDate searchStartDate = LocalDate.of(2023, 12, 4);
         LocalDate searchEndDate = LocalDate.of(2023, 12, 4);

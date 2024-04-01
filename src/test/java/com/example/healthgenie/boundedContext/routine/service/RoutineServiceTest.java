@@ -41,7 +41,6 @@ class RoutineServiceTest {
     RoutineService routineService;
 
     User user;
-    User user1;
     Routine routine;
     Routine beginnerGenie;
     Routine intermediateGenie;
@@ -59,7 +58,6 @@ class RoutineServiceTest {
 
         user = testKrUtils.createUser("jh485200@gmail.com", "test1", AuthProvider.EMPTY, Role.USER);
         routine = testSyUtils.writeRoutine(Day.WEDNESDAY, "하체,가슴", workoutRecipeList, user);
-        //routine = testSyUtils.writeRoutine(Day.WEDNESDAY, "하체,가슴", recipe, user);
 
         beginnerGenie = testSyUtils.genieRoutine(Level.BEGINNER, Day.FRIDAY, "test", "하체,가슴", recipe);
         intermediateGenie = testSyUtils.genieRoutine(Level.INTERMEDIATE, Day.FRIDAY, "test", "하체,가슴", recipe);
@@ -74,7 +72,7 @@ class RoutineServiceTest {
 
     @Test
     @DisplayName("루틴 작성하기")
-    void writeRoutine() {
+    void write_routine() {
         // given
         testKrUtils.login(user);
 
@@ -107,7 +105,7 @@ class RoutineServiceTest {
 
     @Test
     @DisplayName("중복된 요일 루틴 작성 실패")
-    void failAddRoutineCuzDuplicateDay() {
+    void fail_add_routine_cuz_of_duplicated_day() {
         // given
         testKrUtils.login(user);
 
@@ -129,9 +127,9 @@ class RoutineServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 루틴 작성하기")
-    void notLoginWriteRoutine() {
+    void fail_write_routine_cuz_of_login() {
         // given
-        boolean loginResult = testSyUtils.notLogin(user);
+        testSyUtils.logout();
 
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
 
@@ -142,18 +140,15 @@ class RoutineServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if (!loginResult) {
-                throw CustomException.UNKNOWN_EXCEPTION;
-            } else {
-                routineService.writeRoutine(dto, user);
-            }
-        }).isInstanceOf(CustomException.class);
+            // 해당 메소드 호출
+            routineService.writeRoutine(dto, user);
+        }).isInstanceOf(CustomException.UNKNOWN_EXCEPTION.getClass());
     }
 
 
     @Test
     @DisplayName("루틴 수정하기")
-    void updateRoutine() {
+    void update_routine() {
 
         /*
             본인 루틴은 본인만 보기에 타인이 수정하거나 삭제할 일이 없다.
@@ -192,7 +187,7 @@ class RoutineServiceTest {
 
     @Test
     @DisplayName("나의 루틴 모두 조회하기")
-    void getAllMyRoutine() {
+    void get_all_my_routine() {
         // given
         testKrUtils.login(user);
 
@@ -217,7 +212,7 @@ class RoutineServiceTest {
 
     @Test
     @DisplayName("나의 루틴 요일별 상세조회")
-    void getMyRoutine() {
+    void get_my_routine() {
         // given
         testKrUtils.login(user);
 
@@ -235,7 +230,7 @@ class RoutineServiceTest {
 
     @Test
     @DisplayName("level 별 지니 루틴 모두 조회하기")
-    void getAllGenieRoutine() {
+    void get_all_genie_routine() {
         // given
         testKrUtils.login(user);
 
@@ -259,7 +254,7 @@ class RoutineServiceTest {
 
     @Test
     @DisplayName("level이 empty면 지니 루틴 조회 실패")
-    void failGenieRoutine() {
+    void fail_genie_routine_cuz_of_empty_level() {
         // given
         testKrUtils.login(user);
 
@@ -276,7 +271,7 @@ class RoutineServiceTest {
 
     @Test
     @DisplayName("해당 요일의 지니 루틴 조회하기")
-    void getGenieRoutine() {
+    void get_genie_routine() {
         // given
         List<RoutineResponseDto> begin = routineService.getGenieRoutine(Level.BEGINNER, Day.FRIDAY);
         List<RoutineResponseDto> inter = routineService.getGenieRoutine(Level.BEGINNER, Day.FRIDAY);
@@ -297,7 +292,7 @@ class RoutineServiceTest {
 
     @Test
     @DisplayName("루틴 삭제하기")
-    void deleteRoutine() {
+    void delete_routine() {
         // given
         testKrUtils.login(user);
 
@@ -311,25 +306,22 @@ class RoutineServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 루틴 삭제하기")
-    void notLogindeleteRoutine() {
+    void fail_delete_routine_cuz_of_login() {
         // given
-        boolean loginResult = testSyUtils.notLogin(user);
+        testSyUtils.logout();
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            if (!loginResult) {
-                throw CustomException.UNKNOWN_EXCEPTION;
-            } else {
-                routineService.deleteRoutine(routine.getId(), user);
-            }
-        }).isInstanceOf(CustomException.class);
+            // 해당 메소드 호출
+            routineService.deleteRoutine(routine.getId(), user);
+        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
     }
 
     @Test
     @DisplayName("존재 하지 않은 루틴 삭제하기")
-    void notExistRoutineDelete() {
+    void fail_routine_delete_cuz_of_no_routine_history() {
         // given
         testKrUtils.login(user);
 

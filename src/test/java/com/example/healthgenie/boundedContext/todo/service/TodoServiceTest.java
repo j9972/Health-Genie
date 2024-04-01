@@ -51,7 +51,7 @@ class TodoServiceTest {
 
     @Test
     @DisplayName("정상적으로 todo list 작성")
-    void addTodoList() {
+    void add_todo_list() {
         // given
         testKrUtils.login(user);
 
@@ -73,9 +73,9 @@ class TodoServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 todo list 작성 실패하기")
-    void notLoginAddTodoList() {
+    void fail_add_todo_list_cuz_of_login() {
         // given
-        boolean login = testSyUtils.notLogin(user);
+        testSyUtils.logout();
 
         TodoRequestDto dto = testSyUtils.TodoRequestDto(
                 LocalDate.now(), LocalTime.now(), "test title", "description test");
@@ -84,12 +84,9 @@ class TodoServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            if (!login) {
-                throw CustomException.USER_EMPTY;
-            } else {
-                todoService.addTodoList(dto, user);
-            }
-        }).isInstanceOf(CustomException.class);
+            // 해당 메소드 호출
+            todoService.addTodoList(dto, user);
+        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
     }
 
     @Test
@@ -110,26 +107,23 @@ class TodoServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 todo list 수정 실패하기")
-    void notLoginUpdate() {
+    void fail_update_cuz_of_login() {
         // given
-        boolean login = testSyUtils.notLogin(user);
+        testSyUtils.logout();
 
         // when
         TodoUpdateRequest dto = testSyUtils.updateTodoRequest("수정한 제목", "수정한 내용");
 
         // then
         assertThatThrownBy(() -> {
-            if (!login) {
-                throw CustomException.USER_EMPTY;
-            } else {
-                todoService.update(dto, todoTest.getId(), user);
-            }
-        }).isInstanceOf(CustomException.class);
+            // 해당 메소드 호출
+            todoService.update(dto, todoTest.getId(), user);
+        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
     }
 
     @Test
     @DisplayName("정상적인 todo 삭제하기")
-    void deleteTodo() {
+    void delete_todo() {
         // given
         testKrUtils.login(user);
 
@@ -144,25 +138,22 @@ class TodoServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 todo 삭제하기")
-    void notLoginDeleteTodo() {
+    void fail_delete_todo_cuz_of_login() {
         // given
-        boolean login = testSyUtils.notLogin(user);
+        testSyUtils.logout();
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            if (!login) {
-                throw CustomException.USER_EMPTY;
-            } else {
-                todoService.deleteTodo(todoTest.getId(), user);
-            }
-        });
+            // 해당 메소드 호출
+            todoService.deleteTodo(todoTest.getId(), user);
+        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
     }
 
     @Test
     @DisplayName("존재하지 않는 todo 삭제하기")
-    void notExistTodoDelete() {
+    void fail_todo_delete_cuz_of_no_todo_history() {
         // given
         testKrUtils.login(user);
 
@@ -175,7 +166,7 @@ class TodoServiceTest {
 
     @Test
     @DisplayName("정상적인 todo list 전체 조회하기")
-    void getAllMyTodo() {
+    void get_all_my_todo() {
         // given
         testKrUtils.login(user);
 
