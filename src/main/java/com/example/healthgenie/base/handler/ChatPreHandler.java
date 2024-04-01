@@ -1,6 +1,6 @@
 package com.example.healthgenie.base.handler;
 
-import com.example.healthgenie.base.utils.JwtTokenProvider;
+import com.example.healthgenie.base.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -19,7 +19,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @Order(HIGHEST_PRECEDENCE + 99)
 public class ChatPreHandler implements ChannelInterceptor {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtUtils jwtUtils;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -27,10 +27,10 @@ public class ChatPreHandler implements ChannelInterceptor {
 
         final StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         if(StompCommand.CONNECT == accessor.getCommand()) {
-            final String accessToken = jwtTokenProvider.resolveToken(accessor.getFirstNativeHeader("Authorization"));
+            final String accessToken = jwtUtils.resolveToken(accessor.getFirstNativeHeader("Authorization"));
             log.info("CONNECT {}", accessToken);
 
-            jwtTokenProvider.validateToken(accessToken);
+//            jwtUtils.validateToken(accessToken);
         }
 
         return message;

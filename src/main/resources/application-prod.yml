@@ -26,3 +26,11 @@ spring:
     redis:
       host: ENC(B/Hj+f1ZSv5Cl1RjirBi9jgl+QNyDXJn)
       port: 6379
+
+# hibernate logging
+logging:
+  level:
+    p6spy: error
+    org:
+      springframework:
+        security: warn
