@@ -36,9 +36,7 @@ public class ProfilePhotoService {
         TrainerInfo profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
 
-        if (!Objects.equals(userId, profile.getMember().getId())) {
-            throw CustomException.NO_PERMISSION;
-        }
+        check_permission(userId, profile);
 
         for (MultipartFile file : dto.getPhotos()) {
             String uploadUrl = s3UploadUtils.upload(file, "trainer-profile-photos");
@@ -96,11 +94,36 @@ public class ProfilePhotoService {
     @Transactional(readOnly = true)
     public TrainerPhoto findById(Long id) {
         return trainerProfilePhotoRepository.findById(id)
-                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
+                .orElseThrow(() -> CustomException.TRAINER_PHOTO_EMPTY);
     }
 
     @Transactional(readOnly = true)
-    public List<TrainerPhoto> findAll() {
-        return trainerProfilePhotoRepository.findAll();
+    public List<TrainerPhoto> findAllByProfileId(Long profileId) {
+        return trainerProfilePhotoRepository.findAllByInfoId(profileId);
+    }
+
+    @Transactional
+    public String deleteAllByProfileId(Long profileId, Long userId) {
+        TrainerInfo profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
+
+        check_permission(userId, profile);
+
+        List<TrainerPhoto> photos = findAllByProfileId(profileId);
+
+        for (TrainerPhoto photo : photos) {
+            String path = photo.getInfoPhotoPath();
+            s3UploadUtils.deleteS3Object("trainer-profile-photos", path);
+        }
+
+        trainerProfilePhotoRepository.deleteByInfoId(profileId);
+
+        return photos.size() + "개의 사진이 삭제되었습니다.";
+    }
+
+    private static void check_permission(Long userId, TrainerInfo profile) {
+        if (!Objects.equals(userId, profile.getMember().getId())) {
+            throw CustomException.NO_PERMISSION;
+        }
     }
 }

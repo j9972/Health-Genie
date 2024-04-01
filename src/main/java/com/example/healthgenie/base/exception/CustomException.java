@@ -8,6 +8,7 @@ public class CustomException extends RuntimeException {
     private final ErrorCode errorCode;
 
     public static final CustomException TRAINER_INFO_EMPTY = new CustomException(ErrorCode.TRAINER_INFO_EMPTY);
+    public static final CustomException TRAINER_PHOTO_EMPTY = new CustomException(ErrorCode.TRAINER_PHOTO_EMPTY);
     public static final CustomException USER_EMPTY = new CustomException(ErrorCode.USER_EMPTY);
     public static final CustomException COMMENT_EMPTY = new CustomException(ErrorCode.COMMENT_EMPTY);
     public static final CustomException LIKE_EMPTY = new CustomException(ErrorCode.LIKE_EMPTY);

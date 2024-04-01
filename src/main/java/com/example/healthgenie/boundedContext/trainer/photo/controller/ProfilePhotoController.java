@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,5 +36,25 @@ public class ProfilePhotoController {
         return ResponseEntity.ok(Result.of(response));
     }
 
+    @GetMapping("/{photoId}")
+    public ResponseEntity<Result> findById(@PathVariable Long profileId, @PathVariable Long photoId) {
+        ProfilePhotoResponse response = ProfilePhotoResponse.of(profilePhotoService.findById(photoId));
 
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @GetMapping
+    public ResponseEntity<Result> findAll(@PathVariable Long profileId) {
+        List<ProfilePhotoResponse> response = ProfilePhotoResponse.of(
+                profilePhotoService.findAllByProfileId(profileId));
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Result> delete(@PathVariable Long profileId, @AuthenticationPrincipal User user) {
+        String response = profilePhotoService.deleteAllByProfileId(profileId, user.getId());
+
+        return ResponseEntity.ok(Result.of(response));
+    }
 }
