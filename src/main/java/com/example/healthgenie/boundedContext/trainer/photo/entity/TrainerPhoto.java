@@ -39,12 +39,6 @@ public class TrainerPhoto extends BaseEntity {
     @Column(name = "info_photo_path", columnDefinition = "TEXT")
     private String infoPhotoPath;
 
-    @Builder
-    public TrainerPhoto(TrainerInfo info, String infoPhotoPath) {
-        this.info = info;
-        if (info != null) {
-            info.getTrainerPhotos().add(this);
-        }
-        this.infoPhotoPath = infoPhotoPath;
-    }
+    @Column(name = "original_file_name")
+    private String name;
 }

@@ -20,6 +20,7 @@ import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.todo.repository.TodoRepository;
+import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoRequest;
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
@@ -304,11 +305,18 @@ public class TestSyUtils {
         return profileRepository.save(profile);
     }
 
+    public ProfilePhotoRequest ProfilePhotoRequest(List<MultipartFile> photos) {
 
-    public TrainerPhoto createProfilePhoto(TrainerInfo profile, String path) {
+        return ProfilePhotoRequest.builder()
+                .photos(photos)
+                .build();
+    }
+
+    public TrainerPhoto createProfilePhoto(TrainerInfo profile, String path, String originalName) {
         TrainerPhoto profilePhoto = TrainerPhoto.builder()
                 .info(profile)
                 .infoPhotoPath(path)
+                .name(originalName)
                 .build();
 
         return trainerProfilePhotoRepository.save(profilePhoto);
