@@ -75,7 +75,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("트레이너가 피드백 생성 성공")
-    void add_pt_process() {
+    void addPtProcess() {
         // given
         testKrUtils.login(user2);
 
@@ -96,7 +96,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("피드백 작성 날짜가 매칭 날짜보다 이른 경우")
-    void fail_add_pt_process_cuz_of_date() {
+    void failAddPtProcessCuzDate() {
         // given
         testKrUtils.login(user2);
 
@@ -116,7 +116,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("매칭이 없어서 실패")
-    void fail_process_cuz_of_matching() {
+    void failProcessByMatching() {
         // given
         testKrUtils.login(user4);
 
@@ -133,9 +133,14 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("회원이 피드백 생성 실패")
-    void fail_user_add_pt_process_cuz_of_role() {
+    void failUserAddPtProcess() {
         // given
         testKrUtils.login(user);
+
+        LocalDate date = LocalDate.of(2023, 12, 5);
+
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1", "test2",
+                null);
 
         // when
 
@@ -149,9 +154,9 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 피드백 생성 실패")
-    void add_pt_process_cuz_of_login() {
+    void noLoginAddPtProcess() {
         // given
-        testSyUtils.logout();
+        boolean login = testSyUtils.notLogin(user);
 
         LocalDate date = LocalDate.of(2023, 12, 5);
 
@@ -162,14 +167,17 @@ class PtProcessServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            processService.addPtProcess(dto, user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+            if (!login) {
+                throw CustomException.USER_EMPTY;
+            } else {
+                processService.addPtProcess(dto, user);
+            }
+        });
     }
 
     @Test
     @DisplayName("매칭 기록없이 리뷰 작성 실패")
-    void add_pt_process_cuz_of_no_match_history() {
+    void noMatchingHistoryAddPtProcess() {
         // given
         testKrUtils.login(user3);
         LocalDate date = LocalDate.of(2023, 12, 5);
@@ -185,7 +193,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("피드백 상세 조회하기")
-    void get_pt_process() {
+    void getPtProcess() {
         // given
         testKrUtils.login(user2);
         LocalDate date = LocalDate.of(2023, 12, 5);
@@ -203,7 +211,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("트레이너나 회원 외의 다른 사람이 피드백 상세 조회 실패하기")
-    void fail_get_pt_process_cuz_of_role() {
+    void failGetPtProcess() {
         // given
         testKrUtils.login(user3);
 
@@ -223,7 +231,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("로그인 안한 사람이 피드백 상세 조회 실패하기")
-    void fail_get_pt_process_cuz_of_login() {
+    void notLoginGetPtProcess() {
         // given
 
         // when
@@ -235,7 +243,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 피드백 상세 조회 실패하기")
-    void fail_get_pt_process_cuz_of_no_process_history() {
+    void notExistGetPtProcess() {
         // given
         testKrUtils.login(user);
 
@@ -248,7 +256,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("트레이너가 작성한 본인의 모든 피드백 조회하기")
-    void get_all_trainer_process() {
+    void getAllTrainerProcess() {
         // given
         testKrUtils.login(user2);
 
@@ -266,7 +274,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("나의 모든 피드백 조회하기")
-    void get_all_my_process() {
+    void getAllMyProcess() {
         // given
         testKrUtils.login(user);
 
@@ -284,37 +292,43 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 일반 회원 유저가 모든 피드백 조회 실패하기")
-    void fail_get_all_my_process_cuz_of_login() {
+    void notLoginGetAllMyProcess() {
         // given
-        testSyUtils.logout();
+        boolean login = testSyUtils.notLogin(user);
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            processService.getAllMyProcess(0, 5, user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+            if (!login) {
+                throw CustomException.USER_EMPTY;
+            } else {
+                processService.getAllMyProcess(0, 5, user);
+            }
+        });
     }
 
     @Test
     @DisplayName("로그인 하지 않은 트레이너 유저가 모든 피드백 조회 실패하기")
-    void fail_get_all_trainer_process_cuz_of_login() {
+    void notLoginGetAllTrainerProcess() {
         // given
-        testSyUtils.logout();
+        boolean login = testSyUtils.notLogin(user);
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            processService.getAllTrainerProcess(0, 5, user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+            if (!login) {
+                throw CustomException.USER_EMPTY;
+            } else {
+                processService.getAllTrainerProcess(0, 5, user);
+            }
+        });
     }
 
     @Test
     @DisplayName("트레이너가 피드백 삭제 성공하기")
-    void delete_pt_process() {
+    void deletePtProcess() {
         // given
         testKrUtils.login(user2);
 
@@ -328,7 +342,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("회원이 피드백 삭제 실패하기")
-    void fail_user_delete_pt_process_cuz_of_role() {
+    void failUserDeletePtProcess() {
         // given
         testKrUtils.login(user);
 
@@ -344,17 +358,20 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("로그인 하지 않은 유저가 피드백 삭제 실패하기")
-    void fial_delete_pt_process_cuz_of_login() {
+    void notLoginDeletePtProcess() {
         // given
-        testSyUtils.logout();
+        boolean login = testSyUtils.notLogin(user);
 
         // when
 
         // then
         assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            processService.deletePtProcess(process.getId(), user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+            if (!login) {
+                throw CustomException.USER_EMPTY;
+            } else {
+                processService.deletePtProcess(process.getId(), user);
+            }
+        });
     }
 
 //    @Test
@@ -374,7 +391,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("일지가 만들어진 날짜 기준으로 필터링으로 조회하기")
-    void find_all_by_date() {
+    void findAllByDate() {
         // given
         LocalDate searchStartDate = LocalDate.of(2023, 12, 4);
         LocalDate searchEndDate = LocalDate.of(2024, 12, 4);
@@ -389,7 +406,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("날짜 필터링 조회 실패로 일지 조회 실패")
-    void fail_find_all_cuz_of_date() {
+    void notExistFindAllByDate() {
         // given
         LocalDate searchStartDate = LocalDate.of(2023, 12, 4);
         LocalDate searchEndDate = LocalDate.of(2023, 12, 4);

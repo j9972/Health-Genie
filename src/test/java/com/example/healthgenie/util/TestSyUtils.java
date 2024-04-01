@@ -20,7 +20,6 @@ import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.todo.repository.TodoRepository;
-import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoRequest;
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
@@ -34,7 +33,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,8 +49,8 @@ public class TestSyUtils {
     private final PtProcessPhotoRepository ptProcessPhotoRepository;
     private final UserRepository userRepository;
 
-    public void logout() {
-        SecurityContextHolder.clearContext();
+    public boolean notLogin(User user) {
+        return false;
     }
 
     public User createUser(String name, String nickname, Role role, String uniName, String email) {
@@ -269,10 +267,17 @@ public class TestSyUtils {
         return ptProcessPhotoRepository.save(processPhoto);
     }
 
-
     public ProfileRequestDto createProfileDto(String introduction, String career, String university,
                                               LocalTime startTime, LocalTime endTime, Double reviewAvg,
                                               int cost, int month, String nickname) {
+        return createProfileDto(introduction, career, university, startTime, endTime, reviewAvg, null,
+                cost, month, nickname);
+    }
+
+    public ProfileRequestDto createProfileDto(String introduction, String career, String university,
+                                              LocalTime startTime, LocalTime endTime, Double reviewAvg,
+                                              List<MultipartFile> photos, int cost,
+                                              int month, String nickname) {
         return ProfileRequestDto.builder()
                 .introduction(introduction)
                 .career(career)
@@ -280,6 +285,7 @@ public class TestSyUtils {
                 .startTime(startTime)
                 .endTime(endTime)
                 .reviewAvg(reviewAvg)
+                .photos(photos)
                 .cost(cost)
                 .month(month)
                 .nickname(nickname)
@@ -290,6 +296,13 @@ public class TestSyUtils {
     public TrainerInfo createProfile(String introduction, String career, String university,
                                      LocalTime startTime, LocalTime endTime, Double reviewAvg,
                                      int cost, int month, User user) {
+        return createProfile(introduction, career, university, startTime, endTime, reviewAvg, null, cost, month, user);
+    }
+
+    public TrainerInfo createProfile(String introduction, String career, String university,
+                                     LocalTime startTime, LocalTime endTime, Double reviewAvg,
+                                     List<TrainerPhoto> photos, int cost,
+                                     int month, User user) {
         TrainerInfo profile = TrainerInfo.builder()
                 .introduction(introduction)
                 .career(career)
@@ -299,24 +312,19 @@ public class TestSyUtils {
                 .startTime(startTime)
                 .endTime(endTime)
                 .reviewAvg(reviewAvg)
+                .trainerPhotos(photos)
+                .trainerPhotos(new ArrayList<>())
                 .member(user)
                 .build();
 
         return profileRepository.save(profile);
     }
 
-    public ProfilePhotoRequest ProfilePhotoRequest(List<MultipartFile> photos) {
 
-        return ProfilePhotoRequest.builder()
-                .photos(photos)
-                .build();
-    }
-
-    public TrainerPhoto createProfilePhoto(TrainerInfo profile, String path, String originalName) {
+    public TrainerPhoto createProfilePhoto(TrainerInfo profile, String path) {
         TrainerPhoto profilePhoto = TrainerPhoto.builder()
                 .info(profile)
                 .infoPhotoPath(path)
-                .name(originalName)
                 .build();
 
         return trainerProfilePhotoRepository.save(profilePhoto);

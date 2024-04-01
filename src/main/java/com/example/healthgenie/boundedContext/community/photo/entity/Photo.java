@@ -2,25 +2,14 @@ package com.example.healthgenie.boundedContext.community.photo.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "COMMUNITY_POST_PHOTO_TB")
+@Table(name ="COMMUNITY_POST_PHOTO_TB")
 @Builder
 public class Photo extends BaseEntity {
 
@@ -39,5 +28,4 @@ public class Photo extends BaseEntity {
 
     @Column(name = "original_file_name")
     private String name;
-
 }

@@ -25,7 +25,6 @@ public enum ErrorCode {
     ROOM_EMPTY(BAD_REQUEST, "채팅방이 존재하지 않습니다."),
     REFRESH_TOKEN_EMPTY(BAD_REQUEST, "리프레시 토큰이 존재하지 않습니다."),
     ROUTINE_EMPTY(BAD_REQUEST, "루틴이 존재하지 않습니다."),
-    TRAINER_PHOTO_EMPTY(BAD_REQUEST, "트레이너 프로필 사진이 존재하지 않습니다."),
 
     // NO HISTORY
     NO_PROCESS_HISTORY(BAD_REQUEST, "일지를 남긴 기록이 없습니다."),

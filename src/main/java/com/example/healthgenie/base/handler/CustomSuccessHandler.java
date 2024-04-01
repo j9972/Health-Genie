@@ -44,7 +44,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.setHeader("Authorization", BEARER_PREFIX + access);
         response.addCookie(CookieUtils.createCookie("refresh", refresh));
-        response.sendRedirect("http://localhost:3000/login-success");
+        response.sendRedirect("http://localhost:3000/health-management");
     }
 
     private void saveRefreshToken(String refresh, String email, Long expirationMs) {

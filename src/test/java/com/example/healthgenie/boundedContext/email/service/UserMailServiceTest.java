@@ -47,7 +47,10 @@ class UserMailServiceTest {
     private String KEY;
 
 
+    String AUTH_CODE_PREFIX = "AuthCode ";
     User user;
+    User user2;
+    User user3;
 
     /***
      * 레드 그린 사이클 만들자
@@ -62,7 +65,7 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("이메일에 검증 코드 보내기")
-    void send_code() throws IOException {
+    void sendCode() throws IOException {
         // given
         testUtils.login(user);
         String uniDomain = uniDomainService.findUniDomain(user.getUniName());
@@ -80,7 +83,7 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("학교 도메인이 틀린경우 코드 보내기 실패")
-    void wrong_domain_for_send_code() {
+    void wrongDomainForSendCode() {
         // given
         testUtils.login(user);
         String uniDomain = uniDomainService.findUniDomain("가나다대학교");
@@ -97,7 +100,7 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("로그인을 안한 경우 검증 코드 안보내기")
-    void dont_send_code() {
+    void dontSendCode() {
         // given
 
         // when ,then
@@ -111,7 +114,7 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("api 코드 검증")
-    void univ_verify() throws IOException {
+    void univVerify() throws IOException {
         // given
         testUtils.login(user);
 

@@ -1,59 +1,63 @@
 package com.example.healthgenie.boundedContext.trainer.photo.service;
 
 import com.example.healthgenie.base.exception.CustomException;
-import com.example.healthgenie.base.utils.S3UploadUtils;
-import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoRequest;
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.profile.repository.ProfileRepository;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProfilePhotoService {
 
     private final ProfileRepository profileRepository;
     private final TrainerProfilePhotoRepository trainerProfilePhotoRepository;
-    private final S3UploadUtils s3UploadUtils;
 
+//    @Transactional
+//    public List<TrainerPhoto> save(Long postId, Long userId, ProfilePhotoRequest request) throws IOException {
+//        List<TrainerPhoto> photos = new ArrayList<>();
+//
+//        Post post = postService.findById(postId);
+//
+//        if (!Objects.equals(userId, post.getWriter().getId())) {
+//            throw CustomException.NO_PERMISSION;
+//        }
+//
+//        for (MultipartFile file : request.getPhotos()) {
+//            String uploadUrl = s3UploadUtils.upload(file, "trainer-profile-photos");
+//            String originName = file.getOriginalFilename();
+//
+//            Photo savedPhoto = photoRepository.save(
+//                    Photo.builder()
+//                            .path(uploadUrl)
+//                            .name(originName)
+//                            .post(post)
+//                            .build()
+//            );
+//
+//            photos.add(savedPhoto);
+//        }
+//
+//        return photos;
+//    }
 
     @Transactional
-    public List<TrainerPhoto> save(Long profileId, Long userId, ProfilePhotoRequest dto) throws IOException {
-        List<TrainerPhoto> photos = new ArrayList<>();
-
+    public TrainerPhoto save(Long profileId, String path) {
         TrainerInfo profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
 
-        check_permission(userId, profile);
+        TrainerPhoto photo = TrainerPhoto.builder()
+                .infoPhotoPath(path)
+                .info(profile)
+                .build();
 
-        for (MultipartFile file : dto.getPhotos()) {
-            String uploadUrl = s3UploadUtils.upload(file, "trainer-profile-photos");
-            String originName = file.getOriginalFilename();
-
-            TrainerPhoto savedPhoto = trainerProfilePhotoRepository.save(
-                    TrainerPhoto.builder()
-                            .infoPhotoPath(uploadUrl)
-                            .info(profile)
-                            .name(originName)
-                            .build()
-            );
-
-            photos.add(savedPhoto);
-        }
-
-        return photos;
+        return trainerProfilePhotoRepository.save(photo);
     }
 
     @Transactional
@@ -94,36 +98,11 @@ public class ProfilePhotoService {
     @Transactional(readOnly = true)
     public TrainerPhoto findById(Long id) {
         return trainerProfilePhotoRepository.findById(id)
-                .orElseThrow(() -> CustomException.TRAINER_PHOTO_EMPTY);
+                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
     }
 
     @Transactional(readOnly = true)
-    public List<TrainerPhoto> findAllByProfileId(Long profileId) {
-        return trainerProfilePhotoRepository.findAllByInfoId(profileId);
-    }
-
-    @Transactional
-    public String deleteAllByProfileId(Long profileId, Long userId) {
-        TrainerInfo profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
-
-        check_permission(userId, profile);
-
-        List<TrainerPhoto> photos = findAllByProfileId(profileId);
-
-        for (TrainerPhoto photo : photos) {
-            String path = photo.getInfoPhotoPath();
-            s3UploadUtils.deleteS3Object("trainer-profile-photos", path);
-        }
-
-        trainerProfilePhotoRepository.deleteByInfoId(profileId);
-
-        return photos.size() + "개의 사진이 삭제되었습니다.";
-    }
-
-    private static void check_permission(Long userId, TrainerInfo profile) {
-        if (!Objects.equals(userId, profile.getMember().getId())) {
-            throw CustomException.NO_PERMISSION;
-        }
+    public List<TrainerPhoto> findAll() {
+        return trainerProfilePhotoRepository.findAll();
     }
 }

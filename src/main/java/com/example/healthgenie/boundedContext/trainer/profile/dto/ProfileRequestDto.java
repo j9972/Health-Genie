@@ -2,12 +2,13 @@ package com.example.healthgenie.boundedContext.trainer.profile.dto;
 
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
@@ -22,16 +23,13 @@ public class ProfileRequestDto {
     private String career;
     private int cost;
     private int month; // 견적을 개월 수로 변환
-
-    @NotBlank
     private String name;
-
-    @NotBlank
     private String university;
     private LocalTime startTime; // contact 가능한 시간 시작
     private LocalTime endTime; // contact 가능한 시간 끝
     private Double reviewAvg;
     private String nickname; // 트레이너 닉네임
+    private List<MultipartFile> photos; // 트레이너 사진들
 
     public TrainerInfo toEntity(User user) {
         return TrainerInfo.builder()
@@ -47,6 +45,7 @@ public class ProfileRequestDto {
                 .name(this.name)
                 .member(user)
                 .build();
+
     }
 
     public boolean hasIntroduction() {
