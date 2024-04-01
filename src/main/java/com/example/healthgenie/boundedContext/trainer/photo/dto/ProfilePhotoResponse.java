@@ -16,6 +16,7 @@ public class ProfilePhotoResponse {
 
     private Long id;
     private String path;
+    private String originName;
 
     public static List<ProfilePhotoResponse> of(List<TrainerPhoto> photos) {
         return photos.stream()
@@ -27,6 +28,7 @@ public class ProfilePhotoResponse {
         return ProfilePhotoResponse.builder()
                 .id(photo.getId())
                 .path(photo.getInfoPhotoPath())
+                .originName(photo.getName())
                 .build();
     }
 }

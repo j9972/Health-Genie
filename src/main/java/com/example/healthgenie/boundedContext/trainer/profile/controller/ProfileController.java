@@ -7,11 +7,11 @@ import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRespons
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileSliceResponse;
 import com.example.healthgenie.boundedContext.trainer.profile.service.ProfileService;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,11 +19,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,12 +33,11 @@ public class ProfileController {
     private final ProfileService profileService;
 
     // 트레이너 패킷 세부 내용 작성 API
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping
     public ResponseEntity<Result> createProfile(@AuthenticationPrincipal User user,
-                                                @RequestPart ProfileRequestDto dto,
-                                                @RequestPart(name = "profileImages", required = false) List<MultipartFile> profileImages) {
+                                                @RequestBody @Valid ProfileRequestDto dto) {
 
-        ProfileResponseDto response = profileService.save(user, dto, profileImages);
+        ProfileResponseDto response = profileService.save(user, dto);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -59,17 +57,16 @@ public class ProfileController {
     }
 
     // 관리페이지에서 트레이너 본인 내용을 수정
-    @PatchMapping(value = "/{profileId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
-            MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping("/{profileId}")
     public ResponseEntity<Result> updateProfile(@PathVariable Long profileId,
-                                                @RequestPart ProfileRequestDto dto,
-                                                @AuthenticationPrincipal User user,
-                                                @RequestPart(name = "profileImages", required = false) List<MultipartFile> profileImages) {
+                                                @RequestBody @Valid ProfileRequestDto dto,
+                                                @AuthenticationPrincipal User user) {
 
-        ProfileResponseDto response = profileService.updateProfile(dto, profileId, user, profileImages);
+        ProfileResponseDto response = profileService.updateProfile(dto, profileId, user);
 
         return ResponseEntity.ok(Result.of(response));
     }
+
 
     // 프로을 검색으로 찾기
     @GetMapping("/searching")
