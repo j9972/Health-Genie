@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.trainer.photo.controller;
 
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoDeleteResponseDto;
 import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoRequest;
 import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoResponse;
 import com.example.healthgenie.boundedContext.trainer.photo.service.ProfilePhotoService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @Slf4j
 @RestController
@@ -53,7 +55,8 @@ public class ProfilePhotoController {
 
     @DeleteMapping
     public ResponseEntity<Result> delete(@PathVariable Long profileId, @AuthenticationPrincipal User user) {
-        String response = profilePhotoService.deleteAllByProfileId(profileId, user.getId());
+        ProfilePhotoDeleteResponseDto response = profilePhotoService.deleteAllByProfileId(
+                profileId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

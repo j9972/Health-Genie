@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.trainer.photo.service;
 
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
+import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoDeleteResponseDto;
 import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoRequest;
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
@@ -103,7 +104,7 @@ public class ProfilePhotoService {
     }
 
     @Transactional
-    public String deleteAllByProfileId(Long profileId, Long userId) {
+    public ProfilePhotoDeleteResponseDto deleteAllByProfileId(Long profileId, Long userId) {
         TrainerInfo profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
 
@@ -118,7 +119,10 @@ public class ProfilePhotoService {
 
         trainerProfilePhotoRepository.deleteByInfoId(profileId);
 
-        return photos.size() + "개의 사진이 삭제되었습니다.";
+        // 어느 프로필의 사진인지 프로필을 id를 반환
+        return ProfilePhotoDeleteResponseDto.builder()
+                .id(profileId)
+                .build();
     }
 
     private static void check_permission(Long userId, TrainerInfo profile) {
