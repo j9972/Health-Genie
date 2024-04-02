@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RequiredArgsConstructor
 public class ProcessPhotoService {
+    // test - upload
 
     private final PtProcessRepository processRepository;
     private final ProcessPhotoRepository processPhotoRepository;
