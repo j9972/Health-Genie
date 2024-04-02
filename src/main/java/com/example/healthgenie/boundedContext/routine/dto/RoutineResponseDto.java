@@ -1,7 +1,5 @@
 package com.example.healthgenie.boundedContext.routine.dto;
 
-import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewResponseDto;
-import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
 import com.example.healthgenie.boundedContext.routine.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

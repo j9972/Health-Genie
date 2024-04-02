@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TrainerProfilePhotoRepository extends JpaRepository<TrainerPhoto, Long> {
 
-    void deleteAllByInfoId(Long profileId);
-
     void deleteByInfoId(Long infoId);
 
     List<TrainerPhoto> findAllByInfoId(Long infoId);

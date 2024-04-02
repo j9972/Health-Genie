@@ -1,14 +1,14 @@
 package com.example.healthgenie.util;
 
-import com.example.healthgenie.boundedContext.ptrecord.dto.PtProcessRequestDto;
-import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
-import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
-import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessPhotoRepository;
-import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessRepository;
-import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewRequestDto;
-import com.example.healthgenie.boundedContext.ptreview.dto.PtReviewUpdateRequest;
-import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
-import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
+import com.example.healthgenie.boundedContext.process.photo.entity.ProcessPhoto;
+import com.example.healthgenie.boundedContext.process.photo.repository.ProcessPhotoRepository;
+import com.example.healthgenie.boundedContext.process.process.dto.PtProcessRequestDto;
+import com.example.healthgenie.boundedContext.process.process.entity.PtProcess;
+import com.example.healthgenie.boundedContext.process.process.repository.PtProcessRepository;
+import com.example.healthgenie.boundedContext.review.dto.PtReviewRequestDto;
+import com.example.healthgenie.boundedContext.review.dto.PtReviewUpdateRequest;
+import com.example.healthgenie.boundedContext.review.entity.PtReview;
+import com.example.healthgenie.boundedContext.review.repository.PtReviewRepository;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineUpdateRequestDto;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
@@ -48,7 +48,7 @@ public class TestSyUtils {
     private final ProfileRepository profileRepository;
     private final TrainerProfilePhotoRepository trainerProfilePhotoRepository;
     private final PtProcessRepository ptProcessRepository;
-    private final PtProcessPhotoRepository ptProcessPhotoRepository;
+    private final ProcessPhotoRepository processPhotoRepository;
     private final UserRepository userRepository;
 
     public void logout() {
@@ -217,26 +217,20 @@ public class TestSyUtils {
         return ptReviewRepository.save(review);
     }
 
-    public PtProcessRequestDto createProcessDto(LocalDate date, String title, String content,
-                                                String userNickName, String trainerNickName) {
-        return createProcessDto(date, title, content, userNickName, trainerNickName, null);
-    }
 
     public PtProcessRequestDto createProcessDto(LocalDate date, String title, String content,
-                                                String userNickName, String trainerNickName,
-                                                List<MultipartFile> photos) {
+                                                String userNickName, String trainerNickName) {
         return PtProcessRequestDto.builder()
                 .date(date)
                 .content(content)
                 .title(title)
                 .userNickName(userNickName)
                 .trainerNickName(trainerNickName)
-                .photos(photos)
                 .build();
     }
 
     public PtProcess createProcess(LocalDate date, String title, String content,
-                                   List<PtProcessPhoto> photos,
+                                   List<ProcessPhoto> photos,
                                    User user, User trainer) {
         PtProcess process = PtProcess.builder()
                 .date(date)
@@ -260,13 +254,13 @@ public class TestSyUtils {
         return createProcess(null, title, content, null, user, trainer);
     }
 
-    public PtProcessPhoto createProcessPhoto(PtProcess process, String path) {
-        PtProcessPhoto processPhoto = PtProcessPhoto.builder()
+    public ProcessPhoto createProcessPhoto(PtProcess process, String path) {
+        ProcessPhoto processPhoto = ProcessPhoto.builder()
                 .process(process)
                 .processPhotoPath(path)
                 .build();
 
-        return ptProcessPhotoRepository.save(processPhoto);
+        return processPhotoRepository.save(processPhoto);
     }
 
 
