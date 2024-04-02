@@ -42,7 +42,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         saveRefreshToken(refresh, email, REFRESH_TOKEN_EXPIRATION_MS);
 
-        response.setHeader("Authorization", BEARER_PREFIX + access);
+        response.addCookie(CookieUtils.createCookie("access", access));
         response.addCookie(CookieUtils.createCookie("refresh", refresh));
         response.sendRedirect("http://localhost:3000/login-success");
     }
