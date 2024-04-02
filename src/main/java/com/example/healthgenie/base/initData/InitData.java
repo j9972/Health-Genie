@@ -19,11 +19,11 @@ import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
-import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcess;
-import com.example.healthgenie.boundedContext.ptrecord.entity.PtProcessPhoto;
-import com.example.healthgenie.boundedContext.ptrecord.repository.PtProcessRepository;
-import com.example.healthgenie.boundedContext.ptreview.entity.PtReview;
-import com.example.healthgenie.boundedContext.ptreview.repository.PtReviewRepository;
+import com.example.healthgenie.boundedContext.process.photo.entity.ProcessPhoto;
+import com.example.healthgenie.boundedContext.process.process.entity.PtProcess;
+import com.example.healthgenie.boundedContext.process.process.repository.PtProcessRepository;
+import com.example.healthgenie.boundedContext.review.entity.PtReview;
+import com.example.healthgenie.boundedContext.review.repository.PtReviewRepository;
 import com.example.healthgenie.boundedContext.routine.entity.Day;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.routine.entity.Routine;
@@ -167,7 +167,7 @@ public class InitData {
             }
 
             private PtProcess createProcess(LocalDate date, String title, String content,
-                                            List<PtProcessPhoto> photos,
+                                            List<ProcessPhoto> photos,
                                             User user, User trainer) {
                 PtProcess process = PtProcess.builder()
                         .date(date)
