@@ -42,6 +42,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         saveRefreshToken(refresh, email, REFRESH_TOKEN_EXPIRATION_MS);
 
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+
         response.addCookie(CookieUtils.createCookie("access", access));
         response.addCookie(CookieUtils.createCookie("refresh", refresh));
         response.sendRedirect("http://localhost:3000/login-success");
