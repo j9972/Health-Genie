@@ -44,7 +44,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addCookie(CookieUtils.createCookie("access", access));
         response.addCookie(CookieUtils.createCookie("refresh", refresh));
-        response.sendRedirect("http://localhost:3000/login-success");
+        response.sendRedirect("http://localhost:1234/token");
     }
 
     private void saveRefreshToken(String refresh, String email, Long expirationMs) {

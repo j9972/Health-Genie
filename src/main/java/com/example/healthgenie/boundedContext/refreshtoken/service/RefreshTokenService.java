@@ -64,10 +64,9 @@ public class RefreshTokenService {
         refreshTokenRepository.deleteByRefreshToken(refresh);
         save(newRefresh, email, REFRESH_TOKEN_EXPIRATION_MS);
 
-        TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setAccess(newAccess);
-        tokenResponse.setRefresh(newRefresh);
-
-        return tokenResponse;
+        return TokenResponse.builder()
+                .access(newAccess)
+                .refresh(newRefresh)
+                .build();
     }
 }
