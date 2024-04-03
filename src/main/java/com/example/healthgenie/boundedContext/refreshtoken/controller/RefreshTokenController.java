@@ -28,7 +28,7 @@ public class RefreshTokenController {
         TokenResponse tokens = refreshTokenService.reissue(refresh);
 
         response.setHeader("Authorization", BEARER_PREFIX + tokens.getAccess());
-        response.addCookie(CookieUtils.createCookie("refresh", tokens.getRefresh()));
+        response.addCookie(CookieUtils.createCookie("refresh", tokens.getRefresh(), "localhost"));
 
         return ResponseEntity.ok(Result.of(tokens));
     }

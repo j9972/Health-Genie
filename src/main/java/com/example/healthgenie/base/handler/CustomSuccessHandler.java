@@ -47,8 +47,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
 
-        response.addCookie(CookieUtils.createCookie("access", access));
-        response.addCookie(CookieUtils.createCookie("refresh", refresh));
+        response.addCookie(CookieUtils.createCookie("access", access, "localhost"));
+        response.addCookie(CookieUtils.createCookie("refresh", refresh, "localhost"));
         response.sendRedirect("http://localhost:3000/login-success");
     }
 

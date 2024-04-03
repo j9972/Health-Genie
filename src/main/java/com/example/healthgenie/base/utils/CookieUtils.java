@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class CookieUtils {
 
     public static Cookie createCookie(String key, String value) {
-        return createCookie(key, value, false);
+        return createCookie(key, value, null);
     }
 
     public static Cookie createCookie(String key, String value, boolean ssl) {
@@ -20,6 +20,15 @@ public class CookieUtils {
         cookie.setPath("/");
 //        cookie.setHttpOnly(true);
 //        cookie.setSecure(ssl);
+
+        return cookie;
+    }
+
+    public static Cookie createCookie(String key, String value, String domain) {
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(60*60*60);
+        cookie.setPath("/");
+        cookie.setDomain(domain);
 
         return cookie;
     }
