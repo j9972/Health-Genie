@@ -2,7 +2,7 @@ package com.example.healthgenie.boundedContext.auth.controller;
 
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.response.Result;
-import com.example.healthgenie.boundedContext.auth.AuthService;
+import com.example.healthgenie.boundedContext.auth.service.AuthService;
 import com.example.healthgenie.boundedContext.refreshtoken.dto.TokenResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
