@@ -52,14 +52,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 //        response.addCookie(CookieUtils.createCookie("refresh", refresh, "localhost"));
         ResponseCookie accessCookie = ResponseCookie.from("access", access)
                 .path("/")
-                .secure(false)
+                .secure(true)
                 .maxAge(3600)
                 .sameSite("None")
                 .build();
 
         ResponseCookie refreshCookie = ResponseCookie.from("refresh", refresh)
                 .path("/")
-                .secure(false)
+                .secure(true)
                 .maxAge(3600)
                 .sameSite("None")
                 .build();
