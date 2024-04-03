@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PATCH", "PUT", "OPTIONS", "DELETE")
                 .allowCredentials(true)
                 .allowedHeaders("*")
-                .exposedHeaders("Set-Cookie", "Authorization")
+                .exposedHeaders("*")
         ;
     }
 
