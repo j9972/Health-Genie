@@ -1,4 +1,4 @@
-package com.example.healthgenie.boundedContext.auth;
+package com.example.healthgenie.boundedContext.auth.service;
 
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.utils.JwtUtils;
