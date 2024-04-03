@@ -1,6 +1,5 @@
 package com.example.healthgenie.base.handler;
 
-import com.example.healthgenie.base.utils.CookieUtils;
 import com.example.healthgenie.base.utils.JwtUtils;
 import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
 import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
@@ -10,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Date;
 
-import static com.example.healthgenie.base.constant.Constants.*;
+import static com.example.healthgenie.base.constant.Constants.ACCESS_TOKEN_EXPIRATION_MS;
+import static com.example.healthgenie.base.constant.Constants.REFRESH_TOKEN_EXPIRATION_MS;
 
 @Component
 @RequiredArgsConstructor
@@ -47,8 +48,25 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
 
-        response.addCookie(CookieUtils.createCookie("access", access, "localhost"));
-        response.addCookie(CookieUtils.createCookie("refresh", refresh, "localhost"));
+//        response.addCookie(CookieUtils.createCookie("access", access, "localhost"));
+//        response.addCookie(CookieUtils.createCookie("refresh", refresh, "localhost"));
+        ResponseCookie accessCookie = ResponseCookie.from("access", access)
+                .path("/")
+                .secure(true)
+                .maxAge(3600)
+                .sameSite("None")
+                .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh", refresh)
+                .path("/")
+                .secure(true)
+                .maxAge(3600)
+                .sameSite("None")
+                .build();
+
+        response.addHeader("Set-Cookie", accessCookie.toString());
+        response.addHeader("Set-Cookie", refreshCookie.toString());
+
         response.sendRedirect("http://localhost:3000/login-success");
     }
 
