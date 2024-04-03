@@ -20,7 +20,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:3000", "http://localhost:1234", "https://xn--9w3b15cw7a.xn--3e0b707e", "https://apic.app")
                 .allowedMethods("GET", "POST", "PATCH", "PUT", "OPTIONS", "DELETE")
                 .allowCredentials(true)
-                .allowedHeaders("*");
+                .allowedHeaders("*")
+                .exposedHeaders("Set-Cookie", "Authorization")
+        ;
     }
 
 }
