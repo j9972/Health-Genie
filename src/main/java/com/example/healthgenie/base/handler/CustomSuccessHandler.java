@@ -44,7 +44,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addCookie(CookieUtils.createCookie("access", access));
         response.addCookie(CookieUtils.createCookie("refresh", refresh));
-        response.sendRedirect("http://localhost:1234/token");
+        String url = "https://xn--9w3b15cw7a.xn--3e0b707e/token";
+        if(request.getRequestURL().toString().contains("localhost")) {
+            url = "http://localhost:1234/token";
+        }
+        response.sendRedirect(url);
     }
 
     private void saveRefreshToken(String refresh, String email, Long expirationMs) {
