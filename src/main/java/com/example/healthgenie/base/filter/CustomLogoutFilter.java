@@ -65,7 +65,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         refreshTokenRepository.deleteByRefreshToken(refresh);
 
-        response.addCookie(CookieUtils.deleteCookie("refresh"));
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
