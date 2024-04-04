@@ -4,6 +4,8 @@ import com.example.healthgenie.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Entity
 @Getter
@@ -23,5 +25,5 @@ public class RefreshToken extends BaseEntity {
     @Column(name = "key_email", nullable = false)
     private String keyEmail;
 
-    private String expiration;
+    private LocalDateTime expiration;
 }
