@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -43,31 +42,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         saveRefreshToken(refresh, email, REFRESH_TOKEN_EXPIRATION_MS);
 
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "*");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-
-//        response.addCookie(CookieUtils.createCookie("access", access, "localhost"));
-//        response.addCookie(CookieUtils.createCookie("refresh", refresh, "localhost"));
-        ResponseCookie accessCookie = ResponseCookie.from("access", access)
-                .path("/")
-                .secure(true)
-                .maxAge(3600)
-                .sameSite("None")
-                .build();
-
-        ResponseCookie refreshCookie = ResponseCookie.from("refresh", refresh)
-                .path("/")
-                .secure(true)
-                .maxAge(3600)
-                .sameSite("None")
-                .build();
-
-        response.addHeader("Set-Cookie", accessCookie.toString());
-        response.addHeader("Set-Cookie", refreshCookie.toString());
-
-        response.sendRedirect("http://localhost:3000/login-success");
+        response.sendRedirect("http://localhost:3000/login-success?access="+access+"&refresh="+refresh);
     }
 
     private void saveRefreshToken(String refresh, String email, Long expirationMs) {
