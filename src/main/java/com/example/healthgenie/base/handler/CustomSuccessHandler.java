@@ -1,8 +1,7 @@
 package com.example.healthgenie.base.handler;
 
 import com.example.healthgenie.base.utils.JwtUtils;
-import com.example.healthgenie.boundedContext.refreshtoken.entity.RefreshToken;
-import com.example.healthgenie.boundedContext.refreshtoken.repository.RefreshTokenRepository;
+import com.example.healthgenie.boundedContext.refreshtoken.service.RefreshTokenService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +13,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Date;
 
 import static com.example.healthgenie.base.constant.Constants.ACCESS_TOKEN_EXPIRATION_MS;
 import static com.example.healthgenie.base.constant.Constants.REFRESH_TOKEN_EXPIRATION_MS;
@@ -25,7 +23,7 @@ import static com.example.healthgenie.base.constant.Constants.REFRESH_TOKEN_EXPI
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtUtils jwtUtils;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -40,18 +38,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("[ACCESS TOKEN]={}", access);
         log.info("[REFRESH TOKEN]={}", refresh);
 
-        saveRefreshToken(refresh, email, REFRESH_TOKEN_EXPIRATION_MS);
+        refreshTokenService.save(refresh, email, REFRESH_TOKEN_EXPIRATION_MS);
 
-        response.sendRedirect("http://localhost:3000/login-success?access="+access+"&refresh="+refresh);
-    }
-
-    private void saveRefreshToken(String refresh, String email, Long expirationMs) {
-        RefreshToken refreshTokenObj = RefreshToken.builder()
-                .refreshToken(refresh)
-                .keyEmail(email)
-                .expiration(new Date(System.currentTimeMillis() + expirationMs).toString())
-                .build();
-
-        refreshTokenRepository.save(refreshTokenObj);
+        response.sendRedirect("http://localhost:3000/login-success?access="+access+"&refresh="+refresh+"&role="+role);
     }
 }

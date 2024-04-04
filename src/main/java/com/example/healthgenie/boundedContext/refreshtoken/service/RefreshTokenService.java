@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static com.example.healthgenie.base.constant.Constants.ACCESS_TOKEN_EXPIRATION_MS;
 import static com.example.healthgenie.base.constant.Constants.REFRESH_TOKEN_EXPIRATION_MS;
@@ -28,7 +28,7 @@ public class RefreshTokenService {
         RefreshToken refreshTokenObj = RefreshToken.builder()
                 .refreshToken(refreshToken)
                 .keyEmail(email)
-                .expiration(new Date(System.currentTimeMillis() + expirationMs).toString())
+                .expiration(LocalDateTime.now().plusSeconds(expirationMs/1000))
                 .build();
 
         return refreshTokenRepository.save(refreshTokenObj);
