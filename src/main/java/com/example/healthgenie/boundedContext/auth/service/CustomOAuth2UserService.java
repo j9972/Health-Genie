@@ -5,6 +5,7 @@ import com.example.healthgenie.base.exception.ErrorCode;
 import com.example.healthgenie.boundedContext.auth.dto.GoogleResponse;
 import com.example.healthgenie.boundedContext.auth.dto.KakaoResponse;
 import com.example.healthgenie.boundedContext.auth.dto.OAuth2Response;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
 import com.example.healthgenie.boundedContext.user.service.UserService;
@@ -14,6 +15,10 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
+
+import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +35,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         OAuth2Response oAuth2Response = getOAuth2Response(registrationId, oAuth2User);
 
-        return userRepository.findByEmail(oAuth2Response.getEmail())
+        User user = userRepository.findByEmail(oAuth2Response.getEmail())
                 .orElseGet(() -> userService.signUp(oAuth2Response.getEmail(), oAuth2Response.getName(), AuthProvider.findByCode(oAuth2Response.getProvider())));
+
+        if(!Objects.equals(registrationId, user.getAuthProvider().getAuthProvider())) {
+            throw new CustomException(DUPLICATED, "이미 [" + user.getAuthProvider().getAuthProvider() + "]에 가입된 이메일입니다.");
+        }
+
+        return user;
     }
 
     private OAuth2Response getOAuth2Response(String registrationId, OAuth2User oAuth2User) {
