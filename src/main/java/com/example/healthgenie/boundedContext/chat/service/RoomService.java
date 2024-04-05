@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -39,7 +42,7 @@ public class RoomService {
                 .orElseGet(() -> createNewRoom(roomHashCode, user, anotherUser));
 
         RoomUser roomUser = roomUserRepository.findByRoomIdAndUserId(room.getId(), user.getId())
-                .orElseThrow(() -> CustomException.NO_PERMISSION);
+                .orElseThrow(() -> new CustomException(NO_PERMISSION));
 
         roomUser.active();
 
@@ -52,16 +55,16 @@ public class RoomService {
 
     public Room findById(Long roomId) {
         return roomRepository.findById(roomId)
-                .orElseThrow(() -> CustomException.ROOM_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "roomId="+roomId));
     }
 
     @Transactional
     public void inactive(Long roomId, User user) {
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> CustomException.ROOM_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "roomId="+roomId));
 
         RoomUser roomUser = roomUserRepository.findByRoomIdAndUserId(roomId, user.getId())
-                .orElseThrow(() -> CustomException.NO_PERMISSION);
+                .orElseThrow(() -> new CustomException(NO_PERMISSION));
 
         roomUser.inactive();
     }

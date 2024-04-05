@@ -7,19 +7,17 @@ import com.example.healthgenie.boundedContext.email.service.UniDomainService;
 import com.example.healthgenie.boundedContext.email.service.UserMailService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.univcert.api.UnivCert;
-import java.io.IOException;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.Map;
+
+import static com.example.healthgenie.base.exception.ErrorCode.NOT_VALID;
 
 @Slf4j
 @RestController
@@ -53,7 +51,7 @@ public class MailController {
 
         } else {
             log.warn("이메일의 도메인이 해당 학교 도메인과 다릅니다");
-            throw CustomException.NOT_VALID_VALUE;
+            throw new CustomException(NOT_VALID);
         }
     }
 

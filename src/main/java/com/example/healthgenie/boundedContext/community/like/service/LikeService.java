@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -23,7 +26,7 @@ public class LikeService {
     @Transactional
     public Like save(Long postId, User user) {
         likeRepository.findByPostIdAndUserId(postId, user.getId()).ifPresent(like -> {
-            throw CustomException.ALREADY_LIKED;
+            throw new CustomException(DUPLICATED, "이미 좋아요를 표시했습니다.");
         });
 
         Post post = postService.findById(postId);
@@ -39,7 +42,7 @@ public class LikeService {
     @Transactional
     public String delete(Long postId, Long userId) {
         Like like = likeRepository.findByPostIdAndUserId(postId, userId)
-                .orElseThrow(() -> CustomException.LIKE_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "postId="+postId+"&userId="+userId));
 
         likeRepository.delete(like);
 

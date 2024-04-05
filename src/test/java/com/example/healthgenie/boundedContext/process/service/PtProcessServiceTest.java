@@ -1,8 +1,5 @@
 package com.example.healthgenie.boundedContext.process.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
@@ -18,15 +15,21 @@ import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -110,7 +113,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (matching.getDate().toLocalDate().isAfter(dto.getDate())) {
-                throw CustomException.TOO_EARLY_TO_WRITE_FEEDBACK;
+                throw new CustomException(NO_PERMISSION);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -127,7 +130,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (trainerMatchings.isEmpty()) {
-                throw CustomException.MATCHING_EMPTY;
+                throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -143,7 +146,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user.getRole().equals(Role.TRAINER)) {
-                throw CustomException.USER_EMPTY;
+                throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -164,7 +167,7 @@ class PtProcessServiceTest {
         assertThatThrownBy(() -> {
             // 해당 메소드 호출
             processService.addPtProcess(dto, user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -213,7 +216,7 @@ class PtProcessServiceTest {
             if (!user3.getNickname().equals(process.getMember().getNickname())
                     & !user3.getNickname().equals(process.getTrainer().getNickname())
             ) {
-                throw CustomException.USER_EMPTY;
+                throw new CustomException(DATA_NOT_FOUND);
             } else {
                 processService.getPtProcess(process.getId(), user3);
             }
@@ -308,7 +311,7 @@ class PtProcessServiceTest {
         assertThatThrownBy(() -> {
             // 해당 메소드 호출
             processService.getAllTrainerProcess(0, 5, user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -336,7 +339,7 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user.getRole().equals(Role.TRAINER)) {
-                throw CustomException.USER_EMPTY;
+                throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -353,7 +356,7 @@ class PtProcessServiceTest {
         assertThatThrownBy(() -> {
             // 해당 메소드 호출
             processService.deletePtProcess(process.getId(), user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+        }).isInstanceOf(CustomException.class);
     }
 
 //    @Test

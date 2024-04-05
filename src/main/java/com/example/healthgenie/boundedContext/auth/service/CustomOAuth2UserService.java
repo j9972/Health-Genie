@@ -41,7 +41,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } else if(registrationId.equals(AuthProvider.GOOGLE.getAuthProvider())) {
             oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
         } else {
-            throw new CustomException(ErrorCode.NOT_VALID_FIELD);
+            throw new CustomException(ErrorCode.NOT_VALID, "provider=" + registrationId);
         }
         return oAuth2Response;
     }

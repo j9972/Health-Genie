@@ -15,14 +15,17 @@ import com.example.healthgenie.boundedContext.process.process.repository.PtProce
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static com.example.healthgenie.base.exception.ErrorCode.*;
 
 @Service
 @Slf4j
@@ -39,13 +42,13 @@ public class PtProcessService {
     public PtProcessResponseDto addPtProcess(PtProcessRequestDto dto, User currentUser) {
 
         User trainer = userRepository.findById(currentUser.getId())
-                .orElseThrow(() -> CustomException.USER_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         User user = userRepository.findByNickname(dto.getUserNickName())
-                .orElseThrow(() -> CustomException.USER_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId())
-                .orElseThrow(() -> CustomException.MATCHING_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.getId());
 
@@ -54,7 +57,7 @@ public class PtProcessService {
             if (match.getMatching().getId().equals(userMatching.getMatching().getId())) {
 
                 Matching matching = matchingRepository.findById(match.getMatching().getId())
-                        .orElseThrow(() -> CustomException.MATCHING_EMPTY);
+                        .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
                 // trainer와 user사이의 매칭이 있을때 일지 작성 가능
                 log.info("해당하는 매칭이 있음 matching : {}", matching);
@@ -65,13 +68,13 @@ public class PtProcessService {
                 }
 
                 log.warn("일지 작성 날짜가 매칭날짜보다 뒤에 있어야 하는데 그렇지 못함");
-                throw CustomException.WRONG_DATE;
+                throw new CustomException(NOT_VALID);
 
             }
         }
 
         log.warn("해당하는 매칭이 없음");
-        throw CustomException.MATCHING_EMPTY;
+        throw new CustomException(DATA_NOT_FOUND);
     }
 
     @Transactional
@@ -94,7 +97,7 @@ public class PtProcessService {
     @Transactional(readOnly = true)
     public PtProcessResponseDto getPtProcess(Long processId, User user) {
         PtProcess process = ptProcessRepository.findById(processId)
-                .orElseThrow(() -> CustomException.NO_PROCESS_HISTORY);
+                .orElseThrow(() -> new CustomException(NO_HISTORY));
 
         // 권한 체크
         checkRole(user, Role.TRAINER);
@@ -158,7 +161,7 @@ public class PtProcessService {
     private PtProcess authorizationProcessWriter(Long id, User member) {
 
         PtProcess process = ptProcessRepository.findById(id)
-                .orElseThrow(() -> CustomException.NO_PROCESS_HISTORY);
+                .orElseThrow(() -> new CustomException(NO_HISTORY));
         authCheck(member, process);
 
         return process;
@@ -167,14 +170,14 @@ public class PtProcessService {
     private void authCheck(User member, PtProcess process) {
         if (!process.getTrainer().getId().equals(member.getId())) {
             log.warn("process 소유자 user : {}", member);
-            throw CustomException.USER_EMPTY;
+            throw new CustomException(DATA_NOT_FOUND);
         }
     }
 
     private void checkRole(User currentUser, Role role) {
         if (!currentUser.getRole().equals(role)) {
             log.warn("role 오류. currentUser : {}", currentUser);
-            throw CustomException.WRONG_USER_ROLE;
+            throw new CustomException(NO_PERMISSION);
         }
     }
 

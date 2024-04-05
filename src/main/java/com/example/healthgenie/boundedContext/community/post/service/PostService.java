@@ -18,6 +18,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,12 +32,12 @@ public class PostService {
 
     public PostResponse findDtoById(Long postId) {
         return postQueryRepository.findDtoById(postId)
-                .orElseThrow(() -> CustomException.POST_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "postId="+postId));
     }
 
     public Post findById(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> CustomException.POST_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "postId="+postId));
     }
 
     public Slice<Post> findAll(String keyword, Long userId, Long lastId, Pageable pageable) {
@@ -59,7 +62,7 @@ public class PostService {
         Post post = findById(postId);
 
         if (!Objects.equals(userId, post.getWriter().getId())) {
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
 
         if (StringUtils.hasText(request.getTitle())) {
@@ -78,7 +81,7 @@ public class PostService {
         Post post = findById(postId);
 
         if (!Objects.equals(userId, post.getWriter().getId())) {
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
 
         postRepository.delete(post);

@@ -10,13 +10,17 @@ import com.example.healthgenie.boundedContext.trainer.profile.repository.Profile
 import com.example.healthgenie.boundedContext.trainer.profile.repository.ProfileRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +36,7 @@ public class ProfileService {
     public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user) {
 
         TrainerInfo profile = profileRepository.findByIdAndMemberId(profileId, user.getId())
-                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         updateEachProfile(dto, profile);
 
@@ -77,11 +81,11 @@ public class ProfileService {
     private TrainerInfo authorizationWriter(Long id, User member) {
 
         TrainerInfo profile = profileRepository.findById(id)
-                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         if (!profile.getMember().getId().equals(member.getId())) {
             log.warn("current user doesn't have permission, member : {}", profile.getMember());
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
         return profile;
     }
@@ -92,7 +96,7 @@ public class ProfileService {
 
         // user role 검증
         if (!user.getRole().equals(Role.TRAINER)) {
-            throw CustomException.WRONG_USER_ROLE;
+            throw new CustomException(NO_PERMISSION);
         }
 
         TrainerInfo info = profileRepository.save(dto.toEntity(user));

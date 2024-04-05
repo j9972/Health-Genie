@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 @Service
 @RequiredArgsConstructor
 public class MessageService {
@@ -38,7 +40,7 @@ public class MessageService {
 
     public List<Message> findAll(Long roomId, User user) {
         RoomUser roomUser = roomUserRepository.findByRoomIdAndUserId(roomId, user.getId())
-                .orElseThrow(() -> CustomException.NO_PERMISSION);
+                .orElseThrow(() -> new CustomException(NO_PERMISSION));
 
         return messageRepository.findAllByRoomIdOrderByCreatedDateDesc(roomId);
     }

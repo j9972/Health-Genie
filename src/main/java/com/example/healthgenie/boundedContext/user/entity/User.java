@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.user.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
 import com.example.healthgenie.base.exception.CustomException;
+import com.example.healthgenie.base.exception.ErrorCode;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
@@ -86,7 +87,7 @@ public class User extends BaseEntity implements OAuth2User {
 
     public void updateRole(Role role) {
         if (this.role != Role.EMPTY) {
-            throw CustomException.ALREADY_EXISTS_ROLE;
+            throw new CustomException(ErrorCode.NO_PERMISSION, "이미 역할을 선택했습니다.");
         }
         this.role = role;
     }

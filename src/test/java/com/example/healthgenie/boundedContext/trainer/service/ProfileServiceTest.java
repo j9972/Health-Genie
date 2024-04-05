@@ -102,7 +102,7 @@ class ProfileServiceTest {
         assertThatThrownBy(() -> {
             // 해당 메소드 호출
             profileService.save(user, dto);
-        }).isInstanceOf(CustomException.TRAINER_INFO_EMPTY.getClass());
+        }).isInstanceOf(CustomException.class);
     }
 
 //    @Test
@@ -151,7 +151,7 @@ class ProfileServiceTest {
         assertThatThrownBy(() -> {
             // 해당 메소드 호출
             profileService.updateProfile(dto, profile.getId(), user);
-        }).isInstanceOf(CustomException.TRAINER_INFO_EMPTY.getClass());
+        }).isInstanceOf(CustomException.class);
     }
 
 //    @Test

@@ -8,15 +8,19 @@ import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.profile.repository.ProfileRepository;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
 
 
 @Service
@@ -34,7 +38,7 @@ public class ProfilePhotoService {
         List<TrainerPhoto> photos = new ArrayList<>();
 
         TrainerInfo profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         checkPermission(userId, profile);
 
@@ -54,7 +58,7 @@ public class ProfilePhotoService {
     @Transactional(readOnly = true)
     public TrainerPhoto findById(Long id) {
         return trainerProfilePhotoRepository.findById(id)
-                .orElseThrow(() -> CustomException.TRAINER_PHOTO_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
@@ -65,7 +69,7 @@ public class ProfilePhotoService {
     @Transactional
     public ProfilePhotoDeleteResponseDto deleteAllByProfileId(Long profileId, Long userId) {
         TrainerInfo profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         checkPermission(userId, profile);
 
@@ -86,7 +90,7 @@ public class ProfilePhotoService {
 
     private static void checkPermission(Long userId, TrainerInfo profile) {
         if (!Objects.equals(userId, profile.getMember().getId())) {
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
     }
 }
