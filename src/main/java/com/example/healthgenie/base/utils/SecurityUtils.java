@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+
 
 @Slf4j
 public class SecurityUtils {
@@ -14,11 +16,10 @@ public class SecurityUtils {
     }
 
     public static User getCurrentUser() {
-
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null) {
-            throw CustomException.USER_EMPTY;
+            throw new CustomException(DATA_NOT_FOUND, "사용자 인증이 되지 않았습니다.");
         }
         return (User) authentication.getPrincipal();
     }

@@ -8,15 +8,19 @@ import com.example.healthgenie.boundedContext.process.photo.entity.ProcessPhoto;
 import com.example.healthgenie.boundedContext.process.photo.repository.ProcessPhotoRepository;
 import com.example.healthgenie.boundedContext.process.process.entity.PtProcess;
 import com.example.healthgenie.boundedContext.process.process.repository.PtProcessRepository;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static com.example.healthgenie.base.exception.ErrorCode.NO_HISTORY;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
 
 @Service
 @Slf4j
@@ -34,7 +38,7 @@ public class ProcessPhotoService {
         List<ProcessPhoto> photos = new ArrayList<>();
 
         PtProcess process = processRepository.findById(processId)
-                .orElseThrow(() -> CustomException.NO_PROCESS_HISTORY);
+                .orElseThrow(() -> new CustomException(NO_HISTORY));
 
         checkPermission(userId, process);
 
@@ -54,7 +58,7 @@ public class ProcessPhotoService {
     @Transactional(readOnly = true)
     public ProcessPhoto findById(Long id) {
         return processPhotoRepository.findById(id)
-                .orElseThrow(() -> CustomException.NO_PROCESS_HISTORY);
+                .orElseThrow(() -> new CustomException(NO_HISTORY));
     }
 
     @Transactional(readOnly = true)
@@ -65,7 +69,7 @@ public class ProcessPhotoService {
     @Transactional
     public ProcessPhotoDeleteResponse deleteAllByProcessId(Long processId, Long userId) {
         PtProcess process = processRepository.findById(processId)
-                .orElseThrow(() -> CustomException.NO_PROCESS_HISTORY);
+                .orElseThrow(() -> new CustomException(NO_HISTORY));
 
         checkPermission(userId, process);
 
@@ -86,7 +90,7 @@ public class ProcessPhotoService {
 
     private static void checkPermission(Long userId, PtProcess process) {
         if (!Objects.equals(userId, process.getTrainer().getId())) {
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
     }
 }

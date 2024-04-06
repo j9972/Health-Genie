@@ -18,6 +18,9 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -43,7 +46,7 @@ public class CommentService {
 
     public Comment findById(Long commentId) {
         return commentRepository.findById(commentId)
-                .orElseThrow(() -> CustomException.COMMENT_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "commentId="+commentId));
     }
 
     public List<Comment> findAll() {
@@ -65,7 +68,7 @@ public class CommentService {
         Comment comment = findById(commentId);
 
         if (!Objects.equals(userId, comment.getWriter().getId())) {
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
 
         if (StringUtils.hasText(request.getContent())) {
@@ -82,7 +85,7 @@ public class CommentService {
         Comment comment = findById(commentId);
 
         if (!Objects.equals(userId, comment.getWriter().getId())) {
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
 
         commentRepository.deleteById(commentId);

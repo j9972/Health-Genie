@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.healthgenie.base.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -123,7 +124,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (LocalDate.now().isAfter(matching.getDate().toLocalDate())) {
-                throw CustomException.TOO_EARLY_TO_WRITE_FEEDBACK;
+                throw new CustomException(NO_PERMISSION);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -141,7 +142,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (userMatching.isEmpty()) {
-                throw CustomException.MATCHING_EMPTY;
+                throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -159,7 +160,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (review.getId() != null) {
-                throw CustomException.DUPLICATED_REVIEW;
+                throw new CustomException(DUPLICATED);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -176,7 +177,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user2.getRole().equals(Role.USER)) {
-                throw CustomException.UNKNOWN_EXCEPTION;
+                throw new CustomException(UNKNOWN_EXCEPTION);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -295,7 +296,7 @@ class PtReviewServiceTest {
         assertThatThrownBy(() -> {
             // 해당 메소드 호출
             reviewService.updateReview(dto, review.getId(), user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -324,7 +325,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user2.getRole().equals(Role.USER)) {
-                throw CustomException.USER_EMPTY;
+                throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -355,7 +356,7 @@ class PtReviewServiceTest {
         assertThatThrownBy(() -> {
             // 해당 메소드 호출
             reviewService.deletePtReview(review.getId(), user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -369,7 +370,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user2.getRole().equals(Role.USER)) {
-                throw CustomException.USER_EMPTY;
+                throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
     }

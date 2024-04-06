@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -33,7 +36,7 @@ public class PhotoService {
         Post post = postService.findById(postId);
 
         if (!Objects.equals(userId, post.getWriter().getId())) {
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
 
         for (MultipartFile file : request.getPhotos()) {
@@ -56,7 +59,7 @@ public class PhotoService {
 
     public Photo findById(Long photoId) {
         return photoRepository.findById(photoId)
-                .orElseThrow(() -> CustomException.PHOTO_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "photoId="+photoId));
     }
 
     public List<Photo> findAll() {
@@ -72,7 +75,7 @@ public class PhotoService {
         Post post = postService.findById(postId);
 
         if (!Objects.equals(userId, post.getWriter().getId())) {
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
 
         List<Photo> photos = findAllByPostId(postId);

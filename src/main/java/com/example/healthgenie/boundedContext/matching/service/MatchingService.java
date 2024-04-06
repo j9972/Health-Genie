@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.healthgenie.base.exception.ErrorCode.*;
 import static com.example.healthgenie.boundedContext.matching.entity.enums.MatchingState.*;
 import static com.example.healthgenie.boundedContext.user.entity.enums.Role.TRAINER;
 import static com.example.healthgenie.boundedContext.user.entity.enums.Role.USER;
@@ -56,7 +57,7 @@ public class MatchingService {
 
     public Matching findById(Long matchingId) {
         return matchingRepository.findById(matchingId)
-                .orElseThrow(() -> CustomException.MATCHING_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "matchingId="+matchingId));
     }
 
     public Matching findById(Long matchingId, User user) {
@@ -68,7 +69,7 @@ public class MatchingService {
             }
         }
 
-        throw CustomException.NO_PERMISSION;
+        throw new CustomException(NO_PERMISSION);
     }
 
     public List<Matching> findAll(User user, MatchingCondition condition) {
@@ -91,7 +92,7 @@ public class MatchingService {
         MatchingState currentState = matching.getState();
 
         if (currentState.equals(CANCEL_ACCEPT)) {
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
 
         if (currentState.equals(DEFAULT)) {
@@ -104,12 +105,12 @@ public class MatchingService {
             return;
         }
 
-        throw CustomException.NO_PERMISSION;
+        throw new CustomException(NO_PERMISSION);
     }
 
     private void validateSave(User user, User trainer) {
         if (!user.getRole().equals(USER) || !trainer.getRole().equals(TRAINER)) {
-            throw CustomException.NO_PERMISSION;
+            throw new CustomException(NO_PERMISSION);
         }
     }
 
@@ -117,15 +118,15 @@ public class MatchingService {
         switch (state) {
             case PARTICIPATE, CANCEL -> {
                 if (!user.getRole().equals(USER)) {
-                    throw CustomException.NO_PERMISSION;
+                    throw new CustomException(NO_PERMISSION);
                 }
             }
             case PARTICIPATE_ACCEPT, CANCEL_ACCEPT -> {
                 if (!user.getRole().equals(TRAINER)) {
-                    throw CustomException.NO_PERMISSION;
+                    throw new CustomException(NO_PERMISSION);
                 }
             }
-            default -> throw CustomException.NOT_VALID_FIELD;
+            default -> throw new CustomException(NOT_VALID, "state="+state.getCode());
         }
     }
 

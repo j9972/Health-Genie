@@ -1,8 +1,5 @@
 package com.example.healthgenie.boundedContext.email.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
@@ -11,8 +8,6 @@ import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import com.univcert.api.UnivCert;
-import java.io.IOException;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +17,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.util.Map;
+
+import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -90,7 +92,7 @@ class UserMailServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!StringUtils.hasText(uniDomain)) {
-                throw CustomException.UNKNOWN_EXCEPTION;
+                throw new CustomException(UNKNOWN_EXCEPTION);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -103,7 +105,7 @@ class UserMailServiceTest {
         // when ,then
         assertThatThrownBy(() -> {
             if (!user.getAuthorities().isEmpty()) {
-                throw CustomException.UNKNOWN_EXCEPTION;
+                throw new CustomException(UNKNOWN_EXCEPTION);
             }
         }).isInstanceOf(CustomException.class);
     }

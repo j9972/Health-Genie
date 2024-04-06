@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
+import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -120,7 +122,7 @@ class RoutineServiceTest {
                 RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.MONDAY
                         , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
                 routineService.writeRoutine(dto, user);
-                throw CustomException.DUPLICATED_DAY;
+                throw new CustomException(DUPLICATED);
             }
 
         }).isInstanceOf(CustomException.class);
@@ -264,7 +266,7 @@ class RoutineServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (failRoutine.getLevel().equals(Level.EMPTY)) {
-                throw CustomException.UNKNOWN_EXCEPTION;
+                throw new CustomException(UNKNOWN_EXCEPTION);
             }
         }).isInstanceOf(CustomException.class);
     }

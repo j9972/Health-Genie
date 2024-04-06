@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Random;
 
+import static com.example.healthgenie.base.exception.ErrorCode.*;
+
 @Transactional(readOnly = true)
 @Service
 @Slf4j
@@ -35,7 +37,7 @@ public class UserService {
         String defaultNickname = createUniqueNickname();
 
         if (userRepository.existsByEmail(email)) {
-            throw CustomException.DUPLICATED_EMAIL;
+            throw new CustomException(DUPLICATED, "email="+email);
         }
 
         User user = User.builder()
@@ -58,18 +60,18 @@ public class UserService {
 
     public User findById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "userId="+userId));
     }
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> CustomException.USER_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "email="+email));
     }
 
     @Transactional
     public User update(User user, Role role) {
         if (Objects.isNull(role)) {
-            throw CustomException.NOT_VALID_FIELD;
+            throw new CustomException(NOT_VALID, "role");
         }
 
         return update(user, role, null, null, null, null, null, null, null, null, null, null);
@@ -78,7 +80,7 @@ public class UserService {
     @Transactional
     public User update(User user, Level level) {
         if (Objects.isNull(level)) {
-            throw CustomException.NOT_VALID_FIELD;
+            throw new CustomException(NOT_VALID, "level");
         }
 
         return update(user, null, level, null, null, null, null, null, null, null, null, null);
@@ -97,7 +99,7 @@ public class UserService {
 
     public DietResponse calculate(User user, Integer type) {
         if (Objects.isNull(type)) {
-            throw CustomException.NOT_VALID_VALUE;
+            throw new CustomException(NOT_VALID, "type");
         }
 
         Gender gender = user.getGender();
@@ -111,7 +113,7 @@ public class UserService {
         } else if (gender == Gender.FEMALE) {
             basic = 655 + (9.6 * weight) + (1.7 * height) - (4.7 * age);
         } else {
-            throw CustomException.NOT_VALID_FIELD;
+            throw new CustomException(NOT_VALID, "gender="+user.getGender().getCode());
         }
 
         double active = switch (type) {
@@ -119,7 +121,7 @@ public class UserService {
             case 2 -> basic * 1.4;
             case 3 -> basic * 1.6;
             case 4 -> basic * 1.8;
-            default -> throw CustomException.NOT_VALID_FIELD;
+            default -> throw new CustomException(NOT_VALID, "type="+type);
         };
 
         return DietResponse.builder()
@@ -150,7 +152,7 @@ public class UserService {
         // 닉네임
         if (StringUtils.hasText(nickname)) {
             if (userRepository.existsByNickname(nickname)) {
-                throw CustomException.DUPLICATED_NICKNAME;
+                throw new CustomException(DUPLICATED, "nickname="+nickname);
             }
             user.updateNickname(nickname);
         }
@@ -212,7 +214,7 @@ public class UserService {
 
             return uploadedPath;
         } catch (IOException e) {
-            throw CustomException.FAILED_PHOTO_UPLOAD;
+            throw new CustomException(UNKNOWN_EXCEPTION, "S3 파일 업로드 에러 발생");
         }
     }
 }

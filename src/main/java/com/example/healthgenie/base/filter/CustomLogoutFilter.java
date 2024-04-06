@@ -13,9 +13,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+
+import static com.example.healthgenie.base.exception.ErrorCode.*;
 
 @Component
 @RequiredArgsConstructor
@@ -44,23 +47,23 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         String refresh = CookieUtils.getCookie(request, "refresh").getValue();
 
-        if (refresh == null) {
-            throw CustomException.NO_JWT;
+        if (!StringUtils.hasText(refresh)) {
+            throw new CustomException(JWT_ERROR, "refresh 쿠키가 없습니다.");
         }
 
         try {
             jwtUtils.isExpired(refresh);
         } catch (ExpiredJwtException e) {
-            throw CustomException.EXPIRED_TOKEN;
+            throw new CustomException(JWT_ERROR, "만료된 토큰입니다.");
         }
 
         String category = jwtUtils.getCategory(refresh);
         if (!category.equals("refresh")) {
-            throw CustomException.NOT_VALID_VALUE;
+            throw new CustomException(NOT_VALID, "category="+category);
         }
 
         if (!refreshTokenRepository.existsByRefreshToken(refresh)) {
-            throw CustomException.REFRESH_TOKEN_EMPTY;
+            throw new CustomException(DATA_NOT_FOUND, "refresh="+refresh);
         }
 
         refreshTokenRepository.deleteByRefreshToken(refresh);

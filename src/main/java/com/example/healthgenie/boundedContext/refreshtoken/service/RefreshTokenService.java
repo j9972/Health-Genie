@@ -9,11 +9,13 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
 import static com.example.healthgenie.base.constant.Constants.ACCESS_TOKEN_EXPIRATION_MS;
 import static com.example.healthgenie.base.constant.Constants.REFRESH_TOKEN_EXPIRATION_MS;
+import static com.example.healthgenie.base.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,23 +38,23 @@ public class RefreshTokenService {
 
     @Transactional
     public TokenResponse reissue(String refresh) {
-        if (refresh == null) {
-            throw CustomException.NO_JWT;
+        if (!StringUtils.hasText(refresh)) {
+            throw new CustomException(JWT_ERROR, "refresh 쿠키가 없습니다.");
         }
 
         try {
             jwtUtils.isExpired(refresh);
         } catch (ExpiredJwtException e) {
-            throw CustomException.EXPIRED_TOKEN;
+            throw new CustomException(JWT_ERROR, "만료된 토큰입니다.");
         }
 
         String category = jwtUtils.getCategory(refresh);
         if (!category.equals("refresh")) {
-            throw CustomException.NOT_VALID_VALUE;
+            throw new CustomException(NOT_VALID, "category="+category);
         }
 
         if (!refreshTokenRepository.existsByRefreshToken(refresh)) {
-            throw CustomException.REFRESH_TOKEN_EMPTY;
+            throw new CustomException(DATA_NOT_FOUND, "refresh="+refresh);
         }
 
         String email = jwtUtils.getEmail(refresh);
