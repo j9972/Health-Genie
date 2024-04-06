@@ -3,6 +3,7 @@ package com.example.healthgenie.base.config;
 import com.example.healthgenie.base.filter.CustomLogoutFilter;
 import com.example.healthgenie.base.filter.JwtExceptionFilter;
 import com.example.healthgenie.base.filter.JwtFilter;
+import com.example.healthgenie.base.handler.CustomFailureHandler;
 import com.example.healthgenie.base.handler.CustomSuccessHandler;
 import com.example.healthgenie.boundedContext.auth.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,13 +30,14 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
+    private final CustomFailureHandler customFailureHandler;
     private final JwtFilter jwtFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
     private final CustomLogoutFilter customLogoutFilter;
 
     private final String[] COMMON_WHITE_LIST = new String[]
             {
-                    "/login/**", "/oauth2/**", "/login-success", "/refresh", "/error/**", "/ws/**", "/favicon.ico/**",
+                    "/login/**", "/oauth2/**", "/refresh", "/error/**", "/ws/**", "/favicon.ico/**",
                     "/routine/genie/**", "/routine/genie/detail/**", "/auth/mail/**"
             };
     private final String[] GET_WHITE_LIST = new String[]
@@ -82,6 +84,7 @@ public class SecurityConfig {
                                         .userService(customOAuth2UserService))
                         )
                         .successHandler(customSuccessHandler)
+                        .failureHandler(customFailureHandler)
                 );
 
         http
