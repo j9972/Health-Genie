@@ -3,9 +3,6 @@ package com.example.healthgenie.base.config;
 import com.example.healthgenie.base.filter.CustomLogoutFilter;
 import com.example.healthgenie.base.filter.JwtExceptionFilter;
 import com.example.healthgenie.base.filter.JwtFilter;
-import com.example.healthgenie.base.handler.CustomFailureHandler;
-import com.example.healthgenie.base.handler.CustomSuccessHandler;
-import com.example.healthgenie.boundedContext.auth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,9 +22,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomSuccessHandler customSuccessHandler;
-    private final CustomFailureHandler customFailureHandler;
     private final JwtFilter jwtFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
     private final CustomLogoutFilter customLogoutFilter;
@@ -56,9 +50,9 @@ public class SecurityConfig {
 
         http
                 .oauth2Login(
-                        config -> config
+                        oauth2 -> oauth2
                                 .redirectionEndpoint(
-                                        redirectionConfig -> redirectionConfig.baseUri("/oauth2/code/*")
+                                        config -> config.baseUri("/oauth2/code/*")
                                 )
                 );
 
