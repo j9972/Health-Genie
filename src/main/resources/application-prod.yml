@@ -14,9 +14,9 @@ spring:
       client:
         registration:
           google:
-            redirect-uri: https://xn--9w3b15cw7a.xn--3e0b707e/login/oauth2/code/google
+            redirect-uri: http://localhost:3000/login/oauth2/code/google
           kakao:
-            redirect-uri: https://xn--9w3b15cw7a.xn--3e0b707e/login/oauth2/code/kakao
+            redirect-uri: http://localhost:3000/login/oauth2/code/kakao
 
   jpa:
     hibernate:
