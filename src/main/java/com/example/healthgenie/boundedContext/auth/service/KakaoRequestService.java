@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.auth.service;
 
 import com.example.healthgenie.base.utils.JwtUtils;
 import com.example.healthgenie.boundedContext.auth.dto.JwtResponse;
+import com.example.healthgenie.boundedContext.auth.dto.KakaoUnlinkResponse;
 import com.example.healthgenie.boundedContext.auth.dto.KakaoUserInfo;
 import com.example.healthgenie.boundedContext.auth.dto.TokenResponse;
 import com.example.healthgenie.boundedContext.auth.service.feign.KakaoAuthClient;
@@ -14,8 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import static com.example.healthgenie.base.constant.Constants.ACCESS_TOKEN_EXPIRATION_MS;
-import static com.example.healthgenie.base.constant.Constants.REFRESH_TOKEN_EXPIRATION_MS;
+import static com.example.healthgenie.base.constant.Constants.*;
 import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.KAKAO;
 
 @Service
@@ -59,11 +59,15 @@ public class KakaoRequestService {
                 .build();
     }
 
-    private TokenResponse getAccessToken(String code) {
+    public TokenResponse getAccessToken(String code) {
         return kakaoAuthClient.getToken(GRANT_TYPE, CLIENT_ID, REDIRECT_URI, code);
     }
 
-    private KakaoUserInfo getUserInfo(String accessToken) {
+    public KakaoUserInfo getUserInfo(String accessToken) {
         return kakaoInfoClient.getUserInfo("Bearer " + accessToken);
+    }
+
+    public KakaoUnlinkResponse unlink(String accessToken) {
+        return kakaoInfoClient.unlink(BEARER_PREFIX + accessToken);
     }
 }

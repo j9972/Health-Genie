@@ -97,6 +97,11 @@ public class UserService {
         return update(user, null, null, null, null, null, null, null, null, null, uniName, emailVerify);
     }
 
+    @Transactional
+    public void deleteById(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
     public DietResponse calculate(User user, Integer type) {
         if (Objects.isNull(type)) {
             throw new CustomException(NOT_VALID, "type");
