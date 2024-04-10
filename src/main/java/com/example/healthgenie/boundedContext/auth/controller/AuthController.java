@@ -28,8 +28,8 @@ public class AuthController {
 
     @DeleteMapping("/withdraw")
     public ResponseEntity<Result> withdraw(@AuthenticationPrincipal User user, @RequestParam String code) {
-        Long withdraw = authService.withdraw(user, code);
+        authService.withdraw(user, code);
 
-        return ResponseEntity.ok(Result.of(withdraw));
+        return ResponseEntity.ok(Result.of(user.getId() + "_" + user.getAuthProvider() + "_" + user.getNickname() + " 탈퇴 완료"));
     }
 }
