@@ -1,5 +1,11 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
+import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineResponseDto;
@@ -13,22 +19,15 @@ import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
-import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
@@ -128,25 +127,25 @@ class RoutineServiceTest {
         }).isInstanceOf(CustomException.class);
     }
 
-//    @Test
-//    @DisplayName("로그인 하지 않은 유저가 루틴 작성하기")
-//    void fail_write_routine_cuz_of_login() {
-//        // given
-//        testSyUtils.logout();
-//
-//        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
-//
-//        RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
-//                , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
-//
-//        // when
-//
-//        // then
-//        assertThatThrownBy(() -> {
-//            // 해당 메소드 호출
-//            routineService.writeRoutine(dto, user);
-//        }).isInstanceOf(CustomException.UNKNOWN_EXCEPTION.getClass());
-//    }
+    @Test
+    @DisplayName("로그인 하지 않은 유저가 루틴 작성하기")
+    void fail_write_routine_cuz_of_login() {
+        // given
+        testSyUtils.logout();
+
+        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
+
+        RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
+                , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            // 해당 메소드 호출
+            routineService.writeRoutine(dto, user);
+        }).isInstanceOf(CustomException.class);
+    }
 
 
     @Test
@@ -307,20 +306,20 @@ class RoutineServiceTest {
                 .isInstanceOf(CustomException.class);
     }
 
-//    @Test
-//    @DisplayName("로그인 하지 않은 유저가 루틴 삭제하기")
-//    void fail_delete_routine_cuz_of_login() {
-//        // given
-//        testSyUtils.logout();
-//
-//        // when
-//
-//        // then
-//        assertThatThrownBy(() -> {
-//            // 해당 메소드 호출
-//            routineService.deleteRoutine(routine.getId(), user);
-//        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
-//    }
+    @Test
+    @DisplayName("로그인 하지 않은 유저가 루틴 삭제하기")
+    void fail_delete_routine_cuz_of_login() {
+        // given
+        testSyUtils.logout();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            // 해당 메소드 호출
+            routineService.deleteRoutine(routine.getId(), user);
+        }).isInstanceOf(CustomException.class);
+    }
 
     @Test
     @DisplayName("존재 하지 않은 루틴 삭제하기")

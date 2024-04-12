@@ -1,5 +1,8 @@
 package com.example.healthgenie.boundedContext.todo.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
@@ -10,19 +13,15 @@ import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -72,23 +71,23 @@ class TodoServiceTest {
         assertThat(todo.getDescription()).isEqualTo("description test");
     }
 
-//    @Test
-//    @DisplayName("로그인 하지 않은 유저가 todo list 작성 실패하기")
-//    void fail_add_todo_list_cuz_of_login() {
-//        // given
-//        testSyUtils.logout();
-//
-//        TodoRequestDto dto = testSyUtils.TodoRequestDto(
-//                LocalDate.now(), LocalTime.now(), "test title", "description test");
-//
-//        // when
-//
-//        // then
-//        assertThatThrownBy(() -> {
-//            // 해당 메소드 호출
-//            todoService.addTodoList(dto, user);
-//        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
-//    }
+    @Test
+    @DisplayName("로그인 하지 않은 유저가 todo list 작성 실패하기")
+    void fail_add_todo_list_cuz_of_login() {
+        // given
+        testSyUtils.logout();
+
+        TodoRequestDto dto = testSyUtils.TodoRequestDto(
+                LocalDate.now(), LocalTime.now(), "test title", "description test");
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            // 해당 메소드 호출
+            todoService.addTodoList(dto, user);
+        }).isInstanceOf(CustomException.class);
+    }
 
     @Test
     @DisplayName("정상적으로 todo list 수정하기")
@@ -106,21 +105,21 @@ class TodoServiceTest {
         assertThat(response.getDescription()).isEqualTo("수정한 내용");
     }
 
-//    @Test
-//    @DisplayName("로그인 하지 않은 유저가 todo list 수정 실패하기")
-//    void fail_update_cuz_of_login() {
-//        // given
-//        testSyUtils.logout();
-//
-//        // when
-//        TodoUpdateRequest dto = testSyUtils.updateTodoRequest("수정한 제목", "수정한 내용");
-//
-//        // then
-//        assertThatThrownBy(() -> {
-//            // 해당 메소드 호출
-//            todoService.update(dto, todoTest.getId(), user);
-//        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
-//    }
+    @Test
+    @DisplayName("로그인 하지 않은 유저가 todo list 수정 실패하기")
+    void fail_update_cuz_of_login() {
+        // given
+        testSyUtils.logout();
+
+        // when
+        TodoUpdateRequest dto = testSyUtils.updateTodoRequest("수정한 제목", "수정한 내용");
+
+        // then
+        assertThatThrownBy(() -> {
+            // 해당 메소드 호출
+            todoService.update(dto, todoTest.getId(), user);
+        }).isInstanceOf(CustomException.class);
+    }
 
     @Test
     @DisplayName("정상적인 todo 삭제하기")
@@ -137,20 +136,20 @@ class TodoServiceTest {
                 .isInstanceOf(CustomException.class);
     }
 
-//    @Test
-//    @DisplayName("로그인 하지 않은 유저가 todo 삭제하기")
-//    void fail_delete_todo_cuz_of_login() {
-//        // given
-//        testSyUtils.logout();
-//
-//        // when
-//
-//        // then
-//        assertThatThrownBy(() -> {
-//            // 해당 메소드 호출
-//            todoService.deleteTodo(todoTest.getId(), user);
-//        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
-//    }
+    @Test
+    @DisplayName("로그인 하지 않은 유저가 todo 삭제하기")
+    void fail_delete_todo_cuz_of_login() {
+        // given
+        testSyUtils.logout();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            // 해당 메소드 호출
+            todoService.deleteTodo(todoTest.getId(), user);
+        }).isInstanceOf(CustomException.class);
+    }
 
     @Test
     @DisplayName("존재하지 않는 todo 삭제하기")
