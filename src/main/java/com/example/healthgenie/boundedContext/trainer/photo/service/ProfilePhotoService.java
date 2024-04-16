@@ -10,6 +10,7 @@ import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoRequ
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
 import com.example.healthgenie.boundedContext.trainer.photo.entity.enums.PurposeOfUsing;
 import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
+import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfileQueryPhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.profile.repository.ProfileRepository;
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class ProfilePhotoService {
     private final ProfileRepository profileRepository;
     private final TrainerProfilePhotoRepository trainerProfilePhotoRepository;
     private final S3UploadUtils s3UploadUtils;
+    private final TrainerProfileQueryPhotoRepository trainerProfileQueryPhotoRepository;
 
 
     @Transactional
@@ -42,6 +44,15 @@ public class ProfilePhotoService {
                 .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         checkPermission(userId, profile);
+
+        // 이미 profile photo가 있으면 기존 profile은 삭제되고 새롭게 업로드
+        if (purpose.equals(PurposeOfUsing.PROFILE)) {
+            TrainerPhoto profilePhoto = trainerProfileQueryPhotoRepository.findByPurpose(purpose, userId);
+            if (profilePhoto != null) {
+                s3UploadUtils.deleteS3Object("trainer-profile-photos", profilePhoto.getInfoPhotoPath());
+                trainerProfilePhotoRepository.deleteByInfoId(profileId);
+            }
+        }
 
         for (MultipartFile file : dto.getPhotos()) {
             String uploadUrl = s3UploadUtils.upload(file, "trainer-profile-photos");
