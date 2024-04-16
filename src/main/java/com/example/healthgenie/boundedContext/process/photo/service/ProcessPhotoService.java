@@ -26,6 +26,7 @@ import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
 @Slf4j
 @RequiredArgsConstructor
 public class ProcessPhotoService {
+    // test - upload
 
     private final PtProcessRepository processRepository;
     private final ProcessPhotoRepository processPhotoRepository;
