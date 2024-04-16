@@ -21,6 +21,7 @@ public class ProfileResponseDto {
     private Long id;
     private String introduction;
     private String career;
+    private long userId;
     private int cost;
     private int month; // 견적을 개월 수로 변환
     private String nickname; // 트레이너 닉네임
@@ -52,6 +53,7 @@ public class ProfileResponseDto {
                 .name(info.getName())
                 .nickname(info.getMember().getNickname())
                 .photoPaths(paths)
+                .userId(info.getMember().getId())
                 .build();
     }
 
