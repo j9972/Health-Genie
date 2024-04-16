@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.email.service;
 
+import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -59,21 +60,30 @@ class UserMailServiceTest {
         userService.update(user, "경북대학교", null);
     }
 
+    @Test
+    @DisplayName("학교 도메인 확인")
+    void check_univ_domain() {
+        // given
+        testUtils.login(user);
+        String uniDomain = uniDomainService.findUniDomain(user.getUniName());
+
+        // when
+        boolean result = uniDomainService.checkDomain(user.getEmail(), uniDomain);
+
+        // then
+        assertThat(result).isTrue();
+    }
 
     @Test
     @DisplayName("이메일에 검증 코드 보내기")
     void send_code() throws IOException {
         // given
         testUtils.login(user);
-        String uniDomain = uniDomainService.findUniDomain(user.getUniName());
         Map<String, Object> result = null;
 
         // when
+        result = UnivCert.certify(KEY, user.getEmail(), user.getUniName(), true);
 
-        if (uniDomainService.checkDomain(user.getEmail(), uniDomain)) {
-
-            result = UnivCert.certify(KEY, user.getEmail(), user.getUniName(), true);
-        }
         // then
         assertThat(result).isNotNull();
     }
@@ -90,7 +100,7 @@ class UserMailServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!StringUtils.hasText(uniDomain)) {
-                throw CustomException.UNKNOWN_EXCEPTION;
+                throw new CustomException(UNKNOWN_EXCEPTION);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -103,7 +113,7 @@ class UserMailServiceTest {
         // when ,then
         assertThatThrownBy(() -> {
             if (!user.getAuthorities().isEmpty()) {
-                throw CustomException.UNKNOWN_EXCEPTION;
+                throw new CustomException(UNKNOWN_EXCEPTION);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -111,7 +121,7 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("api 코드 검증")
-    void univ_verify() throws IOException {
+    void univ_verify() {
         // given
         testUtils.login(user);
 

@@ -13,11 +13,15 @@ import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
 
 @Service
 @Slf4j
@@ -42,7 +46,7 @@ public class RoutineService {
             for (Routine mine : routines) {
                 if (mine.getDay().equals(dto.getDay())) {
                     log.warn("중복된 요일입니다.");
-                    throw CustomException.DUPLICATED_DAY;
+                    throw new CustomException(DUPLICATED);
                 }
             }
         }
@@ -141,11 +145,11 @@ public class RoutineService {
     private Routine authorizationWriter(Long id, User member) {
 
         Routine routine = routineRepository.findById(id)
-                .orElseThrow(() -> CustomException.ROUTINE_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         if (!routine.getMember().getId().equals(member.getId())) {
             log.warn("member doesn't have authentication , routine.getMember {}", routine.getMember());
-            throw CustomException.USER_EMPTY;
+            throw new CustomException(DATA_NOT_FOUND);
         }
         return routine;
 
@@ -154,7 +158,7 @@ public class RoutineService {
     private void validNickname(boolean routine) {
         if (!routine) {
             log.warn("routine valid : false");
-            throw CustomException.USER_EMPTY;
+            throw new CustomException(DATA_NOT_FOUND);
         }
     }
 

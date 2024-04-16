@@ -20,8 +20,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException exception) {
         ErrorCode errorCode = exception.getErrorCode();
         StackTraceElement element = exception.getStackTrace()[0];
-        log.warn("[{}] occurs caused by {}.{}() {} line : {}", errorCode.name(), element.getClassName(), element.getMethodName(), element.getLineNumber(), errorCode.getMessage());
-        return ResponseEntity.status(errorCode.getStatus()).body(new ErrorResponse(errorCode.name(), errorCode.getMessage()));
+        log.warn("[{}] occurs caused by {}.{}() {} line : {}", errorCode.name(), element.getClassName(), element.getMethodName(), element.getLineNumber(), exception.getMessage());
+        return ResponseEntity.status(errorCode.getStatus()).body(new ErrorResponse(errorCode.name(), exception.getMessage()));
     }
 
     public record ErrorResponse(String code, String message) {

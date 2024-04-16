@@ -9,11 +9,13 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static com.example.healthgenie.base.constant.Constants.ACCESS_TOKEN_EXPIRATION_MS;
 import static com.example.healthgenie.base.constant.Constants.REFRESH_TOKEN_EXPIRATION_MS;
+import static com.example.healthgenie.base.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class RefreshTokenService {
         RefreshToken refreshTokenObj = RefreshToken.builder()
                 .refreshToken(refreshToken)
                 .keyEmail(email)
-                .expiration(new Date(System.currentTimeMillis() + expirationMs).toString())
+                .expiration(LocalDateTime.now().plusSeconds(expirationMs/1000))
                 .build();
 
         return refreshTokenRepository.save(refreshTokenObj);
@@ -36,23 +38,23 @@ public class RefreshTokenService {
 
     @Transactional
     public TokenResponse reissue(String refresh) {
-        if (refresh == null) {
-            throw CustomException.NO_JWT;
+        if (!StringUtils.hasText(refresh)) {
+            throw new CustomException(JWT_ERROR, "refresh 쿠키가 없습니다.");
         }
 
         try {
             jwtUtils.isExpired(refresh);
         } catch (ExpiredJwtException e) {
-            throw CustomException.EXPIRED_TOKEN;
+            throw new CustomException(JWT_ERROR, "만료된 토큰입니다.");
         }
 
         String category = jwtUtils.getCategory(refresh);
         if (!category.equals("refresh")) {
-            throw CustomException.NOT_VALID_VALUE;
+            throw new CustomException(NOT_VALID, "category="+category);
         }
 
         if (!refreshTokenRepository.existsByRefreshToken(refresh)) {
-            throw CustomException.REFRESH_TOKEN_EMPTY;
+            throw new CustomException(DATA_NOT_FOUND, "refresh="+refresh);
         }
 
         String email = jwtUtils.getEmail(refresh);
@@ -64,10 +66,9 @@ public class RefreshTokenService {
         refreshTokenRepository.deleteByRefreshToken(refresh);
         save(newRefresh, email, REFRESH_TOKEN_EXPIRATION_MS);
 
-        TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setAccess(newAccess);
-        tokenResponse.setRefresh(newRefresh);
-
-        return tokenResponse;
+        return TokenResponse.builder()
+                .access(newAccess)
+                .refresh(newRefresh)
+                .build();
     }
 }

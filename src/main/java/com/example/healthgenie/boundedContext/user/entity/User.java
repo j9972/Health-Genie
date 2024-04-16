@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.user.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
 import com.example.healthgenie.base.exception.CustomException;
+import com.example.healthgenie.base.exception.ErrorCode;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
@@ -14,12 +15,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 @Entity
 @Getter
@@ -27,7 +27,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Table(name = "USER_TB")
 @Builder(toBuilder = true)
-public class User extends BaseEntity implements OAuth2User {
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,7 +86,7 @@ public class User extends BaseEntity implements OAuth2User {
 
     public void updateRole(Role role) {
         if (this.role != Role.EMPTY) {
-            throw CustomException.ALREADY_EXISTS_ROLE;
+            throw new CustomException(ErrorCode.NO_PERMISSION, "이미 역할을 선택했습니다.");
         }
         this.role = role;
     }
@@ -132,11 +132,6 @@ public class User extends BaseEntity implements OAuth2User {
     }
 
     @Override
-    public Map<String, Object> getAttributes() {
-        return null;
-    }
-
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
 
@@ -148,5 +143,35 @@ public class User extends BaseEntity implements OAuth2User {
         });
 
         return collection;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

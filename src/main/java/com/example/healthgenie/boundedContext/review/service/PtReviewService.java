@@ -15,14 +15,17 @@ import com.example.healthgenie.boundedContext.review.repository.PtReviewReposito
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
-import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static com.example.healthgenie.base.exception.ErrorCode.*;
 
 
 @Service
@@ -40,15 +43,15 @@ public class PtReviewService {
     public PtReviewResponseDto addPtReview(PtReviewRequestDto dto, User user) {
 
         User trainer = userRepository.findByNickname(dto.getTrainerNickName())
-                .orElseThrow(() -> CustomException.TRAINER_INFO_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         User matchingUser = userRepository.findByNickname(dto.getUserNickName())
-                .orElseThrow(() -> CustomException.USER_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         ShouldNotBeTrainer(matchingUser, Role.TRAINER);
 
         MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId())
-                .orElseThrow(() -> CustomException.MATCHING_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.getId());
 
@@ -61,7 +64,7 @@ public class PtReviewService {
             if (match.getMatching().getId().equals(userMatching.getMatching().getId())) {
 
                 Matching matching = matchingRepository.findById(match.getMatching().getId())
-                        .orElseThrow(() -> CustomException.MATCHING_EMPTY);
+                        .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
                 // 작성 날짜가 매칭날짜보다 뒤에 있어야 한다
                 if (LocalDate.now().isAfter(matching.getDate().toLocalDate())) {
@@ -69,13 +72,13 @@ public class PtReviewService {
                 }
 
                 log.warn("일지 작성 날짜가 매칭날짜보다 뒤에 있어야 하는데 그렇지 못함");
-                throw CustomException.WRONG_DATE;
+                throw new CustomException(NOT_VALID);
 
             }
         }
 
         log.warn("해당하는 매칭이 없음");
-        throw CustomException.MATCHING_EMPTY;
+        throw new CustomException(DATA_NOT_FOUND, "매칭");
     }
 
     @Transactional
@@ -91,7 +94,7 @@ public class PtReviewService {
     @Transactional(readOnly = true)
     public PtReviewResponseDto getPtReview(Long reviewId, User user) {
         PtReview review = ptReviewRepository.findById(reviewId).orElseThrow(
-                () -> CustomException.NO_REVIEW_HISTORY);
+                () -> new CustomException(NO_HISTORY));
 
         reviewWriter(user, review);
         return PtReviewResponseDto.of(review);
@@ -106,7 +109,7 @@ public class PtReviewService {
     public List<PtReviewResponseDto> getAllTrainerReview(Long trainerId, int page, int size) {
 
         User trainer = userRepository.findById(trainerId)
-                .orElseThrow(() -> CustomException.USER_EMPTY);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         ShouldBeTrainer(trainer, trainer.getRole());
 
@@ -173,7 +176,7 @@ public class PtReviewService {
     // review는 회원만 수정 삭제 가능
     private PtReview authorizationReviewWriter(Long id, User member) {
         PtReview review = ptReviewRepository.findById(id)
-                .orElseThrow(() -> CustomException.NO_REVIEW_HISTORY);
+                .orElseThrow(() -> new CustomException(NO_HISTORY));
 
         reviewWriter(member, review);
         return review;
@@ -182,28 +185,28 @@ public class PtReviewService {
     private void reviewWriter(User member, PtReview review) {
         if (!review.getMember().getId().equals(member.getId())) {
             log.warn("this user doesn't have authentication : {}", review.getMember());
-            throw CustomException.USER_EMPTY;
+            throw new CustomException(DATA_NOT_FOUND);
         }
     }
 
     private void ShouldNotBeTrainer(User currentUser, Role role) {
         if (currentUser.getRole().equals(role)) {
             log.warn("trainer can't write review ( role : {} )", currentUser.getRole());
-            throw CustomException.WRONG_USER_ROLE;
+            throw new CustomException(NO_PERMISSION);
         }
     }
 
     private void ShouldBeTrainer(User trainer, Role role) {
         if (!trainer.getRole().equals(role)) {
             log.warn("wrong user role : {} ( is not trainer )", trainer.getRole());
-            throw CustomException.WRONG_USER_ROLE;
+            throw new CustomException(NO_PERMISSION);
         }
     }
 
     private void duplicateReview(PtReview review) {
         if (review != null) {
             log.warn("duplicate review : {}", review);
-            throw CustomException.DUPLICATED_REVIEW;
+            throw new CustomException(DUPLICATED);
         }
     }
 }

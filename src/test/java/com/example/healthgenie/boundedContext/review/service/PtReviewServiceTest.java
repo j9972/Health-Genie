@@ -1,5 +1,12 @@
 package com.example.healthgenie.boundedContext.review.service;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
@@ -9,6 +16,7 @@ import com.example.healthgenie.boundedContext.review.dto.PtReviewRequestDto;
 import com.example.healthgenie.boundedContext.review.dto.PtReviewResponseDto;
 import com.example.healthgenie.boundedContext.review.dto.PtReviewUpdateRequest;
 import com.example.healthgenie.boundedContext.review.entity.PtReview;
+import com.example.healthgenie.boundedContext.review.repository.PtReviewQueryRepository;
 import com.example.healthgenie.boundedContext.review.repository.PtReviewRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
@@ -16,20 +24,18 @@ import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -55,6 +61,9 @@ class PtReviewServiceTest {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    PtReviewQueryRepository ptReviewQueryRepository;
 
     User user;
     User user2;
@@ -123,7 +132,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (LocalDate.now().isAfter(matching.getDate().toLocalDate())) {
-                throw CustomException.TOO_EARLY_TO_WRITE_FEEDBACK;
+                throw new CustomException(NO_PERMISSION);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -141,7 +150,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (userMatching.isEmpty()) {
-                throw CustomException.MATCHING_EMPTY;
+                throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -159,7 +168,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (review.getId() != null) {
-                throw CustomException.DUPLICATED_REVIEW;
+                throw new CustomException(DUPLICATED);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -176,26 +185,26 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user2.getRole().equals(Role.USER)) {
-                throw CustomException.UNKNOWN_EXCEPTION;
+                throw new CustomException(UNKNOWN_EXCEPTION);
             }
         }).isInstanceOf(CustomException.class);
     }
 
-//    @Test
-//    @DisplayName("로그인 안하면 리뷰 작성 실패")
-//    void fail_add_pt_review_cuz_of_login() {
-//        // given
-//        testSyUtils.logout();
-//
-//        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
-//        // when
-//
-//        // then
-//        assertThatThrownBy(() -> {
-//            // 해당 메소드 호출
-//            reviewService.addPtReview(dto, user);
-//        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
-//    }
+    @Test
+    @DisplayName("로그인 안하면 리뷰 작성 실패")
+    void fail_add_pt_review_cuz_of_login() {
+        // given
+        testSyUtils.logout();
+
+        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            // 해당 메소드 호출
+            reviewService.addPtReview(dto, user);
+        }).isInstanceOf(CustomException.class);
+    }
 
 
     @Test
@@ -295,7 +304,7 @@ class PtReviewServiceTest {
         assertThatThrownBy(() -> {
             // 해당 메소드 호출
             reviewService.updateReview(dto, review.getId(), user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -324,7 +333,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user2.getRole().equals(Role.USER)) {
-                throw CustomException.USER_EMPTY;
+                throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -355,7 +364,7 @@ class PtReviewServiceTest {
         assertThatThrownBy(() -> {
             // 해당 메소드 호출
             reviewService.deletePtReview(review.getId(), user);
-        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
+        }).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -369,7 +378,7 @@ class PtReviewServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!user2.getRole().equals(Role.USER)) {
-                throw CustomException.USER_EMPTY;
+                throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
     }
@@ -387,23 +396,21 @@ class PtReviewServiceTest {
                 .isInstanceOf(CustomException.class);
     }
 
-//    @Test
-//    @DisplayName("리뷰 검색 성공")
-//    void find_all() {
-//        // given
-//        testKrUtils.login(user);
-//
-//        // when
-//        String keyword = "review";
-//        PageRequest pageable = PageRequest.of(0, 10);
-//
-//        Slice<PtReview> response = reviewService.findAll(keyword, 1L, pageable);
-//
-//
-//        // then
-//        assertThat(response.isLast()).isFalse();
-//        assertThat(response.getContent().size()).isEqualTo(1);
-//    }
+    @Test
+    @DisplayName("리뷰 검색 성공")
+    void find_all() {
+        // given
+        testKrUtils.login(user);
+        String keyword = "review";
+
+        // when
+        Slice<PtReview> all = ptReviewQueryRepository.findAll(keyword, 1L, Pageable.ofSize(10));
+
+        // then
+        assertThat(all.get().map(PtReview::getContent)).isEqualTo(review.getReviewScore());
+        assertThat(all.get().map(PtReview::getReviewScore)).isEqualTo(review.getReviewScore());
+        assertThat(all.get().map(PtReview::getStopReason)).isEqualTo(review.getStopReason());
+    }
 
     @Test
     @DisplayName("만들어진 리뷰 날짜 기준으로 필터링 성공")

@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.example.healthgenie.base.constant.Constants.BEARER_PREFIX;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/refresh")
@@ -26,9 +24,6 @@ public class RefreshTokenController {
         String refresh = CookieUtils.getCookie(request, "refresh").getValue();
 
         TokenResponse tokens = refreshTokenService.reissue(refresh);
-
-        response.setHeader("Authorization", BEARER_PREFIX + tokens.getAccess());
-        response.addCookie(CookieUtils.createCookie("refresh", tokens.getRefresh()));
 
         return ResponseEntity.ok(Result.of(tokens));
     }

@@ -1,7 +1,5 @@
 package com.example.healthgenie.boundedContext.todo.service;
 
-import static java.util.stream.Collectors.toList;
-
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
@@ -15,12 +13,16 @@ import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.todo.repository.TodoQueryRepository;
 import com.example.healthgenie.boundedContext.todo.repository.TodoRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
-import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -76,11 +78,11 @@ public class TodoService {
     }
 
     private Todo authorizationWriter(Long id, User member) {
-        Todo todo = todoRepository.findById(id).orElseThrow(() -> CustomException.TODO_EMPTY);
+        Todo todo = todoRepository.findById(id).orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
         if (!todo.getMember().getId().equals(member.getId())) {
             log.warn("todo 작성한 member 오류 : {}", todo.getMember());
-            throw CustomException.USER_EMPTY;
+            throw new CustomException(DATA_NOT_FOUND);
         }
         return todo;
     }
@@ -98,7 +100,7 @@ public class TodoService {
         // 매칭이 여러개 있을 수 있다.
         for (MatchingUser m : userMatchings) {
             Matching eachMatching = matchingRepository.findById(m.getMatching().getId())
-                    .orElseThrow(() -> CustomException.MATCHING_EMPTY);
+                    .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
             // 해당 매칭되서 pt날짜랑 특정 날짜랑 같으면 피티 있다고 알려주기
             if (eachMatching.getDate().equals(date)) {
