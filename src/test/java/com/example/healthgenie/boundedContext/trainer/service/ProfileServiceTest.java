@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.healthgenie.base.exception.CustomException;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.enums.PurposeOfUsing;
+import com.example.healthgenie.boundedContext.trainer.photo.service.ProfilePhotoService;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileResponseDto;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
@@ -36,11 +39,15 @@ class ProfileServiceTest {
     ProfileService profileService;
 
     @Autowired
+    ProfilePhotoService photoService;
+
+    @Autowired
     UserService userService;
 
     User user;
     User user2;
     TrainerInfo profile;
+    TrainerPhoto photo;
 
     @BeforeEach
     void before() {
@@ -54,6 +61,7 @@ class ProfileServiceTest {
         userService.update(user2, null, "test2", null, null, null, null, null);
 
         profile = testSyUtils.createProfile("introduction", "career", "경북대", startTime, endTime, 4.3, 20000, 20, user2);
+        photo = testSyUtils.createProfilePhoto(profile, "test", "test", PurposeOfUsing.PROFILE);
     }
 
 
@@ -127,7 +135,7 @@ class ProfileServiceTest {
         assertThat(response.getEndTime()).isEqualTo(endTime);
         assertThat(response.getReviewAvg()).isEqualTo(4.5);
         assertThat(response.getPhotoPaths()).isEmpty();
-        assertThat(response.getCost()).isEqualTo(12000);
+        assertThat(response.getCost()).isEqualTo(2000);
         assertThat(response.getMonth()).isEqualTo(25);
         assertThat(response.getNickname()).isEqualTo("test2");
     }
