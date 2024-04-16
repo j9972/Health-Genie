@@ -4,6 +4,7 @@ import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoDeleteResponseDto;
 import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoRequest;
 import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoResponse;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.enums.PurposeOfUsing;
 import com.example.healthgenie.boundedContext.trainer.photo.service.ProfilePhotoService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.validation.Valid;
@@ -31,9 +32,9 @@ public class ProfilePhotoController {
 
     @PostMapping
     public ResponseEntity<Result> save(@PathVariable Long profileId, @AuthenticationPrincipal User user,
-                                       @Valid ProfilePhotoRequest dto) throws IOException {
+                                       @Valid ProfilePhotoRequest dto, PurposeOfUsing purpose) throws IOException {
         List<ProfilePhotoResponse> response = ProfilePhotoResponse.of(
-                profilePhotoService.save(profileId, user.getId(), dto));
+                profilePhotoService.save(profileId, user.getId(), dto, purpose));
 
         return ResponseEntity.ok(Result.of(response));
     }

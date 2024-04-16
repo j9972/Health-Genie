@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.trainer.photo.dto;
 
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.enums.PurposeOfUsing;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -18,11 +19,12 @@ public class ProfilePhotoRequest {
     @Size(max = 5)
     private List<MultipartFile> photos;
 
-    public TrainerPhoto toEntity(TrainerInfo info, String uploadUrl, String originName) {
+    public TrainerPhoto toEntity(TrainerInfo info, String uploadUrl, String originName, PurposeOfUsing purpose) {
         return TrainerPhoto.builder()
                 .info(info)
                 .infoPhotoPath(uploadUrl)
                 .name(originName)
+                .purpose(purpose)
                 .build();
     }
 }

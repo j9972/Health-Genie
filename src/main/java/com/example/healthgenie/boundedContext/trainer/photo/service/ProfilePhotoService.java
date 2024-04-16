@@ -1,26 +1,26 @@
 package com.example.healthgenie.boundedContext.trainer.photo.service;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoDeleteResponseDto;
 import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoRequest;
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.enums.PurposeOfUsing;
 import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.trainer.profile.repository.ProfileRepository;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
-import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
 
 
 @Service
@@ -34,7 +34,8 @@ public class ProfilePhotoService {
 
 
     @Transactional
-    public List<TrainerPhoto> save(Long profileId, Long userId, ProfilePhotoRequest dto) throws IOException {
+    public List<TrainerPhoto> save(Long profileId, Long userId, ProfilePhotoRequest dto, PurposeOfUsing purpose)
+            throws IOException {
         List<TrainerPhoto> photos = new ArrayList<>();
 
         TrainerInfo profile = profileRepository.findById(profileId)
@@ -47,7 +48,7 @@ public class ProfilePhotoService {
             String originName = file.getOriginalFilename();
 
             TrainerPhoto savedPhoto = trainerProfilePhotoRepository.save(
-                    dto.toEntity(profile, uploadUrl, originName));
+                    dto.toEntity(profile, uploadUrl, originName, purpose));
 
             photos.add(savedPhoto);
         }
