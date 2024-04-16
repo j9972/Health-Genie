@@ -22,6 +22,7 @@ import com.example.healthgenie.boundedContext.todo.entity.Todo;
 import com.example.healthgenie.boundedContext.todo.repository.TodoRepository;
 import com.example.healthgenie.boundedContext.trainer.photo.dto.ProfilePhotoRequest;
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.enums.PurposeOfUsing;
 import com.example.healthgenie.boundedContext.trainer.photo.repository.TrainerProfilePhotoRepository;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
@@ -306,11 +307,13 @@ public class TestSyUtils {
                 .build();
     }
 
-    public TrainerPhoto createProfilePhoto(TrainerInfo profile, String path, String originalName) {
+    public TrainerPhoto createProfilePhoto(TrainerInfo profile, String path, String originalName,
+                                           PurposeOfUsing purpose) {
         TrainerPhoto profilePhoto = TrainerPhoto.builder()
                 .info(profile)
                 .infoPhotoPath(path)
                 .name(originalName)
+                .purpose(purpose)
                 .build();
 
         return trainerProfilePhotoRepository.save(profilePhoto);
