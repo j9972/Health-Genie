@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.trainer.photo.dto;
 
 import com.example.healthgenie.boundedContext.trainer.photo.entity.TrainerPhoto;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.enums.PurposeOfUsing;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ public class ProfilePhotoResponse {
     private Long id;
     private String path;
     private String originName;
+    private PurposeOfUsing purpose;
 
     public static List<ProfilePhotoResponse> of(List<TrainerPhoto> photos) {
         return photos.stream()
@@ -29,6 +31,7 @@ public class ProfilePhotoResponse {
                 .id(photo.getId())
                 .path(photo.getInfoPhotoPath())
                 .originName(photo.getName())
+                .purpose(photo.getPurpose())
                 .build();
     }
 }

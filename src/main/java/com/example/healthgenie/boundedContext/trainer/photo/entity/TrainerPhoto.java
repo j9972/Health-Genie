@@ -1,9 +1,12 @@
 package com.example.healthgenie.boundedContext.trainer.photo.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
+import com.example.healthgenie.boundedContext.trainer.photo.entity.enums.PurposeOfUsing;
 import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,4 +44,8 @@ public class TrainerPhoto extends BaseEntity {
 
     @Column(name = "original_file_name")
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "purpose")
+    private PurposeOfUsing purpose;
 }
