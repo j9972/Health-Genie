@@ -1,6 +1,9 @@
 package com.example.healthgenie.boundedContext.trainer.profile.service;
 
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileDeleteResponseDto;
 import com.example.healthgenie.boundedContext.trainer.profile.dto.ProfileRequestDto;
@@ -10,17 +13,13 @@ import com.example.healthgenie.boundedContext.trainer.profile.repository.Profile
 import com.example.healthgenie.boundedContext.trainer.profile.repository.ProfileRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
-import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +74,8 @@ public class ProfileService {
     */
     @Transactional(readOnly = true)
     public ProfileResponseDto getProfile(Long profileId) {
-        return ProfileResponseDto.of(profileRepository.findById(profileId).orElseThrow());
+        return ProfileResponseDto.of(profileRepository.findById(profileId)
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "trainer 정보")));
     }
 
     private TrainerInfo authorizationWriter(Long id, User member) {
