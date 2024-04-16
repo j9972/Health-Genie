@@ -1,5 +1,9 @@
 package com.example.healthgenie.boundedContext.email.service;
 
+import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
@@ -8,6 +12,8 @@ import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
 import com.univcert.api.UnivCert;
+import java.io.IOException;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,13 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.io.IOException;
-import java.util.Map;
-
-import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -61,21 +60,30 @@ class UserMailServiceTest {
         userService.update(user, "경북대학교", null);
     }
 
+    @Test
+    @DisplayName("학교 도메인 확인")
+    void check_univ_domain() {
+        // given
+        testUtils.login(user);
+        String uniDomain = uniDomainService.findUniDomain(user.getUniName());
+
+        // when
+        boolean result = uniDomainService.checkDomain(user.getEmail(), uniDomain);
+
+        // then
+        assertThat(result).isTrue();
+    }
 
     @Test
     @DisplayName("이메일에 검증 코드 보내기")
     void send_code() throws IOException {
         // given
         testUtils.login(user);
-        String uniDomain = uniDomainService.findUniDomain(user.getUniName());
         Map<String, Object> result = null;
 
         // when
+        result = UnivCert.certify(KEY, user.getEmail(), user.getUniName(), true);
 
-        if (uniDomainService.checkDomain(user.getEmail(), uniDomain)) {
-
-            result = UnivCert.certify(KEY, user.getEmail(), user.getUniName(), true);
-        }
         // then
         assertThat(result).isNotNull();
     }
@@ -113,7 +121,7 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("api 코드 검증")
-    void univ_verify() throws IOException {
+    void univ_verify() {
         // given
         testUtils.login(user);
 
