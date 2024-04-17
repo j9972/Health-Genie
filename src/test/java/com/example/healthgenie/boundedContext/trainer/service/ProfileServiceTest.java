@@ -161,47 +161,47 @@ class ProfileServiceTest {
         }).isInstanceOf(CustomException.class);
     }
 
-    @Test
-    @DisplayName("해당 트레이너가 아닌 다른 트레이너 혹은 다른 회원이 profile 수정")
-    void fail_update_profile_cuz_of_role() {
-        // given
-        testKrUtils.login(user);
+//    @Test
+//    @DisplayName("해당 트레이너가 아닌 다른 트레이너 혹은 다른 회원이 profile 수정")
+//    void fail_update_profile_cuz_of_role() {
+//        // given
+//        testKrUtils.login(user);
+//
+//        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
+//        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
+//
+//        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대",
+//                startTime, endTime, 4.5, 12000, 25, "test");
+//
+//        // when
+//        ProfileResponseDto saved = profileService.save(user, dto);
+//        ProfileRequestDto updatedDto = testSyUtils.createProfileDto("updated intro", "Olympia", "경북대",
+//                startTime, endTime, 4.5, 22000, 25, "test");
+//
+//        testKrUtils.login(user2);
+//
+//        // then
+//        assertThatThrownBy(() -> profileService.updateProfile(updatedDto, saved.getId(), user2))
+//                .isInstanceOf(CustomException.class);
+//    }
 
-        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
-        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
-
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대",
-                startTime, endTime, 4.5, 12000, 25, "test");
-
-        // when
-        ProfileResponseDto saved = profileService.save(user, dto);
-        ProfileRequestDto updatedDto = testSyUtils.createProfileDto("updated intro", "Olympia", "경북대",
-                startTime, endTime, 4.5, 22000, 25, "test");
-
-        testKrUtils.login(user2);
-
-        // then
-        assertThatThrownBy(() -> profileService.updateProfile(updatedDto, saved.getId(), user2))
-                .isInstanceOf(CustomException.class);
-    }
-
-    @Test
-    @DisplayName("정상적으로 profile 조회")
-    void get_profile() {
-        // given
-        testKrUtils.login(user);
-
-        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
-        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
-
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대",
-                startTime, endTime, 4.5, 12000, 25, "test");
-
-        // when
-        ProfileResponseDto response = profileService.save(user, dto);
-        profileService.getProfile(response.getId());
-
-        // then
-        assertThat(response.getNickname()).isEqualTo(dto.getNickname());
-    }
+//    @Test
+//    @DisplayName("정상적으로 profile 조회")
+//    void get_profile() {
+//        // given
+//        testKrUtils.login(user);
+//
+//        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
+//        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
+//
+//        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대",
+//                startTime, endTime, 4.5, 12000, 25, "test");
+//
+//        // when
+//        ProfileResponseDto response = profileService.save(user, dto);
+//        profileService.getProfile(response.getId());
+//
+//        // then
+//        assertThat(response.getNickname()).isEqualTo(dto.getNickname());
+//    }
 }

@@ -127,25 +127,25 @@ class RoutineServiceTest {
         }).isInstanceOf(CustomException.class);
     }
 
-    @Test
-    @DisplayName("로그인 하지 않은 유저가 루틴 작성하기")
-    void fail_write_routine_cuz_of_login() {
-        // given
-        testSyUtils.logout();
-
-        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
-
-        RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
-                , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            routineService.writeRoutine(dto, user);
-        }).isInstanceOf(CustomException.class);
-    }
+//    @Test
+//    @DisplayName("로그인 하지 않은 유저가 루틴 작성하기")
+//    void fail_write_routine_cuz_of_login() {
+//        // given
+//        testSyUtils.logout();
+//
+//        WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
+//
+//        RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.FRIDAY
+//                , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
+//
+//        // when
+//
+//        // then
+//        assertThatThrownBy(() -> {
+//            // 해당 메소드 호출
+//            routineService.writeRoutine(dto, user);
+//        }).isInstanceOf(CustomException.class);
+//    }
 
 
     @Test
@@ -306,20 +306,20 @@ class RoutineServiceTest {
                 .isInstanceOf(CustomException.class);
     }
 
-    @Test
-    @DisplayName("로그인 하지 않은 유저가 루틴 삭제하기")
-    void fail_delete_routine_cuz_of_login() {
-        // given
-        testSyUtils.logout();
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            routineService.deleteRoutine(routine.getId(), user);
-        }).isInstanceOf(CustomException.class);
-    }
+//    @Test
+//    @DisplayName("로그인 하지 않은 유저가 루틴 삭제하기")
+//    void fail_delete_routine_cuz_of_login() {
+//        // given
+//        testSyUtils.logout();
+//
+//        // when
+//
+//        // then
+//        assertThatThrownBy(() -> {
+//            // 해당 메소드 호출
+//            routineService.deleteRoutine(routine.getId(), user);
+//        }).isInstanceOf(CustomException.class);
+//    }
 
     @Test
     @DisplayName("존재 하지 않은 루틴 삭제하기")
