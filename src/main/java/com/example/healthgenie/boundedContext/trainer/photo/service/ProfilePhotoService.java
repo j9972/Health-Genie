@@ -45,7 +45,7 @@ public class ProfilePhotoService {
 
         checkPermission(userId, profile);
 
-        // 이미 profile photo가 있으면 기존 profile은 삭제되고 새롭게 업로드 -
+        // 이미 profile photo가 있으면 기존 profile은 삭제되고 새롭게 업로드
         if (purpose.equals(PurposeOfUsing.PROFILE)) {
             TrainerPhoto profilePhoto = trainerProfileQueryPhotoRepository.findByPurpose(purpose, userId);
             if (profilePhoto != null) {
