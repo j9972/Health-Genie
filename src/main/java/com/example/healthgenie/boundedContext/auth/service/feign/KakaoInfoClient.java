@@ -1,6 +1,5 @@
 package com.example.healthgenie.boundedContext.auth.service.feign;
 
-import com.example.healthgenie.boundedContext.auth.dto.KakaoUnlinkResponse;
 import com.example.healthgenie.boundedContext.auth.dto.KakaoUserInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,5 +13,5 @@ public interface KakaoInfoClient {
     KakaoUserInfo getUserInfo(@RequestHeader("Authorization") String authorization);
 
     @PostMapping(value = "/v1/user/unlink")
-    KakaoUnlinkResponse unlink(@RequestHeader("Authorization") String authorization);
+    void unlink(@RequestHeader("Authorization") String authorization);
 }
