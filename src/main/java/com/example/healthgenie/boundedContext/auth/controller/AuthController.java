@@ -32,6 +32,8 @@ public class AuthController {
     @DeleteMapping("/withdraw")
     public ResponseEntity<Result> withdraw(@AuthenticationPrincipal User user, HttpServletRequest request) {
         String oAuthAccessToken = request.getHeader("OAuthAccessToken");
+        log.info("OAuthAccessToken={}", oAuthAccessToken);
+        log.info("Oauthaccesstoken={}", request.getHeader("Oauthaccesstoken"));
 
         authService.withdraw(user, oAuthAccessToken);
 
