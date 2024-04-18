@@ -6,6 +6,7 @@ import com.example.healthgenie.boundedContext.auth.dto.JwtResponse;
 import com.example.healthgenie.boundedContext.auth.dto.TokenResponse;
 import com.example.healthgenie.boundedContext.auth.service.feign.GoogleAuthClient;
 import com.example.healthgenie.boundedContext.auth.service.feign.GoogleInfoClient;
+import com.example.healthgenie.boundedContext.auth.service.feign.GoogleUnlinkClient;
 import com.example.healthgenie.boundedContext.refreshtoken.service.RefreshTokenService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
@@ -27,6 +28,7 @@ public class GoogleRequestService {
     private final RefreshTokenService refreshTokenService;
     private final GoogleAuthClient googleAuthClient;
     private final GoogleInfoClient googleInfoClient;
+    private final GoogleUnlinkClient googleUnlinkClient;
     private final JwtUtils jwtUtils;
 
     @Value("${spring.security.oauth2.client.registration.google.authorization-grant-type}")
@@ -59,14 +61,19 @@ public class GoogleRequestService {
                 .role(user.getRole())
                 .accessToken(access)
                 .refreshToken(refresh)
+                .oauthAccessToken(tokenResponse.getAccessToken())
                 .build();
     }
 
-    private TokenResponse getAccessToken(String code) {
+    public TokenResponse getAccessToken(String code) {
         return googleAuthClient.getToken(GRANT_TYPE, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, code);
     }
 
-    private GoogleUserInfo getUserInfo(String accessToken) {
+    public GoogleUserInfo getUserInfo(String accessToken) {
         return googleInfoClient.getUserInfo("Bearer " + accessToken);
+    }
+
+    public void unlink(String accessToken) {
+        googleUnlinkClient.unlink(accessToken);
     }
 }

@@ -3,8 +3,8 @@ package com.example.healthgenie.boundedContext.auth.service;
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.exception.ErrorCode;
 import com.example.healthgenie.boundedContext.auth.dto.JwtResponse;
-import com.example.healthgenie.boundedContext.auth.dto.KakaoUnlinkResponse;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,13 +38,15 @@ public class AuthService {
     }
 
     @Transactional
-    public Long withdraw(User user, String code) {
+    public void withdraw(User user, String accessToken) {
+        AuthProvider provider = user.getAuthProvider();
+
         userService.deleteById(user.getId());
 
-        String accessToken = kakaoRequestService.getAccessToken(code).getAccessToken();
-
-        KakaoUnlinkResponse unlink = kakaoRequestService.unlink(accessToken);
-
-        return unlink.getId();
+        if(Objects.equals(provider, KAKAO)) {
+            kakaoRequestService.unlink(accessToken);
+        } else if(Objects.equals(provider, GOOGLE)) {
+            googleRequestService.unlink(accessToken);
+        }
     }
 }

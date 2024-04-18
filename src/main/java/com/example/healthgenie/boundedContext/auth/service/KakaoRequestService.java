@@ -2,7 +2,6 @@ package com.example.healthgenie.boundedContext.auth.service;
 
 import com.example.healthgenie.base.utils.JwtUtils;
 import com.example.healthgenie.boundedContext.auth.dto.JwtResponse;
-import com.example.healthgenie.boundedContext.auth.dto.KakaoUnlinkResponse;
 import com.example.healthgenie.boundedContext.auth.dto.KakaoUserInfo;
 import com.example.healthgenie.boundedContext.auth.dto.TokenResponse;
 import com.example.healthgenie.boundedContext.auth.service.feign.KakaoAuthClient;
@@ -56,6 +55,7 @@ public class KakaoRequestService {
                 .role(user.getRole())
                 .accessToken(access)
                 .refreshToken(refresh)
+                .oauthAccessToken(tokenResponse.getAccessToken())
                 .build();
     }
 
@@ -67,7 +67,7 @@ public class KakaoRequestService {
         return kakaoInfoClient.getUserInfo("Bearer " + accessToken);
     }
 
-    public KakaoUnlinkResponse unlink(String accessToken) {
-        return kakaoInfoClient.unlink(BEARER_PREFIX + accessToken);
+    public void unlink(String accessToken) {
+        kakaoInfoClient.unlink(BEARER_PREFIX + accessToken);
     }
 }
