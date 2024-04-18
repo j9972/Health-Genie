@@ -55,6 +55,7 @@ public class KakaoRequestService {
                 .role(user.getRole())
                 .accessToken(access)
                 .refreshToken(refresh)
+                .oauthAccessToken(tokenResponse.getAccessToken())
                 .build();
     }
 

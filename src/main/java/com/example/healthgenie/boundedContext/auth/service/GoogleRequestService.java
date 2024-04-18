@@ -61,6 +61,7 @@ public class GoogleRequestService {
                 .role(user.getRole())
                 .accessToken(access)
                 .refreshToken(refresh)
+                .oauthAccessToken(tokenResponse.getAccessToken())
                 .build();
     }
 

@@ -38,17 +38,14 @@ public class AuthService {
     }
 
     @Transactional
-    public void withdraw(User user, String code) {
+    public void withdraw(User user, String accessToken) {
         AuthProvider provider = user.getAuthProvider();
 
         userService.deleteById(user.getId());
 
-        String accessToken;
         if(Objects.equals(provider, KAKAO)) {
-            accessToken = kakaoRequestService.getAccessToken(code).getAccessToken();
             kakaoRequestService.unlink(accessToken);
         } else if(Objects.equals(provider, GOOGLE)) {
-            accessToken = googleRequestService.getAccessToken(code).getAccessToken();
             googleRequestService.unlink(accessToken);
         }
     }
