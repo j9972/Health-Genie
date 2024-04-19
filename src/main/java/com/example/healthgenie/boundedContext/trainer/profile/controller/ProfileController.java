@@ -49,10 +49,17 @@ public class ProfileController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 관리페이지에 보여줄 본인 내용-> userId include
+    // 관리페이지에 보여줄 다른 트레이너 내영 보냄
     @GetMapping("/details/{profileId}")
     public ResponseEntity<Result> getProfile(@PathVariable Long profileId) {
         ProfileResponseDto response = profileService.getProfile(profileId);
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    // 관리페이지에 보여줄 다른 트레이너 내영 보냄
+    @GetMapping("/details")
+    public ResponseEntity<Result> getProfile(@AuthenticationPrincipal User user) {
+        ProfileResponseDto response = profileService.getOwnProfile(user);
         return ResponseEntity.ok(Result.of(response));
     }
 

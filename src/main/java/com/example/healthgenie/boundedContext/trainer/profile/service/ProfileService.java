@@ -79,6 +79,13 @@ public class ProfileService {
                 .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "trainer 정보")));
     }
 
+
+    @Transactional(readOnly = true)
+    public ProfileResponseDto getOwnProfile(User user) {
+        return ProfileResponseDto.of(profileRepository.findByMemberId(user.getId())
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "trainer 정보")));
+    }
+
     private TrainerInfo authorizationWriter(Long id, User member) {
 
         TrainerInfo profile = profileRepository.findById(id)
