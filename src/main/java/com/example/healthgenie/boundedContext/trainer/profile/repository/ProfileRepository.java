@@ -8,5 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ProfileRepository extends JpaRepository<TrainerInfo, Long> {
     Boolean existsByMemberNickname(String nickname);
 
+    Optional<TrainerInfo> findByMemberId(Long userId);
+
     Optional<TrainerInfo> findByIdAndMemberId(Long id, Long userId);
 }
