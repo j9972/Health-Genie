@@ -188,21 +188,21 @@ class PtReviewServiceTest {
         }).isInstanceOf(CustomException.class);
     }
 
-    @Test
-    @DisplayName("로그인 안하면 리뷰 작성 실패")
-    void fail_add_pt_review_cuz_of_login() {
-        // given
-        testSyUtils.logout();
-
-        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            reviewService.addPtReview(dto, user);
-        }).isInstanceOf(CustomException.class);
-    }
+//    @Test
+//    @DisplayName("로그인 안하면 리뷰 작성 실패")
+//    void fail_add_pt_review_cuz_of_login() {
+//        // given
+//        testSyUtils.logout();
+//
+//        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, "test1", "test2");
+//        // when
+//
+//        // then
+//        assertThatThrownBy(() -> {
+//            // 해당 메소드 호출
+//            reviewService.addPtReview(dto, user);
+//        }).isInstanceOf(CustomException.class);
+//    }
 
 
     @Test

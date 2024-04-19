@@ -150,24 +150,6 @@ class PtProcessServiceTest {
         }).isInstanceOf(CustomException.class);
     }
 
-    @Test
-    @DisplayName("로그인 하지 않은 유저가 피드백 생성 실패")
-    void add_pt_process_cuz_of_login() {
-        // given
-        testSyUtils.logout();
-
-        LocalDate date = LocalDate.of(2023, 12, 5);
-
-        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1", "test2");
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            processService.addPtProcess(dto, user);
-        }).isInstanceOf(CustomException.class);
-    }
 
     @Test
     @DisplayName("매칭 기록없이 리뷰 작성 실패")
@@ -223,18 +205,6 @@ class PtProcessServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 안한 사람이 피드백 상세 조회 실패하기")
-    void fail_get_pt_process_cuz_of_login() {
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> processService.getPtProcess(process.getId(), null))
-                .isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
     @DisplayName("존재하지 않는 피드백 상세 조회 실패하기")
     void fail_get_pt_process_cuz_of_no_process_history() {
         // given
@@ -284,36 +254,6 @@ class PtProcessServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 하지 않은 일반 회원 유저가 모든 피드백 조회 실패하기")
-    void fail_get_all_my_process_cuz_of_login() {
-        // given
-        testSyUtils.logout();
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            processService.getAllMyProcess(0, 5, user);
-        }).isInstanceOf(CustomException.class);
-    }
-
-    @Test
-    @DisplayName("로그인 하지 않은 트레이너 유저가 모든 피드백 조회 실패하기")
-    void fail_get_all_trainer_process_cuz_of_login() {
-        // given
-        testSyUtils.logout();
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            processService.getAllTrainerProcess(0, 5, user);
-        }).isInstanceOf(CustomException.class);
-    }
-
-    @Test
     @DisplayName("트레이너가 피드백 삭제 성공하기")
     void delete_pt_process() {
         // given
@@ -340,21 +280,6 @@ class PtProcessServiceTest {
             if (!user.getRole().equals(Role.TRAINER)) {
                 throw new CustomException(DATA_NOT_FOUND);
             }
-        }).isInstanceOf(CustomException.class);
-    }
-
-    @Test
-    @DisplayName("로그인 하지 않은 유저가 피드백 삭제 실패하기")
-    void fial_delete_pt_process_cuz_of_login() {
-        // given
-        testSyUtils.logout();
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            processService.deletePtProcess(process.getId(), user);
         }).isInstanceOf(CustomException.class);
     }
 

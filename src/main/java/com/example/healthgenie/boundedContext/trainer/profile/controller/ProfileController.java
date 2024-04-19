@@ -49,7 +49,7 @@ public class ProfileController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 관리페이지에 보여줄 본인 내용
+    // 관리페이지에 보여줄 본인 내용-> userId include
     @GetMapping("/details/{profileId}")
     public ResponseEntity<Result> getProfile(@PathVariable Long profileId) {
         ProfileResponseDto response = profileService.getProfile(profileId);
