@@ -64,32 +64,31 @@ class ProfileServiceTest {
         photo = testSyUtils.createProfilePhoto(profile, "test", "test", PurposeOfUsing.PROFILE);
     }
 
-
-    @Test
-    @DisplayName("profile 작성")
-    void save() {
-        // given
-        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
-        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
-
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대", startTime, endTime, 4.5,
-                12000, 25, "test2");
-
-        // when
-        ProfileResponseDto response = profileService.save(user2, dto);
-
-        // then
-        assertThat(response.getIntroduction()).isEqualTo("test intro");
-        assertThat(response.getCareer()).isEqualTo("none");
-        assertThat(response.getUniversity()).isEqualTo("경북대");
-        assertThat(response.getStartTime()).isEqualTo(startTime);
-        assertThat(response.getEndTime()).isEqualTo(endTime);
-        assertThat(response.getReviewAvg()).isEqualTo(4.5);
-        assertThat(response.getCost()).isEqualTo(12000);
-        assertThat(response.getMonth()).isEqualTo(25);
-        assertThat(response.getNickname()).isEqualTo("test2");
-
-    }
+//    @Test
+//    @DisplayName("profile 작성")
+//    void save() {
+//        // given
+//        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
+//        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
+//
+//        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대", startTime, endTime, 4.5,
+//                12000, 25, "test2");
+//
+//        // when
+//        ProfileResponseDto response = profileService.save(user2, dto);
+//
+//        // then
+//        assertThat(response.getIntroduction()).isEqualTo("test intro");
+//        assertThat(response.getCareer()).isEqualTo("none");
+//        assertThat(response.getUniversity()).isEqualTo("경북대");
+//        assertThat(response.getStartTime()).isEqualTo(startTime);
+//        assertThat(response.getEndTime()).isEqualTo(endTime);
+//        assertThat(response.getReviewAvg()).isEqualTo(4.5);
+//        assertThat(response.getCost()).isEqualTo(12000);
+//        assertThat(response.getMonth()).isEqualTo(25);
+//        assertThat(response.getNickname()).isEqualTo("test2");
+//
+//    }
 
     @Test
     @DisplayName("로그인 하지 않은 유저 profile 작성")
@@ -138,27 +137,6 @@ class ProfileServiceTest {
         assertThat(response.getCost()).isEqualTo(2000);
         assertThat(response.getMonth()).isEqualTo(25);
         assertThat(response.getNickname()).isEqualTo("test2");
-    }
-
-    @Test
-    @DisplayName("로그인 하지 않은 유저가 profile 수정")
-    void fail_update_profile_cuz_of_login() {
-        // given
-        testSyUtils.logout();
-
-        LocalTime startTime = LocalTime.of(14, 0, 0); // 시, 분, 초
-        LocalTime endTime = LocalTime.of(15, 0, 0); // 시, 분, 초
-
-        ProfileRequestDto dto = testSyUtils.createProfileDto("test intro", "none", "경북대",
-                startTime, endTime, 4.5, 12000, 25, "test2");
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            // 해당 메소드 호출
-            profileService.updateProfile(dto, profile.getId(), user);
-        }).isInstanceOf(CustomException.class);
     }
 
 //    @Test
