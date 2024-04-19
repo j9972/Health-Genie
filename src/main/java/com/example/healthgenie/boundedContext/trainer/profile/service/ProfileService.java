@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.trainer.profile.service;
 
 
 import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
 import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
 
 import com.example.healthgenie.base.exception.CustomException;
@@ -97,6 +98,9 @@ public class ProfileService {
         // user role 검증
         if (!user.getRole().equals(Role.TRAINER)) {
             throw new CustomException(NO_PERMISSION);
+        }
+        if (profileRepository.existsByMemberNickname(user.getNickname())) {
+            throw new CustomException(DUPLICATED, "trainer info");
         }
 
         TrainerInfo info = profileRepository.save(dto.toEntity(user));

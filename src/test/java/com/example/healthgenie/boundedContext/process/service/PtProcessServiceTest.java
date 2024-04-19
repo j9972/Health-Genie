@@ -78,7 +78,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("트레이너가 피드백 생성 성공")
-    void add_pt_process() {
+    void make_process() {
         // given
         testKrUtils.login(user2);
 
@@ -291,7 +291,7 @@ class PtProcessServiceTest {
 //
 //        // when
 //        String keyword = "test";
-//        List<PtProcessResponseDto> response = processService.findAll(keyword);
+//        List<PtProcessResponseDto> response = processService.findAll(keyword,0L, Pageable);
 //
 //        // then
 //        assertThat(response.size()).isEqualTo(1);
