@@ -1,5 +1,10 @@
 package com.example.healthgenie.boundedContext.process.service;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
@@ -15,21 +20,15 @@ import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.service.UserService;
 import com.example.healthgenie.util.TestKrUtils;
 import com.example.healthgenie.util.TestSyUtils;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
-import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -79,7 +78,7 @@ class PtProcessServiceTest {
 
     @Test
     @DisplayName("트레이너가 피드백 생성 성공")
-    void add_pt_process() {
+    void make_process() {
         // given
         testKrUtils.login(user2);
 
@@ -284,20 +283,20 @@ class PtProcessServiceTest {
         assertThat(response.get(0).getTrainerName()).isEqualTo("test2");
     }
 
-//    @Test
-//    @DisplayName("로그인 하지 않은 일반 회원 유저가 모든 피드백 조회 실패하기")
-//    void fail_get_all_my_process_cuz_of_login() {
-//        // given
-//        testSyUtils.logout();
-//
-//        // when
-//
-//        // then
-//        assertThatThrownBy(() -> {
-//            // 해당 메소드 호출
-//            processService.getAllMyProcess(0, 5, user);
-//        }).isInstanceOf(CustomException.USER_EMPTY.getClass());
-//    }
+    @Test
+    @DisplayName("로그인 하지 않은 일반 회원 유저가 모든 피드백 조회 실패하기")
+    void fail_get_all_my_process_cuz_of_login() {
+        // given
+        testSyUtils.logout();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> {
+            // 해당 메소드 호출
+            processService.getAllMyProcess(0, 5, user);
+        }).isInstanceOf(CustomException.class);
+    }
 
     @Test
     @DisplayName("로그인 하지 않은 트레이너 유저가 모든 피드백 조회 실패하기")
@@ -367,7 +366,7 @@ class PtProcessServiceTest {
 //
 //        // when
 //        String keyword = "test";
-//        List<PtProcessResponseDto> response = processService.findAll(keyword);
+//        List<PtProcessResponseDto> response = processService.findAll(keyword,0L, Pageable);
 //
 //        // then
 //        assertThat(response.size()).isEqualTo(1);

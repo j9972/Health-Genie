@@ -1,20 +1,19 @@
 package com.example.healthgenie.boundedContext.auth.service;
 
+import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.GOOGLE;
+import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.KAKAO;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.exception.ErrorCode;
 import com.example.healthgenie.boundedContext.auth.dto.JwtResponse;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.service.UserService;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
-
-import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.GOOGLE;
-import static com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider.KAKAO;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +33,7 @@ public class AuthService {
             return googleRequestService.call(code);
         }
 
-        throw new CustomException(ErrorCode.NOT_VALID, "["+provider+"]"+"는 잘못된 제공자입니다.");
+        throw new CustomException(ErrorCode.NOT_VALID, "[" + provider + "]" + "는 잘못된 제공자입니다.");
     }
 
     @Transactional
@@ -43,9 +42,9 @@ public class AuthService {
 
         userService.deleteById(user.getId());
 
-        if(Objects.equals(provider, KAKAO)) {
+        if (Objects.equals(provider, KAKAO)) {
             kakaoRequestService.unlink(accessToken);
-        } else if(Objects.equals(provider, GOOGLE)) {
+        } else if (Objects.equals(provider, GOOGLE)) {
             googleRequestService.unlink(accessToken);
         }
     }
