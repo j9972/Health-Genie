@@ -107,7 +107,7 @@ class UserMailServiceTest {
 
     @Test
     @DisplayName("로그인을 안한 경우 검증 코드 안보내기")
-    void dont_send_code() {
+    void fail_send_code() {
         // given
 
         // when ,then

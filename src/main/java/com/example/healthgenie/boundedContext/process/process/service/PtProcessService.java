@@ -1,6 +1,11 @@
 package com.example.healthgenie.boundedContext.process.process.service;
 
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.NOT_VALID;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_HISTORY;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
@@ -15,17 +20,14 @@ import com.example.healthgenie.boundedContext.process.process.repository.PtProce
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static com.example.healthgenie.base.exception.ErrorCode.*;
 
 @Service
 @Slf4j
@@ -59,22 +61,17 @@ public class PtProcessService {
                 Matching matching = matchingRepository.findById(match.getMatching().getId())
                         .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
 
-                // trainer와 user사이의 매칭이 있을때 일지 작성 가능
-                log.info("해당하는 매칭이 있음 matching : {}", matching);
-
                 // 작성 날짜가 매칭날짜보다 뒤에 있어야 한다
                 if (dto.getDate().isAfter(matching.getDate().toLocalDate())) {
                     return makePtRProcess(dto, user, currentUser);
                 }
 
-                log.warn("일지 작성 날짜가 매칭날짜보다 뒤에 있어야 하는데 그렇지 못함");
-                throw new CustomException(NOT_VALID);
+                throw new CustomException(NOT_VALID, "날짜 선택이 잘못됨");
 
             }
         }
 
-        log.warn("해당하는 매칭이 없음");
-        throw new CustomException(DATA_NOT_FOUND);
+        throw new CustomException(DATA_NOT_FOUND, "매칭 데이터");
     }
 
     @Transactional
