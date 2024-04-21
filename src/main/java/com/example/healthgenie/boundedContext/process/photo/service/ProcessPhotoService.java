@@ -1,5 +1,8 @@
 package com.example.healthgenie.boundedContext.process.photo.service;
 
+import static com.example.healthgenie.base.exception.ErrorCode.NO_HISTORY;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.utils.S3UploadUtils;
 import com.example.healthgenie.boundedContext.process.photo.dto.ProcessPhotoDeleteResponse;
@@ -8,19 +11,15 @@ import com.example.healthgenie.boundedContext.process.photo.entity.ProcessPhoto;
 import com.example.healthgenie.boundedContext.process.photo.repository.ProcessPhotoRepository;
 import com.example.healthgenie.boundedContext.process.process.entity.PtProcess;
 import com.example.healthgenie.boundedContext.process.process.repository.PtProcessRepository;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static com.example.healthgenie.base.exception.ErrorCode.NO_HISTORY;
-import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
 
 @Service
 @Slf4j
@@ -88,7 +87,7 @@ public class ProcessPhotoService {
                 .build();
     }
 
-    private static void checkPermission(Long userId, PtProcess process) {
+    private void checkPermission(Long userId, PtProcess process) {
         if (!Objects.equals(userId, process.getTrainer().getId())) {
             throw new CustomException(NO_PERMISSION);
         }

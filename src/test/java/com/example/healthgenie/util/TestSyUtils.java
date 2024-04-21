@@ -255,10 +255,11 @@ public class TestSyUtils {
         return createProcess(null, title, content, null, user, trainer);
     }
 
-    public ProcessPhoto createProcessPhoto(PtProcess process, String path) {
+    public ProcessPhoto createProcessPhoto(PtProcess process, String path, String originalName) {
         ProcessPhoto processPhoto = ProcessPhoto.builder()
                 .process(process)
                 .processPhotoPath(path)
+                .name(originalName)
                 .build();
 
         return processPhotoRepository.save(processPhoto);

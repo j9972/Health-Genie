@@ -4,12 +4,16 @@ import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
 import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
+import com.example.healthgenie.boundedContext.process.photo.dto.ProcessPhotoDeleteResponse;
+import com.example.healthgenie.boundedContext.process.photo.entity.ProcessPhoto;
+import com.example.healthgenie.boundedContext.process.photo.service.ProcessPhotoService;
 import com.example.healthgenie.boundedContext.process.process.dto.PtProcessDeleteResponseDto;
 import com.example.healthgenie.boundedContext.process.process.dto.PtProcessRequestDto;
 import com.example.healthgenie.boundedContext.process.process.dto.PtProcessResponseDto;
@@ -47,6 +51,9 @@ class PtProcessServiceTest {
     PtProcessService processService;
 
     @Autowired
+    ProcessPhotoService photoService;
+
+    @Autowired
     MatchingUserRepository matchingUserRepository;
 
     @Autowired
@@ -60,6 +67,8 @@ class PtProcessServiceTest {
     User user3;
     User user4;
     PtProcess process;
+    PtProcess process2;
+    ProcessPhoto processPhoto;
     Matching matching;
 
     @BeforeEach
@@ -77,6 +86,8 @@ class PtProcessServiceTest {
 
         matching = testKrUtils.createMatching(user2, user.getId(), date, "체육관", "pt내용");
         process = testSyUtils.createProcess(date2, "test title2", "test content2", user, user2);
+        process2 = testSyUtils.createProcess(date2, "test title2", "test content2", user3, user4);
+        processPhoto = testSyUtils.createProcessPhoto(process, "uploadURI", "test name");
     }
 
     @Test
@@ -296,7 +307,7 @@ class PtProcessServiceTest {
         // then
         assertThat(process).isNotNull();
         assertThat(process).isNotEmpty();
-        assertThat(process.size()).isEqualTo(1);
+        assertThat(process.size()).isEqualTo(2);
     }
 
     @Test
@@ -311,5 +322,62 @@ class PtProcessServiceTest {
 
         // then
         assertThat(process).isEmpty();
+    }
+
+    @Test
+    @DisplayName("process photo 조회")
+    void find_photo() {
+        // given
+
+        // when
+        ProcessPhoto photo = photoService.findById(processPhoto.getId());
+
+        // then
+        assertThat(photo.getProcess()).isEqualTo(process);
+        assertThat(photo.getName()).isEqualTo("test name");
+        assertThat(photo.getProcessPhotoPath()).isEqualTo("uploadURI");
+    }
+
+    @Test
+    @DisplayName("process photo 조회 실패 - process가 다름")
+    void fail_find_photo_cuz_different_process() {
+        // given
+
+        // when
+        ProcessPhoto photo = photoService.findById(processPhoto.getId());
+
+        // then
+        assertThatThrownBy(() -> {
+            if (!photo.getProcess().equals(process2)) {
+                throw new CustomException(DATA_NOT_FOUND);
+            }
+        }).isInstanceOf(CustomException.class);
+    }
+
+
+    @Test
+    @DisplayName("process photo 삭제")
+    void delete_photo() {
+        // given
+
+        // when
+        ProcessPhotoDeleteResponse response = photoService.deleteAllByProcessId(process.getId(),
+                user2.getId());
+
+        // then
+        assertThat(response.getId()).isEqualTo(process.getId());
+    }
+
+    @Test
+    @DisplayName("process photo 삭제 실패 - 권한 없음")
+    void fail_delete_photo_cuz_of_permission() {
+        // given
+
+        // when
+
+        // then
+        assertThrows(CustomException.class, () -> {
+            photoService.deleteAllByProcessId(process2.getId(), user2.getId());
+        });
     }
 }
