@@ -72,8 +72,9 @@ public class PtProcessController {
     @GetMapping("/list/findAll")
     public ResponseEntity<Result> findAll(@RequestParam(name = "search", defaultValue = "") String keyword,
                                           @RequestParam(name = "lastId", required = false) Long lastId,
-                                          Pageable pageable) {
-        PtProcessSliceResponse response = PtProcessSliceResponse.of(processService.findAll(keyword, lastId, pageable));
+                                          Pageable pageable, @AuthenticationPrincipal User user) {
+        PtProcessSliceResponse response = PtProcessSliceResponse.of(
+                processService.findAll(keyword, lastId, pageable, user));
 
         return ResponseEntity.ok(Result.of(response));
     }
