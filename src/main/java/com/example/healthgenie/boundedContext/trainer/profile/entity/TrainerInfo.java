@@ -116,13 +116,4 @@ public class TrainerInfo extends BaseEntity {
         this.reviewAvg = reviewAvg;
     }
 
-    public void addPhoto(TrainerPhoto photo) {
-        this.trainerPhotos.add(photo);
-        photo.setInfo(this);
-    }
-
-    public void removePhotos(List<TrainerPhoto> photos) {
-        this.trainerPhotos.removeAll(photos);
-    }
-
 }

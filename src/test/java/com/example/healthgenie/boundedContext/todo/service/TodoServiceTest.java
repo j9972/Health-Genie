@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.healthgenie.base.exception.CustomException;
+import com.example.healthgenie.boundedContext.todo.dto.TodoDeleteResponseDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoRequestDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoResponseDto;
 import com.example.healthgenie.boundedContext.todo.dto.TodoUpdateRequest;
@@ -53,8 +54,6 @@ class TodoServiceTest {
     @DisplayName("정상적으로 todo list 작성")
     void add_todo_list() {
         // given
-        testKrUtils.login(user);
-
         LocalDate date = LocalDate.of(2023, 12, 15);
         LocalTime time = LocalTime.of(14, 30, 45); // 시, 분, 초
 
@@ -71,91 +70,37 @@ class TodoServiceTest {
         assertThat(todo.getDescription()).isEqualTo("description test");
     }
 
-//    @Test
-//    @DisplayName("로그인 하지 않은 유저가 todo list 작성 실패하기")
-//    void fail_add_todo_list_cuz_of_login() {
-//        // given
-//        testSyUtils.logout();
-//
-//        TodoRequestDto dto = testSyUtils.TodoRequestDto(
-//                LocalDate.now(), LocalTime.now(), "test title", "description test");
-//
-//        // when
-//
-//        // then
-//        assertThatThrownBy(() -> {
-//            // 해당 메소드 호출
-//            todoService.addTodoList(dto, user);
-//        }).isInstanceOf(CustomException.class);
-//    }
-
     @Test
     @DisplayName("정상적으로 todo list 수정하기")
     void update() {
         // given
-        testKrUtils.login(user);
-
-        // when
         TodoUpdateRequest dto = testSyUtils.updateTodoRequest("수정한 제목", "수정한 내용");
 
-        // then
+        // when
         TodoResponseDto response = todoService.update(dto, todoTest.getId(), user);
 
+        // then
         assertThat(response.getTitle()).isEqualTo("수정한 제목");
         assertThat(response.getDescription()).isEqualTo("수정한 내용");
     }
 
-//    @Test
-//    @DisplayName("로그인 하지 않은 유저가 todo list 수정 실패하기")
-//    void fail_update_cuz_of_login() {
-//        // given
-//        testSyUtils.logout();
-//
-//        // when
-//        TodoUpdateRequest dto = testSyUtils.updateTodoRequest("수정한 제목", "수정한 내용");
-//
-//        // then
-//        assertThatThrownBy(() -> {
-//            // 해당 메소드 호출
-//            todoService.update(dto, todoTest.getId(), user);
-//        }).isInstanceOf(CustomException.class);
-//    }
 
     @Test
     @DisplayName("정상적인 todo 삭제하기")
     void delete_todo() {
         // given
-        testKrUtils.login(user);
 
         // when
+        TodoDeleteResponseDto response = todoService.deleteTodo(todoTest.getId(), user);
 
         // then
-        todoService.deleteTodo(todoTest.getId(), user);
-
-        assertThatThrownBy(() -> todoService.deleteTodo(todoTest.getId(), user))
-                .isInstanceOf(CustomException.class);
+        assertThat(response.getId()).isEqualTo(todoTest.getId());
     }
-
-//    @Test
-//    @DisplayName("로그인 하지 않은 유저가 todo 삭제하기")
-//    void fail_delete_todo_cuz_of_login() {
-//        // given
-//        testSyUtils.logout();
-//
-//        // when
-//
-//        // then
-//        assertThatThrownBy(() -> {
-//            // 해당 메소드 호출
-//            todoService.deleteTodo(todoTest.getId(), user);
-//        }).isInstanceOf(CustomException.class);
-//    }
 
     @Test
     @DisplayName("존재하지 않는 todo 삭제하기")
     void fail_todo_delete_cuz_of_no_todo_history() {
         // given
-        testKrUtils.login(user);
 
         // when
 
@@ -168,8 +113,6 @@ class TodoServiceTest {
     @DisplayName("정상적인 todo list 전체 조회하기")
     void get_all_my_todo() {
         // given
-        testKrUtils.login(user);
-
         LocalDate date = LocalDate.of(2023, 12, 15);
         LocalTime time = LocalTime.of(14, 30, 45); // 시, 분, 초
 
@@ -183,7 +126,5 @@ class TodoServiceTest {
 
         // then
         assertThat(response.size()).isEqualTo(6);
-
-
     }
 }

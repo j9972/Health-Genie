@@ -97,11 +97,10 @@ public class PtProcessService {
                 .orElseThrow(() -> new CustomException(NO_HISTORY));
 
         // 권한 체크
-        checkRole(user, Role.TRAINER);
+        permission(user, process);
 
         return PtProcessResponseDto.of(process);
     }
-
 
     /*
         해당 트레이너가 작성한 모든 피드백들을 전부 모아보기
@@ -134,41 +133,25 @@ public class PtProcessService {
     @Transactional
     public PtProcessDeleteResponseDto deletePtProcess(Long processId, User user) {
 
-        PtProcess process = authorizationProcessWriter(processId, user);
+        // user가 trainer일때만 삭제 가능
+        checkRole(user, Role.TRAINER);
 
-        ptProcessRepository.deleteById(process.getId());
+        ptProcessRepository.deleteById(processId);
 
         return PtProcessDeleteResponseDto.builder()
-                .id(process.getId())
+                .id(processId)
                 .build();
     }
 
 
     @Transactional(readOnly = true)
-    public Slice<PtProcess> findAll(String keyword, Long lastId, Pageable pageable) {
-        return ptProcessQueryRepository.findAll(keyword, lastId, pageable);
+    public Slice<PtProcess> findAll(String keyword, Long lastId, Pageable pageable, User user) {
+        return ptProcessQueryRepository.findAll(keyword, lastId, pageable, user);
     }
 
     @Transactional(readOnly = true)
     public List<PtProcessResponseDto> findAllByDate(LocalDate searchStartDate, LocalDate searchEndDate) {
         return PtProcessResponseDto.of(ptProcessQueryRepository.findAllByDate(searchStartDate, searchEndDate));
-    }
-
-    // process는 트레이너만 수정 삭제 가능
-    private PtProcess authorizationProcessWriter(Long id, User member) {
-
-        PtProcess process = ptProcessRepository.findById(id)
-                .orElseThrow(() -> new CustomException(NO_HISTORY));
-        authCheck(member, process);
-
-        return process;
-    }
-
-    private void authCheck(User member, PtProcess process) {
-        if (!process.getTrainer().getId().equals(member.getId())) {
-            log.warn("process 소유자 user : {}", member);
-            throw new CustomException(DATA_NOT_FOUND);
-        }
     }
 
     private void checkRole(User currentUser, Role role) {
@@ -178,5 +161,9 @@ public class PtProcessService {
         }
     }
 
-
+    private void permission(User user, PtProcess process) {
+        if (!process.getMember().equals(user) && !process.getTrainer().equals(user)) {
+            throw new CustomException(NO_PERMISSION, "권한");
+        }
+    }
 }
