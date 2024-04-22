@@ -282,12 +282,12 @@ class PtProcessServiceTest {
     }
 
     @Test
-    @DisplayName("키워드로 조회 실페하기")
+    @DisplayName("키워드로 조회 실패하기")
     void fail_find_all() {
         // given
+        String keyword = "test";
 
         // when
-        String keyword = "test";
         Slice<PtProcess> response = processService.findAll(keyword, 0L, Pageable.ofSize(10), user3);
 
         // then

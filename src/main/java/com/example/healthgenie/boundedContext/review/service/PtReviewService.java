@@ -1,5 +1,11 @@
 package com.example.healthgenie.boundedContext.review.service;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
+import static com.example.healthgenie.base.exception.ErrorCode.NOT_VALID;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_HISTORY;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
@@ -15,17 +21,14 @@ import com.example.healthgenie.boundedContext.review.repository.PtReviewReposito
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
 import com.example.healthgenie.boundedContext.user.repository.UserRepository;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static com.example.healthgenie.base.exception.ErrorCode.*;
 
 
 @Service
@@ -42,11 +45,11 @@ public class PtReviewService {
     @Transactional
     public PtReviewResponseDto addPtReview(PtReviewRequestDto dto, User user) {
 
-        User trainer = userRepository.findByNickname(dto.getTrainerNickName())
-                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+        User trainer = userRepository.findById(dto.getTrainerId())
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "trainer"));
 
-        User matchingUser = userRepository.findByNickname(dto.getUserNickName())
-                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+        User matchingUser = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user"));
 
         ShouldNotBeTrainer(matchingUser, Role.TRAINER);
 

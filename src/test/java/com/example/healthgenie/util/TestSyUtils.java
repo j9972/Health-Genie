@@ -187,13 +187,13 @@ public class TestSyUtils {
     }
 
     public PtReviewRequestDto createReviewDto(String content, String stopReason, Double reviewScore,
-                                              String userNickname, String trainerNickname) {
+                                              Long userId, Long trainerId) {
         return PtReviewRequestDto.builder()
                 .content(content)
                 .stopReason(stopReason)
                 .reviewScore(reviewScore)
-                .userNickName(userNickname)
-                .trainerNickName(trainerNickname)
+                .userId(userId)
+                .trainerId(trainerId)
                 .build();
     }
 
