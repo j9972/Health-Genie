@@ -1,5 +1,6 @@
 package com.example.healthgenie.util;
 
+import com.example.healthgenie.boundedContext.process.photo.dto.ProcessPhotoRequest;
 import com.example.healthgenie.boundedContext.process.photo.entity.ProcessPhoto;
 import com.example.healthgenie.boundedContext.process.photo.repository.ProcessPhotoRepository;
 import com.example.healthgenie.boundedContext.process.process.dto.PtProcessRequestDto;
@@ -186,13 +187,13 @@ public class TestSyUtils {
     }
 
     public PtReviewRequestDto createReviewDto(String content, String stopReason, Double reviewScore,
-                                              String userNickname, String trainerNickname) {
+                                              Long userId, Long trainerId) {
         return PtReviewRequestDto.builder()
                 .content(content)
                 .stopReason(stopReason)
                 .reviewScore(reviewScore)
-                .userNickName(userNickname)
-                .trainerNickName(trainerNickname)
+                .userId(userId)
+                .trainerId(trainerId)
                 .build();
     }
 
@@ -255,10 +256,17 @@ public class TestSyUtils {
         return createProcess(null, title, content, null, user, trainer);
     }
 
-    public ProcessPhoto createProcessPhoto(PtProcess process, String path) {
+    public ProcessPhotoRequest createPhotoDto(List<MultipartFile> photos) {
+        return ProcessPhotoRequest.builder()
+                .photos(photos)
+                .build();
+    }
+
+    public ProcessPhoto createProcessPhoto(PtProcess process, String path, String originalName) {
         ProcessPhoto processPhoto = ProcessPhoto.builder()
                 .process(process)
                 .processPhotoPath(path)
+                .name(originalName)
                 .build();
 
         return processPhotoRepository.save(processPhoto);

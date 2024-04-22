@@ -64,7 +64,6 @@ class UserMailServiceTest {
     @DisplayName("학교 도메인 확인")
     void check_univ_domain() {
         // given
-        testUtils.login(user);
         String uniDomain = uniDomainService.findUniDomain(user.getUniName());
 
         // when
@@ -78,7 +77,6 @@ class UserMailServiceTest {
     @DisplayName("이메일에 검증 코드 보내기")
     void send_code() throws IOException {
         // given
-        testUtils.login(user);
         Map<String, Object> result = null;
 
         // when
@@ -92,7 +90,6 @@ class UserMailServiceTest {
     @DisplayName("학교 도메인이 틀린경우 코드 보내기 실패")
     void wrong_domain_for_send_code() {
         // given
-        testUtils.login(user);
         String uniDomain = uniDomainService.findUniDomain("가나다대학교");
 
         // when
@@ -123,7 +120,6 @@ class UserMailServiceTest {
     @DisplayName("api 코드 검증")
     void univ_verify() {
         // given
-        testUtils.login(user);
 
         // when
         userMailService.updateUnivVerify(user.getId());

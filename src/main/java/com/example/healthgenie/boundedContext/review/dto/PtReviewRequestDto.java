@@ -20,9 +20,9 @@ public class PtReviewRequestDto {
 
     private Double reviewScore;
 
-    private String userNickName;
+    private Long userId;
 
-    private String trainerNickName; // 작성하는 사람
+    private Long trainerId; // 작성하는 사람
 
     public PtReview toEntity(User trainer, User currentUser) {
         return PtReview.builder()

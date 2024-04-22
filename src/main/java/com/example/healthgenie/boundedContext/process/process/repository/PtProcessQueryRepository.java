@@ -1,9 +1,9 @@
 package com.example.healthgenie.boundedContext.process.process.repository;
 
 import static com.example.healthgenie.boundedContext.process.process.entity.QPtProcess.ptProcess;
-import static com.example.healthgenie.boundedContext.review.entity.QPtReview.ptReview;
 
 import com.example.healthgenie.boundedContext.process.process.entity.PtProcess;
+import com.example.healthgenie.boundedContext.user.entity.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
@@ -20,11 +20,12 @@ public class PtProcessQueryRepository {
 
     private final JPAQueryFactory query;
 
-    public Slice<PtProcess> findAll(String keyword, Long lastId, Pageable pageable) {
-        List<PtProcess> reviews = query
+    public Slice<PtProcess> findAll(String keyword, Long lastId, Pageable pageable, User user) {
+        List<PtProcess> process = query
                 .selectFrom(ptProcess)
                 .where(
                         idLt(lastId),
+                        ptProcess.member.eq(user).or(ptProcess.trainer.eq(user)),
                         ptProcess.content.like("%" + keyword + "%")
 
                 )
@@ -32,7 +33,7 @@ public class PtProcessQueryRepository {
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        return LastPage(pageable, reviews);
+        return LastPage(pageable, process);
     }
 
 
@@ -81,6 +82,6 @@ public class PtProcessQueryRepository {
         if (processId == null) {
             return null;
         }
-        return ptReview.id.lt(processId);
+        return ptProcess.id.lt(processId);
     }
 }

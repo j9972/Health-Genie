@@ -32,6 +32,23 @@ public class ProfileService {
     /*
         관리페이지용 API -> 수정 , 트레이너만 가능
     */
+    // 홈페이지에서 패킷에서 들어가면 보여줄 API
+    @Transactional
+    public ProfileResponseDto save(User user, ProfileRequestDto dto) {
+
+        // user role 검증
+        if (!user.getRole().equals(Role.TRAINER)) {
+            throw new CustomException(NO_PERMISSION);
+        }
+        if (profileRepository.existsByMemberId(user.getId())) {
+            throw new CustomException(DUPLICATED, "trainer info");
+        }
+
+        TrainerInfo info = profileRepository.save(dto.toEntity(user));
+
+        return ProfileResponseDto.of(info);
+    }
+
     @Transactional
     public ProfileResponseDto updateProfile(ProfileRequestDto dto, Long profileId, User user) {
 
@@ -96,23 +113,6 @@ public class ProfileService {
             throw new CustomException(NO_PERMISSION);
         }
         return profile;
-    }
-
-    // 홈페이지에서 패킷에서 들어가면 보여줄 API
-    @Transactional
-    public ProfileResponseDto save(User user, ProfileRequestDto dto) {
-
-        // user role 검증
-        if (!user.getRole().equals(Role.TRAINER)) {
-            throw new CustomException(NO_PERMISSION);
-        }
-        if (profileRepository.existsByMemberNickname(user.getNickname())) {
-            throw new CustomException(DUPLICATED, "trainer info");
-        }
-
-        TrainerInfo info = profileRepository.save(dto.toEntity(user));
-
-        return ProfileResponseDto.of(info);
     }
 
     @Transactional(readOnly = true)
