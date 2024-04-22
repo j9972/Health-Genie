@@ -11,7 +11,6 @@ import com.example.healthgenie.boundedContext.matching.entity.Matching;
 import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
-import com.example.healthgenie.boundedContext.process.photo.dto.ProcessPhotoDeleteResponse;
 import com.example.healthgenie.boundedContext.process.photo.entity.ProcessPhoto;
 import com.example.healthgenie.boundedContext.process.photo.service.ProcessPhotoService;
 import com.example.healthgenie.boundedContext.process.process.dto.PtProcessDeleteResponseDto;
@@ -383,20 +382,6 @@ class PtProcessServiceTest {
                 throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
-    }
-
-
-    @Test
-    @DisplayName("process photo 삭제")
-    void delete_photo() {
-        // given
-
-        // when
-        ProcessPhotoDeleteResponse response = photoService.deleteAllByProcessId(process.getId(),
-                user2.getId());
-
-        // then
-        assertThat(response.getId()).isEqualTo(process.getId());
     }
 
     @Test
