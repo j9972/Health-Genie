@@ -1,5 +1,6 @@
 package com.example.healthgenie.util;
 
+import com.example.healthgenie.boundedContext.process.photo.dto.ProcessPhotoRequest;
 import com.example.healthgenie.boundedContext.process.photo.entity.ProcessPhoto;
 import com.example.healthgenie.boundedContext.process.photo.repository.ProcessPhotoRepository;
 import com.example.healthgenie.boundedContext.process.process.dto.PtProcessRequestDto;
@@ -253,6 +254,12 @@ public class TestSyUtils {
 
     public PtProcess createProcess(String title, String content, User user, User trainer) {
         return createProcess(null, title, content, null, user, trainer);
+    }
+
+    public ProcessPhotoRequest createPhotoDto(List<MultipartFile> photos) {
+        return ProcessPhotoRequest.builder()
+                .photos(photos)
+                .build();
     }
 
     public ProcessPhoto createProcessPhoto(PtProcess process, String path, String originalName) {

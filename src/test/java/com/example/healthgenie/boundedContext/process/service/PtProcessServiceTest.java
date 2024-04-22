@@ -324,6 +324,7 @@ class PtProcessServiceTest {
         assertThat(process).isEmpty();
     }
 
+
     @Test
     @DisplayName("process photo 조회")
     void find_photo() {
@@ -349,6 +350,36 @@ class PtProcessServiceTest {
         // then
         assertThatThrownBy(() -> {
             if (!photo.getProcess().equals(process2)) {
+                throw new CustomException(DATA_NOT_FOUND);
+            }
+        }).isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("process photo 전체 조회")
+    void find_all_photo() {
+        // given
+
+        // when
+        List<ProcessPhoto> photo = photoService.findAllByProcessId(process.getId());
+
+        // then
+        assertThat(photo.get(0).getProcess()).isEqualTo(process);
+        assertThat(photo.get(0).getName()).isEqualTo("test name");
+        assertThat(photo.get(0).getProcessPhotoPath()).isEqualTo("uploadURI");
+    }
+
+    @Test
+    @DisplayName("process photo 전체 조회 - 실패")
+    void fail_find_all_photo() {
+        // given
+
+        // when
+        List<ProcessPhoto> photo = photoService.findAllByProcessId(process.getId());
+
+        // then
+        assertThatThrownBy(() -> {
+            if (!photo.get(0).getProcess().equals(process2)) {
                 throw new CustomException(DATA_NOT_FOUND);
             }
         }).isInstanceOf(CustomException.class);
