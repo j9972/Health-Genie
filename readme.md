@@ -111,8 +111,8 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 - 회귀 방지, 리팩토링 내성, 빠른 피드백, 유지보수성 4가지에 초점을 맞춰 코드의 개발을 했습니다. 
 - 기존의 단위 테스트는 스프링을 사용하지 않고 빠른 속도와 독립적인 실행을 보장하는 것이 일반적이지만, 작업 일정과 개발 진행 상황에 따라 통합 테스트 작성을 하지 않고 단위 테스트에서 `@SpringBootTest` 애노테이션을 사용 함으로써 통합/단위 테스트를 진행했습니다.
 - 각 메서드의 정상적인 기능 동작과 실행 속도 또한 통합 테스트에 비해 빠르며, 함께 필요한 의존성의 올바른 관계를 확인할 수 있습니다.
-![단위테스트](https://prod-files-secure.s3.us-west-2.amazonaws.com/748911c4-a2dc-404f-af98-fb9fcc088aaf/e5639bd9-7f7b-41e9-8173-9e444af0590e/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-04-21_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_11.55.12.png)
-![헬퍼클래스](https://prod-files-secure.s3.us-west-2.amazonaws.com/748911c4-a2dc-404f-af98-fb9fcc088aaf/6b744443-b35f-49d3-8fcd-fb90ce931250/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-03-29_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_11.49.37.png)
+![단위테스트](images/unitTest.png)
+![헬퍼클래스](images/helperClass.png)
 
 <br>
 
