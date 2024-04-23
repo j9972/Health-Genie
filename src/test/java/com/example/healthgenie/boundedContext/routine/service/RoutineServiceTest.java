@@ -1,7 +1,5 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
-import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
-import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -45,6 +43,7 @@ class RoutineServiceTest {
 
     User user;
     User user2;
+    User user3;
     Routine routine;
     Routine beginnerGenie;
     Routine intermediateGenie;
@@ -62,6 +61,7 @@ class RoutineServiceTest {
 
         user = testKrUtils.createUser("jh485200@gmail.com", "test1", AuthProvider.EMPTY, Role.USER);
         user2 = testKrUtils.createUser("test@gmail.com", "test2", AuthProvider.EMPTY, Role.USER);
+        user3 = testKrUtils.createUser("test2@gmail.com", "test3", AuthProvider.EMPTY, Role.EMPTY);
         routine = testSyUtils.writeRoutine(Day.WEDNESDAY, "하체,가슴", workoutRecipeList, user);
 
         beginnerGenie = testSyUtils.genieRoutine(Level.BEGINNER, Day.FRIDAY, "test", "하체,가슴", recipe);
@@ -111,21 +111,15 @@ class RoutineServiceTest {
     @DisplayName("중복된 요일 루틴 작성 실패")
     void fail_add_routine_cuz_of_duplicated_day() {
         // given
-
         WorkoutRecipe recipe = new WorkoutRecipe("스쿼트", 3, 3, 3);
+
+        RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.WEDNESDAY
+                , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
 
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            for (int i = 0; i < 5; i++) {
-                RoutineRequestDto dto = testSyUtils.createOwnRoutineRequest(Day.MONDAY
-                        , "하체, 어깨", Collections.singletonList(recipe), user.getNickname());
-                routineService.writeRoutine(dto, user);
-                throw new CustomException(DUPLICATED);
-            }
-
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> routineService.writeRoutine(dto, user)).isInstanceOf(CustomException.class);
     }
 
 
@@ -180,21 +174,6 @@ class RoutineServiceTest {
         assertThat(response.size()).isEqualTo(3);
     }
 
-    @Test
-    @DisplayName("다른 사람 루틴 모두 조회 - 실패")
-    void fail_get_all_other_routine() {
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            if (!routine.getMember().equals(user2)) {
-                throw new CustomException(UNKNOWN_EXCEPTION);
-            }
-        }).isInstanceOf(CustomException.class);
-    }
-
 
     @Test
     @DisplayName("나의 루틴 요일별 상세조회")
@@ -243,11 +222,8 @@ class RoutineServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (failRoutine.getLevel().equals(Level.EMPTY)) {
-                throw new CustomException(UNKNOWN_EXCEPTION);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> routineService.getAllGenieRoutine(Level.EMPTY, user3)).isInstanceOf(
+                CustomException.class);
     }
 
 
