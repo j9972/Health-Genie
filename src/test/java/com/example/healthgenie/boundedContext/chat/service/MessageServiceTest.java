@@ -1,5 +1,6 @@
 package com.example.healthgenie.boundedContext.chat.service;
 
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
 import com.example.healthgenie.boundedContext.chat.entity.Message;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -57,6 +59,32 @@ class MessageServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 사용자가 메세지를 보냄")
+    void save_notExistsSender_exception() {
+        // given
+        MessageRequest request = MessageRequest.builder().content("새 메세지입니다.").senderId(999L).build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> messageService.save(user1AndUser2Room.getId(), request))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 채팅방에 메세지를 보냄")
+    void save_notExistsRoom_exception() {
+        // given
+        MessageRequest request = MessageRequest.builder().content("새 메세지입니다.").senderId(user1.getId()).build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> messageService.save(999L, request))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("해당 채팅방의 전체 메세지 조회")
     void findAll() {
         // given
@@ -69,5 +97,20 @@ class MessageServiceTest {
 
         // then
         assertThat(messages.size()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("해당 채팅방에 참여하지 않는 사용자가 메세지를 조회함")
+    void findAll_notParticipateUser_exception() {
+        // given
+        for(int i=0; i<10; i++) {
+            testKrUtils.createMessage(user1AndUser2Room.getId(), user1.getId(), "새 메세지 " + i);
+        }
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> messageService.findAll(user1AndUser2Room.getId(), user3))
+                .isInstanceOf(CustomException.class);
     }
 }
