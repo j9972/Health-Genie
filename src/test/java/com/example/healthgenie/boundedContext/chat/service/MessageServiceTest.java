@@ -59,7 +59,7 @@ class MessageServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자가 메세지를 보냄")
+    @DisplayName("존재하지 않는 사용자가 메세지 보내기 불가능")
     void save_notExistsSender_exception() {
         // given
         MessageRequest request = MessageRequest.builder().content("새 메세지입니다.").senderId(999L).build();
@@ -72,7 +72,7 @@ class MessageServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 채팅방에 메세지를 보냄")
+    @DisplayName("존재하지 않는 채팅방에 메세지 보내기 불가능")
     void save_notExistsRoom_exception() {
         // given
         MessageRequest request = MessageRequest.builder().content("새 메세지입니다.").senderId(user1.getId()).build();
@@ -100,7 +100,7 @@ class MessageServiceTest {
     }
 
     @Test
-    @DisplayName("해당 채팅방에 참여하지 않는 사용자가 메세지를 조회함")
+    @DisplayName("해당 채팅방에 참여하지 않는 사용자는 메세지 조회 불가능")
     void findAll_notParticipateUser_exception() {
         // given
         for(int i=0; i<10; i++) {

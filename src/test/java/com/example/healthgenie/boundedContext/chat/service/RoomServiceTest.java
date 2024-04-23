@@ -65,7 +65,7 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자와 채팅방 만들기")
+    @DisplayName("존재하지 않는 사용자와 채팅방 생성 불가능")
     void saveOrActive_notExistsUser_exception() {
         // given
         RoomRequest request = RoomRequest.builder().anotherUserId(999L).build();
@@ -90,7 +90,7 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 채팅방 조회하기")
+    @DisplayName("존재하지 않는 채팅방 조회 불가능")
     void findById_notExistsRoom_exception() {
         // given
 
@@ -137,7 +137,7 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 채팅방을 비활성화하기")
+    @DisplayName("존재하지 않는 채팅방 비활성화 불가능")
     void inactive_notExistsRoom_exception() {
         // given
 
@@ -149,7 +149,7 @@ class RoomServiceTest {
     }
 
     @Test
-    @DisplayName("채팅방에 참여하지 않는 사용자가 비활성화하기")
+    @DisplayName("채팅방에 참여하지 않는 사용자는 비활성화 불가능")
     void inactive_notParticipateUser_exception() {
         // given
 
