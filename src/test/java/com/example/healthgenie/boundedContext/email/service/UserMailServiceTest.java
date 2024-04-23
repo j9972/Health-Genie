@@ -1,6 +1,5 @@
 package com.example.healthgenie.boundedContext.email.service;
 
-import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @SpringBootTest
 @Transactional
@@ -90,29 +88,11 @@ class UserMailServiceTest {
     @DisplayName("학교 도메인이 틀린경우 코드 보내기 실패")
     void wrong_domain_for_send_code() {
         // given
-        String uniDomain = uniDomainService.findUniDomain("가나다대학교");
 
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (!StringUtils.hasText(uniDomain)) {
-                throw new CustomException(UNKNOWN_EXCEPTION);
-            }
-        }).isInstanceOf(CustomException.class);
-    }
-
-    @Test
-    @DisplayName("로그인을 안한 경우 검증 코드 안보내기")
-    void fail_send_code() {
-        // given
-
-        // when ,then
-        assertThatThrownBy(() -> {
-            if (!user.getAuthorities().isEmpty()) {
-                throw new CustomException(UNKNOWN_EXCEPTION);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> uniDomainService.findUniDomain("가나다대학교")).isInstanceOf(CustomException.class);
     }
 
 
