@@ -1,14 +1,11 @@
 package com.example.healthgenie.boundedContext.process.service;
 
-import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
-import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
-import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.process.photo.entity.ProcessPhoto;
@@ -112,7 +109,6 @@ class PtProcessServiceTest {
     @DisplayName("피드백 작성 날짜가 매칭 날짜보다 이른 경우")
     void fail_make_process_cuz_of_date() {
         // given
-
         LocalDate date = LocalDate.of(2023, 2, 5);
 
         PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1", "test2");
@@ -120,42 +116,35 @@ class PtProcessServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (matching.getDate().toLocalDate().isAfter(dto.getDate())) {
-                throw new CustomException(NO_PERMISSION);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> processService.addPtProcess(dto, user2)).isInstanceOf(CustomException.class);
     }
 
     @Test
     @DisplayName("매칭이 없어서 실패")
     void fail_make_process_cuz_of_empty_matching() {
         // given
+        LocalDate date = LocalDate.of(2023, 2, 5);
+
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1", "test2");
 
         // when
-        List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(user4.getId());
 
         // then
-        assertThatThrownBy(() -> {
-            if (trainerMatchings.isEmpty()) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> processService.addPtProcess(dto, user4)).isInstanceOf(CustomException.class);
     }
 
     @Test
     @DisplayName("회원이 피드백 생성 실패")
     void fail_make_process_cuz_of_role() {
         // given
+        LocalDate date = LocalDate.of(2023, 2, 5);
+
+        PtProcessRequestDto dto = testSyUtils.createProcessDto(date, "test title", "test content", "test1", "test2");
 
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (!user.getRole().equals(Role.TRAINER)) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> processService.addPtProcess(dto, user)).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -183,15 +172,8 @@ class PtProcessServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (!user3.getNickname().equals(process.getMember().getNickname())
-                    && !user3.getNickname().equals(process.getTrainer().getNickname())
-            ) {
-                throw new CustomException(DATA_NOT_FOUND);
-            } else {
-                processService.getPtProcess(process.getId(), user3);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> processService.getPtProcess(process.getId(), user3)).isInstanceOf(
+                CustomException.class);
     }
 
     @Test
@@ -260,11 +242,8 @@ class PtProcessServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (!user.getRole().equals(Role.TRAINER)) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> processService.deletePtProcess(process.getId(), user)).isInstanceOf(
+                CustomException.class);
     }
 
     @Test
@@ -339,19 +318,14 @@ class PtProcessServiceTest {
     }
 
     @Test
-    @DisplayName("process photo 조회 실패 - process가 다름")
+    @DisplayName("process photo 조회 실패 - photo가 없음")
     void fail_find_photo_cuz_different_process() {
         // given
 
         // when
-        ProcessPhoto photo = photoService.findById(processPhoto.getId());
 
         // then
-        assertThatThrownBy(() -> {
-            if (!photo.getProcess().equals(process2)) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> photoService.findById(222L)).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -366,22 +340,6 @@ class PtProcessServiceTest {
         assertThat(photo.get(0).getProcess()).isEqualTo(process);
         assertThat(photo.get(0).getName()).isEqualTo("test name");
         assertThat(photo.get(0).getProcessPhotoPath()).isEqualTo("uploadURI");
-    }
-
-    @Test
-    @DisplayName("process photo 전체 조회 - 실패")
-    void fail_find_all_photo() {
-        // given
-
-        // when
-        List<ProcessPhoto> photo = photoService.findAllByProcessId(process.getId());
-
-        // then
-        assertThatThrownBy(() -> {
-            if (!photo.get(0).getProcess().equals(process2)) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
     }
 
     @Test
