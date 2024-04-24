@@ -9,6 +9,8 @@ import com.example.healthgenie.boundedContext.chat.service.RoomService;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
 import com.example.healthgenie.boundedContext.community.comment.service.CommentService;
+import com.example.healthgenie.boundedContext.community.like.entity.Like;
+import com.example.healthgenie.boundedContext.community.like.service.LikeService;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
 import com.example.healthgenie.boundedContext.community.post.service.PostService;
@@ -36,6 +38,7 @@ public class TestKrUtils {
     private final PostService postService;
     private final CommentService commentService;
     private final MatchingService matchingService;
+    private final LikeService likeService;
 
     public void login(User user) {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities()));
@@ -72,5 +75,9 @@ public class TestKrUtils {
     public Matching createMatching(User trainer, Long userId, LocalDateTime date, String place, String description) {
         MatchingRequest request = MatchingRequest.builder().userId(userId).date(date).place(place).description(description).build();
         return matchingService.save(trainer, request);
+    }
+
+    public Like createLike(Long postId, User user) {
+        return likeService.save(postId, user);
     }
 }
