@@ -1,15 +1,10 @@
 package com.example.healthgenie.boundedContext.review.service;
 
-import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
-import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
-import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
-import static com.example.healthgenie.base.exception.ErrorCode.UNKNOWN_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.matching.entity.Matching;
-import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingRepository;
 import com.example.healthgenie.boundedContext.matching.repository.MatchingUserRepository;
 import com.example.healthgenie.boundedContext.review.dto.PtReviewDeleteResponseDto;
@@ -28,7 +23,6 @@ import com.example.healthgenie.util.TestSyUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -105,8 +99,6 @@ class PtReviewServiceTest {
     @DisplayName("회원이 리뷰 작성 성공")
     void add_review() {
         // given
-        testKrUtils.login(user);
-
         PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, user.getId(), user2.getId());
 
         // when
@@ -121,64 +113,39 @@ class PtReviewServiceTest {
     }
 
     @Test
-    @DisplayName("리뷰 작성 날짜가 매칭 이전이여서 실패")
-    void fail_add_review_cuz_of_date() {
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> {
-            if (LocalDate.now().isAfter(matching.getDate().toLocalDate())) {
-                throw new CustomException(NO_PERMISSION);
-            }
-        }).isInstanceOf(CustomException.class);
-    }
-
-    @Test
     @DisplayName("매칭 기록없이 리뷰 작성 실패")
     void fail_add_review_cuz_of_no_matching_hisotry() {
         // given
-        Optional<MatchingUser> userMatching = matchingUserRepository.findByUserId(user3.getId());
+        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, user.getId(), user2.getId());
 
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (userMatching.isEmpty()) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> reviewService.addPtReview(dto, user4)).isInstanceOf(CustomException.class);
     }
 
     @Test
     @DisplayName("리뷰 중복으로 작성 실패")
     void fail_add_review_cuz_of_duplicated() {
         // given
-        PtReview review = ptReviewRepository.findByMemberIdAndTrainerId(user3.getId(), user4.getId());
+        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, user3.getId(), user4.getId());
 
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (review.getId() != null) {
-                throw new CustomException(DUPLICATED);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> reviewService.addPtReview(dto, user3)).isInstanceOf(CustomException.class);
     }
 
     @Test
     @DisplayName("회원이 아닌 트레이너면 리뷰 작성 실패")
     void fail_add_review_cuz_of_role() {
         // given
+        PtReviewRequestDto dto = testSyUtils.createReviewDto("test", "test", 4.5, user.getId(), user2.getId());
+
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (!user2.getRole().equals(Role.USER)) {
-                throw new CustomException(UNKNOWN_EXCEPTION);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> reviewService.addPtReview(dto, user2)).isInstanceOf(CustomException.class);
     }
 
 
@@ -289,15 +256,13 @@ class PtReviewServiceTest {
     @DisplayName("트레이너가 리뷰 수정 실패")
     void fail_review_update_cuz_of_role() {
         // given
+        PtReviewUpdateRequest dto = testSyUtils.updateReviewDto("update", "update", 4.0);
 
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (!user2.getRole().equals(Role.USER)) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> reviewService.updateReview(dto, review.getId(), user2))
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -320,11 +285,8 @@ class PtReviewServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (!user2.getRole().equals(Role.USER)) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> reviewService.deletePtReview(review.getId(), user2))
+                .isInstanceOf(CustomException.class);
     }
 
     @Test

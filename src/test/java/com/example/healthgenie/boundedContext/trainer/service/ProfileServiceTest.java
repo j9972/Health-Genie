@@ -1,6 +1,5 @@
 package com.example.healthgenie.boundedContext.trainer.service;
 
-import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -105,14 +104,9 @@ class ProfileServiceTest {
                 12000, 25, "test2");
 
         // when
-        ProfileResponseDto response = profileService.save(user3, dto);
 
         // then
-        assertThatThrownBy(() -> {
-            if (!user.getRole().equals(Role.TRAINER)) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> profileService.save(user, dto)).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -181,14 +175,9 @@ class ProfileServiceTest {
         // given
 
         // when
-        ProfileResponseDto response = profileService.getProfile(profile.getId());
 
         // then
-        assertThatThrownBy(() -> {
-            if (response.getUserId() != user.getId()) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> profileService.getOwnProfile(user)).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -237,10 +226,7 @@ class ProfileServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> {
-            if (!user2.getRole().equals(Role.USER)) {
-                throw new CustomException(DATA_NOT_FOUND);
-            }
-        }).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> profileService.deleteProfile(profile.getId(), user)).isInstanceOf(
+                CustomException.class);
     }
 }
