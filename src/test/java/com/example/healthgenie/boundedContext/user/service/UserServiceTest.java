@@ -1,6 +1,8 @@
 package com.example.healthgenie.boundedContext.user.service;
 
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
+import com.example.healthgenie.boundedContext.user.dto.DietResponse;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -53,6 +56,19 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("이미 가입된 이메일인 경우 회원 가입 불가능")
+    void signUp_duplicateEmail_exception() {
+        // given
+        String duplicateEmail = "user1@test.com";
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> userService.signUp(duplicateEmail, "dupUser", AuthProvider.KAKAO, Role.USER))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("회원 단건 조회 - id")
     void findById() {
         // given
@@ -65,6 +81,18 @@ class UserServiceTest {
         assertThat(findUser.getName()).isEqualTo(user1.getName());
         assertThat(findUser.getAuthProvider()).isEqualTo(user1.getAuthProvider());
         assertThat(findUser.getRole()).isEqualTo(user1.getRole());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회원 조회 불가능 - id")
+    void findById_notExistsUser_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> userService.findById(999L))
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -83,8 +111,20 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 회원 조회 불가능 - email")
+    void findByEmail_notExistsUser_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> userService.findByEmail("notExists@test.com"))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("회원 정보 변경 - Role")
-    void updateRole() {
+    void update_role() {
         // given
 
         // when
@@ -96,8 +136,20 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("유효하지 않은 Role 변경 불가능")
+    void update_notValidRole_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> userService.update(user1, (Role) null))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("회원 정보 변경 - Level")
-    void updateLevel() {
+    void update_level() {
         // given
 
         // when
@@ -109,8 +161,20 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("유효하지 않은 Level 변경 불가능")
+    void update_notValidLevel_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> userService.update(user1, (Level) null))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("회원 정보 변경 - Info")
-    void updateInfo() {
+    void update_info() {
         // given
 
         // when
@@ -129,4 +193,65 @@ class UserServiceTest {
         assertThat(updateUser.getMuscleWeight()).isEqualTo(30.5);
     }
 
+    @Test
+    @DisplayName("중복된 닉네임으로 변경 불가능")
+    void update_duplicateNickname_exception() {
+        // given
+        userService.update(user1, null, "myname", null, null, null, null, null);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> userService.update(default1, null, "myname", null, null, null, null, null))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("칼로리 계산기")
+    void calculate() {
+        // given
+        LocalDateTime birth = LocalDateTime.of(1996, 6, 15, 0, 0, 0);
+
+        User updateUser = userService.update(default1,
+                null, "변경된닉네임", Gender.MALE, birth, 180.5, 80.5, 30.5);
+
+        // when
+        DietResponse response = userService.calculate(updateUser, 1);
+
+        // then
+        assertThat(response.getActiveRate()).isNotZero();
+        assertThat(response.getBasicRate()).isNotZero();
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 타입인 경우 칼로리 계산 불가능")
+    void calculate_notValidType_exception() {
+        // given
+        LocalDateTime birth = LocalDateTime.of(1996, 6, 15, 0, 0, 0);
+
+        User updateUser = userService.update(default1,
+                null, "변경된닉네임", Gender.MALE, birth, 180.5, 80.5, 30.5);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> userService.calculate(updateUser, null))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("성별이 설정되지 않은 경우 칼로리 계산 불가능")
+    void calculate_notValidGender_exception() {
+        // given
+        LocalDateTime birth = LocalDateTime.of(1996, 6, 15, 0, 0, 0);
+
+        User updateUser = userService.update(default1,
+                null, "변경된닉네임", null, birth, 180.5, 80.5, 30.5);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> userService.calculate(updateUser, 1))
+                .isInstanceOf(CustomException.class);
+    }
 }

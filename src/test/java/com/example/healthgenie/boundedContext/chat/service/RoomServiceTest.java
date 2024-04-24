@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.chat.service;
 
 
+import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.chat.dto.RoomQueryResponse;
 import com.example.healthgenie.boundedContext.chat.dto.RoomRequest;
 import com.example.healthgenie.boundedContext.chat.entity.Room;
@@ -18,7 +19,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -61,6 +65,19 @@ class RoomServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 사용자와 채팅방 생성 불가능")
+    void saveOrActive_notExistsUser_exception() {
+        // given
+        RoomRequest request = RoomRequest.builder().anotherUserId(999L).build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> roomService.saveOrActive(user1, request))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("채팅방 단건 조회")
     void findById() {
         // given
@@ -70,6 +87,18 @@ class RoomServiceTest {
 
         // then
         assertThat(findRoom.getId()).isEqualTo(user1AndUser2Room.getId());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 채팅방 조회 불가능")
+    void findById_notExistsRoom_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> roomService.findById(999L))
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -93,15 +122,41 @@ class RoomServiceTest {
         assertThat(findRooms2.getContent().size()).isEqualTo(1);
     }
 
-//    @Test
-//    @DisplayName("채팅방 비활성화(=삭제)")
-//    void inactive() {
-//        // given
-//
-//        // when
-//        roomService.inactive(user1AndUser2Room.getId(), user1);
-//
-//        // then
-//        assertThat(roomService.findAll(user1, 0L, PageRequest.of(0, 1)).size()).isEqualTo(0);
-//    }
+    @Test
+    @DisplayName("채팅방 비활성화")
+    void inactive() {
+        // given
+
+        // when
+        roomService.inactive(user1AndUser2Room.getId(), user1);
+
+        // then
+        List<RoomQueryResponse> rooms = roomService.findAll(user1, null, PageRequest.ofSize(5)).getContent();
+
+        assertThat(rooms.isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 채팅방 비활성화 불가능")
+    void inactive_notExistsRoom_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> roomService.inactive(999L, user1))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("채팅방에 참여하지 않는 사용자는 비활성화 불가능")
+    void inactive_notParticipateUser_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> roomService.inactive(user1AndUser2Room.getId(), user3))
+                .isInstanceOf(CustomException.class);
+    }
 }

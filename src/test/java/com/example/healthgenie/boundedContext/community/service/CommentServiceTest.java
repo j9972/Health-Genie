@@ -33,11 +33,13 @@ class CommentServiceTest {
 
     Post post1;
     User user1;
+    User user2;
     Comment comment1;
 
     @BeforeEach
     void before() {
         user1 = testKrUtils.createUser("user1@test.com", "user1", AuthProvider.KAKAO, Role.USER);
+        user2 = testKrUtils.createUser("user2@test.com", "user2", AuthProvider.GOOGLE, Role.TRAINER);
         post1 = testKrUtils.createPost(user1.getId(), "기본 제목", "기본 내용");
         comment1 = testKrUtils.createComment(post1.getId(), user1, "기본 댓글");
     }
@@ -58,6 +60,19 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 게시글에 댓글 달기 불가능")
+    void save_notExistsPost_exception() {
+        // given
+        CommentRequest request = CommentRequest.builder().content("새 댓글").build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> commentService.save(999L, user1, request))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("댓글 단건 조회 - id")
     void findById() {
         // given
@@ -70,6 +85,18 @@ class CommentServiceTest {
         assertThat(findComment.getPost()).isEqualTo(comment1.getPost());
         assertThat(findComment.getWriter()).isEqualTo(comment1.getWriter());
         assertThat(findComment.getContent()).isEqualTo(comment1.getContent());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 댓글 조회 불가능")
+    void findById_notExistsComment_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> commentService.findById(999L))
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -135,6 +162,45 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 게시글의 댓글 수정 불가능")
+    void update_notExistsPost_exception() {
+        // given
+        CommentRequest request = CommentRequest.builder().content("수정된 댓글").build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> commentService.update(999L, comment1.getId(), user1.getId(), request))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 댓글 수정 불가능")
+    void update_notExistsComment_exception() {
+        // given
+        CommentRequest request = CommentRequest.builder().content("수정된 댓글").build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> commentService.update(post1.getId(), 999L, user1.getId(), request))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("다른 사용자의 댓글 수정 불가능")
+    void update_notMine_exception() {
+        // given
+        CommentRequest request = CommentRequest.builder().content("수정된 댓글").build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> commentService.update(post1.getId(), comment1.getId(), user2.getId(), request))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("댓글 삭제")
     void deleteById() {
         // given
@@ -146,6 +212,42 @@ class CommentServiceTest {
         assertThatThrownBy(() -> commentService.findById(comment1.getId()))
                 .isInstanceOf(CustomException.class);
         assertThat(commentService.findAll().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글의 댓글 삭제 불가능")
+    void deleteById_notExistsPost_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> commentService.deleteById(999L, comment1.getId(), user1.getId()))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 댓글 삭제 불가능")
+    void deleteById_notExistsComment_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> commentService.deleteById(post1.getId(), 999L, user1.getId()))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("다른 사용자의 댓글 삭제 불가능")
+    void deleteById_notMine_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> commentService.deleteById(post1.getId(), comment1.getId(), user2.getId()))
+                .isInstanceOf(CustomException.class);
     }
 
     @Test

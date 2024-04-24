@@ -57,6 +57,19 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 사용자가 게시글 저장 불가능")
+    void save_notExistsUser_exception() {
+        // given
+        PostRequest request = PostRequest.builder().title("제목").content("내용").build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> postService.save(999L, request))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("게시글 단건(Entity) 조회 - id")
     void findById() {
         // given
@@ -72,6 +85,18 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 게시글 조회 불가능 - Entity")
+    void findById_notExistsPost_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> postService.findById(999L))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("게시글 단건(DTO) 조회 - id")
     void findDtoById() {
         // given
@@ -84,6 +109,18 @@ class PostServiceTest {
         assertThat(findPost.getWriter()).isEqualTo(post1.getWriter().getNickname());
         assertThat(findPost.getTitle()).isEqualTo(post1.getTitle());
         assertThat(findPost.getContent()).isEqualTo(post1.getContent());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 조회 불가능 - DTO")
+    void findDtoById_notExistsPost_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> postService.findDtoById(999L))
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -130,6 +167,32 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 게시글 수정 불가능")
+    void update_notExistsPost_exception() {
+        // given
+        PostRequest request = PostRequest.builder().title("수정된 제목").content("수정된 내용").build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> postService.update(999L, user1.getId(), request))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("다른 사용자의 게시글 수정 불가능")
+    void update_notMine_exception() {
+        // given
+        PostRequest request = PostRequest.builder().title("수정된 제목").content("수정된 내용").build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> postService.update(post1.getId(), user2.getId(), request))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
     @DisplayName("게시글 삭제")
     void delete() {
         // given
@@ -139,6 +202,30 @@ class PostServiceTest {
 
         // then
         assertThatThrownBy(() -> postService.findById(post1.getId()))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 삭제 불가능")
+    void delete_notExistsPost_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> postService.delete(999L, user1.getId()))
+                .isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    @DisplayName("다른 사용자의 게시글 삭제 불가능")
+    void delete_notMine_exception() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> postService.delete(post1.getId(), user2.getId()))
                 .isInstanceOf(CustomException.class);
     }
 }
