@@ -54,7 +54,7 @@ public class PtReviewService {
         ShouldNotBeTrainer(matchingUser, Role.TRAINER);
 
         MatchingUser userMatching = matchingUserRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "matching"));
 
         List<MatchingUser> trainerMatchings = matchingUserRepository.findAllByUserId(trainer.getId());
 

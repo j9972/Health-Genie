@@ -1,5 +1,8 @@
 package com.example.healthgenie.boundedContext.email.service;
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+
+import com.example.healthgenie.base.exception.CustomException;
 import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -182,6 +185,10 @@ public class UniDomainService {
         schoolDomains.put("호서대학교", "hosu.ac.kr");
         schoolDomains.put("호원대학교", "howon.ac.kr");
         schoolDomains.put("홍익대학교", "hongik.ac.kr");
+
+        if (!schoolDomains.containsKey(schoolName)) {
+            throw new CustomException(DATA_NOT_FOUND);
+        }
 
         return schoolDomains.get(schoolName);
     }

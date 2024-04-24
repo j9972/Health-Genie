@@ -87,9 +87,6 @@ public class ProfileService {
         }
     }
 
-    /*
-        관리페이지용 API -> 조회 , 트레이너 본인만 가능
-    */
     @Transactional(readOnly = true)
     public ProfileResponseDto getProfile(Long profileId) {
         return ProfileResponseDto.of(profileRepository.findById(profileId)
@@ -97,6 +94,9 @@ public class ProfileService {
     }
 
 
+    /*
+        관리페이지용 API -> 조회 , 트레이너 본인만 가능
+    */
     @Transactional(readOnly = true)
     public ProfileResponseDto getOwnProfile(User user) {
         return ProfileResponseDto.of(profileRepository.findByMemberId(user.getId())

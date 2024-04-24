@@ -48,6 +48,7 @@ public class UserService {
                 .uniName("")
                 .role(role)
                 .level(Level.EMPTY)
+                .gender(Gender.UNKNOWN)
                 .build();
 
         return userRepository.save(user);

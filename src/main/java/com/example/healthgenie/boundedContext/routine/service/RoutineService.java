@@ -1,6 +1,10 @@
 package com.example.healthgenie.boundedContext.routine.service;
 
 
+import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
+import static com.example.healthgenie.base.exception.ErrorCode.NO_PERMISSION;
+
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineDeleteResponseDto;
 import com.example.healthgenie.boundedContext.routine.dto.RoutineRequestDto;
@@ -13,15 +17,11 @@ import com.example.healthgenie.boundedContext.routine.entity.WorkoutRecipe;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineQueryRepository;
 import com.example.healthgenie.boundedContext.routine.repository.RoutineRepository;
 import com.example.healthgenie.boundedContext.user.entity.User;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static com.example.healthgenie.base.exception.ErrorCode.DATA_NOT_FOUND;
-import static com.example.healthgenie.base.exception.ErrorCode.DUPLICATED;
 
 @Service
 @Slf4j
@@ -121,7 +121,11 @@ public class RoutineService {
      */
     @Transactional
     public List<RoutineResponseDto> getAllGenieRoutine(Level level, User user) {
-        user.updateLevel(level); // 이 부분 [ 매번 level update ]
+        if (level.equals(Level.EMPTY)) {
+            throw new CustomException(NO_PERMISSION);
+        }
+
+        user.updateLevel(level); // 이 부분 [ 매번 프론트에서 보내줘야함 - level update ]
         return RoutineResponseDto.ofGenie(routineQueryRepository.findAllByLevel(level));
     }
 
