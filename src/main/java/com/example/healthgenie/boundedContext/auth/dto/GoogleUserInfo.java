@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class GoogleUserInfo {
+public class GoogleUserInfo implements UserInfo {
 
     private String id;
     private String email;
