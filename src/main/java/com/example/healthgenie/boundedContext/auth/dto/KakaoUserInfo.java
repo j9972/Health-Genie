@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class KakaoUserInfo {
+public class KakaoUserInfo implements UserInfo {
 
     private Long id;
     private KakaoAccount kakaoAccount;
