@@ -36,7 +36,7 @@ public class UserService {
     public User signUp(String email, String name, AuthProvider authProvider, Role role) {
         String defaultNickname = createUniqueNickname();
 
-        if (userRepository.existsByEmail(email)) {
+        if (existsByEmail(email)) {
             throw new CustomException(DUPLICATED, "email="+email);
         }
 
@@ -52,6 +52,10 @@ public class UserService {
                 .build();
 
         return userRepository.save(user);
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     @Transactional

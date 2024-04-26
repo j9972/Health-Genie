@@ -27,7 +27,7 @@ public class AuthController {
         log.info("=========== 로그인(회원가입) API 실행 ===========");
         log.info("code={}", code);
         log.info("state={}", state);
-        JwtResponse response = authService.redirect(registrationId, code, state);
+        JwtResponse response = authService.getJwt(registrationId, code, state);
         log.info("=========== 로그인(회원가입) API 종료 ===========");
 
         return ResponseEntity.ok(Result.of(response));

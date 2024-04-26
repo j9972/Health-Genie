@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class TokenResponse {
+public class OAuthTokenResponse {
 
     private String tokenType;
     private String accessToken;
