@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.community.like.controller;
 
 import com.example.healthgenie.base.response.Result;
+import com.example.healthgenie.boundedContext.community.like.dto.LikeRequest;
 import com.example.healthgenie.boundedContext.community.like.dto.LikeResponse;
 import com.example.healthgenie.boundedContext.community.like.service.LikeService;
 import com.example.healthgenie.boundedContext.user.entity.User;
@@ -17,8 +18,11 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping
-    public ResponseEntity<Result> save(@PathVariable Long postId, @AuthenticationPrincipal User user) {
-        LikeResponse response = LikeResponse.of(likeService.save(postId, user));
+    public ResponseEntity<Result> save(@PathVariable Long postId,
+                                       @RequestBody LikeRequest request,
+                                       @AuthenticationPrincipal User user
+    ) {
+        LikeResponse response = LikeResponse.of(likeService.save(postId, request, user));
 
         return ResponseEntity.ok(Result.of(response));
     }
