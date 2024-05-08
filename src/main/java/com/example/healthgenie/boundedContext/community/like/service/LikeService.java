@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.community.like.service;
 
 import com.example.healthgenie.base.exception.CustomException;
+import com.example.healthgenie.boundedContext.community.like.dto.LikeRequest;
 import com.example.healthgenie.boundedContext.community.like.entity.Like;
 import com.example.healthgenie.boundedContext.community.like.repository.LikeRepository;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
@@ -24,8 +25,8 @@ public class LikeService {
     private final PostService postService;
 
     @Transactional
-    public Like save(Long postId, User user) {
-        likeRepository.findByPostIdAndUserId(postId, user.getId()).ifPresent(like -> {
+    public Like save(Long postId, LikeRequest request, User user) {
+        likeRepository.findByPostIdAndUserId(postId, request.getUserId()).ifPresent(like -> {
             throw new CustomException(DUPLICATED, "이미 좋아요를 표시했습니다.");
         });
 
