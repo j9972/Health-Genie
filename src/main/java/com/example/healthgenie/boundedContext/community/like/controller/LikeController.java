@@ -28,8 +28,12 @@ public class LikeController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Result> count(@PathVariable Long postId) {
-        return ResponseEntity.ok(Result.of(likeService.countByPostId(postId)));
+    public ResponseEntity<Result> count(@PathVariable Long postId, @AuthenticationPrincipal User user) {
+        Long likeCount = likeService.countByPostId(postId);
+
+        LikeResponse response = LikeResponse.builder().likeCount(likeCount).userId(user.getId()).build();
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @DeleteMapping
