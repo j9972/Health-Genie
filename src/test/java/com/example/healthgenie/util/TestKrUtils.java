@@ -9,6 +9,7 @@ import com.example.healthgenie.boundedContext.chat.service.RoomService;
 import com.example.healthgenie.boundedContext.community.comment.dto.CommentRequest;
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
 import com.example.healthgenie.boundedContext.community.comment.service.CommentService;
+import com.example.healthgenie.boundedContext.community.like.dto.LikeRequest;
 import com.example.healthgenie.boundedContext.community.like.entity.Like;
 import com.example.healthgenie.boundedContext.community.like.service.LikeService;
 import com.example.healthgenie.boundedContext.community.post.dto.PostRequest;
@@ -77,7 +78,8 @@ public class TestKrUtils {
         return matchingService.save(trainer, request);
     }
 
-    public Like createLike(Long postId, User user) {
-        return likeService.save(postId, user);
+    public Like createLike(Long postId, Long userId, User user) {
+        LikeRequest request = LikeRequest.builder().userId(userId).build();
+        return likeService.save(postId, request, user);
     }
 }

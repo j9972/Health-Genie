@@ -1,6 +1,7 @@
 package com.example.healthgenie.boundedContext.community.service;
 
 import com.example.healthgenie.base.exception.CustomException;
+import com.example.healthgenie.boundedContext.community.like.dto.LikeRequest;
 import com.example.healthgenie.boundedContext.community.like.entity.Like;
 import com.example.healthgenie.boundedContext.community.like.service.LikeService;
 import com.example.healthgenie.boundedContext.community.post.entity.Post;
@@ -39,16 +40,17 @@ class LikeServiceTest {
         user1 = testKrUtils.createUser("user1@test.com", "user1", AuthProvider.KAKAO, Role.USER);
         user2 = testKrUtils.createUser("user2@test.com", "user2", AuthProvider.GOOGLE, Role.TRAINER);
         post1 = testKrUtils.createPost(user1.getId(), "기본 제목", "기본 내용");
-        user2ToPost1Like = testKrUtils.createLike(post1.getId(), user2);
+        user2ToPost1Like = testKrUtils.createLike(post1.getId(), user2.getId(), user2);
     }
 
     @Test
     @DisplayName("좋아요 표시")
     void save() {
         // given
+        LikeRequest request = LikeRequest.builder().userId(user1.getId()).build();
 
         // when
-        Like like = likeService.save(post1.getId(), user1);
+        Like like = likeService.save(post1.getId(), request, user1);
 
         // then
         assertThat(like.getPost()).isEqualTo(post1);
@@ -59,11 +61,12 @@ class LikeServiceTest {
     @DisplayName("같은 게시글에 중복된 좋아요 표시 불가능")
     void save_duplicate_exception() {
         // given
+        LikeRequest request = LikeRequest.builder().userId(user2.getId()).build();
 
         // when
 
         // then
-        assertThatThrownBy(() -> likeService.save(post1.getId(), user2))
+        assertThatThrownBy(() -> likeService.save(post1.getId(), request, user2))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -71,11 +74,12 @@ class LikeServiceTest {
     @DisplayName("존재하지 않는 게시글에 좋아요 표시 불가능")
     void save_notExistsPost_exception() {
         // given
+        LikeRequest request = LikeRequest.builder().userId(user1.getId()).build();
 
         // when
 
         // then
-        assertThatThrownBy(() -> likeService.save(999L, user1))
+        assertThatThrownBy(() -> likeService.save(999L, request, user1))
                 .isInstanceOf(CustomException.class);
     }
 
