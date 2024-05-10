@@ -15,6 +15,7 @@ public class LikeResponse {
     private Long likeId;
     private Long postId;
     private Long userId;
+    private Long likeCount;
 
     public static LikeResponse of(Like like) {
         return LikeResponse.builder()
