@@ -27,13 +27,16 @@ public class LikeController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/count")
-    public ResponseEntity<Result> count(@PathVariable Long postId, @AuthenticationPrincipal User user) {
-        Long likeCount = likeService.countByPostId(postId);
-
-        LikeResponse response = LikeResponse.builder().likeCount(likeCount).userId(user.getId()).build();
+    @GetMapping
+    public ResponseEntity<Result> exist(@PathVariable Long postId, @AuthenticationPrincipal User user) {
+        Boolean response = likeService.existsByPostIdAndUserId(postId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Result> count(@PathVariable Long postId) {
+        return ResponseEntity.ok(Result.of(likeService.countByPostId(postId)));
     }
 
     @DeleteMapping
