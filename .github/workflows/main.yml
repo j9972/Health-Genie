@@ -9,13 +9,13 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   AWS_S3_BUCKET: app-release-files
-  AWS_CODE_BUCKET_NAME: bucket-healthgenie
-  AWS_CODE_DEPLOY_APPLICATION: cd-healthgenie-cicd
-  AWS_CODE_DEPLOY_GROUP: cd-healthgenie
+  AWS_CODE_BUCKET_NAME: bucket-health-genie
+  AWS_CODE_DEPLOY_APPLICATION: cd-health-genie-cicd
+  AWS_CODE_DEPLOY_GROUP: cd-health-genie
 
 jobs:
   build-with-gradle:
-    runs-on: ubuntu-20.04   # ubuntu ver
+    runs-on: ubuntu-22.04   # ubuntu ver
     steps:
       - name: production 브랜치로 이동
         uses: actions/checkout@v3
