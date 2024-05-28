@@ -5,9 +5,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://new-health-genie-db1.cwysozrbokkx.ap-northeast-2.rds.amazonaws.com:3306/health_genie
-    username: ENC(t73nhff/1j7IxUmVnxqCkg==)
-    password: ENC(cqOISBwQJ9FHHnb97SmW/WbwDHjl7nCP)
+    url: jdbc:mysql://cicd-mysql.cbi264qayjmx.ap-northeast-2.rds.amazonaws.com:3306/health_genie
+    username: ENC(1IEpCXbReEZPKbahlrpd4g==)
+    password: ENC(LxcJMh7B0q3x7T5/4L+a0xJM0VgzJ29O)
 
   security:
     oauth2:

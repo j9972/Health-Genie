@@ -23,7 +23,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         validator:
@@ -112,10 +112,10 @@ custom:
 cloud:
   aws:
     credentials:
-      access-key: ENC(5Ay8uZlBohi5ulmWQ3kxar3S8aeCZRZpl6ulMDZtNK0=)
-      secret-key: ENC(lszOfIqqGfJqLh4MALezS1lLyRTSJ7+yHYgqS6S7T5P8AmSKQ4dr6FTmnsQEbPE+tUrPTR3Uwgw=)
+      access-key: ENC(W3Ot4y0JODBfeqkhR67C5HIMhg/kbAfh+C+/Kdhy+Yk=)
+      secret-key: ENC(AzULHzE6faaWEMx18eBuuD2M7ZmM2TS+FTYGefY/WPIqlZn+F4hvYC4tEMtu1GOd79iL0DjAPJ8=)
     s3:
-      bucket: new-health-genie
+      bucket: bucket-health-genie
     region:
       static: ap-northeast-2
     stack:
