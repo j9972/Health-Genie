@@ -29,7 +29,6 @@ docker run \
   -e TZ=Asia/Seoul \
   -p 1234:1234 \
   -d \
-  --net mybridge \
   j9972/health_genie
 
 echo "[$NOW] > health genie server start!! welcome to Health- Genie " >> /home/ubuntu/cicd/deploy.log
