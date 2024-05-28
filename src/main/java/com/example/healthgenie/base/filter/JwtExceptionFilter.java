@@ -21,7 +21,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtExceptionFilter extends OncePerRequestFilter {
 
-    // 연결 test
     private final ObjectMapper objectMapper;
 
     @Override
