@@ -8,24 +8,25 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtExceptionFilter extends OncePerRequestFilter {
 
+    // 연결 test
     private final ObjectMapper objectMapper;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
         } catch (JwtException e) {
@@ -34,7 +35,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             map.put("message", e.getMessage());
 
             StackTraceElement element = e.getStackTrace()[0];
-            log.warn("[{}] occurs caused by {}.{}() {} line : {}", e.getClass().getSimpleName(), element.getClassName(), element.getMethodName(), element.getLineNumber(), e.getMessage());
+            log.warn("[{}] occurs caused by {}.{}() {} line : {}", e.getClass().getSimpleName(), element.getClassName(),
+                    element.getMethodName(), element.getLineNumber(), e.getMessage());
 
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -46,7 +48,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             map.put("message", errorCode.getMessage());
 
             StackTraceElement element = e.getStackTrace()[0];
-            log.warn("[{}] occurs caused by {}.{}() {} line : {}", errorCode.name(), element.getClassName(), element.getMethodName(), element.getLineNumber(), errorCode.getMessage());
+            log.warn("[{}] occurs caused by {}.{}() {} line : {}", errorCode.name(), element.getClassName(),
+                    element.getMethodName(), element.getLineNumber(), errorCode.getMessage());
 
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(errorCode.getStatus().value());
