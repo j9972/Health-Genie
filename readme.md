@@ -112,7 +112,11 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 - 기존의 단위 테스트는 스프링을 사용하지 않고 빠른 속도와 독립적인 실행을 보장하는 것이 일반적이지만, 작업 일정과 개발 진행 상황에 따라 통합 테스트 작성을 하지 않고 단위 테스트에서 `@SpringBootTest` 애노테이션을 사용 함으로써 통합/단위 테스트를 진행했습니다.
 - 각 메서드의 정상적인 기능 동작과 실행 속도 또한 통합 테스트에 비해 빠르며, 함께 필요한 의존성의 올바른 관계를 확인할 수 있습니다.
 | ![단위테스트](images/unitTest.png) | ![헬퍼클래스](images/helperClass.png) |
-|:--------------------------------:|:--------------------------------:|
+
+<p>
+  <img src="images/unitTest.png" alt="단위테스트" width="200"/>
+  <img src="images/helperClass.png" alt="헬퍼클래스" width="200"/>
+</p>
 
 <br>
 
