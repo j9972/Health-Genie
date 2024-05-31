@@ -113,8 +113,8 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 - 각 메서드의 정상적인 기능 동작과 실행 속도 또한 통합 테스트에 비해 빠르며, 함께 필요한 의존성의 올바른 관계를 확인할 수 있습니다.
 
 <p>
-  <img src="images/unitTest.png" alt="단위테스트" width="500" height="500"/>
-  <img src="images/helperClass.png" alt="헬퍼클래스" width="500" height="500"/>
+  <img src="images/unitTest.png" alt="단위테스트" width="500" height="400"/>
+  <img src="images/helperClass.png" alt="헬퍼클래스" width="500" height="400"/>
 </p>
 
 <br>
