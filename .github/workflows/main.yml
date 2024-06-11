@@ -59,11 +59,11 @@ jobs:
       
 
       #AWS EC2 Server Connect
-      - name: AWS EC2 Connection
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_KEY }}
-          port: ${{ secrets.EC2_SSH_PORT }}
-          timeout: 60s
+      # - name: AWS EC2 Connection
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.EC2_HOST }}
+      #     username: ubuntu
+      #     key: ${{ secrets.EC2_KEY }}
+      #     port: ${{ secrets.EC2_SSH_PORT }}
+      #     timeout: 60s

@@ -3,6 +3,7 @@ package com.example.healthgenie.boundedContext.chat.controller;
 import com.example.healthgenie.base.response.Result;
 import com.example.healthgenie.boundedContext.chat.dto.MessageRequest;
 import com.example.healthgenie.boundedContext.chat.dto.MessageResponse;
+import com.example.healthgenie.boundedContext.chat.dto.RoomMessageResponse;
 import com.example.healthgenie.boundedContext.chat.service.MessageService;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -36,6 +38,13 @@ public class MessageController {
     @GetMapping("/chat/{roomId}/messages")
     public ResponseEntity<Result> findAll(@PathVariable Long roomId, @AuthenticationPrincipal User user) {
         List<MessageResponse> response = MessageResponse.of(messageService.findAll(roomId, user));
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @GetMapping("/chat/lastMessages")
+    public ResponseEntity<Result> getLastMessages(@RequestParam List<Long> roomIds) {
+        List<RoomMessageResponse> response = messageService.getLastMessages(roomIds);
 
         return ResponseEntity.ok(Result.of(response));
     }
