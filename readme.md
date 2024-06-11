@@ -183,11 +183,11 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 
 [ 초기 테스트 커버리지 ]
 <br>
-![초기 테스트 커버리지](images/coverage_before)
+![초기 테스트 커버리지](images/coverage_before.png)
 <br>
 테스트 커버리지 수치 자체를 목표로 둔다면 “지속 성장 가능” 이라는 키워드 보다는 “수치”에 잘못된 초점을 두게 되어 가치 있는 테스트가 아닌 거짓양성과 의미 없는 단순 테스트들 위주의 테스트가 될것이라고 생각하고, 100%가 아닌 60% 이상을 목표로 두었습니다
 
-![ 리팩토링 이후 테스트 커버리지 ](images/coverage_after)
+![ 리팩토링 이후 테스트 커버리지 ](images/coverage_after.png)
 <br>
 ### 초기 57.83% → 64.75%로 개선하였습니다.
 
