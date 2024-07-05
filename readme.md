@@ -174,6 +174,7 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 ## 📜 테스트 커버리지
 
 [ 초기 테스트 커버리지 ]
+
 <br>
 ![초기 테스트 커버리지](images/coverage_before.png)
 <br/>
@@ -182,12 +183,12 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 [ test coverage ref ](https://velog.io/@newdana01/Test-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BB%A4%EB%B2%84%EB%A6%AC%EC%A7%80-Test-Coverage)
 
 <br/>
+
 ![리팩토링 이후 테스트 커버리지](images/coverage_after.png)
-<br>
-
-### 초기 57.83% → 64.75%로 개선하였습니다.
 
 <br>
+### 초기 57.83% → 64.75%로 개선하였습니다
+</br>
 
 
 ## 🥕프로젝트 백엔드 의사결정 및 이슈
