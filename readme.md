@@ -109,7 +109,7 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 - 회귀 방지, 리팩토링 내성, 빠른 피드백, 유지보수성 4가지에 초점을 맞춰 코드의 개발을 했습니다. 
 
 <p>
-  <img src="images/unitTest.png" alt="단위테스트" width="415" height="400"/>
+  <img src="images/unittest.png" alt="단위테스트" width="415" height="400"/>
   <img src="images/helperClass.png" alt="헬퍼클래스" width="415" height="400"/>
 </p>
 
