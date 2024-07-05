@@ -6,7 +6,7 @@
 
 ## ✨ 프로젝트 소개
 
-- 저희 Health-Genie는 학부생들의 체력 증진과 운동 수행 능력 향상을 위해 학부생간의 PT 매칭을 도와주는 서비스 입니다.
+### 저희 Health-Genie는 학부생들의 체력 증진과 운동 수행 능력 향상을 위해 학부생간의 PT 매칭을 도와주는 서비스 입니다.
   
   <br/>
 
@@ -97,7 +97,6 @@
 
 ## 🧑‍💻 API 문서 보기
 
-
 HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.com/view/31167063/2sA2xh4DR2)
 
 
@@ -110,8 +109,8 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 - 회귀 방지, 리팩토링 내성, 빠른 피드백, 유지보수성 4가지에 초점을 맞춰 코드의 개발을 했습니다. 
 
 <p>
-  <img src="images/unitTest.png" alt="단위테스트" width="400" height="400"/>
-  <img src="images/helperClass.png" alt="헬퍼클래스" width="400" height="400"/>
+  <img src="images/unitTest.png" alt="단위테스트" width="430" height="400"/>
+  <img src="images/helperClass.png" alt="헬퍼클래스" width="430" height="400"/>
 </p>
 
 <br>
