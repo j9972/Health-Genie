@@ -24,7 +24,8 @@
 
 <p align="center">
 
-<img src="https://img.shields.io/badge/-QueryDSL-blue?style=for-the-badge"/><br>
+<img src="https://img.shields.io/badge/-QueryDSL-blue?style=for-the-badge"/>
+<br>
 <img src="https://img.shields.io/badge/spring Boot-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white"/>
 <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white"/>
 <img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=for-the-badge&logo=JPA&logoColor=white"/>
