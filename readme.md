@@ -120,11 +120,10 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 ### 배포 구조 (Github Action 배포 자동화)
 
 ### CI Flow
-> Github 'production' Branch Push  → Github Actions → Project Build → Docker Image Build → <br>
-Docker Hub Image Upload → AWS S3 Project File Upload
+> Github 'production' Branch Push → Project Build → Docker Image Build → Github Actions 
 
 ### CD Flow
-> AWS CodeDeploy → Docker Container Stop -> Docker Image Pull -> Docker Run
+> AWS CodeDeploy → Docker Container Stop -> Docker Image Pull -> Docker Run Container
 
 <img src="images/devops.png" width="1000" height="340"/>
 
@@ -183,7 +182,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 [ test coverage ref ](https://velog.io/@newdana01/Test-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BB%A4%EB%B2%84%EB%A6%AC%EC%A7%80-Test-Coverage)
 
 <br/>
-![ 리팩토링 이후 테스트 커버리지 ](images/coverage_after.png)
+![리팩토링 이후 테스트 커버리지](images/coverage_after.png)
 <br>
 
 ### 초기 57.83% → 64.75%로 개선하였습니다.
