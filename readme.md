@@ -27,6 +27,7 @@
 <img src="https://img.shields.io/badge/spring 3-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white"/>
 <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white"/>
 <img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=for-the-badge&logo=JPA&logoColor=white"/>
+
 <img src="https://img.shields.io/badge/-QueryDSL-blue?style=for-the-badge"/>
 
 </p>
@@ -63,7 +64,7 @@
 
 </p>
 
-<h3 align="center">문서 / 협업</h3>
+<h3 align="center">Cooperation</h3>
 
 <p align="center">   
 
