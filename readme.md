@@ -141,7 +141,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 
 테스트 시나리오: 후기 / 일지 각각 2000건에 대한 요청 처리
 
-부하 조건: 100명의 사람의 초당 트래픽 1000 
+테스트 조건: 100명의 사람의 초당 트래픽 1000 
 
 [ 일지 - 리팩토링 전 ]
 <br>
@@ -178,10 +178,14 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 <br>
 ![초기 테스트 커버리지](images/coverage_before.png)
 <br/>
+
 테스트 커버리지 수치 자체를 목표로 둔다면 “지속 성장 가능” 이라는 키워드 보다는 “수치”에 잘못된 초점을 두게 되어 가치 있는 테스트가 아닌 거짓양성과 의미 없는 단순 테스트들 위주의 테스트가 될것이라고 생각하고, 100%가 아닌 60% 이상을 목표로 두었습니다
+[ test coverage ref ]([https://github.com/j9972/health-genie/assets/50689754/dbbc1910-2c61-44ee-adfa-5d08bf9b47f7](https://velog.io/@newdana01/Test-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BB%A4%EB%B2%84%EB%A6%AC%EC%A7%80-Test-Coverage))
+
 <br/>
 ![ 리팩토링 이후 테스트 커버리지 ](images/coverage_after.png)
 <br>
+
 ### 초기 57.83% → 64.75%로 개선하였습니다.
 
 <br>
