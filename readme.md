@@ -126,7 +126,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 ### CD Flow
 > AWS CodeDeploy → Docker Container Stop -> Docker Image Pull -> Docker Run
 
-![img.png](images/health_genie_githubaction.png)
+![img.png](images/devops.png)
 
 
 
