@@ -85,7 +85,6 @@
 <br>
 
 ## 🔎 Project Architecture
-![Architecture](images/architecture.png)
 <img src="images/architecture.png" width="2000" height="700"/>
 
 <br>
@@ -138,7 +137,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 
 <br>
 
-## 🐥부하 테스트
+## 🐥성능 테스트
 수많은 학교의 회원 / 트레이너 유저들이 트레이너의 후기를 조회하거나 각각의 일지를 조회하는 경우 최대 몇 명의 사용자들이 서버를 사용할 수 있는지 상황을 확인하고 대비하고자 부하 테스트를 진행하여 로직을 개선해보고자 했습니다. <br>
 
 
@@ -173,7 +172,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 
 ### 평균 응답시간 ( 1.7초 -> 0.3초 ) 약 75%, TPS ( 57 -> 270 ) 약 473% 개선이 이루어졌습니다
 
-이전의 코드는 같은 부하조건에서, 트래픽마다 매번 2000건의 데이터를 조회되며 그만큼 성능이 느렸는데, 이를 개선하기 위해서 다음 데이터가 있는 경우를 먼저 확인하고 기존의 보여준 데이터말고 새로운 데이터만 보이는 식으로 코드 및 쿼리를 변경하였습니다.
+기존 review/process 각 table내에서 각각 사진과 글 table을 분리하여 매 API호출시 필요한 데이터만 호출하게 하며 검색 조건을 추가해 쿼리를 가볍게 만드는 방향으로 수정하였습니다.
 결과적으로 평균 응답속도가 60%, 75% 만큼 향상 되었으며, TPS또한 225%, 473% 만큼 대폭 향상되었습니다.
 
 <br>
@@ -196,53 +195,16 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 ## 🥕프로젝트 백엔드 의사결정 및 이슈
 
 ### 최적화
-[ Field type - entity 정수 타입 고민 ](https://techj9972.tistory.com/250) <br>
-[ method 선택 - ParseInt() vs valueOf() ](https://techj9972.tistory.com/246) <br>
-[ Annotation - 컬렉션 타입 형태의 데이터 저장 고민 ](https://techj9972.tistory.com/243) <br>
 [ 무한스크롤 도입 - 페이지 조회 성능 향상을 위한 고민](https://techj9972.tistory.com/276) <br>
-[ null처리는 어떻게? - orElse() vs orElseGet()](https://techj9972.tistory.com/278) <br>
 [ Caching Exception ](https://techj9972.tistory.com/295) <br>
 
 ### 프로젝트 진행 이슈
-[ 이메일 인증 전략 고민 [1] - Redis 사용 ](https://techj9972.tistory.com/238) <br>
-[ 이메일 인증 전략 고민 [2] - Api 사용 ](https://techj9972.tistory.com/253) <br>
+[ 이메일 인증 전략 고민 (1) - Redis 사용](https://techj9972.tistory.com/238) <br>
+[ 이메일 인증 전략 고민 (2) - Api 사용 ](https://techj9972.tistory.com/253) <br>
 
 ### 백엔드 이슈
 [ 변경 감지를 통한 회원 정보 수정이 되지 않던 문제 ](https://kyeongryeol.notion.site/User-update-8eba600469ea49c8a4e01bcc7e4a4e6a?pvs=4) <br>
 [ 커스텀 예외를 ExceptionHandler로 처리했음에도 500 Error가 터졌던 문제 ](https://kyeongryeol.notion.site/GlobalExceptionHandler-500-Server-Error-29821be0b9954473bc7dd3400f9352c9?pvs=4) <br>
-
-### 인프라
-
-### 지속적인 리팩토링
-[ 모니터링 - cloud watch ](https://techj9972.tistory.com/265)
-
-
-<br>
-
-
-## 🥲 시행착오들
-[ 🐛MySQL - Failed to add the foreign key constraint ](https://techj9972.tistory.com/207) <br>
-[ 🪱Mail - Authenticatioin Fail ](https://techj9972.tistory.com/208) <br>
-[ 🐝UserDetail - InternalAuthenticationServiceException ](https://techj9972.tistory.com/209) <br> 
-[ 🫎Symbol - error : cannot find symbol log.info ](https://techj9972.tistory.com/210) <br>
-[ 🦄Json - Infinite recursion ( stackOverFlow ) ](https://techj9972.tistory.com/239) <br> 
-[ 🐴Enum - No enum constant enum name.value ](https://techj9972.tistory.com/240) <br>
-[ 🦅PortNumber - Port Number was already in use ](https://techj9972.tistory.com/241) <br>
-[ 🦆Data - Data truncation: Datta too long for column ](https://techj9972.tistory.com/242) <br>
-[ 🪿IntelliJ - build.gradle 오류 ](https://techj9972.tistory.com/244) <br>
-[ 🐶Dirty Checking - 변경감지 적용시 유의점 ](https://techj9972.tistory.com/245) <br>
-[ 🐱Http - HTTP method names must be token ](https://techj9972.tistory.com/247) <br>
-[ 🐭@Value - @Value cannot find method 'value' ](https://techj9972.tistory.com/248) <br>
-[ 🐹Postman - Api 문서 만들기 ](https://techj9972.tistory.com/251) <br>
-[ 🦊Pipe - broken pipe error ](https://techj9972.tistory.com/252) <br>
-[ 🐻API - univCert Api 를 사용해서 이메일 인증 ](https://techj9972.tistory.com/253) <br>
-[ 🐼Json - JSON parse error ](https://techj9972.tistory.com/256) <br>
-[ 🐔Deserialize - cannot deserialize from Object value ](https://techj9972.tistory.com/258) <br>
-[ 🐧Branch - git push error ](https://techj9972.tistory.com/260) <br>
-[ 🐦CodeDeploy - github action 배포 오류 ](https://techj9972.tistory.com/261) <br>
-[ 🐤CICD - action 배포 성공 후 s3 zip 파일 안열림 오류 ](https://techj9972.tistory.com/262) <br>
-[ 🐣CICD - github actioin CD ssh 연결 오류 ](https://techj9972.tistory.com/263) <br>
-[ 🐥CICD - 프로젝트 빌드 오류 ](https://techj9972.tistory.com/264) <br>
 
 <br>
 
