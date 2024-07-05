@@ -37,6 +37,7 @@
 <p align="center">
 
 <img src="https://img.shields.io/badge/Junit-25A162?style=for-the-badge&logo=Junit5&logoColor=white"/>
+<img src="https://img.shields.io/badge/JMeter-25A162?style=for-the-badge&logo=JMeter&logoColor=white"/>
 
 </p>
 
