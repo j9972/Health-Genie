@@ -6,50 +6,60 @@
 
 ## ✨ 프로젝트 소개
 
-### [ 프로젝트 간단 소개 ]
-
 - 저희 Health-Genie는 학부생들의 체력 증진과 운동 수행 능력 향상을 위해 학부생간의 PT 매칭을 도와주는 서비스 입니다.
   
   <br/>
 
 ## 👨‍기술 스택
 
-<h3 align="center">어플리케이션</h3>
+<h3 align="center">Language</h3>
 
 <p align="center">
 
 <img src="https://img.shields.io/badge/Java 17-008FC7?style=for-the-badge&logo=Java&logoColor=white"/>
-<img src="https://img.shields.io/badge/spring 3-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white"/>
-<img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white"/>
-<img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=for-the-badge&logo=JPA&logoColor=white"/>
-
-<img src="https://img.shields.io/badge/-QueryDSL-blue?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"/>
-<img src="https://img.shields.io/badge/Junit-25A162?style=for-the-badge&logo=Junit5&logoColor=white"/>
-<img src="https://img.shields.io/badge/JSON Web Tokens-000000?style=for-the-badge&logo=JSON Web Tokens&logoColor=white"/>
 
 </p>
 
+<h3 align="center">Framework</h3>
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/spring 3-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white"/>
+<img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white"/>
+<img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=for-the-badge&logo=JPA&logoColor=white"/>
+<img src="https://img.shields.io/badge/-QueryDSL-blue?style=for-the-badge"/>
+
+</p>
+
+<h3 align="center">Test</h3>
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/Junit-25A162?style=for-the-badge&logo=Junit5&logoColor=white"/>
+
+</p>
+
+
+</p>
 
 <h3 align="center">DB</h3>
 
 <p align="center">  
 <img src="https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white"/>
-<img src="https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon RDS-527FFF?style=for-the-badge&logo=Amazon RDS&logoColor=white"/>
 
 </p>
 
-<h3 align="center">인프라</h3>
+<h3 align="center">Devops</h3>
 
 <p align="center">   
 
 <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon RDS-527FFF?style=for-the-badge&logo=Amazon RDS&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
 <img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"/>
+
+<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/>
+<img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
 <img src="https://img.shields.io/badge/Amazon Route53-8C4FFF?style=for-the-badge&logo=Amazon Route 53&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon CloudWatch-2088FF?style=for-the-badge&logo=Amazon CloudWatch&logoColor=white"/>
 
 </p>
 
@@ -58,7 +68,6 @@
 <p align="center">   
 
 <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/>
-<img src="https://img.shields.io/badge/Git-F05032.svg?style=for-the-badge&logo=Git&logoColor=white"/>
 <img src="https://img.shields.io/badge/GitHub-181717.svg?style=for-the-badge&logo=GitHub&logoColor=white"/>
 <img src="https://img.shields.io/badge/Postman-FF6C37.svg?style=for-the-badge&logo=Postman&logoColor=white"/>
 
