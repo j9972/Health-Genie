@@ -85,7 +85,7 @@
 <br>
 
 ## 🔎 Project Architecture
-![Architecture](images/architecture.png)
+<img src="images/architecture" width="200" height="400"/>
 
 <br>
 
