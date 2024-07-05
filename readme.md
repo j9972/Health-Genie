@@ -102,25 +102,23 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 
 
 ## 🐧 TEST CODE
-- 테스트 코드는 단순히 애플리케이션의 기능이 제대로 동작하는 것만 검증한다고 생각하지 않고, 서비스가 지속 성장 가능하게 하는것이 목적이라고 생각합니다. 이를 위해서 사용자의 입장에서 해당 프로젝트에 어떤 기능들이 있으며 그에 따른 최종 응답을 확인할 수 있는 수단이라고 생각합니다.
+- "지속 성장 가능" 이라는 목적을 가지고 작성하였습니다.
 
 ### UNIT TEST
 - 단위 테스트는 비즈니스 로직에서 코드의 단위가 아닌 동작의 단위를 기반으로 단위테스트를 진행하였습니다.
 - 각각의 테스트 클래스마다 중복되는 작업들은 테스트 헬퍼 클래스를 작성하며, 메소드 명이 아닌 동작의 흐름을 이해할 수 있는 네이밍을 작성하였습니다.
 - 회귀 방지, 리팩토링 내성, 빠른 피드백, 유지보수성 4가지에 초점을 맞춰 코드의 개발을 했습니다. 
-- 기존의 단위 테스트는 스프링을 사용하지 않고 빠른 속도와 독립적인 실행을 보장하는 것이 일반적이지만, 작업 일정과 개발 진행 상황에 따라 통합 테스트 작성을 하지 않고 단위 테스트에서 `@SpringBootTest` 애노테이션을 사용 함으로써 통합/단위 테스트를 진행했습니다.
-- 각 메서드의 정상적인 기능 동작과 실행 속도 또한 통합 테스트에 비해 빠르며, 함께 필요한 의존성의 올바른 관계를 확인할 수 있습니다.
 
 <p>
-  <img src="images/unitTest.png" alt="단위테스트" width="500" height="400"/>
-  <img src="images/helperClass.png" alt="헬퍼클래스" width="500" height="400"/>
+  <img src="images/unitTest.png" alt="단위테스트" width="400" height="400"/>
+  <img src="images/helperClass.png" alt="헬퍼클래스" width="400" height="400"/>
 </p>
 
 <br>
 
 ## 🏛️ CI/CD 아키텍처 (배포 자동화)
 
-### 1. 현재 배포의 구조 / 선택한 이유 (Github Action 배포 자동화)
+### 배포 구조 (Github Action 배포 자동화)
 
 ### CI Flow
 > Github 'production' Branch Push  → Github Actions → Project Build → Docker Image Build → <br>
@@ -131,10 +129,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 
 ![img.png](images/health_genie_githubaction.png)
 
-1. 무료입니다! 
-2. 코드 저장소와 직접 연동되기 때문에 워크플로우를 쉽게 작성하고 관리가 쉽습니다.
-3. YAML 기반의 워크플로우 파일을 작성하여 필요한 작업을 정의할 수 있으며, 버전 관리도 손쉽게 할 수 있습니다.
-4. 무엇보다 구글에서 찾아볼 수 있는 리소스가 많아서 이기도 합니다!
+
 
 <br>
 
