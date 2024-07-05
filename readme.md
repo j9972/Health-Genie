@@ -126,7 +126,7 @@ Docker Hub Image Upload → AWS S3 Project File Upload
 ### CD Flow
 > AWS CodeDeploy → Docker Container Stop -> Docker Image Pull -> Docker Run
 
-<img src="images/devops.png" width="1500" height="500"/>
+<img src="images/devops.png" width="1000" height="340"/>
 
 
 
