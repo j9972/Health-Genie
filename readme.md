@@ -208,7 +208,7 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 [ 커스텀 예외를 ExceptionHandler로 처리했음에도 500 Error가 터졌던 문제 ](https://kyeongryeol.notion.site/GlobalExceptionHandler-500-Server-Error-29821be0b9954473bc7dd3400f9352c9?pvs=4) <br>
 
 ### Devops 이슈
-[ aws ec2와 docker 연결 문제 ](https://techj9972.tistory.com/263)
+[ aws ec2와 docker 연결 문제 ](https://techj9972.tistory.com/263) <br>
 [ code deploy 실행 문제 ](https://techj9972.tistory.com/261)
 
 <br>
