@@ -109,8 +109,8 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 - 회귀 방지, 리팩토링 내성, 빠른 피드백, 유지보수성 4가지에 초점을 맞춰 코드의 개발을 했습니다. 
 
 <p>
-  <img src="images/unittest.png" alt="단위테스트" width="480" height="250"/>
-  <img src="images/helperClass.png" alt="헬퍼클래스" width="480" height="250"/>
+  <img src="images/unittest.png" alt="단위테스트" width="440" height="250"/>
+  <img src="images/helperClass.png" alt="헬퍼클래스" width="440" height="250"/>
 </p>
 
 <br>
@@ -120,7 +120,7 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 ### 배포 구조 (Github Action 배포 자동화)
 
 ### CI Flow
-> Github 'production' Branch Push → Project Build → Docker Image Build → Github Actions 
+> code fix -> Project Build -> test -> merge -> (성공시) github같은 외부 저장소로 업로드
 
 ### CD Flow
 > AWS CodeDeploy → Docker Container Stop -> Docker Image Pull -> Docker Run Container
