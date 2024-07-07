@@ -187,7 +187,9 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 ![리팩토링 이후 테스트 커버리지](images/coverage_after.png)
 
 <br>
+
 ### 초기 57.83% → 64.75%로 개선하였습니다
+
 </br>
 
 
