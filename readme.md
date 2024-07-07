@@ -120,7 +120,7 @@ HEALTH-GENIE Postman API!!    [ 문서 보기 ](https://documenter.getpostman.co
 ### 배포 구조 (Github Action 배포 자동화)
 
 ### CI Flow
-> code fix -> Project Build -> test -> merge -> (성공시) github같은 외부 저장소로 업로드
+> Code Fix -> Project Build -> Test -> Merge -> (성공시) Github같은 외부 저장소로 업로드
 
 ### CD Flow
 > AWS CodeDeploy → Docker Container Stop -> Docker Image Pull -> Docker Run Container
