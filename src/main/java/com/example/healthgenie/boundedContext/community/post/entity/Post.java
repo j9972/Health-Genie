@@ -2,6 +2,7 @@ package com.example.healthgenie.boundedContext.community.post.entity;
 
 import com.example.healthgenie.base.entity.BaseEntity;
 import com.example.healthgenie.boundedContext.community.comment.entity.Comment;
+import com.example.healthgenie.boundedContext.community.like.entity.Like;
 import com.example.healthgenie.boundedContext.community.photo.entity.Photo;
 import com.example.healthgenie.boundedContext.user.entity.User;
 import jakarta.persistence.*;
@@ -46,6 +47,10 @@ public class Post extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Photo> photos = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Like> likes = new ArrayList<>();
 
     public void updateTitle(String title) {
         this.title = title;
