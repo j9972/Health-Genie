@@ -3,7 +3,16 @@ package com.example.healthgenie.boundedContext.user.entity;
 import com.example.healthgenie.base.entity.BaseEntity;
 import com.example.healthgenie.base.exception.CustomException;
 import com.example.healthgenie.base.exception.ErrorCode;
+import com.example.healthgenie.boundedContext.chat.entity.Message;
+import com.example.healthgenie.boundedContext.chat.entity.RoomUser;
+import com.example.healthgenie.boundedContext.community.post.entity.Post;
+import com.example.healthgenie.boundedContext.matching.entity.MatchingUser;
+import com.example.healthgenie.boundedContext.process.process.entity.PtProcess;
+import com.example.healthgenie.boundedContext.review.entity.PtReview;
 import com.example.healthgenie.boundedContext.routine.entity.Level;
+import com.example.healthgenie.boundedContext.routine.entity.Routine;
+import com.example.healthgenie.boundedContext.todo.entity.Todo;
+import com.example.healthgenie.boundedContext.trainer.profile.entity.TrainerInfo;
 import com.example.healthgenie.boundedContext.user.entity.enums.AuthProvider;
 import com.example.healthgenie.boundedContext.user.entity.enums.Gender;
 import com.example.healthgenie.boundedContext.user.entity.enums.Role;
@@ -20,6 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
@@ -63,7 +73,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "email_verify")
     private boolean emailVerify;
 
-    // level field 추
     @Enumerated(EnumType.STRING)
     @Column(name = "level")
     private Level level;
@@ -83,6 +92,41 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
+
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Message> messages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<RoomUser> roomUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<MatchingUser> matchingUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<PtProcess> ptProcesses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<PtReview> ptReviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Routine> routines = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Todo> todos = new ArrayList<>();
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    private TrainerInfo trainerInfo;
 
     public void updateRole(Role role) {
         if (this.role != Role.EMPTY) {
